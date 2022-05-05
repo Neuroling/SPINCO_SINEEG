@@ -123,4 +123,62 @@ dirinput <- c("C:/Users/gfraga/gfraga_tmp_neulin/EEG_SIN/Pilot (October 2021)_GF
                         defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),  
                         bordered = TRUE, highlight =TRUE)
 ```
- 
+
+#### eeg file overview
+```{r}
+
+  #summary content 
+  datSummary <- list()
+  for (m in 1:length(measurements)){
+    curfiles <- files[grep(pattern = measurements[m],files)]  
+    datSummary[[m]] <-  as.data.frame(cbind(paste0('M',idxs[m]),
+                                            length(curfiles), 
+                                            length(which(grepl(pattern = "*raw.*.eeg",x = curfiles))),
+                                            length(which(grepl(pattern = "*processed.*.eeg*",x = curfiles))),
+                                            ifelse(length(which(grepl(pattern = "*.wav$",x = curfiles)))>0,'yes','no'),
+                                            ifelse(length(which(grepl(pattern = "Readme*",x = curfiles)))>0,'yes','no')))
+                      
+    
+      # Read EEG data (if available) to check dimensions
+           
+             # function to read and check dims  
+            check_eeg_dims <- function(headerfile) {
+                        if (file.info(headerfile)$size!=0) {
+                            header <- raveio::read_eeg_header(file = headerfile)
+                            eeg <- raveio::read_eeg_data(header, path = gsub('.vhdr','.eeg',headerfile))
+                            dimensions <<- t(c(dim(eeg$data)))
+                            
+                        } else { 
+                          warning(paste0(headerfile, ' has size 0!'))
+                          dimensions<<- t(as.data.frame(c(0,0)))
+                        }  
+                }
+              
+      
+          #Apply only to processed.eeg files   
+          if (length(which(grepl(pattern = "*processed.vhdr$",x = curfiles)))==1) {
+              processedfile <- paste0(dirinput,'/',curfiles[grep(curfiles,pattern='*processed.vhdr')]) 
+              info <- suppressWarnings(t(c(check_eeg_dims(processedfile))))  #run func to gather dimensions
+              rm(processedfile)
+          } else { info <<- t(as.data.frame(c(NA,NA))) }
+           
+        # Add to main summary table            
+        datSummary[[m]] <- cbind(datSummary[[m]], info)
+  }
+
+  datSummary <- data.table::rbindlist(datSummary,fill = TRUE)
+  colnames(datSummary)  <- c('measurement','total_n_files','eeg_raw','eeg_processed','wav_files?','readme_files?', 'proc.eeg_rows','proc.eeg_cols')
+  
+  # Make Interactive table to display
+  reactable(datSummary,filterable = TRUE,   
+                        defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),  
+                        bordered = TRUE, highlight =TRUE)
+
+
+
+
+
+```
+
+
+
