@@ -1,0 +1,5 @@
+
+Data directories from  "neulin_server (\\psy-snf-data3.d.uzh.ch)" 
+
+W:\Transfer\Github_Repositories\Data
+W:\Transfer\Github_Repositories\neulin_online_trigger_experiment\Data
