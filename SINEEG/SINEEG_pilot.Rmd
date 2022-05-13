@@ -1,5 +1,5 @@
 ---
-title: "Speech in Noise (SPIN) and EEG" 
+title: "Speech in Noise (SIN) and EEG" 
 abstract: "The current experiment is used in a submited manuscript by Thomas Houweling (under review). It is set to examine associations between EEG activity and speech in noise recognition. Task requires hearing a digit name embbeded in different levels of noise and pressing the corresponding digit in a pad (digits are 1:6,8:9). <br><br> Data from N = 25 adults (after 7 subjects discarded;initial sample mean age 23.5, SD=3.9 years; 29 female)  <br><br>  Performance measures per trial are accuracy (correct/incorrect) and clarity rating (1-9 subjective scale). SNR of presentation are calibrated per individual in a pretest,  defining 3 SNR levels: SRT50 (50% correctness in calibration test), SRT-1.5db (noisier), SRT+1.5db (less noisy). <br><br> Prestimulus alpha power (8.5-12Hz) in noisy trials was higher for correct than for incorrect trials, and for those rated as clearer vs less clear. Linear mixed effect logistic regression model: accuracy ~ α power * SNR + (1|subject:digit) using source-reconstructed power found significant prediction in a left posterior temporal area in -300  to -50 ms. Interaction with stimuli difficulty: positive influence of alpha for recognizing clearer targets, but negative influence for the less clear targets." 
 runhead: "A Running Head"
 author:
@@ -23,13 +23,19 @@ params:
       
 ---
 
+
 ```{r, include=FALSE}
+    rmarkdown::render("SINEEG_pilot.Rmd",output_dir = 'W:/Gorka_share',output_file = 'SIN-EEG_pilot', output_format = c("html_document"))
+
+    knitr::opts_knit$set(root.dir = 'W:/Gorka_share')    
     knitr::opts_chunk$set(echo=TRUE,warning=FALSE)
     library(tidyr)
     library(dplyr)
     library(reactable)
-    source('Y:/Scripts_neulin_EEG/SPINEEG/funs/eeg_funs.R')
+    source('Y:/Scripts_neulin_EEG/SINEEG/funs/eeg_funs.R')
+    
 
+    
 ```
 
 ```{r, include = FALSE}
