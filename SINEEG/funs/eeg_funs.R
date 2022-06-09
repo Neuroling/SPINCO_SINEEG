@@ -1,11 +1,11 @@
  
 # Function to read EEG data, save summary of dimensions and basic marker info 
-check_eeg <- function(headerfile) {
+fun_check_eeg <- function(headerfile) {
         if (file.info(headerfile)$size!=0) { #some files of size 0 existed...
             
             #gather basic eeg data info
             header  <-   raveio::read_eeg_header(file = headerfile)
-            eeg     <-      raveio::read_eeg_data(header, path = gsub('.vhdr','.eeg',headerfile))
+            eeg     <<-      raveio::read_eeg_data(header, path = gsub('.vhdr','.eeg',headerfile))
             dimensions <<- t(c(dim(eeg$data)))
             colnames(dimensions) <- c('rows','columns')
             

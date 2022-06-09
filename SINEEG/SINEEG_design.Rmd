@@ -1,0 +1,92 @@
+---
+title: "SIN_dash"
+author: "G.FragaGonzalez"
+date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+---
+
+```{r include = FALSE}
+#devtools::install_github("rte-antares-rpackage/manipulateWidget", ref="develop")
+#devtools::install_github(c("ramnathv/htmlwidgets", "smartinsightsfromdata/rpivotTable"))
+#devtools::install_github("rstudio/crosstalk")
+#devtools::install_github("kent37/summarywidget")
+library(summarywidget)
+library(shiny)
+library(viridis)
+library(ggplot2)
+library(plotly)
+library(marmap)
+library(tidyr)
+library(dplyr)
+library(flexdashboard)
+library(dygraphs)
+library(reactable)
+library(crosstalk)
+library(DT)
+
+```
+
+# Intro {.sidebar}
+
+Experimental design:
+
+* Speech in noise perception
+* Brain state based triggers
+
+ 
+# Column 1  
+
+## Click through design parameters and check estimated times
+
+```{r echo = FALSE} 
+
+#Design parameters 
+  n_conditions = 3:5
+  n_blocks = 3:5 
+  n_unique_items  = 5:15
+  n_item_repetition = 1:12
+  target_duration = 465/1000
+  time_pretarget = mean(seq(from=3400, to= 6000, by=200))/1000
+  time_posttarget = 500/1000
+
+# Gather all possible combinations in table   
+dt <- tidyr::crossing(n_conditions,n_blocks,n_unique_items,n_item_repetition,target_duration,time_pretarget,time_posttarget)
+
+total_secs <- round(dt$n_conditions*dt$n_blocks*dt$n_unique_items*dt$n_item_repetition*(dt$time_pretarget+dt$time_posttarget+dt$target_duration),2)
+dt$total_min <- round(total_secs/60,2)
+dt$total_hours <- round(dt$total_min/60,2)
+dt<- relocate(dt,c(total_hours,total_min),time_posttarget,.before=n_conditions)
+ 
+data <- SharedData$new(dt)
+
+#  have selected 'r summarywidget(data, statistic='mean', column='total_min',digits=2)` 
+       bscols(
+        widths = c(3,NA,NA),
+              list(filter_checkbox("n_conditions", "# conditions", data, ~n_conditions,inline = TRUE),
+                filter_checkbox("n_blocks", "# blocks", data, ~n_blocks,inline = TRUE),
+                filter_checkbox("n_unique_items", "# unique targets", data, ~n_unique_items,inline = TRUE),
+                filter_checkbox("n_item_repetition", "# repetitions", data, ~n_item_repetition,inline = TRUE)
+              ),
+            
+          reactable(data, minRows = 12, resizable = TRUE, wrap = TRUE, bordered = TRUE)
+         # reactable(data, minRows = 50,compact = TRUE),
+      
+       )
+ 
+  
+```
+
+
+
+### Stimuli
+
+```{r echo = FALSE}
+
+```
+ 
+
+
+# Digits-in-noise
+
