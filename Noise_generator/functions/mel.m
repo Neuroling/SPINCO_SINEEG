@@ -1,4 +1,4 @@
-function [lower,center,upper]= fun_mel(N, low, high, dbg)
+function [lower,center,upper]= mel(N, low, high, dbg)
 
 % [lower,center,upper] = mel(N,low,high)
 %

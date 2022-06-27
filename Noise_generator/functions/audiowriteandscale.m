@@ -1,4 +1,4 @@
-function fun_audiowriteandscale(Filename,wave,Srate,MaxVal)
+function audiowriteandscale(Filename,wave,Srate,MaxVal)
 if MaxVal==0 %don't scale it
     audiowrite(Filename,wave,Srate); %
 else

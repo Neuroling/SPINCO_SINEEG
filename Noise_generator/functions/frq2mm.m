@@ -1,4 +1,4 @@
-function mm = fun_frq2mm(frq)
+function mm = frq2mm(frq)
 % FRQ2MM Greenwood's function for mapping frequency to place on the basilar membrane
 %
 % Usage: mm = frq2mm(frq)

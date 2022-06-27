@@ -120,7 +120,7 @@ figure(1), plot(InputSignal)             %###
 end
 
 %---------------------Design the filters ----------------
-[filterA,filterB,center]=fun_estfilt(nCh,filters,Srate,MinFreq,MaxFreq);
+[filterA,filterB,center]=estfilt(nCh,filters,Srate,MinFreq,MaxFreq);
 srat2=Srate/2;
 
 % --- design low-pass envelope filter ----------

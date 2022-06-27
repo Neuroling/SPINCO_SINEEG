@@ -1,5 +1,5 @@
 
-function [filterA,filterB,center]=fun_estfilt(nChannels,type,Srate,LowFreq,UpperFreq)
+function [filterA,filterB,center]=estfilt(nChannels,type,Srate,LowFreq,UpperFreq)
 
 %  ESTFILT - This function returns the filter coefficients for a
 %	filter bank for a given number of channels
@@ -14,7 +14,7 @@ if strcmp(type,'greenwood')  %
     %%%%nOrd edited to 4 from 6.
     nOrd=6;
     %case of [G] changed in greenwud
-    [lower1,center,upper1]=fun_greenwud(nChannels,LowFreq,UpperFreq);
+    [lower1,center,upper1]=greenwud(nChannels,LowFreq,UpperFreq);
     
     if FS<upper1(nChannels), useHigh=1;
     else			 useHigh=0;
@@ -189,7 +189,7 @@ elseif strcmp(type,'mel')  % ============= use Mel spacing ==========
     
     FS=Srate/2;
     nOrd=6;
-    [lower1,center,upper1]=fun_mel(nChannels,UpperFreq,LowFreq);
+    [lower1,center,upper1]=mel(nChannels,UpperFreq,LowFreq);
     
     if FS<upper1(nChannels), useHigh=1;
     else			 useHigh=0;
