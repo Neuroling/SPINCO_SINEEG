@@ -3,7 +3,7 @@ title: "Stimuli for Speech-in-noise-online (SINON) experiment"
 abstract: "In the SINON project we present German words and pseudowords in different types of noise and at different levels. Subjects will perform different tasks: a lexical decision, a 4FC and a picture matching task. We built stimuli using items from MULTIPIC database (picture task) and their corresponding entries in SUBTLEX (word frequency info) and CLEARPOND (phonological info) databases. Then we used WUGGY to create matching pseudowords (non word generator).[...]" 
 runhead: "SINON-Stimuli-Deutsch"
 author:
-  name: Gorka Fraga Gonzalez, Isabelle Goy
+  name: Gorka Fraga Gonzalez, Isabelle Goy, Samuel Mueller
   affiliation: University of Zurich 
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
@@ -16,11 +16,34 @@ output:
           collapsed: false
           smooth_scroll: true
           toc_depth: 6
-#params:
-#  dirinput:  "C:/Users/gfraga/scripts_neulin/SINON_experiment"
-        
-      #self_contained: false
+
 ---
+
+# Data available: summary
+
+
+```{r }
+fileinput  <-   "C:/Users/gfraga/Downloads/Neuroling_SINON_stimuli.xlsx"
+dat <- openxlsx::read.xlsx(fileinput, sheet = 'Multipic-DE')
+
+  dat <- dat %>% dplyr::mutate_if(is.numeric, round, digits=2)
+  reactable(dat,filterable = TRUE, 
+            #defaultColDef = colDef( align = "center"),
+            height=800,outlined=TRUE,
+            minRows= 10, sortable = TRUE,
+              theme = reactableTheme(tableBodyStyle = list(flex = "auto"))
+)
+
+```
+
+
+
+
+
+```
+
+
+
 
 
 ```{r, include=FALSE}
@@ -37,6 +60,8 @@ output:
 
     
 ```
+
+some more text 
 
 ```{r, include = FALSE}
 options(width=60)
@@ -62,20 +87,20 @@ local({
 
 A graph code here to be shown
 
-```{r, echo=FALSE}
- library(DT)
- dirinput <-   "C:/Users/gfraga/scripts_neulin/SINON_experiment"
-  setwd(dirinput)
-  dat <- openxlsx::read.xlsx("Neuroling_SINON_stimuli.xlsx", sheet = 'Merged_databases_cleaned-DE')
-  dat <- dat %>% dplyr::mutate_if(is.numeric, round, digits=2)
-  
-  d2use <- select(dat,c('SUBTLEX','CORRECT_SPELL'))
-  datatable(d2use, options = list(
-  columnDefs = list(list(className = "dt-left", targets = 4)))) %>%
-  #("SUBTLEX", 1) %>%
-  formatStyle("SUBTLEX",
-              background = styleColorBar(d2use$SUBTLEX, "steelblue", -90), backgroundPosition = "left")
-  
+# ```{r, echo=FALSE}
+#  library(DT)
+#  dirinput <-   "C:/Users/gfraga/scripts_neulin/SINON_experiment"
+#   setwd(dirinput)
+#   dat <- openxlsx::read.xlsx("Neuroling_SINON_stimuli.xlsx", sheet = 'Merged_databases_cleaned-DE')
+#   dat <- dat %>% dplyr::mutate_if(is.numeric, round, digits=2)
+#   
+#   d2use <- select(dat,c('SUBTLEX','CORRECT_SPELL'))
+#   datatable(d2use, options = list(
+#   columnDefs = list(list(className = "dt-left", targets = 4)))) %>%
+#   #("SUBTLEX", 1) %>%
+#   formatStyle("SUBTLEX",
+#               background = styleColorBar(d2use$SUBTLEX, "steelblue", -90), backgroundPosition = "left")
+#   
   #plotly::plot_ly(data=dat, y=~SUBTLEX, type='box')
 #plotly::plot_ly(data = dat, color = ~CORRECT_SPELL, x = ~SUBTLEX, y = ~CORRECT_SPELL,type='bar',
 #                visible='legendonly')        # add_text(x=~SUBTLEX,y=~CORRECT_SPELL,text=~SUBTLEX,textposition="top")
@@ -101,13 +126,7 @@ plot(x = 4, y = 10)
 ---
  
 ### Table 
-```{r,max.height='300px', results='asis'}
-  dirinput <-   "C:/Users/gfraga/scripts_neulin/SINON_experiment"
-  setwd(dirinput)
-  dat <- openxlsx::read.xlsx("Neuroling_SINON_stimuli.xlsx", sheet = 'Merged_databases_cleaned-DE')
-  dat <- dat %>% dplyr::mutate_if(is.numeric, round, digits=2)
- plot_ly(data = dat, x = ~CORRECT_SPELL, y = ~SUBTLEX) 
-```
+ 
 
 #### Word phonology
 
@@ -130,16 +149,7 @@ plot(x = 4, y = 10)
  
 ### Table 
 ```{r,max.height='300px', results='asis'}
-  dirinput <-   "C:/Users/gfraga/scripts_neulin/SINON_experiment"
-  setwd(dirinput)
-  dat <- openxlsx::read.xlsx("Neuroling_SINON_stimuli.xlsx", sheet = 'Merged_databases_cleaned-DE')
-  dat <- dat %>% dplyr::mutate_if(is.numeric, round, digits=2)
-  reactable(dat,filterable = TRUE, 
-            #defaultColDef = colDef( align = "center"),
-            height=800,outlined=TRUE,
-            minRows= 10, sortable = TRUE,
-              theme = reactableTheme(tableBodyStyle = list(flex = "auto"))
-)
+
 
 ```
 
