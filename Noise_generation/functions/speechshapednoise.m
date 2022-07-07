@@ -23,7 +23,7 @@ function [ssn]= speechshapednoise(sourceSignal, nfft, noctaves, srate, varargin)
 %   Outputs 
 %       ssn - speech-shaped noise 
 
-%% 
+ 
     % white noise 
     rng('default');
     whiteNoise = randn(1,length(sourceSignal)); % create white noise 
