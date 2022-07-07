@@ -46,8 +46,7 @@ frqs = cell(length(wavfiles),1);
 for i=1:length(wavfiles)        
     [amps{i},frqs{i}] = audioread(wavfiles{i});
     if size(amps{i},2)>1 
-        tmp = amps{i};
-        amps{i} = tmp(:,1);
+         error('Check: multiple channels present in the file?') 
     end 
 end
 sourceSignal = vertcat(amps{:});
@@ -67,88 +66,125 @@ sourceSignal_filt = filtfilt(filt_b,filt_a,sourceSignal);   % use fvtool(b,a) if
 fig_filter = subplot(1,2,1);plot(sourceSignal);subplot(1,2,2);plot(sourceSignal_filt);
 fvtool(filt_b,filt_a)
 close all 
-%% Create speech shaped noise 
+
+%% Introduce starting noise 
+
+%%  INTRODUCE RAMP 
+
+
+%
+
+%% Noise 
+ % speech-shape noise 
  ssn = speechshapednoise(sourceSignal_filt,nfft,noctaves,srate);     
-
+ 
  %normalize 
- ssn_norm = normalize_rms(sourceSignal_filt, ssn);
-
+ ssn_norm = normalize_rms(sourceSignal_filt, ssn); 
+ 
  % Add to speech: speech in speech-shaped noise 
  SiSSN = sourceSignal_filt + ssn_norm;
 
+%% Retrieve the individual segments in noise 
+    % Find duration of each file
+    lengths= cell(length(wavfiles),1);
+    for i=1:length(wavfiles)        
+        [amp,frq] = audioread(wavfiles{i});
+        lengths{i} = length(amp);
+    end
+    endpoints = [0;cumsum(cell2mat(lengths))]; 
+    % Segmented concatenated signal 
+    segmented = cell(length(endpoints)-1,1);
+    for j = 1:length(endpoints)-1
+        
+        segmented{j,1} = SiSSN(1+endpoints(j):endpoints(j+1));
+        %save audio
+        [pthstr, name , ext] = fileparts(wavfiles{j});
+        outputfilename = strrep([diroutput,'SiSSN_',name,ext],'\\','\');
+        audiowrite(outputfilename, segmented{j,1},srate)
+        disp(['saved ',outputfilename]);
+        
+        % save a summary figure 
+         segment2plot = segmented{j,1};
+         original2plot = audioread(wavfiles{j})';
+         variables = {'original2plot','segment2plot'};
+         figure ('position', [1 1 800 800],'color','white'); 
+            % Amplitude x  time 
+            titles = {'original','SiSSN(norm)'};    
+            for p = 1:2
+                subplot(3,2,p);
+                plot(eval(variables{p}))
+                title(titles{p});  ylabel('Amplitude (a.u.)');  xlabel('Time (s)');    
+            end     
+            % Spectral plots
+            titles = {'LTAS original','LTAS SiSSN (norm)'};
+             for p = 1:2    
+                subplot(3,2,2+p);
+                iosr.dsp.ltas(eval(variables{p}),srate,'noct',noctaves,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
+                xline(50, '--k'); xline(5000, '--k'); 
+                title(titles{p});
+             end 
+            % Surf plots
+            titles = {'Spectrogram original)', 'Spectrogram SiSSN(norm)'};
+            for p = 1:2
+                subplot(3,2,4 + p);
+                parameter = [];           
+                parameter.fsAudio = srate;
+                parameter.zeroPad = srate/10;
+                [spec2plot,f,t] = stft(eval(variables{p})',parameter);
+                surf(t(2:end-3),f(1:round(length(f)/2)+1),abs(spec2plot(1:round(length(f)/2)+1,2:end-3)));
+                hold on; set(gcf,'renderer','zbuffer'); shading interp; view(0,90); axis tight; caxis([0 50])
+                title(titles{p});
+            end
+ 
+            print(gcf, '-djpeg', strrep(outputfilename,'.wav','.jpg'));
+            disp(['...saved figure for ',outputfilename]);
+            close gcf
+    end
+     
  %% Plots  
- % Amplitude x time plots 
- %
-    figure ('position', [1 1 800 800]); 
-    titles = {'Speech signal (filt)','SSN norm','Speech in SSN'};
+    % Amplitude x time plots 
+    figure ('position', [1 1 800 800],'color','white'); 
     variables = {'sourceSignal_filt','ssn_norm','SiSSN'};
+    titles = {'Speech signal (filt)','SSN norm','Speech in SSN'};    
     for p = 1:3
         subplot(3,3,p);
         plot(eval(variables{p}))
         title(titles{p});
         ylabel('Amplitude (a.u.)');
         xlabel('Time (s)');    
-    end 
-    
-   % Spectral plots
-    titles = {'LTAS of speech (filt))',...
-               'LTAS of SSN norm',...
-                'LTAS of SiSSN'};
-    variables = {'sourceSignal_filt','ssn_norm','SiSSN'};
-    for p = 1:3
-        
+    end     
+    % Spectral plots
+    titles = {'LTAS of speech (filt))','LTAS of SSN norm','LTAS of SiSSN'};
+     for p = 1:3    
         subplot(3,3,3+p);
-        iosr.dsp.ltas(sourceSignal_filt,srate,'noct',noctaves,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
+        iosr.dsp.ltas(eval(variables{p}),srate,'noct',noctaves,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
         xline(50, '--k'); xline(5000, '--k'); 
-        title('LTAS of speech (filt)');
+        title(titles{p});
     
-    end 
-    subplot(3,3,5);
-    iosr.dsp.ltas(ssn_norm,srate,'noct',noctaves,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
-    xline(50, '--k'); xline(5000, '--k'); 
-    title('LTAS of SSN norm');
+     end 
+    % Surf plots
+    titles = {'Spectrogram of speech (filt)', 'Spectrogram of SSN norm', 'Spectrogram of SiSSN'};
+    for p = 1:3
+        subplot(3,3,6 + p);
+        parameter = [];
+        parameter.fsAudio = srate;
+        parameter.zeroPad = srate/10;
+        [spec2plot,f,t] = stft(eval(variables{p})',parameter);
+        surf(t(2:end-3),f(1:round(length(f)/2)+1),abs(spec2plot(1:round(length(f)/2)+1,2:end-3)));
+        hold on; set(gcf,'renderer','zbuffer');
+        shading interp; view(0,90); axis tight;
+        caxis([0 50])
+        title(titles{p});
+    end
+ 
+    %% save summary plot 
+    %save audio
+    [pthstr, name , ext] = fileparts(wavfiles{j});
+    outputfilename = strrep([diroutput,'SiSSN.wav'],'\\','\');
+    audiowrite(outputfilename, SiSSN,srate)
+    disp(['saved ',outputfilename]);
     
-
-    subplot(3,3,6);
-    iosr.dsp.ltas(SiSSN,srate,'noct',noctaves,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
-    xline(50, '--k'); xline(5000, '--k'); 
-    title('LTAS of SiSSN');
-    
-% Surf plots 
-%
-    subplot(3,3,7);
-    parameter = [];
-    parameter.fsAudio = srate;
-    parameter.zeroPad = srate/10;
-    [spec2plot,f,t] = stft(sourceSignal_filt',parameter);
-    surf(t(2:end-3),f(1:round(length(f)/2)+1),abs(spec2plot(1:round(length(f)/2)+1,2:end-3)));
-    hold on; set(gcf,'renderer','zbuffer');
-    shading interp; view(0,90); axis tight;
-    caxis([0 50])
-    title('Spectrogram of speech (filt)');
-  
-    subplot(3,3,8);
-    parameter = [];
-    parameter.fsAudio = srate;
-    parameter.zeroPad = srate/10;
-    [spec2plot,f,t] = stft(ssn_norm',parameter);
-    surf(t(2:end-3),f(1:round(length(f)/2)+1),abs(spec2plot(1:round(length(f)/2)+1,2:end-3)));
-    hold on; set(gcf,'renderer','zbuffer');
-    shading interp; view(0,90); axis tight;
-    caxis([0 50])
-    title('Spectrogram of SSN norm');
-    
-    subplot(3,3,9);
-    parameter = [];
-    parameter.fsAudio = srate;
-    parameter.zeroPad = srate/10;
-    [spec2plot,f,t] = stft(SiSSN',parameter);
-    surf(t(2:end-3),f(1:round(length(f)/2)+1),abs(spec2plot(1:round(length(f)/2)+1,2:end-3)));
-    hold on; set(gcf,'renderer','zbuffer');
-    shading interp; view(0,90); axis tight;
-    zlim([0 70])
-    caxis([0 50])
-    title('Spectrogram of SiSSN');
-    ylabel('Freqs (Hz)');
-    xlabel('Time (s)');
-    
+    % save picture 
+     print(gcf, '-djpeg', strrep(outputfilename,'.wav','.jpg'));
+     disp(['...saved figure for ',outputfilename]);
+    close gcf
