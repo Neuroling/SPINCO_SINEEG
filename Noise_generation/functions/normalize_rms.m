@@ -12,21 +12,29 @@ function [wavenorm]=normalize_rms(sourceSignal,signal2normal)
 %    signal2normal - vector with signal to be normalized to source a e.g., a noise 
 %
 %   Outputs 
-%      Normalized a & b signals
+%      Normalized noise 
 
 %% Format check 
 % make them row vectors
- if ~isrow(sourceSignal); sourceSignal = sourceSignal' ; end 
- if ~isrow(signal2normal); signal2normal = signal2normal' ; end 
+ if ~isrow(sourceSignal)
+     sourceSignal = sourceSignal';
+ end 
+ 
+ if ~isrow(signal2normal)
+     signal2normal = signal2normal' ;
+ end 
  
 %% Normalize using Root mean square 
-    RMS_a = rms(sourceSignal);      
-    RMS_b = rms(signal2normal);
     
-    wavenorm = signal2normal.*(RMS_a/RMS_b);
-          
-      if ~isequal(round(rms(sourceSignal),3),round(rms(wavenorm),3))
-          error ('check if something went wrong with RMS normalization')
-      end
+    RMS_sig = rms(sourceSignal);      
+    RMS_noise = rms(signal2normal);
+    
+    wavenorm = signal2normal.*(RMS_sig/RMS_noise);
+    disp(['normalizing [' inputname(2) ']']);  
+       
+    
+  if ~isequal(round(rms(sourceSignal),3),round(rms(wavenorm),3))
+      error ('check if something went wrong with RMS normalization')
+  end
 end
 

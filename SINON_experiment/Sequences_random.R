@@ -13,3 +13,8 @@ for (i in 1:20) {
 }
 sequences <- cbind(seq,do.call(cbind,lists))  # merge all list elemento
 openxlsx::write.xlsx(file = paste0(dirinput,'/sequences.xlsx'), x = sequences)
+
+
+
+
+
