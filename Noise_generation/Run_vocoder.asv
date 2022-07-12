@@ -16,7 +16,7 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 % paths and files 
 dirinput =      'V:\gfraga\SPINCO\Sound_files\Digits_16k\' ;
 diroutput =     'V:\gfraga\SPINCO\Sound_files\Digits_16k_vocoded\';
-wavfiles =      dir([dirinput, 'Speaker*.wav']);
+wavfiles =      dir([dirinput, 'Speaker01*.wav']);
 wavfiles =      fullfile(dirinput, {wavfiles.name});
 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
@@ -28,14 +28,17 @@ exc =           'noise' ;
 mapping=        'n'; 
 filters =       'linear';
 EnvelopeExtractor = 'half'; 
-smooth=          30 ; 
+smooth=          1 ; 
 nCh =           16; 
 MinFreq =       50;
 MaxFreq =        5000;
 
 % Degradation levels
 target_nchannels = [4,8,12,16,20];
- 
+
+%vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, target_nchannels(i), InputSignal, srate, MinFreq, MaxFreq);
+sound(vocode_2022(exc, 'i', filters, 'half',2, 50, InputSignal, srate, MinFreq, MaxFreq), srate)
+
 %% Call vocoder function 
 % read signals
 signals = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
@@ -76,7 +79,7 @@ for i = 1:length(target_nchannels)
        titles = {'LTAS speech ','LTAS signal NV '};
        for p = 1:2
            subplot(3,2,2+p);
-           iosr.dsp.ltas(eval(variables2plot{p}),srate,'noct',6,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
+           iosr.dsp.ltas(eval(variables2plot{p}),srate,'noct',noctaves,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
            xline(50, '--k'); xline(5000, '--k');
            title(titles{p});
        end
