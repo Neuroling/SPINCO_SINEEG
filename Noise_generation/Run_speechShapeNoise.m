@@ -1,15 +1,18 @@
 clear all ; 
 %% ========================================================================
-%  Generate Speech-shaped noise   
+%  Generate Speech in Speech-shaped noise   
 % ========================================================================
 % Author: G.FragaGonzalez 2022(based on snippets from T.Houweling)
 % Description
 %   - Reads list of .wav files 
-%   - Filters signal (butterworth) 
-%   - Generates 
-%   - Uses filtered signal to create speech shaped noise (calls function)
-%   - Normalization: matches Root Mean Square of noise to signal RMS
-%   - Several plots signal and noise (in one figure)
+%   - Filters signal (butterworth), 
+%   - Normalize (using median rms of all files)
+%   - Concatenate 
+%   - Generate speech shaped noise-SSN
+%   - Adjust speech intensity to different levels
+%   - SiSSN: adds the noise with a head and a tail and ramps
+%   - Normalises SinSSN to range [-1 1] to prevent clipping
+%   - Plots summary figures  
 %
 %-------------------------------------------------------------------------
 % add paths of associated functions and toolbox TSM required by function 

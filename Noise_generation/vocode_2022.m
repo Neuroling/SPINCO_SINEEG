@@ -1,4 +1,4 @@
-function [wave]=wrapper_vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, nCh, InputSignal, Srate, MinFreq, MaxFreq, varargin)
+function [wave]=vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, nCh, InputSignal, Srate, MinFreq, MaxFreq, varargin)
 %  This function has been heavily modified by A.H-A since 2003, and now
 %  does more, and worse than it was ever intended to.
 %

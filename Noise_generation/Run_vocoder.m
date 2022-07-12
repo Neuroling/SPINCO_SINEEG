@@ -1,15 +1,10 @@
 clear all ; 
 %% ========================================================================
-%  Generate Speech-shaped noise   
+%  Generate Vocoded speech 
 % ========================================================================
 % Author: G.FragaGonzalez 2022(based on snippets from T.Houweling)
 % Description
-%   - Reads list of .wav files 
-%   - Filters signal (butterworth) 
-%   - Generates 
-%   - Uses filtered signal to create speech shaped noise (calls function)
-%   - Normalization: matches Root Mean Square of noise to signal RMS
-%   - Several plots signal and noise (in one figure)
+%  BLABlahblah
 %
 %-------------------------------------------------------------------------
 % add paths of associated functions and toolbox TSM required by function 
@@ -26,17 +21,18 @@ wavfiles =      fullfile(dirinput, {wavfiles.name});
 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
 filt_low =      50 ;
-filt_upper =    7999;
-
-% Length of intro/outro (with ramp in/out)
-head_length =   0.1; % desired start noise length in seconds
-tail_length =   0.1; % desired tail noise length in seconds
-rampin_length =   0.075; % desired start noise length in seconds
-rampout_length =   0.075; % desired tail noise length in seconds
-
-% Parameters for SSN function
-nfft =          1000;
+filt_upper =    5000;
 srate =         16000;
+% Parameters for Vocoding function 
+exc = 'noise' ; 
+mapping= 'n'; 
+filters = 'linear';
+EnvelopeExtractor = 'half'; 
+smooth= 1 ; 
+nCh = 16; 
+MinFreq = filt_low;
+MaxFreq = filt_upper;
+
 noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which the bandwidth of the smoothing window is a constant percentage of the center frequency).
 
 % SNR levels
@@ -85,25 +81,26 @@ sigs_filt_norm = cellfun(@(x) x.*RMS_median/rms(x), sigs_filt, 'UniformOutput', 
          % Define intro and outro and ramps
          head_points = head_length * srate;
          tail_points = tail_length * srate;
-         rampin = linspace(0,1,rampin_length);
-         rampout = flip(linspace(0,1,rampout_length));
+         rampin = [linspace(0,1,rampin_length*srate ),ones(1,head_points-rampin_length*srate)];
+         rampout = [flip(linspace(0,1,rampout_length*srate)),zeros(1,tail_points-rampout_length*srate)];
          
-         if head_points + tail_points + length(sigs_filt_norm_adj{i}) > length(ssn_norm)
+         if head_points + tail_points + length(sigs_filt_norm_adj{i}) > length(ssn)
              error('You try to add too long head/tail noise periods');
          end
          
          % normalize noise
-         disp('normalizing SSN to signal rms');
-         ssn_norm = ssn.*(rms(sigs_filt_norm)/rms(ssn));
+         disp('normalizing SSN to the individual signal rms');
+         ssn_norm = ssn.*(rms(sigs_filt_norm{i})/rms(ssn));
+         
+       
+      %%%% noise to signal
+         % adjust signal intensity
+         sigs_filt_norm_adj{i} = sigs_filt_norm{i}.*target_lin_snr;
          
          %Cut noise chunk
          noise2use_points = head_points +length(sigs_filt_norm_adj{i})+ tail_points;
          seed= randperm(length(ssn_norm)-noise2use_points) ;%find a random data point(prevent out of bounds)
          noise2use = ssn_norm(seed(1):seed(1)+noise2use_points); % take that noise segment
-         
-      %%%% noise to signal
-         % adjust signal intensity
-         sigs_filt_norm_adj{i} = sigs_filt_norm{i}.*target_lin_snr;
          
          %Speech in Speech-shaped noise:
          tmpSiSSN = sigs_filt_norm_adj{i}' + noise2use(1+head_points:head_points+length(sigs_filt_norm_adj{i}));
