@@ -1,0 +1,379 @@
+5.4477 	WARNING 	User requested fullscreen with size [1280  720], but screen is actually [2560, 1440]. Using actual size
+8.3830 	EXP 	Created window1 = Window(allowGUI=False, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x000002671D76D710>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x000002671D7B9D30>, multiSample=False, name='window1', numSamples=2, pos=[0.0, 0.0], screen=0, size=array([2560, 1440]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+8.3833 	EXP 	window1: mouseVisible = True
+8.3833 	EXP 	window1: recordFrameIntervals = False
+8.5493 	EXP 	window1: recordFrameIntervals = True
+8.7328 	EXP 	window1: recordFrameIntervals = False
+9.2556 	WARNING 	Monitor specification not found. Creating a temporary one...
+10.7485 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x000002671D76D710>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x0000026702F86048>, multiSample=False, name='window1', numSamples=2, pos=[1120.0, 620.0], screen=1, size=array([320, 200]), stencilBits=0, stereo=False, units='norm', useFBO=False, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+10.7486 	EXP 	window1: mouseVisible = True
+12.2364 	EXP 	Created Instructions_Background_Noise = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='Instructions_Background_Noise', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+12.2838 	EXP 	Created Fixation_cross_Test = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fixation_cross_Test', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+12.3382 	EXP 	Created text_practice = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='text_practice', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+12.3490 	EXP 	Sound Digit1_clear set volume 1.000
+12.3521 	EXP 	Created text_practice_resp = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_practice_resp', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.3825 	EXP 	Created text_practice_repeat = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_practice_repeat', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+12.4605 	EXP 	Created text_4 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='text_4', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+12.4732 	EXP 	Created Fixation_ME = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='Fixation_ME', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+12.4908 	EXP 	Sound sound_digit_1_ME set volume 1.000
+12.4941 	EXP 	Created text_2 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_2', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.4978 	EXP 	Created disp_answer_ME = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='disp_answer_ME', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.5021 	EXP 	Created text_7 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-3.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_7', opacity=1, ori=0.0, pos=array([ 0. , -0.1]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.5052 	EXP 	Created text_next_block_ME = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_next_block_ME', opacity=1, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.6275 	EXP 	Created text_break = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_break', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+12.6495 	EXP 	Created Fixation = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fixation', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+12.6527 	EXP 	Created text_6 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_6', opacity=1, ori=0.0, pos=array([ 0. , -0.1]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.6580 	EXP 	Created Fixation_Play = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fixation_Play', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+12.6803 	EXP 	Sound sound_digit1 set volume 1.000
+12.6835 	EXP 	Created disp_answer = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='disp_answer', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.6860 	EXP 	Created text_nextblock = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_nextblock', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+12.8521 	DATA 	Mouse: Left button down, pos=(1239,1000)
+12.8523 	DATA 	Mouse:  Left button up, pos=(1239,1000)
+12.8531 	DATA 	Mouse: Left button down, pos=(2191,546)
+12.8533 	DATA 	Mouse:  Left button up, pos=(2191,546)
+12.8688 	EXP 	Instructions_Background_Noise: autoDraw = True
+13.2208 	DATA 	Mouse: Left button down, pos=(1907,702)
+13.3062 	DATA 	Mouse:  Left button up, pos=(1907,702)
+13.4338 	DATA 	Keypress: return
+13.4360 	EXP 	Sound  started
+13.4487 	EXP 	Instructions_Background_Noise: autoDraw = False
+13.4487 	EXP 	Fixation_cross_Test: autoDraw = True
+18.4489 	EXP 	Sound  stopped
+18.4493 	EXP 	Created sequence: sequential, trialTypes=1, nReps=100, seed=None
+18.4498 	EXP 	New trial (rep=0, index=0): None
+18.4568 	EXP 	Fixation_cross_Test: autoDraw = False
+18.4568 	EXP 	Fixation_cross_Test: autoDraw = False
+18.4568 	EXP 	text_practice: autoDraw = True
+20.6102 	EXP 	Imported data/practice_trials.xlsx as conditions, 10 conditions, 5 params
+20.6106 	EXP 	Created sequence: sequential, trialTypes=10, nReps=1, seed=None
+20.6108 	EXP 	New trial (rep=0, index=0): {'TrialID': 0.0, 'NFB_digit1': 6.0, 'NFB_digit2': 2.0, 'NFB_digit3': 4.0, 'Speaker_trial': 33.0}
+20.6122 	EXP 	Sound Digit1_clear started
+20.6145 	DATA 	Keypress: return
+20.6181 	EXP 	text_practice: autoDraw = False
+21.0840 	EXP 	Sound Digit1_clear reached end of file
+21.0862 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+21.0864 	EXP 	New trial (rep=0, index=0): None
+21.0958 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+21.1163 	EXP 	unnamed TextStim: autoDraw = True
+21.1380 	EXP 	text_practice_resp: autoDraw = True
+21.9370 	DATA 	Keypress: return
+21.9625 	EXP 	unnamed TextStim: autoDraw = False
+21.9636 	EXP 	New trial (rep=0, index=1): {'TrialID': 1.0, 'NFB_digit1': 1.0, 'NFB_digit2': 9.0, 'NFB_digit3': 3.0, 'Speaker_trial': 13.0}
+21.9646 	EXP 	Sound Digit1_clear started
+21.9701 	EXP 	text_practice_resp: autoDraw = False
+22.4527 	EXP 	Sound Digit1_clear reached end of file
+22.4544 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+22.4546 	EXP 	New trial (rep=0, index=0): None
+22.4607 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+22.4790 	EXP 	unnamed TextStim: autoDraw = True
+22.4886 	EXP 	text_practice_resp: autoDraw = True
+22.9034 	DATA 	Keypress: return
+22.9292 	EXP 	unnamed TextStim: autoDraw = False
+22.9299 	EXP 	New trial (rep=0, index=2): {'TrialID': 2.0, 'NFB_digit1': 8.0, 'NFB_digit2': 0.0, 'NFB_digit3': 1.0, 'Speaker_trial': 21.0}
+22.9307 	EXP 	Sound Digit1_clear started
+22.9361 	EXP 	text_practice_resp: autoDraw = False
+23.4096 	EXP 	Sound Digit1_clear reached end of file
+23.4115 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+23.4117 	EXP 	New trial (rep=0, index=0): None
+23.4146 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+23.4290 	EXP 	unnamed TextStim: autoDraw = True
+23.4382 	EXP 	text_practice_resp: autoDraw = True
+23.8698 	DATA 	Keypress: return
+23.8960 	EXP 	unnamed TextStim: autoDraw = False
+23.8968 	EXP 	New trial (rep=0, index=3): {'TrialID': 3.0, 'NFB_digit1': 9.0, 'NFB_digit2': 6.0, 'NFB_digit3': 1.0, 'Speaker_trial': 61.0}
+23.8974 	EXP 	Sound Digit1_clear started
+23.9025 	EXP 	text_practice_resp: autoDraw = False
+24.3771 	EXP 	Sound Digit1_clear reached end of file
+24.3793 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+24.3795 	EXP 	New trial (rep=0, index=0): None
+24.3824 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+24.3958 	EXP 	unnamed TextStim: autoDraw = True
+24.4068 	EXP 	text_practice_resp: autoDraw = True
+24.7699 	DATA 	Keypress: return
+24.7956 	EXP 	unnamed TextStim: autoDraw = False
+24.7964 	EXP 	New trial (rep=0, index=4): {'TrialID': 4.0, 'NFB_digit1': 8.0, 'NFB_digit2': 1.0, 'NFB_digit3': 5.0, 'Speaker_trial': 7.0}
+24.7971 	EXP 	Sound Digit1_clear started
+24.8030 	EXP 	text_practice_resp: autoDraw = False
+25.2833 	EXP 	Sound Digit1_clear reached end of file
+25.2857 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+25.2858 	EXP 	New trial (rep=0, index=0): None
+25.2887 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+25.2960 	EXP 	unnamed TextStim: autoDraw = True
+25.3057 	EXP 	text_practice_resp: autoDraw = True
+25.6700 	DATA 	Keypress: return
+25.6960 	EXP 	unnamed TextStim: autoDraw = False
+25.6968 	EXP 	New trial (rep=0, index=5): {'TrialID': 5.0, 'NFB_digit1': 4.0, 'NFB_digit2': 1.0, 'NFB_digit3': 0.0, 'Speaker_trial': 33.0}
+25.6975 	EXP 	Sound Digit1_clear started
+25.7032 	EXP 	text_practice_resp: autoDraw = False
+26.1734 	EXP 	Sound Digit1_clear reached end of file
+26.1756 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+26.1757 	EXP 	New trial (rep=0, index=0): None
+26.1791 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+26.1957 	EXP 	unnamed TextStim: autoDraw = True
+26.2056 	EXP 	text_practice_resp: autoDraw = True
+26.5364 	DATA 	Keypress: return
+26.5789 	EXP 	unnamed TextStim: autoDraw = False
+26.5797 	EXP 	New trial (rep=0, index=6): {'TrialID': 6.0, 'NFB_digit1': 9.0, 'NFB_digit2': 2.0, 'NFB_digit3': 6.0, 'Speaker_trial': 13.0}
+26.5804 	EXP 	Sound Digit1_clear started
+26.5861 	EXP 	text_practice_resp: autoDraw = False
+27.0633 	EXP 	Sound Digit1_clear reached end of file
+27.0657 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+27.0659 	EXP 	New trial (rep=0, index=0): None
+27.0688 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+27.0788 	EXP 	unnamed TextStim: autoDraw = True
+27.0881 	EXP 	text_practice_resp: autoDraw = True
+27.4032 	DATA 	Keypress: return
+27.4294 	EXP 	unnamed TextStim: autoDraw = False
+27.4301 	EXP 	New trial (rep=0, index=7): {'TrialID': 7.0, 'NFB_digit1': 2.0, 'NFB_digit2': 3.0, 'NFB_digit3': 0.0, 'Speaker_trial': 10.0}
+27.4308 	EXP 	Sound Digit1_clear started
+27.4363 	EXP 	text_practice_resp: autoDraw = False
+27.9144 	EXP 	Sound Digit1_clear reached end of file
+27.9149 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+27.9150 	EXP 	New trial (rep=0, index=0): None
+27.9178 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+27.9288 	EXP 	unnamed TextStim: autoDraw = True
+27.9382 	EXP 	text_practice_resp: autoDraw = True
+28.2864 	DATA 	Keypress: return
+28.3121 	EXP 	unnamed TextStim: autoDraw = False
+28.3128 	EXP 	New trial (rep=0, index=8): {'TrialID': 8.0, 'NFB_digit1': 1.0, 'NFB_digit2': 9.0, 'NFB_digit3': 2.0, 'Speaker_trial': 48.0}
+28.3135 	EXP 	Sound Digit1_clear started
+28.3188 	EXP 	text_practice_resp: autoDraw = False
+28.7963 	EXP 	Sound Digit1_clear reached end of file
+28.7987 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+28.7989 	EXP 	New trial (rep=0, index=0): None
+28.8019 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+28.8122 	EXP 	unnamed TextStim: autoDraw = True
+28.8217 	EXP 	text_practice_resp: autoDraw = True
+29.1200 	DATA 	Keypress: return
+29.1622 	EXP 	unnamed TextStim: autoDraw = False
+29.1630 	EXP 	New trial (rep=0, index=9): {'TrialID': 9.0, 'NFB_digit1': 8.0, 'NFB_digit2': 1.0, 'NFB_digit3': 0.0, 'Speaker_trial': 21.0}
+29.1637 	EXP 	Sound Digit1_clear started
+29.1690 	EXP 	text_practice_resp: autoDraw = False
+29.6465 	EXP 	Sound Digit1_clear reached end of file
+29.6470 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+29.6472 	EXP 	New trial (rep=0, index=0): None
+29.6500 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Practice trials going on', units='norm', win=Window(...), wrapWidth=1)
+29.6620 	EXP 	unnamed TextStim: autoDraw = True
+29.6718 	EXP 	text_practice_resp: autoDraw = True
+29.9528 	DATA 	Keypress: return
+29.9787 	EXP 	unnamed TextStim: autoDraw = False
+29.9859 	EXP 	text_practice_resp: autoDraw = False
+29.9859 	EXP 	text_practice_repeat: autoDraw = True
+30.9866 	DATA 	Keypress: return
+31.0150 	EXP 	text_practice_repeat: autoDraw = False
+31.0150 	EXP 	text_4: autoDraw = True
+32.4752 	EXP 	Imported data/Stimuli_ME_cond.xlsx as conditions, 280 conditions, 8 params
+32.4766 	EXP 	Created sequence: sequential, trialTypes=280, nReps=1, seed=None
+32.4771 	EXP 	New trial (rep=0, index=0): {'TrialID_ME': 0.0, 'NFB_digit1_ME': 1.0, 'NFB_digit2_ME': 2.0, 'NFB_digit3_ME': 0.0, 'Speaker_trial_ME': 33.0, 'NV_trial_ME': 1.0, 'Triggered_trial_ME': 1.0, 'Jitter_trial_ME': 0.0}
+32.4791 	EXP 	Sound  set loops 2
+32.4792 	EXP 	Sound  started
+33.1841 	DATA 	Keypress: return
+33.1880 	EXP 	text_4: autoDraw = False
+33.1880 	EXP 	Fixation_ME: autoDraw = True
+34.5902 	EXP 	Sound sound_digit_1_ME started
+34.5969 	EXP 	Fixation_ME: autoDraw = False
+34.5969 	EXP 	text_2: text = 0
+34.5969 	EXP 	text_2: autoDraw = True
+35.0742 	EXP 	Sound sound_digit_1_ME reached end of file
+35.5833 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+35.5835 	EXP 	New trial (rep=0, index=0): None
+35.5835 	EXP 	Sound  started
+35.5975 	EXP 	text_2: autoDraw = False
+35.5975 	EXP 	text_2: autoDraw = False
+35.5975 	EXP 	text_7: text = 0
+35.5975 	EXP 	disp_answer_ME: autoDraw = True
+35.5975 	EXP 	text_7: autoDraw = True
+35.9194 	DATA 	Keypress: 0
+36.0690 	DATA 	Keypress: return
+36.0977 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([ 0. , -0.1]), rgb=UNKNOWN, text='Current trial correct?:[0.]', units='norm', win=Window(...), wrapWidth=1)
+36.1114 	EXP 	unnamed TextStim: autoDraw = True
+36.1169 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Current ROC AUC:-0.0', units='norm', win=Window(...), wrapWidth=1)
+36.1286 	EXP 	unnamed TextStim: autoDraw = True
+36.1451 	EXP 	unnamed TextStim: autoDraw = False
+36.1452 	EXP 	Sound  started
+36.1466 	EXP 	New trial (rep=0, index=1): {'TrialID_ME': 1.0, 'NFB_digit1_ME': 0.0, 'NFB_digit2_ME': 8.0, 'NFB_digit3_ME': 3.0, 'Speaker_trial_ME': 49.0, 'NV_trial_ME': 1.0, 'Triggered_trial_ME': 0.0, 'Jitter_trial_ME': 1.0}
+36.1481 	EXP 	Sound  started
+36.1542 	EXP 	disp_answer_ME: autoDraw = False
+36.1542 	EXP 	text_7: autoDraw = False
+36.1542 	EXP 	text_next_block_ME: text = ''
+36.1542 	EXP 	text_next_block_ME: autoDraw = False
+36.1542 	EXP 	Fixation_ME: autoDraw = True
+38.2393 	EXP 	Sound sound_digit_1_ME started
+38.2454 	EXP 	Fixation_ME: autoDraw = False
+38.2454 	EXP 	text_2: text = 1
+38.2454 	EXP 	text_2: autoDraw = True
+38.7226 	EXP 	Sound sound_digit_1_ME reached end of file
+39.2323 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+39.2324 	EXP 	New trial (rep=0, index=0): None
+39.2325 	EXP 	Sound  started
+39.2471 	EXP 	text_2: autoDraw = False
+39.2471 	EXP 	text_2: autoDraw = False
+39.2471 	EXP 	text_7: text = 0
+39.2471 	EXP 	disp_answer_ME: autoDraw = True
+39.2471 	EXP 	text_7: autoDraw = True
+39.5189 	DATA 	Keypress: 0
+39.6696 	DATA 	Keypress: return
+39.6938 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([ 0. , -0.1]), rgb=UNKNOWN, text='Current trial correct?:[1.]', units='norm', win=Window(...), wrapWidth=1)
+39.7112 	EXP 	unnamed TextStim: autoDraw = True
+39.7154 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Current ROC AUC:0.5', units='norm', win=Window(...), wrapWidth=1)
+39.7284 	EXP 	unnamed TextStim: autoDraw = True
+39.7449 	EXP 	unnamed TextStim: autoDraw = False
+39.7635 	EXP 	Sound  stopped
+39.7655 	EXP 	Sound  started
+39.8187 	EXP 	disp_answer_ME: autoDraw = False
+39.8187 	EXP 	text_7: autoDraw = False
+39.8187 	EXP 	text_next_block_ME: text = 'Die Kalibrierungphase ist zu Ende, gut gemacht!\n        \n        Der/die VersuchsleiterIn wird in Kürze in den Raum kommen.'
+39.8187 	EXP 	text_next_block_ME: autoDraw = True
+42.3076 	EXP 	Created unnamed TextStim = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0, flipHoriz=False, flipVert=False, font='', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='unnamed TextStim', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='Final ROC AUC:0.5', units='norm', win=Window(...), wrapWidth=1)
+42.3114 	EXP 	unnamed TextStim: autoDraw = True
+42.3154 	DATA 	Keypress: return
+42.3213 	EXP 	text_next_block_ME: autoDraw = False
+42.3213 	EXP 	text_break: autoDraw = True
+43.8481 	EXP 	Imported data/Stimuli_exp_cond.xlsx as conditions, 32 conditions, 8 params
+43.8485 	EXP 	Created sequence: sequential, trialTypes=32, nReps=1, seed=None
+43.8488 	EXP 	New trial (rep=0, index=0): {'TrialID': 0.0, 'NFB_digit1': 5.0, 'NFB_digit2': 9.0, 'NFB_digit3': 8.0, 'Speaker_trial': 7.0, 'NV_trial': 0.0, 'Triggered_trial': 1.0, 'Jitter_trial': 0.0}
+43.8504 	EXP 	Sound  started
+44.5302 	DATA 	Keypress: return
+44.5342 	EXP 	text_break: autoDraw = False
+44.5342 	EXP 	Fixation: autoDraw = True
+44.5342 	EXP 	text_6: autoDraw = True
+79.0118 	EXP 	Sound  started
+79.0183 	EXP 	Fixation: autoDraw = False
+79.0183 	EXP 	text_6: autoDraw = False
+79.0183 	EXP 	Fixation_Play: autoDraw = True
+79.4941 	EXP 	Sound  reached end of file
+80.4135 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+80.4137 	EXP 	New trial (rep=0, index=0): None
+80.4137 	EXP 	Sound  started
+80.4274 	EXP 	Fixation_Play: autoDraw = False
+80.4274 	EXP 	Fixation_Play: autoDraw = False
+80.4274 	EXP 	disp_answer: autoDraw = True
+82.1152 	DATA 	Keypress: 5
+82.3655 	DATA 	Keypress: return
+82.3849 	EXP 	Sound  started
+82.3856 	EXP 	New trial (rep=0, index=1): {'TrialID': 1.0, 'NFB_digit1': 1.0, 'NFB_digit2': 0.0, 'NFB_digit3': 5.0, 'Speaker_trial': 10.0, 'NV_trial': 0.0, 'Triggered_trial': 0.0, 'Jitter_trial': 0.0}
+82.3955 	EXP 	Sound  started
+82.4088 	EXP 	disp_answer: autoDraw = False
+82.4088 	EXP 	text_nextblock: text = ''
+82.4088 	EXP 	text_nextblock: autoDraw = False
+82.4088 	EXP 	Fixation: autoDraw = True
+82.4088 	EXP 	text_6: autoDraw = True
+87.4654 	EXP 	Sound  started
+87.4717 	EXP 	Fixation: autoDraw = False
+87.4717 	EXP 	text_6: autoDraw = False
+87.4717 	EXP 	Fixation_Play: autoDraw = True
+87.9489 	EXP 	Sound  reached end of file
+88.8622 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+88.8624 	EXP 	New trial (rep=0, index=0): None
+88.8624 	EXP 	Sound  started
+88.8766 	EXP 	Fixation_Play: autoDraw = False
+88.8766 	EXP 	Fixation_Play: autoDraw = False
+88.8766 	EXP 	disp_answer: autoDraw = True
+89.6979 	DATA 	Keypress: 6
+89.8315 	DATA 	Keypress: return
+89.8509 	EXP 	Sound  started
+89.8514 	EXP 	New trial (rep=0, index=2): {'TrialID': 2.0, 'NFB_digit1': 5.0, 'NFB_digit2': 0.0, 'NFB_digit3': 3.0, 'Speaker_trial': 33.0, 'NV_trial': 0.0, 'Triggered_trial': 1.0, 'Jitter_trial': 0.0}
+89.8622 	EXP 	Sound  started
+89.8760 	EXP 	disp_answer: autoDraw = False
+89.8760 	EXP 	text_nextblock: text = ''
+89.8760 	EXP 	text_nextblock: autoDraw = False
+89.8760 	EXP 	Fixation: autoDraw = True
+89.8760 	EXP 	text_6: autoDraw = True
+112.6775 	EXP 	Sound  started
+112.6837 	EXP 	Fixation: autoDraw = False
+112.6837 	EXP 	text_6: autoDraw = False
+112.6837 	EXP 	Fixation_Play: autoDraw = True
+113.1625 	EXP 	Sound  reached end of file
+114.0769 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+114.0771 	EXP 	New trial (rep=0, index=0): None
+114.0771 	EXP 	Sound  started
+114.0914 	EXP 	Fixation_Play: autoDraw = False
+114.0914 	EXP 	Fixation_Play: autoDraw = False
+114.0914 	EXP 	disp_answer: autoDraw = True
+115.0800 	DATA 	Keypress: 0
+115.2465 	DATA 	Keypress: return
+115.2650 	EXP 	Sound  started
+115.2656 	EXP 	New trial (rep=0, index=3): {'TrialID': 3.0, 'NFB_digit1': 1.0, 'NFB_digit2': 9.0, 'NFB_digit3': 6.0, 'Speaker_trial': 14.0, 'NV_trial': 0.0, 'Triggered_trial': 0.0, 'Jitter_trial': 2.0}
+115.2678 	EXP 	Sound  started
+115.2805 	EXP 	disp_answer: autoDraw = False
+115.2805 	EXP 	text_nextblock: text = ''
+115.2805 	EXP 	text_nextblock: autoDraw = False
+115.2805 	EXP 	Fixation: autoDraw = True
+115.2805 	EXP 	text_6: autoDraw = True
+122.3404 	EXP 	Sound  started
+122.3468 	EXP 	Fixation: autoDraw = False
+122.3468 	EXP 	text_6: autoDraw = False
+122.3468 	EXP 	Fixation_Play: autoDraw = True
+122.8145 	EXP 	Sound  reached end of file
+123.7429 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+123.7430 	EXP 	New trial (rep=0, index=0): None
+123.7431 	EXP 	Sound  started
+123.7574 	EXP 	Fixation_Play: autoDraw = False
+123.7574 	EXP 	Fixation_Play: autoDraw = False
+123.7574 	EXP 	disp_answer: autoDraw = True
+124.3629 	DATA 	Keypress: 1
+124.4953 	DATA 	Keypress: return
+124.5147 	EXP 	Sound  started
+124.5152 	EXP 	New trial (rep=0, index=4): {'TrialID': 4.0, 'NFB_digit1': 1.0, 'NFB_digit2': 5.0, 'NFB_digit3': 0.0, 'Speaker_trial': 10.0, 'NV_trial': 0.0, 'Triggered_trial': 1.0, 'Jitter_trial': 0.0}
+124.5167 	EXP 	Sound  started
+124.5299 	EXP 	disp_answer: autoDraw = False
+124.5299 	EXP 	text_nextblock: text = ''
+124.5299 	EXP 	text_nextblock: autoDraw = False
+124.5299 	EXP 	Fixation: autoDraw = True
+124.5299 	EXP 	text_6: autoDraw = True
+128.3562 	EXP 	Sound  started
+128.3626 	EXP 	Fixation: autoDraw = False
+128.3626 	EXP 	text_6: autoDraw = False
+128.3626 	EXP 	Fixation_Play: autoDraw = True
+128.8370 	EXP 	Sound  reached end of file
+129.7584 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+129.7586 	EXP 	New trial (rep=0, index=0): None
+129.7586 	EXP 	Sound  started
+129.7735 	EXP 	Fixation_Play: autoDraw = False
+129.7735 	EXP 	Fixation_Play: autoDraw = False
+129.7735 	EXP 	disp_answer: autoDraw = True
+130.7780 	DATA 	Keypress: 6
+130.9285 	DATA 	Keypress: return
+130.9479 	EXP 	Sound  started
+130.9485 	EXP 	New trial (rep=0, index=5): {'TrialID': 5.0, 'NFB_digit1': 4.0, 'NFB_digit2': 9.0, 'NFB_digit3': 1.0, 'Speaker_trial': 10.0, 'NV_trial': 0.0, 'Triggered_trial': 0.0, 'Jitter_trial': -1.0}
+130.9590 	EXP 	Sound  started
+130.9714 	EXP 	disp_answer: autoDraw = False
+130.9714 	EXP 	text_nextblock: text = ''
+130.9714 	EXP 	text_nextblock: autoDraw = False
+130.9714 	EXP 	Fixation: autoDraw = True
+130.9714 	EXP 	text_6: autoDraw = True
+133.8644 	EXP 	Sound  started
+133.8708 	EXP 	Fixation: autoDraw = False
+133.8708 	EXP 	text_6: autoDraw = False
+133.8708 	EXP 	Fixation_Play: autoDraw = True
+134.3494 	EXP 	Sound  reached end of file
+135.2587 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+135.2589 	EXP 	New trial (rep=0, index=0): None
+135.2589 	EXP 	Sound  started
+135.2728 	EXP 	Fixation_Play: autoDraw = False
+135.2728 	EXP 	Fixation_Play: autoDraw = False
+135.2728 	EXP 	disp_answer: autoDraw = True
+136.0115 	DATA 	Keypress: 9
+136.1447 	DATA 	Keypress: return
+136.1640 	EXP 	Sound  started
+136.1644 	EXP 	New trial (rep=0, index=6): {'TrialID': 6.0, 'NFB_digit1': 2.0, 'NFB_digit2': 0.0, 'NFB_digit3': 6.0, 'Speaker_trial': 1.0, 'NV_trial': 0.0, 'Triggered_trial': 1.0, 'Jitter_trial': 0.0}
+136.1760 	EXP 	Sound  started
+136.1893 	EXP 	disp_answer: autoDraw = False
+136.1893 	EXP 	text_nextblock: text = ''
+136.1893 	EXP 	text_nextblock: autoDraw = False
+136.1893 	EXP 	Fixation: autoDraw = True
+136.1893 	EXP 	text_6: autoDraw = True
+145.0706 	EXP 	Sound  started
+145.0781 	EXP 	Fixation: autoDraw = False
+145.0781 	EXP 	text_6: autoDraw = False
+145.0781 	EXP 	Fixation_Play: autoDraw = True
+145.5527 	EXP 	Sound  reached end of file
+146.4747 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+146.4749 	EXP 	New trial (rep=0, index=0): None
+146.4749 	EXP 	Sound  started
+146.4890 	EXP 	Fixation_Play: autoDraw = False
+146.4890 	EXP 	Fixation_Play: autoDraw = False
+146.4890 	EXP 	disp_answer: autoDraw = True
+147.3605 	DATA 	Keypress: escape
+147.4594 	EXP 	window1: mouseVisible = True
+151.6830 	EXP 	window1: mouseVisible = True

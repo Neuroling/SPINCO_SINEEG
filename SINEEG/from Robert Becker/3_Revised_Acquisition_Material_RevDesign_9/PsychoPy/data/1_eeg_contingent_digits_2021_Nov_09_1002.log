@@ -1,0 +1,73 @@
+8.3065 	EXP 	Created window1 = Window(allowGUI=False, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x000001557779FA58>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x00000155777EEC50>, multiSample=False, name='window1', numSamples=2, pos=[0.0, 0.0], screen=0, size=array([1280, 1024]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+8.3073 	EXP 	window1: mouseVisible = True
+8.3073 	EXP 	window1: recordFrameIntervals = False
+8.4725 	EXP 	window1: recordFrameIntervals = True
+8.6559 	EXP 	window1: recordFrameIntervals = False
+9.9139 	EXP 	Created Instructions_Background_Noise = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='Instructions_Background_Noise', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+9.9239 	EXP 	Created Fixation_cross_Test = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fixation_cross_Test', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+9.9698 	EXP 	Created text_practice = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.03, italic=False, languageStyle='LTR', name='text_practice', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+9.9846 	EXP 	Sound Digit1_clear set volume 1.000
+9.9990 	EXP 	Sound Digit2_clear set volume 1.000
+10.0137 	EXP 	Sound Digit3_clear set volume 1.000
+10.0167 	EXP 	Created text_practice_resp = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_practice_resp', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+10.0449 	EXP 	Created text_practice_repeat = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_practice_repeat', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+10.0808 	EXP 	Created text_calibration = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_calibration', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+10.0882 	EXP 	Created Fix_cross_calibration = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fix_cross_calibration', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+10.0918 	EXP 	Created text = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text', opacity=1, ori=0.0, pos=array([ 0. , -0.1]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+10.1019 	EXP 	Created text_calibration_repeat = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_calibration_repeat', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+10.1436 	EXP 	Created text_break = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_break', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+10.1473 	EXP 	Created Fixation = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fixation', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+10.1492 	EXP 	Created text_6 = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Open Sans', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='text_6', opacity=1, ori=0.0, pos=array([ 0. , -0.1]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+10.1530 	EXP 	Created Fixation_Play = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.2, italic=False, languageStyle='LTR', name='Fixation_Play', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='+', units='height', win=Window(...), wrapWidth=1)
+10.1672 	EXP 	Sound sound_digit1 set volume 1.000
+10.1822 	EXP 	Sound sound_digit2 set volume 1.000
+10.1965 	EXP 	Sound sound_digit3 set volume 1.000
+10.1989 	EXP 	Created disp_answer = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-2.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.1, italic=False, languageStyle='LTR', name='disp_answer', opacity=1, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+10.2007 	EXP 	Created text_nextblock = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([-1., -1., -1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.05, italic=False, languageStyle='LTR', name='text_nextblock', opacity=1.0, ori=0.0, pos=array([0., 0.]), rgb=UNKNOWN, text='', units='height', win=Window(...), wrapWidth=1)
+10.3222 	EXP 	Instructions_Background_Noise: autoDraw = True
+17.4365 	DATA 	Keypress: return
+17.4387 	EXP 	Sound  started
+17.4522 	EXP 	Instructions_Background_Noise: autoDraw = False
+17.4522 	EXP 	Fixation_cross_Test: autoDraw = True
+22.4639 	EXP 	Sound  stopped
+22.4646 	EXP 	Created sequence: sequential, trialTypes=1, nReps=100, seed=None
+22.4655 	EXP 	New trial (rep=0, index=0): None
+22.4836 	EXP 	Fixation_cross_Test: autoDraw = False
+22.4836 	EXP 	text_practice: autoDraw = True
+23.7812 	EXP 	Imported data/practice_trials.xlsx as conditions, 1 conditions, 5 params
+23.7818 	EXP 	Created sequence: sequential, trialTypes=1, nReps=1, seed=None
+23.7822 	EXP 	New trial (rep=0, index=0): {'TrialID': 0.0, 'NFB_digit1': 6.0, 'NFB_digit2': 2.0, 'NFB_digit3': 4.0, 'Speaker_trial': 33.0}
+23.7861 	EXP 	Sound Digit1_clear started
+23.7880 	DATA 	Keypress: return
+23.7998 	EXP 	text_practice: autoDraw = False
+24.2721 	EXP 	Sound Digit1_clear reached end of file
+24.2722 	EXP 	Sound Digit2_clear started
+24.7553 	EXP 	Sound Digit2_clear reached end of file
+24.7554 	EXP 	Sound Digit3_clear started
+25.2390 	EXP 	Sound Digit3_clear reached end of file
+25.2423 	EXP 	Created sequence: sequential, trialTypes=1, nReps=3, seed=None
+25.2425 	EXP 	New trial (rep=0, index=0): None
+25.2659 	EXP 	text_practice_resp: autoDraw = True
+26.0709 	DATA 	Keypress: return
+26.1123 	EXP 	New trial (rep=1, index=0): None
+26.1323 	EXP 	text_practice_resp: autoDraw = False
+26.1323 	EXP 	text_practice_resp: autoDraw = True
+26.4212 	DATA 	Keypress: return
+26.4563 	EXP 	New trial (rep=2, index=0): None
+26.4655 	EXP 	text_practice_resp: autoDraw = False
+26.4655 	EXP 	text_practice_resp: autoDraw = True
+26.6871 	DATA 	Keypress: return
+26.7320 	EXP 	text_practice_resp: autoDraw = False
+26.7320 	EXP 	text_practice_repeat: autoDraw = True
+27.4201 	DATA 	Keypress: return
+27.4369 	EXP 	Created sequence: sequential, trialTypes=1, nReps=100, seed=None
+27.4377 	EXP 	New trial (rep=0, index=0): None
+27.4484 	EXP 	text_practice_repeat: autoDraw = False
+27.4484 	EXP 	text_calibration: autoDraw = True
+28.1356 	EXP 	Sound  started
+28.8682 	DATA 	Keypress: return
+28.8812 	EXP 	text_calibration: autoDraw = False
+28.8812 	EXP 	Fix_cross_calibration: autoDraw = True
+28.8812 	EXP 	text: autoDraw = True
+89.1457 	DATA 	Keypress: escape
+89.3743 	EXP 	window1: mouseVisible = True

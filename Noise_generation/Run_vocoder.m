@@ -94,7 +94,7 @@ for i = 1:length(target_nchannels)
        end
        
        print(gcf, '-djpeg', strrep(outputfilename,'.wav','.jpg'));
-       disp(['...saved figure for ',outputfilename]);
+       disp(['....saved figure for ',outputfilename]);
        %
        close gcf
     end

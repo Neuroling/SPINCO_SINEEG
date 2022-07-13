@@ -1,0 +1,101 @@
+---
+title: "Generate_stimuli_Sequences"
+author: "G.FragaGonzalez"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+      code_folding: hide
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gridExtra)
+library(dplyr)
+library(ggplot2)
+```
+
+## {.tabset}
+
+### Word Stimuli sequences
+
+
+```{r, verbose=FALSE, warning=FALSE}
+
+# Read data
+rm(list=ls())
+dirinput <- 'V:/gfraga/'
+Merged <- openxlsx::read.xlsx(paste0(dirinput,'/Neuroling_SINON_stimuli.xlsx'),sheet = 'Merged')
+
+# Select only valid cases (e.g., Phono info available)
+dat <- Merged[!is.na(Merged$PhoWord),]
+  
+  # Preselection based on lgSubtlex
+  boxstats <- boxplot.stats(dat$lgSUBTLEX)
+  dat <- dat[dat$lgSUBTLEX > boxstats$stats[1] & dat$lgSUBTLEX < boxstats$stats[5],]
+  rm(boxstats)
+  
+  # Preselection based on PTAN (neighbor metric: phonological, neighbor metric: all, neighborhood frequency: all, value: size)
+  boxstats <- boxplot.stats(dat$PTAN)
+  dat <- dat[dat$PTAN > boxstats$stats[1] & dat$PTAN < boxstats$stats[5],]
+  rm(boxstats)
+  
+  #Select only top ned1_diff (for associated Wuggy-pseudowords)
+  boxstats <- boxplot.stats(dat$Ned1_Diff)
+  dat <- dat[dat$Ned1_Diff > boxstats$stats[1] & dat$Ned1_Diff < boxstats$stats[5],]
+ 
+``` 
+Before selection
+https://stackoverflow.com/questions/67842801/how-can-i-get-a-copy-button-in-my-rmarkdown-html-output-to-copy-a-table-generate
+```{r, warning=FALSE,  verbose = FALSE,out.height=450,out.width=550}
+library(dplyr)
+# quick plots
+vars <- c('lgSUBTLEX','PTAN','Ned1_Diff')
+fig<-list()
+for (i in 1:length(vars)) {
+  fig[[i]] <- plotly::ggplotly(
+    ggplot(Merged,aes_string(y=vars[i])) + 
+      geom_violin(aes(x=vars[i]),stat = 'ydensity',fill='dodgerblue',alpha=.2) +
+      geom_boxplot(aes(x=vars[i]),width=.1,fill='dodgerblue',alpha=.7) + 
+      theme_bw()+theme(axis.title.x = element_blank())  
+  )
+  
+  hoverinfo <- with(Merged, paste0("item: ", CORRECT_SPELL))
+  fig[[i]]$x$data[[1]]$hoverinfo <- "none"
+  fig[[i]]$x$data[[2]]$text <- hoverinfo
+  fig[[i]]$x$data[[2]]$hoverinfo <- c("boxes")
+}
+
+plotly::subplot(fig[[1]],fig[[2]],fig[[3]]) %>% plotly::layout(title = paste0(dim(Merged)[1],'items'),font=11 )
+
+
+```
+
+After selection
+
+```{r, warning = FALSE, verbose = FALSE,out.height=450,out.width=550}
+#  shuffle
+dat<-dat[sample(1:nrow(dat)),]
+
+# quick plots
+vars <- c('lgSUBTLEX','PTAN','Ned1_Diff')
+fig<-list()
+for (i in 1:length(vars)) {
+  fig[[i]] <- plotly::ggplotly(
+    ggplot(dat,aes_string(y=vars[i])) + 
+      geom_violin(aes(x=vars[i]),stat = 'ydensity',fill='green4',alpha=.2) +
+      geom_boxplot(aes(x=vars[i]),width=.1,fill='green4',alpha=.7) + 
+      theme_bw()+theme(axis.title.x = element_blank())  
+  )
+  
+  hoverinfo <- with(dat, paste0("item: ", CORRECT_SPELL))
+  fig[[i]]$x$data[[1]]$hoverinfo <- "none"
+  fig[[i]]$x$data[[2]]$text <- hoverinfo
+  fig[[i]]$x$data[[2]]$hoverinfo <- c("boxes")
+}
+
+plotly::subplot(fig[[1]],fig[[2]],fig[[3]]) %>% plotly::layout(title = paste0(dim(dat)[1],'items'),font=11 )
+
+
+```
+ 

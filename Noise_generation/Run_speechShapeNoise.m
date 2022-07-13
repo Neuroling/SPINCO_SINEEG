@@ -24,7 +24,7 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 % paths and files 
 dirinput =      'V:\gfraga\SPINCO\Sound_files\Digits_16k\' ;
 diroutput =     'V:\gfraga\SPINCO\Sound_files\Digits_16k_in_SSN\';
-wavfiles =      dir([dirinput, 'Speaker01*.wav']);
+wavfiles =      dir([dirinput, 'Speaker*.wav']);
 wavfiles =      fullfile(dirinput, {wavfiles.name});
 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
@@ -95,7 +95,7 @@ sigs_filt_norm = cellfun(@(x) x.*RMS_median/rms(x), sigs_filt, 'UniformOutput', 
          end
          
          % normalize noise
-         disp('normalizing SSN to rms of current signal');
+         
          ssn_norm = ssn.*(rms(sigs_filt_norm{i})/rms(ssn));
          
        
@@ -171,7 +171,7 @@ sigs_filt_norm = cellfun(@(x) x.*RMS_median/rms(x), sigs_filt, 'UniformOutput', 
          end
          
          print(gcf, '-djpeg', strrep(outputfilename,'.wav','.jpg'));
-         disp(['...saved figure for ',outputfilename]);
+         disp(['....saved figure for ',outputfilename]);
          close gcf
      
      end %end SiSSN loop   
