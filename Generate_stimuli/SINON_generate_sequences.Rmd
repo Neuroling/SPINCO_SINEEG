@@ -11,8 +11,8 @@ output:
       toc_depth: 5
       toc_float: true
 ---
-<!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
 
+<!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(gridExtra)
@@ -21,14 +21,15 @@ library(plotly)
 library(ggplot2)
 library(nomnoml)
 library(kableExtra)
+library(DT) # for saving tables
 ```
-***
+
 
 ## Overview {.tabset}
 
-### Initial selection
+### Workflow
 
-```{nomnoml flowchart, echo = FALSE, out.height=200}
+```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=1000}
 #fontSize: 6
 #arrowSize: .5
 #stroke: black
@@ -43,15 +44,19 @@ library(kableExtra)
 #zoom: 2
   
   [<database>Multipic|with phonol. info available|with pseudoword matches] n=565--> [Reject outliers| 1.lgSUBTLEX|2.PTAN|3.Ned1_Diff]
-  [Reject outliers ] n=325-->[<comment> Sets of n trials |Set1 | Set2| Set3| Set4| Set4] 
-  [<comment> Sets of n trials |Set1 | Set2| Set3| Set4| Set4]-- [<usecase>pseudorandomization*]
-  [<usecase>pseudorandomization*]-- [<usecase>Check balanced features]
-  [<usecase>Check balanced features]-:> [Experiment Blocks]
+  [Reject outliers ] n=325-->[<comment> Sets of n trials] 
+  [<comment> Sets of n trials]--> [<usecase>Compare features]
+  [<usecase> Compare features]sets differ:--> [<comment> Sets of n trials]
+  [<usecase>Compare features]no diffs --> [<usecase>Shuffle]
+  
+  [<usecase>Shuffle]-:> [Experiment Blocks | balanced TYPE (n words/pseudwords) | balanced SNR levels within TYPE | versions with shuffle SNR per item]
+
   
 
 ```
 
-Read data, get boxplot statistics and remove outliers
+### Data Selection
+[Code: boxplot statistics and exclusion of outliers]
 
 ```{r read,  warning = FALSE, verbose = FALSE, results ='hide'}
 # Read data
@@ -89,11 +94,10 @@ dat$wordInitSounds <- paste0(sapply(strsplit(dat$PhoWord,".",fixed=TRUE),"[[",1)
 dat$syllableCount <- as.factor(sapply(strsplit(dat$Match,'-'),length))
 ```
 
-Divide into sets, while checking they don't differ in key features
-
+### Subsetting 
+[Code: shuffling and subsetting, 'while loop' checking they don't differ in key features]
 
 ```{r subsetting, warning = FALSE, results ='hide'}         
-
 ### Split in 'balanced' sets   
 #-------------------------------------
 #-  Pairwise comparisons in : lgSUBTLEX, PTAN,Ned1_Diff
@@ -147,12 +151,12 @@ checkstats <- rep(0,length(vars2test)) # just a check to use for the conditional
   dat$Length_Ortho <- as.factor(dat$Length_Ortho)
   stat <- dlookr::compare_category(setIdx, Length_Ortho,.data = dat) %>%  summary()
   if (stat$chisq$p.value < 0.05){
-    stop('number of item length is unbalance between the sets!')
+    stop('STOP. proportion of trials with a given item length is unbalance between the sets! Rerun or check your requirements')
   }  
   # syllable count 
   stat <- dlookr::compare_category(setIdx, syllableCount,.data = dat) %>%  summary()
   if (stat$chisq$p.value < 0.05){
-    stop('number of syllables is unbalance between the sets!')
+    stop('STOP. proportion of trials with a given n of syllables is unbalance between the sets! Rerun or check your requirements')
   }
 
 ## Split the data 
@@ -189,23 +193,21 @@ sets <- split(dat,dat$setIdx)
 
 ```
 
+### Experiment blocks
 
-## Stimuli  {.tabset}
+[Code: shuffled sequences per subset. Each sequence with equal n trials per TYPE (word,pseudo) and per SNR within TYPE. Different versions of each sequence (1 per SNR) are generated shuffling the assignment of SNR to each item and then shuffling the item order ]
 
-### Experimental sequences
-
-```{r}
+```{r sequences,  warning = FALSE, verbose = FALSE, results ='hide'}
 # Generate sequences for experimental blocks
 nNoiseLevels <- 5 
-nTrialsInSeq <- 60 
+nTrialsInSubset <- 60 
 snrpreffix <-  paste0('SNR',1:nNoiseLevels,'')
-
 
 subsets <- list()
 for (i  in 1:length(sets)) {
   
-     currseq <- c(sets[[i]]$Word[1:(nTrialsInSeq/2)],
-                  sets[[i]]$pseudoword[1:(nTrialsInSeq/2)])
+     currseq <- c(sets[[i]]$Word[1:(nTrialsInSubset/2)],
+                  sets[[i]]$pseudoword[1:(nTrialsInSubset/2)])
      #Make n blocks, one for each SNR
      blocks <- list() 
      for (ii in 1:length(currseq)) {
@@ -213,16 +215,17 @@ for (i  in 1:length(sets)) {
     }
      Blcks <- as.data.frame(do.call(rbind,blocks))
      Blcks <- apply(Blcks,2,sample) # shuffle the rows of each column independently 
-     colnames(Blcks) <- paste0('seq',1:dim(Blcks)[2])
-     subsets[[i]] <- as.data.frame(Blcks)
+     colnames(Blcks) <- paste0('version',1:dim(Blcks)[2])
+     trial <- 1:nrow(Blcks)
+     subsets[[i]] <- as.data.frame(cbind(trial,Blcks))
 } 
 
 
 ```
  
-### Figures  {.tabset  .tabset-pills .tabset-fade}
+## Figures  {.tabset}
 
-#### All selected items
+### Main dataset
 
 Before outlier exclusion
 
@@ -276,7 +279,7 @@ plotly::subplot(fig[[1]],fig[[2]],fig[[3]]) %>% plotly::layout(title = paste0(di
 
 ~*Hover\ mouse\ on\ data\ points\ for\ more\ info*~
 
-#### Selected sets
+### Sets
 
 ```{r plots3, warning = FALSE, verbose = FALSE,out.height=350,out.width=750}
 
@@ -325,50 +328,66 @@ plotly::subplot(fig[[1]],fig[[2]],fig[[3]],  margin = 0.05) %>%
 
 ~*Hover\ mouse\ on\ data\ points\ for\ more\ info\ *~
 
-### Sets  {.tabset .tabset-pills .tabset-fade}
+## Tables  {.tabset}
 
+### Set 1 
 
-#### set1 
-
-```{r, verbose=FALSE, warning=FALSE}
+```{r, verbose=FALSE, warning=FALSE, class.source='klippy'}
 subsets[[1]] %>%
-  kbl() %>%
-  kable_paper("hover", full_width = F)
+  datatable(extensions = 'Buttons',rownames = FALSE,
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           lengthMenu =  list(c(nTrialsInSubset, -1), c(nTrialsInSubset, "All"))))
+
 
 ```
+~*Versions were generated by shuffling the assignment of SNR to each item and then shuffling the item order*~
 
-#### set2 
+ 
+### Set 2 
 
 ```{r, verbose=FALSE, warning=FALSE}
 subsets[[2]] %>%
-  kbl() %>%
-  kable_paper("hover", full_width = F)
+  datatable(extensions = 'Buttons',rownames = FALSE,
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           lengthMenu =  list(c(nTrialsInSubset, -1), c(nTrialsInSubset, "All"))))
 
 ```
+~*Versions were generated by shuffling the assignment of SNR to each item and then shuffling the item order*~
 
-#### set3 
+### Set 3 
 
 ```{r, verbose=FALSE, warning=FALSE}
 subsets[[3]] %>%
-  kbl() %>%
-  kable_paper("hover", full_width = F)
+  datatable(extensions = 'Buttons',rownames = FALSE,
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           lengthMenu =  list(c(nTrialsInSubset, -1), c(nTrialsInSubset, "All"))))
 
 ```
+~*Versions were generated by shuffling the assignment of SNR to each item and then shuffling the item order*~
 
-#### set4
+### Set 4
 
 ```{r, verbose=FALSE, warning=FALSE}
 subsets[[4]] %>%
-  kbl() %>%
-  kable_paper("hover", full_width = F,)
+  datatable(extensions = 'Buttons',rownames = FALSE,
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           lengthMenu =  list(c(nTrialsInSubset, -1), c(nTrialsInSubset, "All"))))
 
 ```
+~*Versions were generated by shuffling the assignment of SNR to each item and then shuffling the item order*~
 
-#### set5
+### Set 5
 
 ```{r, verbose=FALSE, warning=FALSE}
 subsets[[5]] %>%
-  kbl() %>%
-  kable_paper("hover", full_width = F)
+  datatable(extensions = 'Buttons',rownames = FALSE,
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel'),
+                           lengthMenu =  list(c(nTrialsInSubset, -1), c(nTrialsInSubset, "All"))))
 
 ```
+~*Versions were generated by shuffling the assignment of SNR to each item and then shuffling the item order*~
