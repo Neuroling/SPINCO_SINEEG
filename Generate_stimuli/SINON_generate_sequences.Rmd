@@ -6,11 +6,12 @@ abstract: "We use German words from MULTIPIC database (picture matching task), u
 runhead: "Stimuli selection"
 output: 
   html_document:
-      code_folding: hide
+      code_folding: hide 
       toc: true
       toc_depth: 5
       toc_float: true
 ---
+<!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -21,7 +22,7 @@ library(ggplot2)
 library(nomnoml)
 library(kableExtra)
 ```
-
+***
 
 ## Overview {.tabset}
 
@@ -42,27 +43,25 @@ library(kableExtra)
 #zoom: 2
   
   [<database>Multipic|with phonol. info available|with pseudoword matches] n=565--> [Reject outliers| 1.lgSUBTLEX|2.PTAN|3.Ned1_Diff]
-  [Reject outliers ] n=325-->[<comment> Sets of n = 65 |Set1 | Set2| Set3| Set4| Set4] 
-  [<comment> Sets of n = 65 |Set1 | Set2| Set3| Set4| Set4]-- [<usecase>pseudorandomization*] 
-    [<usecase>pseudorandomization*]-:> [Experiment Blocks]
+  [Reject outliers ] n=325-->[<comment> Sets of n trials |Set1 | Set2| Set3| Set4| Set4] 
+  [<comment> Sets of n trials |Set1 | Set2| Set3| Set4| Set4]-- [<usecase>pseudorandomization*]
+  [<usecase>pseudorandomization*]-- [<usecase>Check balanced features]
+  [<usecase>Check balanced features]-:> [Experiment Blocks]
   
 
 ```
 
-```{r subsetting, echo=FALSE}
+Read data, get boxplot statistics and remove outliers
+
+```{r read,  warning = FALSE, verbose = FALSE, results ='hide'}
 # Read data
 rm(list=ls())
-
 if( .Platform$OS.type == "windows" ){ dirinput <- 'V:/gfraga/'
 } else if ( .Platform$OS.type == "unix"){ dirinput <- '/run/user/891957923/gvfs/smb-share:domain=d.uzh.ch,server=idnas12.d.uzh.ch,share=g_psyneulin_data$,user=gfraga/gfraga'
 }
  
 Merged <- openxlsx::read.xlsx(paste0(dirinput,'/Neuroling_SINON_stimuli.xlsx'),sheet = 'Merged')
-# It's as simple as...
-path <- "/media/55276F9D5951EC83/MyStatistics"
 
-
- 
 # Select only valid cases (e.g., Phono info available)
 dat <- Merged[!is.na(Merged$PhoWord),]
   
@@ -80,110 +79,155 @@ dat <- Merged[!is.na(Merged$PhoWord),]
   #ned1_diff (for associated Wuggy-pseudowords)
   boxstats <- boxplot.stats(dat$Ned1_Diff)
   dat <- dat[dat$Ned1_Diff > boxstats$stats[1] & dat$Ned1_Diff < boxstats$stats[5],]
- 
 
-
+# Include a pseudoword variable
+dat$pseudoword <- gsub('-','',dat$Match)
+dat$pseudoword[ !is.na(dat$Alternative)] <- gsub('-','',dat$Alternative)[!is.na(dat$Alternative)]
+    
 # retrieve word 2 initial sounds 
 dat$wordInitSounds <- paste0(sapply(strsplit(dat$PhoWord,".",fixed=TRUE),"[[",1),sapply(strsplit(dat$PhoWord,".",fixed=TRUE),"[[",2))
+dat$syllableCount <- as.factor(sapply(strsplit(dat$Match,'-'),length))
+```
 
+Divide into sets, while checking they don't differ in key features
+
+
+```{r subsetting, warning = FALSE, results ='hide'}         
 
 ### Split in 'balanced' sets   
 #-------------------------------------
-## They must be balanced in :
-## 1. lgSUBTLEX, PTAN and Ned1_Diff
-## 2. Item length ??? 
-
-## Add columns indicating a set number and a trial number within set
-nTrialsInSet <- 65 
+#-  Pairwise comparisons in : lgSUBTLEX, PTAN,Ned1_Diff
+#-  Compare proportions (i.e., n trials) for: item length, n syllables
+nTrialsInSet <- 60 
 nSets <- 5 
 
 if(nTrialsInSet*nSets !=nrow(dat)){ 
-  stop('Stop! Reconsider how many sets you want to create')
+  warning('Trimming dataset to match nTrialsInSet*nSets')
 }
+# Select files from set 
+dat <- dat[sample(nrow(dat)),] # first shuffle to avoid bias by alphabetic sorting
+dat <- dat[1:(nSets*nTrialsInSet),] # trim
 
+# Add info for subsetting 
 dat$setIdx <- as.factor(rep(1:nSets, each = nTrialsInSet))
 dat$setTrial <- as.factor(rep(1:nTrialsInSet,nSets))
 
-# Compare the sets pairwise on several key variables.
-# If finding significant differences in any of them: shuffle data,  reasign set and trials indices and compare again
+# Compare the sets pairwise on several key variables. If finding significant differences in any of them: shuffle data,  reasign set and trials indices and compare again
+vars2test <- c('lgSUBTLEX','PTAN','Ned1_Diff','Length_Ortho')
 
-vars2test <- c('lgSUBTLEX','PTAN','Ned1_Diff')
-checkstats <- rep(0,length(vars2test))
-cnt <- 0
-while (sum(checkstats)!=length(checkstats)) {
-  dat <- dat[order(sample(1:nrow(dat))),]
-  dat$setIdx <- as.factor(rep(1:nSets, each = nTrialsInSet))
-  dat$setTrial <- as.factor(rep(1:nTrialsInSet,nSets))
-  print(dat[1:4,68:69])
-
-  for (i in 1:length(vars2test)){
-    attach(dat)
-    #pairwise comparisons
-    res.ts <- pairwise.t.test(get(vars2test[i]),setIdx, p.adj="none")
+checkstats <- rep(0,length(vars2test)) # just a check to use for the conditional while
+  while (sum(checkstats)!=length(checkstats)) {
+    # Shuffle and redraw the set and trial indices
+    dat <- dat[order(sample(1:nrow(dat))),]
+    dat$setIdx <- as.factor(rep(1:nSets, each = nTrialsInSet))
+    dat$setTrial <- as.factor(rep(1:nTrialsInSet,nSets))
     
-    # extract p values
-    tps <- res.ts$p.value[which(!is.na(res.ts$p.value))]
-
-    # Check if any was significant
-    ifelse(test =length(which(tps<0.05))==0,
-           yes = checkstats[i]<-1,
-           no = checkstats[i]<-0)
+    for (i in 1:length(vars2test)){
+      # Pairwise comparisons
+      res.ts <- pairwise.t.test(dat[,vars2test[i]],dat[,'setIdx'], p.adj="none")
+      # Extract p values
+      tps <- res.ts$p.value[which(!is.na(res.ts$p.value))]
+      # Check if any was significant
+      ifelse(test =length(which(tps<0.05))==0,
+             yes = checkstats[i]<-1,
+             no = checkstats[i]<-0)
+    }
   }
-
-}
-ttests <- list()
+ # Store the tests once while loop is done  
+ ttests <- list()
  for (i in 1:length(vars2test)){
     #pairwise comparisons
-    res.ts <- pairwise.t.test(get(vars2test[i]),setIdx, p.adj="none")
+    res.ts <- pairwise.t.test(dat[,vars2test[i]],dat[,'setIdx'], p.adj="none")
     # store
     ttests[[i]] <- res.ts
  }
 
-print(ttests)
-sets <- split(dat,dat$setIdx)
+## Contingency tables and compare proportions
+  # item length
+  dat$Length_Ortho <- as.factor(dat$Length_Ortho)
+  stat <- dlookr::compare_category(setIdx, Length_Ortho,.data = dat) %>%  summary()
+  if (stat$chisq$p.value < 0.05){
+    stop('number of item length is unbalance between the sets!')
+  }  
+  # syllable count 
+  stat <- dlookr::compare_category(setIdx, syllableCount,.data = dat) %>%  summary()
+  if (stat$chisq$p.value < 0.05){
+    stop('number of syllables is unbalance between the sets!')
+  }
 
-### Shuffling 
-#-------------------------------------
-for (s in 1:length(sets)) {
-    setdat <- sets[[s]]
-    
-    #Shuffle (the first two sounds must differ between consecutive items) 
-    rowid <- 1:nrow(setdat)
-    setdat <- setdat[order(sample(rowid)),]
-    
-    check <- matrix(NA,nrow(setdat))
-    while (length(which(is.na(check)))>1) {
-      setdat <- setdat[order(sample(rowid)),]
-        for (i in 2:nrow(setdat)){
-            ifelse(test = setdat$wordInitSounds[i]==setdat$wordInitSounds[i-1],check[i]<-NA,check[i]<- 0)
-        } 
-    }
-    
-    #add some info
-    setdat$set <- s
-    setdat$seqIdx <- 1:nrow(setdat)
-    setdat <- relocate(setdat,'seqIdx')
-    setdat <- relocate(setdat,'set')
-    rownames(setdat) <- NULL
-    
-    # add to set list 
-    sets[[s]] <- setdat
-    rm(setdat)
-    
-}
-  
+## Split the data 
+print(ttests) # print for testing
+sets <- split(dat,dat$setIdx)
+## [following lines not required now, but left commented for reusing]
+# # Shuffling  each set (avoid consecutive repetitions)
+# #--------------------------------------------------------------
+# for (s in 1:length(sets)) {
+#     setdat <- sets[[s]]
+#       #Shuffle (the first two sounds must differ between consecutive items) 
+#     rowid <- 1:nrow(setdat)
+#     setdat <- setdat[order(sample(rowid)),]
+#     
+#     check <- matrix(NA,nrow(setdat))
+#     while (length(which(is.na(check)))>1) {
+#       setdat <- setdat[order(sample(rowid)),]
+#         for (i in 2:nrow(setdat)){
+#             ifelse(test = setdat$wordInitSounds[i]==setdat$wordInitSounds[i-1],check[i]<-NA,check[i]<- 0)
+#         } 
+#     }
+#     #add some info
+#     setdat$set <- s
+#     setdat$seqIdx <- 1:nrow(setdat)
+#     setdat <- relocate(setdat,'seqIdx')
+#     setdat <- relocate(setdat,'set')
+#     rownames(setdat) <- NULL
+#     
+#     # add to set list 
+#     sets[[s]] <- setdat
+#     rm(setdat)     
+# }
+#   
 
 ```
-## Data  {.tabset .tabset-pills .tabset-fade}
 
-### Figures  {.tabset }
+
+## Stimuli  {.tabset}
+
+### Experimental sequences
+
+```{r}
+# Generate sequences for experimental blocks
+nNoiseLevels <- 5 
+nTrialsInSeq <- 60 
+snrpreffix <-  paste0('SNR',1:nNoiseLevels,'')
+
+
+subsets <- list()
+for (i  in 1:length(sets)) {
+  
+     currseq <- c(sets[[i]]$Word[1:(nTrialsInSeq/2)],
+                  sets[[i]]$pseudoword[1:(nTrialsInSeq/2)])
+     #Make n blocks, one for each SNR
+     blocks <- list() 
+     for (ii in 1:length(currseq)) {
+            blocks[[ii]] <- paste(snrpreffix,currseq[ii],sep='_')[order(sample(1:5))]
+    }
+     Blcks <- as.data.frame(do.call(rbind,blocks))
+     Blcks <- apply(Blcks,2,sample) # shuffle the rows of each column independently 
+     colnames(Blcks) <- paste0('seq',1:dim(Blcks)[2])
+     subsets[[i]] <- as.data.frame(Blcks)
+} 
+
+
+```
+ 
+### Figures  {.tabset  .tabset-pills .tabset-fade}
 
 #### All selected items
 
 Before outlier exclusion
 
 ```{r plots1, warning=FALSE,  verbose = FALSE,out.height=350,out.width=550}
- # quick plots
+# Quick plots
 vars <- c('lgSUBTLEX','PTAN','Ned1_Diff')
 fig<-list()
 for (i in 1:length(vars)) {
@@ -201,7 +245,6 @@ for (i in 1:length(vars)) {
 }
 
 plotly::subplot(fig[[1]],fig[[2]],fig[[3]]) %>% plotly::layout(title = paste0(dim(Merged)[1],' items'),font=11 )
-
 
 ```
 
@@ -233,7 +276,7 @@ plotly::subplot(fig[[1]],fig[[2]],fig[[3]]) %>% plotly::layout(title = paste0(di
 
 ~*Hover\ mouse\ on\ data\ points\ for\ more\ info*~
 
-#### Set 1 
+#### Selected sets
 
 ```{r plots3, warning = FALSE, verbose = FALSE,out.height=350,out.width=750}
 
@@ -244,9 +287,9 @@ vars <- c('lgSUBTLEX','PTAN','Ned1_Diff')
 fig<-list()
 for (i in 1:length(vars)) {
   fig[[i]] <- plotly::ggplotly(
-    ggplot(currDat,aes_string(x='set',y=vars[i],group='set')) + 
-    geom_violin(aes(x=set),stat = 'ydensity',fill='green4',alpha=.2) +
-    geom_boxplot(aes(x=set),width=.1,fill='green4',alpha=.7) + 
+    ggplot(currDat,aes_string(x='setIdx',y=vars[i],group='setIdx')) + 
+    geom_violin(aes(x=setIdx),stat = 'ydensity',fill='green4',alpha=.2) +
+    geom_boxplot(aes(x=setIdx),width=.1,fill='green4',alpha=.7) + 
     theme_bw()+theme(axis.title.x = element_blank(),title = element_text(vars[i]))
   )
   hoverinfo <- with(currDat, paste0("item: ", CORRECT_SPELL))
@@ -261,18 +304,34 @@ plotly::subplot(fig[[1]],fig[[2]],fig[[3]],  margin = 0.05) %>%
                                   list(x = 0.9 , y = 1.1, text=vars[3],showarrow=F, xref='paper', yref='paper')))
 
 #%>% plotly::layout(title = paste0(dim(currDat)[1],' items'),font=11 )
+  
+  length2plot <- dat %>% group_by(setIdx,Length_Ortho) %>% tally(name = 'n_items')
+  ggplotly(
+    ggplot(length2plot,aes(x=Length_Ortho, y=n_items)) + geom_point(aes(fill=Length_Ortho),size=1.5,shape=21) +
+    facet_grid(~setIdx) + 
+    theme_bw() + ggtitle('Number of items with 1-n letters per set')
+  ) 
 
 
+
+  prop2plot <- dat %>% group_by(setIdx,syllableCount) %>% tally(name = 'n_items')
+  ggplotly(
+    ggplot(prop2plot,aes(x=syllableCount, y=n_items)) + geom_point(aes(fill=syllableCount),size=2,shape=21) +
+    facet_grid(~setIdx) + 
+    theme_bw() + ggtitle('Number of items with 1-n syllables per set')
+  )
+   
 ```
 
 ~*Hover\ mouse\ on\ data\ points\ for\ more\ info\ *~
 
-### Tables  {.tabset}
+### Sets  {.tabset .tabset-pills .tabset-fade}
+
 
 #### set1 
 
 ```{r, verbose=FALSE, warning=FALSE}
-sets[[1]] %>%
+subsets[[1]] %>%
   kbl() %>%
   kable_paper("hover", full_width = F)
 
@@ -281,7 +340,7 @@ sets[[1]] %>%
 #### set2 
 
 ```{r, verbose=FALSE, warning=FALSE}
-sets[[2]] %>%
+subsets[[2]] %>%
   kbl() %>%
   kable_paper("hover", full_width = F)
 
@@ -290,7 +349,7 @@ sets[[2]] %>%
 #### set3 
 
 ```{r, verbose=FALSE, warning=FALSE}
-sets[[3]] %>%
+subsets[[3]] %>%
   kbl() %>%
   kable_paper("hover", full_width = F)
 
@@ -299,7 +358,7 @@ sets[[3]] %>%
 #### set4
 
 ```{r, verbose=FALSE, warning=FALSE}
-sets[[4]] %>%
+subsets[[4]] %>%
   kbl() %>%
   kable_paper("hover", full_width = F,)
 
@@ -308,11 +367,8 @@ sets[[4]] %>%
 #### set5
 
 ```{r, verbose=FALSE, warning=FALSE}
-sets[[5]] %>%
+subsets[[5]] %>%
   kbl() %>%
   kable_paper("hover", full_width = F)
 
 ```
-
-
-
