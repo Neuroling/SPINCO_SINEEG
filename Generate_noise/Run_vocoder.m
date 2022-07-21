@@ -8,7 +8,7 @@ clear all ;
 %
 %-------------------------------------------------------------------------
 % add paths of associated functions and toolbox TSM required by function 
-addpath('V:\gfraga\scripts_neulin\Noise_generation\functions')
+addpath('V:\gfraga\scripts_neulin\Generate_noise\functions')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')
 addpath('C:\Users\gfraga\Documents\MATLAB\')
 
@@ -36,24 +36,42 @@ MaxFreq =        5000;
 % Degradation levels
 target_nchannels = [4,8,12,16,20];
  
-%% Call vocoder function 
+%% Call vocoder function (save in structure array)
+
 % read signals
 signals = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
 
-% Loop and call for each degradation level
+% Loop and vocode for each degradation level
+nvStimuli = struct(); 
+for i = 1:length(signals)     
+    [pathstr, name , ext] = fileparts(wavfiles{i});
+    nvStimuli(i).filename = name;
+    nvStimuli(i).ursignal = signals{i};
+    nvStimuli(i).srate = srate;
+    
+   for ii = 1:length(target_nchannels)       
+       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'NoiseVocoded_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
+       nvStimuli(i).vocoded(ii).channels = target_nchannels(ii);
+       nvStimuli(i).vocoded(ii).nvsignal = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, target_nchannels(ii), out(i).ursignal, srate, MinFreq, MaxFreq);            
+        
+        
+    end
+end
 
+%% Saving 
+% Matlab 
+save([diroutput,'stimuli_nv'],'nvStimuli')
+% Audio
+for i = 1:length(nvStimuli)
+   for ii = 1:length(nvStimuli(i).vocoded)       
+        audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate)
+         disp(['...saved ',nvStimuli(i).vocoded(ii).filename]);
+   end
+    
+end
+
+%% Summary figures 
 for i = 1:length(target_nchannels) 
-     
-    signal_nv = cell(length(signals),1);
-    for ii = 1:length(signals)
-        InputSignal = signals{ii};
-        signal_nv{ii} = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, target_nchannels(i), InputSignal, srate, MinFreq, MaxFreq);
-
-       %%% Save audio 
-         [pathstr, name , ext] = fileparts(wavfiles{ii});
-         outputfilename = strrep([diroutput,'NoiseVocoded_',name,'_',num2str(target_nchannels(i)),'chans',ext],'\\','\');
-         audiowrite(outputfilename, signal_nv{ii},srate)
-         disp(['...saved ',outputfilename]);
 
        %%% Save summary plot 
        footnote = ['Vocoder_2022 run for ',name,' (srate: ',num2str(srate),' Hz) with arguments: exc (', exc, '), mapping (',mapping, '), filters(',...
@@ -97,6 +115,6 @@ for i = 1:length(target_nchannels)
        disp(['....saved figure for ',outputfilename]);
        %
        close gcf
-    end
 end
+
  
