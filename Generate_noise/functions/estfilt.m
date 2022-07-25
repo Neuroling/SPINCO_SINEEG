@@ -12,7 +12,7 @@ if strcmp(type,'greenwood')  %
     
     FS=Srate/2;
     %%%%nOrd edited to 4 from 6.
-    nOrd=6;
+    nOrd=4;
     %case of [G] changed in greenwud
     [lower1,center,upper1]=greenwud(nChannels,LowFreq,UpperFreq);
     

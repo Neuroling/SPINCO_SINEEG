@@ -26,10 +26,10 @@ srate =         16000;
 % Parameters for Vocoding function 
 exc =           'noise' ; 
 mapping=        'n'; 
-filters =       'linear';
+filters =       'greenwood'; % Greenwood
 EnvelopeExtractor = 'half'; 
 smooth=          30 ; 
-nCh =           16; 
+nCh =           4; 
 MinFreq =       50;
 MaxFreq =        5000;
 
@@ -39,7 +39,7 @@ target_nchannels = [4,8,12,16,20];
 %% Call vocoder function (save in structure array)
 
 % read signals
-signals = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
+[signals, freqs] = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
 
 % Loop and vocode for each degradation level
 nvStimuli = struct(); 
@@ -52,7 +52,7 @@ for i = 1:length(signals)
    for ii = 1:length(target_nchannels)       
        nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'NoiseVocoded_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
        nvStimuli(i).vocoded(ii).channels = target_nchannels(ii);
-       nvStimuli(i).vocoded(ii).nvsignal = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, target_nchannels(ii), out(i).ursignal, srate, MinFreq, MaxFreq);            
+       nvStimuli(i).vocoded(ii).nvsignal = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, nvStimuli(i).vocoded(ii).channels, nvStimuli(i).ursignal, srate, MinFreq, MaxFreq);            
         
         
     end

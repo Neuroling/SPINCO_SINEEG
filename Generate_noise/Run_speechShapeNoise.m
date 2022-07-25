@@ -32,7 +32,7 @@ filt_low =      50 ;
 filt_upper =    7999;
 
 % Length of intro/outro (with ramp in/out)
-head_length =   0.1; % desired start noise length in seconds
+head_length =   0.1; % desired start noise length in seconds % 
 tail_length =   0.1; % desired tail noise length in seconds
 rampin_length =   0.025; % desired start noise length in seconds
 rampout_length =   0.025; % desired tail noise length in seconds

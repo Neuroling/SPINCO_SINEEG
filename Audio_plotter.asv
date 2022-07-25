@@ -49,12 +49,12 @@ end
 
 %% Animated gif of all images
 
-% imshow('Ball.jpg')
-% imwrite(gcf,'testAnimation','gif','WriteMode','append');
-% 
-% close gcf
-% x = imread('Bank.jpg')
-% imwrite(x,'testAnimation','gif','WriteMode','append');;
+x = imread('Ball.jpg'))
+imwrite(gcf,'testAnimation','gif','WriteMode','append');
+
+close gcf
+imshow(imread('Bank.jpg'))
+imwrite(gcf,'testAnimation','gif','WriteMode','append');
 
 
 
