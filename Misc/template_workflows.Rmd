@@ -1,0 +1,115 @@
+---
+title: "Example of workflow"
+author: "G.Fraga Gonzalez"
+date: "`r Sys.Date()`"
+abstract: "just some example to draw a workflow chart with nomnoml." 
+runhead: "Stimuli selection"
+output: 
+  html_document:
+      code_folding: hide 
+      toc: true
+      toc_depth: 5
+      toc_float: true
+---
+
+<!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gridExtra)
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(nomnoml)
+library(kableExtra)
+library(DT) # for saving tables
+```
+
+
+## Overview {.tabset}
+
+### Workflow with some sort of style ...
+
+```{nomnoml, echo = FALSE, out.height=400,out.width=850}
+# From  https://nomnoml.com/
+#arrowSize: 1
+#bendSize: 0.3
+#direction: down | right
+#gutter: 5
+#edgeMargin: 0
+#gravity: 1
+#edges: hard | rounded
+#background: transparent
+#fill: #eee8d5; #fdf6e3
+#fillArrows: false
+#font: Calibri
+#fontSize: 12
+#leading: 1.25
+#lineWidth: 3
+#padding: 8
+#spacing: 40
+#stroke: #33322E
+#title: filename
+#zoom: 1
+#acyclicer: greedy
+#ranker: network-simplex | tight-tree | longest-path
+#.box: fill=#8f8 dashed
+#.blob: visual=ellipse title=bold
+[Pirate|eyeCount: Int|raid();pillage()|
+  [beard]--[parrot]
+  [beard]-:>[foul mouth]
+]
+
+[<table>mischief | bawl | sing || yell | drink]
+
+[<abstract>Marauder]<:--[Pirate]
+[Pirate]- 0..7[mischief]
+[jollyness]->[Pirate]
+[jollyness]->[rum]
+[jollyness]->[singing]
+[Pirate]-> *[rum|tastiness: Int|swig()]
+[Pirate]->[singing]
+[singing]<->[rum]
+
+[<start>st]->[<state>plunder]
+[plunder]->[<choice>more loot]
+[more loot]->[st]
+[more loot] no ->[<end>e]
+
+[<actor>Sailor] - [<usecase>shiver me;timbers]
+
+```
+
+
+
+
+
+
+
+### Workflow
+
+```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=1000}
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=lightyellow empty bold
+#lineWidth: 1
+#direction: right
+#leading: 1.25
+#lineWidth: .75
+#padding: 8
+#spacing: 40
+#zoom: 2
+  
+  [<database>Multipic|with phonol. info available|with pseudoword matches] n=565--> [Reject outliers| 1.lgSUBTLEX|2.PTAN|3.Ned1_Diff]
+  [Reject outliers ] n=325-->[<comment> Sets of n trials] 
+  [<comment> Sets of n trials]--> [<usecase>Compare features]
+  [<usecase> Compare features]sets differ:--> [<comment> Sets of n trials]
+  [<usecase>Compare features]no diffs --> [<usecase>Shuffle]
+  
+  [<usecase>Shuffle]-:> [Experiment Blocks | balanced TYPE (n words/pseudwords) | balanced SNR levels within TYPE | versions with shuffle SNR per item]
+
+  
+
+```
+ 

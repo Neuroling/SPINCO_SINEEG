@@ -24,3 +24,4 @@ center = mm2frq(centres);
 lower=zeros(1,N); upper=zeros(1,N);
 lower(1:N)=freqs(1:N);
 upper(1:N)=freqs(2:N+1);
+

@@ -27,7 +27,7 @@ library(DT) # for saving tables
 
 ## Overview {.tabset}
 
-### Workflow
+### General Workflow
 
 ```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=1000}
 #fontSize: 6
@@ -54,6 +54,7 @@ library(DT) # for saving tables
   
 
 ```
+
 
 ### Data Selection
 [Code: boxplot statistics and exclusion of outliers]

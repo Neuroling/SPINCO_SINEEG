@@ -27,33 +27,32 @@ library(DT) # for saving tables
 
 ## Projects {.tabset}
 
-
-
-```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=1000}
+```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=850}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
 #fontSize: 6
 #arrowSize: .5
 #stroke: black
 #.box: dashed center
-#.comment: fill=lightyellow empty bold
+#.comment: fill=Wheat empty bold
+#background: FloralWhite
 #lineWidth: 1
 #direction: right
 #leading: 1.25
 #lineWidth: .75
 #padding: 8
 #spacing: 40
-#zoom: 2
+#zoom: 3
   
-[<database>SPINCO]-> EEG[SINEEG]
-[<database>SPINCO]-> online[SINON]
+[<database>SPINCO]-> EEG[<comment>SINEEG]
+[<database>SPINCO]-> online[<comment>SINON]
   
   [SINON]-->Rmd [database | words | pseudowords] 
   [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]
   [Manipulations] --> .m[SNR | x 5 Lvls] 
   [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 4FC | pict match]
   
-  [SINEEG]-->Openvibe[Real-time EEG]
-  [SINEEG]-->Matlab[ Manipulation | noise-vocoded]
+  [<comment>SINEEG]-->Openvibe[Real-time EEG]
+  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]
   [Manipulation] --> .m[SNR. | 3 x Lvls]
   [Real-time EEG] --> [brain-states | alpha | beta-connect?]
   [brain-states] --> [stim trigger]
@@ -62,11 +61,55 @@ library(DT) # for saving tables
   
 
 ```
-## Design {.tabset}
+## Stimuli set {.tabset}
 
-### SINON
+### Recordings
 
-```{nomnoml flowchart2, echo = FALSE, out.height=400,out.width=1000}
+```{nomnoml , echo = FALSE, out.height=400,out.width=850}
+# From  https://nomnoml.com/
+#arrowSize: 1
+#bendSize: 0.3
+#direction:  right 
+#gutter: 5
+#edgeMargin: 0
+#gravity: 1
+#edges: hard | rounded
+#background: transparent
+#fill: #eee8d5; #fdf6e3
+#fillArrows: false
+#font: Calibri
+#fontSize: 12
+#leading: 1.25
+#lineWidth: 1.5
+#padding: 8
+#spacing: 45
+#stroke: #33322E
+#title: filename
+#zoom: 1
+#acyclicer: greedy
+#ranker: network-simplex | tight-tree | longest-path
+#.box: fill=#8f8 dashed
+#.blob: visual=ellipse title=bold
+
+[<usecase>raw | versions] -> [<table> Separate files: | words | pseudowords]
+[<table> Separate files:] --> [<actor>rawAudiocheck|plots]
+
+[<actor>rawAudiocheck] -->  ok[<abstract>detect speech]  
+  [<abstract>detect speech] --> [<actor>AudioCheck|plots]
+  [<actor>AudioCheck] --> ok [<abstract>trim]
+   [<abstract>trim] --> [<state>clear]
+   [<abstract>trim] --> [<state>in SSN]
+   [<abstract>trim] --> [<state>vocoder]
+      [<state>vocoder] -- Lvls[<start>st.]
+      [<state>in SSN] -- SNRs[<start>st]
+      
+```
+
+## SINON {.tabset}
+
+### Design
+
+```{nomnoml, echo = FALSE, out.height=400,out.width=850}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
 #fontSize: 6
 #arrowSize: .5
@@ -92,100 +135,43 @@ library(DT) # for saving tables
   
 
 ```
+ 
 
-```{nomnoml flowchart3, echo = FALSE, out.height=400,out.width=1000}
+
+
+```{nomnoml, echo = FALSE, out.height=400,out.width=850}
+
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
-
-#arrowSize: 1
-#bendSize: 0.3
-#direction:  right
-#gutter: 5
-#edgeMargin: 0
-#gravity: 1
-#edges: hard | rounded
-#background: transparent
-#fill: #eee8d5; #fdf6e3
-#fillArrows: false
-#font: Calibri
-#fontSize: 12
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=lightyellow empty bold
+#lineWidth: 1
+#direction: right
 #leading: 1.25
-#lineWidth: 2
+#lineWidth: .75
 #padding: 8
 #spacing: 40
-#stroke: #33322E
-#title: filename
-#zoom: 1
-#acyclicer: greedy
-#ranker: network-simplex | tight-tree | longest-path
-#.box: fill=#8f8 dashed
-#.blob: visual=ellipse title=bold
+#zoom: 2
+#direction: right
+  
+# [<database>SINON Design]-> [<state>LD task]
+#  [LD task] --> [NV]
+#    [NV] --> [Blocks (4) |||]
+#    [Blocks (4)] --> [<table>Trials (2 x 5 x 9 = 80)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]
+# [LD task] --> [SSN]
+#    [SSN] --> [...]
+#    [...] --> [....]
+# 
+# [<database>SINON Design]-> [<state>. Task]
+# [<state>. Task] --> [..]
+# [..] --> [:..]
+# [:..] --> [:...]
 
+#```
 
-[<database>SINON Design]-> [<state>LD task]
- [LD task] --> [NV]
-   [NV] --> [Blocks (4) |||]
-   [Blocks (4)] --> [<table>Trials (2 x 5 x 6 = 60)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]
-[LD task] --> [SSN]
-   [SSN] --> [...]
-   [...] --> [....]
+### SINEEG
 
-[<database>SINON Design]-> [<state>. Task]
-[<state>. Task] --> [..]
-[..] --> [:..]
-[:..] --> [:...]
-
+ 
 ```
-
-### SINON
-
-```{nomnoml, echo = FALSE, out.height=400,out.width=1000}
-
-#arrowSize: 1
-#bendSize: 0.3
-#direction: down | right
-#gutter: 5
-#edgeMargin: 0
-#gravity: 1
-#edges: hard | rounded
-#background: transparent
-#fill: #eee8d5; #fdf6e3
-#fillArrows: false
-#font: Calibri
-#fontSize: 12
-#leading: 1.25
-#lineWidth: 3
-#padding: 8
-#spacing: 40
-#stroke: #33322E
-#title: filename
-#zoom: 1
-#acyclicer: greedy
-#ranker: network-simplex | tight-tree | longest-path
-#.box: fill=#8f8 dashed
-#.blob: visual=ellipse title=bold
-[Pirate|eyeCount: Int|raid();pillage()|
-  [beard]--[parrot]
-  [beard]-:>[foul mouth]
-]
-
-[<table>mischief | bawl | sing || yell | drink]
-
-[<abstract>Marauder]<:--[Pirate]
-[Pirate]- 0..7[mischief]
-[jollyness]->[Pirate]
-[jollyness]->[rum]
-[jollyness]->[singing]
-[Pirate]-> *[rum|tastiness: Int|swig()]
-[Pirate]->[singing]
-[singing]<->[rum]
-
-[<start>st]->[<state>plunder]
-[plunder]->[<choice>more loot]
-[more loot]->[st]
-[more loot] no ->[<end>e]
-
-[<actor>Sailor] - [<usecase>shiver me;timbers]
-
-```
-
-
