@@ -1,4 +1,5 @@
 clear all ; 
+%%
 % ========================================================================
 %  Generate Vocoded speech 
 % ========================================================================
@@ -14,19 +15,19 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 
 %% Inputs 
 % paths and files 
-dirinput =      'V:\gfraga\SPINCO\Sound_files\Digits_16k\' ;
-diroutput =     'V:\gfraga\SPINCO\Sound_files\Digits_16k_vocoded\';
-wavfiles =      dir([dirinput, 'Speaker*.wav']);
+dirinput =      'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\words_v1' ;
+diroutput =     'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\';
+wavfiles =      dir([dirinput, '\Absatz.wav']);
 wavfiles =      fullfile(dirinput, {wavfiles.name});
 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
  
-srate =         16000;
+srate =         48000;
 
 % Parameters for Vocoding function 
 exc =           'noise' ; 
 mapping=        'n'; 
-filters =       'greenwood'; % Greenwood
+filters =       'greenwood'; % greenwood
 EnvelopeExtractor = 'half'; 
 smooth=          30 ; 
 nCh =           4; 
@@ -36,7 +37,7 @@ MaxFreq =        5000;
 % Degradation levels
 target_nchannels = [4,8,12,16,20];
  
-%% Call vocoder function (save in structure array)
+% Call vocoder function (save in structure array)
 
 % read signals
 [signals, freqs] = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
@@ -46,14 +47,18 @@ nvStimuli = struct();
 for i = 1:length(signals)     
     [pathstr, name , ext] = fileparts(wavfiles{i});
     nvStimuli(i).filename = name;
-    nvStimuli(i).ursignal = signals{i};
     nvStimuli(i).srate = srate;
+    
+    tmp = signals{i};
+    tmp = tmp(:,1);
+    nvStimuli(i).ursignal = tmp;
+    
     
    for ii = 1:length(target_nchannels)       
        nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'NoiseVocoded_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
        nvStimuli(i).vocoded(ii).channels = target_nchannels(ii);
        nvStimuli(i).vocoded(ii).nvsignal = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, nvStimuli(i).vocoded(ii).channels, nvStimuli(i).ursignal, srate, MinFreq, MaxFreq);            
-        
+        disp('ok')
         
     end
 end

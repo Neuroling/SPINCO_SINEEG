@@ -1,7 +1,5 @@
 function [lower,center,upper]= greenwud(N, low, high)
-%
-
-% [lower,center,upper] = greenwud(N,low,high)
+%% [lower,center,upper] = greenwud(N,low,high)
 %
 % This function returns the lower, center and upper freqs
 % of the filters equally spaced according to Greenwood's equation
@@ -13,7 +11,7 @@ function [lower,center,upper]= greenwud(N, low, high)
 %
 
 % Set up equally spaced places on the basilar membrane
-places = [0:N]*(mm2frq(high)-mm2frq(low))/N + mm2frq(low);
+places = [0:N]*(frq2mm(high)-frq2mm(low))/N + frq2mm(low);
 % Also calculate centre frequencies according to the same mapping
 centres = zeros(1,N);
 centres = (places(1:N) + places(2:N+1))/2;

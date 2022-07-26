@@ -61,7 +61,7 @@ library(DT) # for saving tables
   
 
 ```
-## Stimuli set {.tabset}
+## Stimuli {.tabset}
 
 ### Recordings
 
@@ -135,6 +135,7 @@ library(DT) # for saving tables
   
 
 ```
+
  
 
 

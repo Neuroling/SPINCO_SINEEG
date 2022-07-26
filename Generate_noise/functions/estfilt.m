@@ -1,18 +1,17 @@
-
 function [filterA,filterB,center]=estfilt(nChannels,type,Srate,LowFreq,UpperFreq)
 
 %  ESTFILT - This function returns the filter coefficients for a
 %	filter bank for a given number of channels
 %	and with a variety of filter spacings. Also returned are
 %	the filter centre frequencies,
-
+ 
 % ====================================================================
 % ------------------ greenwood spacing of filters -------------------------
 if strcmp(type,'greenwood')  %
     
     FS=Srate/2;
     %%%%nOrd edited to 4 from 6.
-    nOrd=4;
+    nOrd=6;
     %case of [G] changed in greenwud
     [lower1,center,upper1]=greenwud(nChannels,LowFreq,UpperFreq);
     
