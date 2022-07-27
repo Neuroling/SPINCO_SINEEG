@@ -27,6 +27,8 @@ library(DT) # for saving tables
 
 ## Projects {.tabset}
 
+### Overview
+
 ```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=850}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
 #fontSize: 6
@@ -61,6 +63,40 @@ library(DT) # for saving tables
   
 
 ```
+
+### Server
+
+```{nomnoml, echo = FALSE, out.height=400,out.width=1000}
+# https://cran.r-project.org/web/packages/nomnoml/readme/README.html
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=Wheat empty bold
+#background: FloralWhite
+#lineWidth: 1
+#direction: right
+#leading: .75
+#lineWidth: .75
+#padding: 8
+#spacing: 0
+#zoom: 5
+  
+[<state>user]-> local[<comment> PC |]
+[PC] --> [OneDrive/Sharepoint | spinco_documentation]
+[user]-> cloud remote[<comment>Linux | 130.60.236.20 |130.60.238.20]
+[PC] -- [<database> SMB-share ]
+[<database> SMB-share] <-> private [gfraga | scripts]
+[<database> SMB-share] <->  [spinco_data |raw, final outputs, long-term ]
+[Linux] -- [<database> NFS-share | heavy processing]
+[Linux] -- [<database> SMB-share]
+[<database> NFS-share] <-> private [mnt/gfraga-data]
+[<database> NFS-share] <-> shared [mnt/spinco |intermediate derivs]
+[<database> NFS-share] <--> shared [spinco_data]
+[gfraga | scripts]-:> push [github repo]
+```
+
+
 ## Stimuli {.tabset}
 
 ### Recordings

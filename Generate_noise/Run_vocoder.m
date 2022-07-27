@@ -16,8 +16,8 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 %% Inputs 
 % paths and files 
 dirinput =      'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\words_v1' ;
-diroutput =     'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\';
-wavfiles =      dir([dirinput, '\Absatz.wav']);
+diroutput =     'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\words_v1_vocoded';
+wavfiles =      dir([dirinput, '\*.wav']);
 wavfiles =      fullfile(dirinput, {wavfiles.name});
 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
