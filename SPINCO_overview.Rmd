@@ -1,15 +1,16 @@
 ---
-title: "Speech-in-noise comprehension (SPINCO)" 
+title: "Speech-in-noise comprehension (SPINCO)"
 author: "G.Fraga Gonzalez"
 date: "`r Sys.Date()`"
-abstract: "Overview of ongoing projects at Neurolinguistics group (University of Zurich) " 
-runhead: "SPINCO"
-output: 
+output:
   html_document:
-      code_folding: hide 
-      toc: true
-      toc_depth: 5
-      toc_float: true
+    code_folding: hide
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+runhead: SPINCO
+abstract: 'Overview of ongoing projects at Neurolinguistics group (University of Zurich) '
 ---
 
 <!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
@@ -25,7 +26,8 @@ library(DT) # for saving tables
 ```
 
 
-## Projects {.tabset}
+<!-- ## Projects {.tabset} -->
+## Projects
 
 ### Overview
 
@@ -64,7 +66,7 @@ library(DT) # for saving tables
 
 ```
 
-### Server
+### Data flow
 
 ```{nomnoml, echo = FALSE, out.height=400,out.width=1000}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
@@ -73,6 +75,7 @@ library(DT) # for saving tables
 #stroke: black
 #.box: dashed center
 #.comment: fill=Wheat empty bold
+#.client: fill=LavenderBlush empty bold
 #background: FloralWhite
 #lineWidth: 1
 #direction: right
@@ -83,24 +86,30 @@ library(DT) # for saving tables
 #zoom: 5
   
 [<state>user]-> local[<comment> PC |]
-[PC] --> [OneDrive/Sharepoint | spinco_documentation]
-[user]-> cloud remote[<comment>Linux | 130.60.236.20 |130.60.238.20]
+[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]
+[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]
 [PC] -- [<database> SMB-share ]
-[<database> SMB-share] <-> private [gfraga | scripts]
-[<database> SMB-share] <->  [spinco_data |raw, final outputs, long-term ]
+ 
+[<database> SMB-share] <-> private [<client>gfraga | scripts]
+  [gfraga | scripts]-:> push2web [<state>github repo]
+
+[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]
+
 [Linux] -- [<database> NFS-share | heavy processing]
 [Linux] -- [<database> SMB-share]
+[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]
 [<database> NFS-share] <-> private [mnt/gfraga-data]
-[<database> NFS-share] <-> shared [mnt/spinco |intermediate derivs]
 [<database> NFS-share] <--> shared [spinco_data]
-[gfraga | scripts]-:> push [github repo]
 ```
 
 
-## Stimuli {.tabset}
+<!-- ## Stimuli {.tabset} -->
+## Stimuli
 
 ### Recordings
 
+Selected items were recorded in a single session (shuffled order) by xxx. 
+.wav files at 48000 Hz; 24 bits. 
 ```{nomnoml , echo = FALSE, out.height=400,out.width=850}
 # From  https://nomnoml.com/
 #arrowSize: 1
@@ -127,21 +136,26 @@ library(DT) # for saving tables
 #.box: fill=#8f8 dashed
 #.blob: visual=ellipse title=bold
 
-[<usecase>raw | versions] -> [<table> Separate files: | words | pseudowords]
-[<table> Separate files:] --> [<actor>rawAudiocheck|plots]
+[<usecase>raw | versions] -> prorrec[<table> Separate files: | words | pseudowords]
+[<table> Separate files:] --> [<state>normalize]
+[normalize] --> matlab (auto) [<state>detectSpeech|trim]
+[detectSpeech] --> [<actor>audiocheck|plots]
 
-[<actor>rawAudiocheck] -->  ok[<abstract>detect speech]  
-  [<abstract>detect speech] --> [<actor>AudioCheck|plots]
-  [<actor>AudioCheck] --> ok [<abstract>trim]
-   [<abstract>trim] --> [<state>clear]
-   [<abstract>trim] --> [<state>in SSN]
-   [<abstract>trim] --> [<state>vocoder]
+[<actor>audiocheck] --> if OK  [<abstract>Experiment]
+    [<abstract>Experiment]  -->  [<state>clear]
+    [<abstract>Experiment] --> [<state>in SSN]
+    [<abstract>Experiment] --> [<state>vocoder]
       [<state>vocoder] -- Lvls[<start>st.]
       [<state>in SSN] -- SNRs[<start>st]
+[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler | matlab; manual trim; clicks rmv]
+
       
 ```
 
-## SINON {.tabset}
+ 
+
+<!-- ## SINON {.tabset} -->
+## SINON
 
 ### Design
 

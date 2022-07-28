@@ -7,7 +7,7 @@ clear all
 % - Option to add some extended head/tail to the boundaries from detectSpeech
 addpath('C:\Users\gfraga\Documents\MATLAB\')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')% tool for plot
-dirinput= 'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\words_v2';
+dirinput= 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v2';
 diroutput = [dirinput,'_speechDetect']; 
 mkdir(diroutput)
 % find files 
@@ -19,15 +19,28 @@ headms = 100; % ms
 tailms = 100;
 PLOTME = 1;
 cd (dirinput)
-%% Main loop Loop 
-for i = 1:length(files)   
-    
+
+%% Read all files
+signals = cell(1,length(files));
+fss = cell(1,length(files));
+for i = 1:length(files)
+   [sig, fs] = audioread(files{i});
+   signals{i}= sig(:,1);
+   fss{i}= fs(1);
+   disp(['read ',files{i}]);
+end
+
+%% Normalize by rms 
+allrms  = cellfun(@(x) rms(x),signals);
+RMS_mean = mean(allrms);
+signals_nrm = cellfun(@(x) x.*RMS_mean/rms(x), signals,'UniformOutput',false);
+%% Main loop  
+cd (diroutput)
+for i = 1:length(signals_nrm)   
     % read data 
-    [dat, srate] = audioread(files{i});
-    srate = srate(1);
-    dat = dat(:,1); % take only one channel if two are present (1 empty)
-    times = (0:length(dat)-1)/srate; 
-    
+    dat=signals_nrm{i};
+    srate = fss{i};
+    times = (0:length(dat)-1)/srate;     
     %  Try automatic detection of speech (show boundaries in time x amp plot) 
       [idx, thresh] = detectSpeech(dat,srate);
    if PLOTME==1 
@@ -57,22 +70,24 @@ for i = 1:length(files)
         disp(files{i})
    
       %Save
-      print(gcf, '-djpeg', [diroutput,'/',strrep(files{i},'.wav','.jpg')]);
+      print(gcf, '-djpeg', [diroutput,'/',strrep(files{i},'.wav','_nrm.jpg')]);
       close gcf
-  end
+   end
+  
   %Save audio       
    if size(idx,1)> 1 
        trimdat = dat;
-      outputname = strrep(files{i},'.wav','_spDet_trim_failed.wav');
+      outputname = strrep(files{i},'.wav','_nrm_badDetect.wav');
    else 
       % trim 
       startpoint = idx(1)-((headms/1000)*srate);
       endpoint = idx(2)+ ((tailms/1000)*srate);
       trimdat = dat(startpoint:endpoint);
-      outputname = strrep(files{i},'.wav','_spDet_trim.wav');
+      outputname = strrep(files{i},'.wav','_nrm_trim.wav');
    end 
+   
       % save to file 
-      audiowrite(strcat(diroutput,'\',outputname),trimdat,srate);
+      audiowrite(strcat(diroutput,'\',outputname),trimdat,srate,'BitsPerSample',24,'comment','File trimmed to speechDetect boundaries + some additional ms'); % comments can be read by reading file with audioinfo('file.wav')
    
 end
 

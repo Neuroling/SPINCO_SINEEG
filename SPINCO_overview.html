@@ -11,7 +11,7 @@
 
 <meta name="author" content="G.Fraga Gonzalez" />
 
-<meta name="date" content="2022-07-27" />
+<meta name="date" content="2022-07-28" />
 
 <title>Speech-in-noise comprehension (SPINCO)</title>
 
@@ -15489,6 +15489,12 @@ div.tocify {
   border-radius: 0px;
 }
 
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
 
 </style>
 
@@ -15528,7 +15534,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Speech-in-noise comprehension (SPINCO)</h1>
 <h4 class="author">G.Fraga Gonzalez</h4>
-<h4 class="date">2022-07-27</h4>
+<h4 class="date">2022-07-28</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 Overview of ongoing projects at Neurolinguistics group (University of
@@ -15539,35 +15545,40 @@ Zurich)
 
 
 <!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
-<div id="projects" class="section level2 tabset">
-<h2 class="tabset">Projects</h2>
+<!-- ## Projects {.tabset} -->
+<div id="projects" class="section level2">
+<h2>Projects</h2>
 <div id="overview" class="section level3">
 <h3>Overview</h3>
-<div id="htmlwidget-bb59cd55fd752d4f535e" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-bb59cd55fd752d4f535e">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 3\n  \n[<database>SPINCO]-> EEG[<comment>SINEEG]\n[<database>SPINCO]-> online[<comment>SINON]\n  \n  [SINON]-->Rmd [database | words | pseudowords] \n  [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]\n  [Manipulations] --> .m[SNR | x 5 Lvls] \n  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 4FC | pict match]\n  \n  [<comment>SINEEG]-->Openvibe[Real-time EEG]\n  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]\n  [Manipulation] --> .m[SNR. | 3 x Lvls]\n  [Real-time EEG] --> [brain-states | alpha | beta-connect?]\n  [brain-states] --> [stim trigger]\n  [SNR.] -->  [stim trigger]\n  [stim trigger] -> psyexp [Task | Lexical Decision]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-70099464a6f71cc69886" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-70099464a6f71cc69886">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 3\n  \n[<database>SPINCO]-> EEG[<comment>SINEEG]\n[<database>SPINCO]-> online[<comment>SINON]\n  \n  [SINON]-->Rmd [database | words | pseudowords] \n  [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]\n  [Manipulations] --> .m[SNR | x 5 Lvls] \n  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 4FC | pict match]\n  \n  [<comment>SINEEG]-->Openvibe[Real-time EEG]\n  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]\n  [Manipulation] --> .m[SNR. | 3 x Lvls]\n  [Real-time EEG] --> [brain-states | alpha | beta-connect?]\n  [brain-states] --> [stim trigger]\n  [SNR.] -->  [stim trigger]\n  [stim trigger] -> psyexp [Task | Lexical Decision]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="server" class="section level3">
-<h3>Server</h3>
-<div id="htmlwidget-e8de3ffb380bfae63b3d" style="width:1000px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e8de3ffb380bfae63b3d">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: .75\n#lineWidth: .75\n#padding: 8\n#spacing: 0\n#zoom: 5\n  \n[<state>user]-> local[<comment> PC |]\n[PC] --> [OneDrive/Sharepoint | spinco_documentation]\n[user]-> cloud remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n[PC] -- [<database> SMB-share ]\n[<database> SMB-share] <-> private [gfraga | scripts]\n[<database> SMB-share] <->  [spinco_data |raw, final outputs, long-term ]\n[Linux] -- [<database> NFS-share | heavy processing]\n[Linux] -- [<database> SMB-share]\n[<database> NFS-share] <-> private [mnt/gfraga-data]\n[<database> NFS-share] <-> shared [mnt/spinco |intermediate derivs]\n[<database> NFS-share] <--> shared [spinco_data]\n[gfraga | scripts]-:> push [github repo]","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="data-flow" class="section level3">
+<h3>Data flow</h3>
+<div id="htmlwidget-c263963e580d4e934e73" style="width:1000px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c263963e580d4e934e73">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: .75\n#lineWidth: .75\n#padding: 8\n#spacing: 0\n#zoom: 5\n  \n[<state>user]-> local[<comment> PC |]\n[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]\n[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n[PC] -- [<database> SMB-share ]\n \n[<database> SMB-share] <-> private [<client>gfraga | scripts]\n  [gfraga | scripts]-:> push2web [<state>github repo]\n\n[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]\n\n[Linux] -- [<database> NFS-share | heavy processing]\n[Linux] -- [<database> SMB-share]\n[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]\n[<database> NFS-share] <-> private [mnt/gfraga-data]\n[<database> NFS-share] <--> shared [spinco_data]","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<!-- ## Stimuli {.tabset} -->
 </div>
 </div>
-<div id="stimuli" class="section level2 tabset">
-<h2 class="tabset">Stimuli</h2>
+<div id="stimuli" class="section level2">
+<h2>Stimuli</h2>
 <div id="recordings" class="section level3">
 <h3>Recordings</h3>
-<div id="htmlwidget-8386360d02b5fccbb4bd" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8386360d02b5fccbb4bd">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# From  https://nomnoml.com/\n#arrowSize: 1\n#bendSize: 0.3\n#direction:  right \n#gutter: 5\n#edgeMargin: 0\n#gravity: 1\n#edges: hard | rounded\n#background: transparent\n#fill: #eee8d5; #fdf6e3\n#fillArrows: false\n#font: Calibri\n#fontSize: 12\n#leading: 1.25\n#lineWidth: 1.5\n#padding: 8\n#spacing: 45\n#stroke: #33322E\n#title: filename\n#zoom: 1\n#acyclicer: greedy\n#ranker: network-simplex | tight-tree | longest-path\n#.box: fill=#8f8 dashed\n#.blob: visual=ellipse title=bold\n\n[<usecase>raw | versions] -> [<table> Separate files: | words | pseudowords]\n[<table> Separate files:] --> [<actor>rawAudiocheck|plots]\n\n[<actor>rawAudiocheck] -->  ok[<abstract>detect speech]  \n  [<abstract>detect speech] --> [<actor>AudioCheck|plots]\n  [<actor>AudioCheck] --> ok [<abstract>trim]\n   [<abstract>trim] --> [<state>clear]\n   [<abstract>trim] --> [<state>in SSN]\n   [<abstract>trim] --> [<state>vocoder]\n      [<state>vocoder] -- Lvls[<start>st.]\n      [<state>in SSN] -- SNRs[<start>st]\n      ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<p>Selected items were recorded in a single session (shuffled order) by
+xxx. .wav files at 48000 Hz; 24 bits.</p>
+<div id="htmlwidget-ea22f927f52a06d00da8" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea22f927f52a06d00da8">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# From  https://nomnoml.com/\n#arrowSize: 1\n#bendSize: 0.3\n#direction:  right \n#gutter: 5\n#edgeMargin: 0\n#gravity: 1\n#edges: hard | rounded\n#background: transparent\n#fill: #eee8d5; #fdf6e3\n#fillArrows: false\n#font: Calibri\n#fontSize: 12\n#leading: 1.25\n#lineWidth: 1.5\n#padding: 8\n#spacing: 45\n#stroke: #33322E\n#title: filename\n#zoom: 1\n#acyclicer: greedy\n#ranker: network-simplex | tight-tree | longest-path\n#.box: fill=#8f8 dashed\n#.blob: visual=ellipse title=bold\n\n[<usecase>raw | versions] -> prorrec[<table> Separate files: | words | pseudowords]\n[<table> Separate files:] --> [<state>normalize]\n[normalize] --> matlab (auto) [<state>detectSpeech|trim]\n[detectSpeech] --> [<actor>audiocheck|plots]\n\n[<actor>audiocheck] --> if OK  [<abstract>Experiment]\n    [<abstract>Experiment]  -->  [<state>clear]\n    [<abstract>Experiment] --> [<state>in SSN]\n    [<abstract>Experiment] --> [<state>vocoder]\n      [<state>vocoder] -- Lvls[<start>st.]\n      [<state>in SSN] -- SNRs[<start>st]\n[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler | matlab; manual trim; clicks rmv]\n\n      ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<!-- ## SINON {.tabset} -->
 </div>
 </div>
-<div id="sinon" class="section level2 tabset">
-<h2 class="tabset">SINON</h2>
+<div id="sinon" class="section level2">
+<h2>SINON</h2>
 <div id="design" class="section level3">
 <h3>Design</h3>
-<div id="htmlwidget-e358a74b617722d8e370" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-e358a74b617722d8e370">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: down\n  \n[<database>SINON| manipulations]-> [Within ss]\n  [Within ss] --> [Item type | word | pseudo]\n  [Within ss] --> ['Noise' type | vocoding | speech-shaped noise]\n  [Within ss] --> [SNR | 1 | 2| 3| 4| 5]\n\n[<database>SINON| manipulations]-> [Between ss]\n  [Between ss] --> [Task | Lexical decision | 4FC | Pict match]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-<div id="htmlwidget-a237168a7f5bcc5826c8" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a237168a7f5bcc5826c8">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: right\n  \n# [<database>SINON Design]-> [<state>LD task]\n#  [LD task] --> [NV]\n#    [NV] --> [Blocks (4) |||]\n#    [Blocks (4)] --> [<table>Trials (2 x 5 x 9 = 80)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]\n# [LD task] --> [SSN]\n#    [SSN] --> [...]\n#    [...] --> [....]\n# \n# [<database>SINON Design]-> [<state>. Task]\n# [<state>. Task] --> [..]\n# [..] --> [:..]\n# [:..] --> [:...]\n\n#```\n\n### SINEEG\n\n ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-1d6666cd31d8ea747d18" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-1d6666cd31d8ea747d18">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: down\n  \n[<database>SINON| manipulations]-> [Within ss]\n  [Within ss] --> [Item type | word | pseudo]\n  [Within ss] --> ['Noise' type | vocoding | speech-shaped noise]\n  [Within ss] --> [SNR | 1 | 2| 3| 4| 5]\n\n[<database>SINON| manipulations]-> [Between ss]\n  [Between ss] --> [Task | Lexical decision | 4FC | Pict match]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-6b5eb47c8b006f270258" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6b5eb47c8b006f270258">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: right\n  \n# [<database>SINON Design]-> [<state>LD task]\n#  [LD task] --> [NV]\n#    [NV] --> [Blocks (4) |||]\n#    [Blocks (4)] --> [<table>Trials (2 x 5 x 9 = 80)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]\n# [LD task] --> [SSN]\n#    [SSN] --> [...]\n#    [...] --> [....]\n# \n# [<database>SINON Design]-> [<state>. Task]\n# [<state>. Task] --> [..]\n# [..] --> [:..]\n# [:..] --> [:...]\n\n#```\n\n### SINEEG\n\n ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 
@@ -15625,7 +15636,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2,h3,h4,h5",
+      selectors: "h1,h2,h3",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
@@ -15634,7 +15645,7 @@ $(document).ready(function ()  {
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
-    options.showAndHide = true;
+    options.showAndHide = false;
     options.smoothScroll = true;
 
     // tocify
