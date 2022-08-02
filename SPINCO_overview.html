@@ -11,7 +11,7 @@
 
 <meta name="author" content="G.Fraga Gonzalez" />
 
-<meta name="date" content="2022-07-28" />
+<meta name="date" content="2022-08-01" />
 
 <title>Speech-in-noise comprehension (SPINCO)</title>
 
@@ -15534,7 +15534,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Speech-in-noise comprehension (SPINCO)</h1>
 <h4 class="author">G.Fraga Gonzalez</h4>
-<h4 class="date">2022-07-28</h4>
+<h4 class="date">2022-08-01</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 Overview of ongoing projects at Neurolinguistics group (University of
@@ -15550,13 +15550,13 @@ Zurich)
 <h2>Projects</h2>
 <div id="overview" class="section level3">
 <h3>Overview</h3>
-<div id="htmlwidget-70099464a6f71cc69886" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-70099464a6f71cc69886">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 3\n  \n[<database>SPINCO]-> EEG[<comment>SINEEG]\n[<database>SPINCO]-> online[<comment>SINON]\n  \n  [SINON]-->Rmd [database | words | pseudowords] \n  [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]\n  [Manipulations] --> .m[SNR | x 5 Lvls] \n  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 4FC | pict match]\n  \n  [<comment>SINEEG]-->Openvibe[Real-time EEG]\n  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]\n  [Manipulation] --> .m[SNR. | 3 x Lvls]\n  [Real-time EEG] --> [brain-states | alpha | beta-connect?]\n  [brain-states] --> [stim trigger]\n  [SNR.] -->  [stim trigger]\n  [stim trigger] -> psyexp [Task | Lexical Decision]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-4565ecb8039063538eb4" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-4565ecb8039063538eb4">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 3\n  \n[<database>SPINCO]-> EEG[<comment>SINEEG]\n[<database>SPINCO]-> online[<comment>SINON]\n  \n  [SINON]-->Rmd [database | words | pseudowords] \n  [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]\n  [Manipulations] --> .m[SNR | x 5 Lvls] \n  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 4FC | pict match]\n  \n  [<comment>SINEEG]-->Openvibe[Real-time EEG]\n  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]\n  [Manipulation] --> .m[SNR. | 3 x Lvls]\n  [Real-time EEG] --> [brain-states | alpha | beta-connect?]\n  [brain-states] --> [stim trigger]\n  [SNR.] -->  [stim trigger]\n  [stim trigger] -> psyexp [Task | Lexical Decision]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="data-flow" class="section level3">
-<h3>Data flow</h3>
-<div id="htmlwidget-c263963e580d4e934e73" style="width:1000px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c263963e580d4e934e73">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: .75\n#lineWidth: .75\n#padding: 8\n#spacing: 0\n#zoom: 5\n  \n[<state>user]-> local[<comment> PC |]\n[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]\n[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n[PC] -- [<database> SMB-share ]\n \n[<database> SMB-share] <-> private [<client>gfraga | scripts]\n  [gfraga | scripts]-:> push2web [<state>github repo]\n\n[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]\n\n[Linux] -- [<database> NFS-share | heavy processing]\n[Linux] -- [<database> SMB-share]\n[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]\n[<database> NFS-share] <-> private [mnt/gfraga-data]\n[<database> NFS-share] <--> shared [spinco_data]","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="data-workflow" class="section level3">
+<h3>Data workflow</h3>
+<div id="htmlwidget-2f423ce4fd93a0033d21" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2f423ce4fd93a0033d21">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: .75\n#lineWidth: .75\n#padding: 5\n#spacing: 0\n#zoom: 2\n  \n[<state>user]-> local[<comment> PC |]\n[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]\n[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n[PC] -- [<database> SMB-share ]\n \n[<database> SMB-share] <-> private [<client>gfraga | scripts]\n  [gfraga | scripts]-:> push2web [<state>github repo]\n\n[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]\n\n[Linux] -- [<database> NFS-share | heavy processing]\n[Linux] -- [<database> SMB-share]\n[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]\n[<database> NFS-share] <-> private [mnt/gfraga-data]\n[<database> NFS-share] <--> shared [spinco_data]","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 <!-- ## Stimuli {.tabset} -->
 </div>
 </div>
@@ -15566,19 +15566,46 @@ Zurich)
 <h3>Recordings</h3>
 <p>Selected items were recorded in a single session (shuffled order) by
 xxx. .wav files at 48000 Hz; 24 bits.</p>
-<div id="htmlwidget-ea22f927f52a06d00da8" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ea22f927f52a06d00da8">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# From  https://nomnoml.com/\n#arrowSize: 1\n#bendSize: 0.3\n#direction:  right \n#gutter: 5\n#edgeMargin: 0\n#gravity: 1\n#edges: hard | rounded\n#background: transparent\n#fill: #eee8d5; #fdf6e3\n#fillArrows: false\n#font: Calibri\n#fontSize: 12\n#leading: 1.25\n#lineWidth: 1.5\n#padding: 8\n#spacing: 45\n#stroke: #33322E\n#title: filename\n#zoom: 1\n#acyclicer: greedy\n#ranker: network-simplex | tight-tree | longest-path\n#.box: fill=#8f8 dashed\n#.blob: visual=ellipse title=bold\n\n[<usecase>raw | versions] -> prorrec[<table> Separate files: | words | pseudowords]\n[<table> Separate files:] --> [<state>normalize]\n[normalize] --> matlab (auto) [<state>detectSpeech|trim]\n[detectSpeech] --> [<actor>audiocheck|plots]\n\n[<actor>audiocheck] --> if OK  [<abstract>Experiment]\n    [<abstract>Experiment]  -->  [<state>clear]\n    [<abstract>Experiment] --> [<state>in SSN]\n    [<abstract>Experiment] --> [<state>vocoder]\n      [<state>vocoder] -- Lvls[<start>st.]\n      [<state>in SSN] -- SNRs[<start>st]\n[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler | matlab; manual trim; clicks rmv]\n\n      ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-<!-- ## SINON {.tabset} -->
+<div id="htmlwidget-53f359989bb4305260d6" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-53f359989bb4305260d6">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# From  https://nomnoml.com/\n#arrowSize: 1\n#bendSize: 0.3\n#direction:  right \n#gutter: 15\n#edgeMargin: 0\n#gravity: 1\n#edges: hard | rounded\n#background: transparent\n#fill: #eee8d5; #fdf6e3\n#fillArrows: false\n#font: Calibri\n#fontSize: 12\n#leading: 1.25\n#lineWidth: 1.5\n#padding: 8\n#spacing: 45\n#stroke: #33322E\n#title: filename\n#zoom: 1\n#acyclicer: greedy\n#ranker: network-simplex | tight-tree | longest-path\n#.box: fill=#8f8 dashed\n#.blob: visual=ellipse title=bold\n\n[<usecase>raw | versions] ->  [<table> Separate files (prorrec) | words | pseudowords]\n[<state>normalize] -->  [<state>detectSpeech;(matlab func) |+trim]\n[<table> Separate files (prorrec)] --> [<state> normalize]\n\n[detectSpeech;(matlab func) ] --> [<actor>audiocheck|plots]\n\n[<actor>audiocheck] --> if OK  [<abstract>Experiment]\n    [<abstract>Experiment]  -->  [<state>clear]\n    [<abstract>Experiment] --> [<state>in SSN]\n    [<abstract>Experiment] --> [<state>vocoder]\n      [<state>vocoder] -- Lvls[<start>st.]\n      [<state>in SSN] -- SNRs[<start>st]\n[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler* | matlab app; manual trim; select clicks]\n      ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="audio-labeler" class="section level4">
+<h4><strong>Audio labeler</strong></h4>
+<p>Matlab app to apply speech detection in one or more wav files and to
+manually adjust the output as a label.</p>
+<ol style="list-style-type: decimal">
+<li><p>Type: <strong>AudioLabeler</strong> in command line to initialize
+the app</p></li>
+<li><p>Go to Label and <strong>load</strong> one or several audio
+files</p></li>
+<li><p><strong>Select all</strong> files and click on Speech detector.
+This will open a new tab with the option to run speech detector. Run it
+in all files</p></li>
+<li><p>Now a new <strong>label SpeechDetected</strong> has been created
+in the ROI labels panel.</p></li>
+<li><p>To <strong>adjust</strong> the label click in one audio file and
+then in the yellow segment marked by the speech detector . If it is not
+adjust the edges of the highlight and then click away in the panel
+below. Make sure the label doesn’t reset to the original size!</p></li>
+<li><p>If you find a ‘click’ add a new label called ‘click’ and select a
+short segment around it. Mark it as ‘true’ so it is saved.</p></li>
+<li><p>Saving the output. One option is to select all files and then
+click Labels/Export to workspace. This will create a new variable:
+labeledSet_hhmmss (time stamped)</p></li>
+<li><p>Run script to use the label info , transform the click segment
+(if any ) to zero and trim the file.</p></li>
+</ol>
+<pre><code>&lt;!-- ## SINON {.tabset} --&gt;</code></pre>
+</div>
 </div>
 </div>
 <div id="sinon" class="section level2">
 <h2>SINON</h2>
 <div id="design" class="section level3">
 <h3>Design</h3>
-<div id="htmlwidget-1d6666cd31d8ea747d18" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1d6666cd31d8ea747d18">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: down\n  \n[<database>SINON| manipulations]-> [Within ss]\n  [Within ss] --> [Item type | word | pseudo]\n  [Within ss] --> ['Noise' type | vocoding | speech-shaped noise]\n  [Within ss] --> [SNR | 1 | 2| 3| 4| 5]\n\n[<database>SINON| manipulations]-> [Between ss]\n  [Between ss] --> [Task | Lexical decision | 4FC | Pict match]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-<div id="htmlwidget-6b5eb47c8b006f270258" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6b5eb47c8b006f270258">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: right\n  \n# [<database>SINON Design]-> [<state>LD task]\n#  [LD task] --> [NV]\n#    [NV] --> [Blocks (4) |||]\n#    [Blocks (4)] --> [<table>Trials (2 x 5 x 9 = 80)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]\n# [LD task] --> [SSN]\n#    [SSN] --> [...]\n#    [...] --> [....]\n# \n# [<database>SINON Design]-> [<state>. Task]\n# [<state>. Task] --> [..]\n# [..] --> [:..]\n# [:..] --> [:...]\n\n#```\n\n### SINEEG\n\n ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ea27ee6aa7f8f924d3a3" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ea27ee6aa7f8f924d3a3">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: down\n  \n[<database>SINON| manipulations]-> [Within ss]\n  [Within ss] --> [Item type | word | pseudo]\n  [Within ss] --> ['Noise' type | vocoding | speech-shaped noise]\n  [Within ss] --> [SNR | 1 | 2| 3| 4| 5]\n\n[<database>SINON| manipulations]-> [Between ss]\n  [Between ss] --> [Task | Lexical decision | 4FC | Pict match]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-91b56082bc6b025ca868" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-91b56082bc6b025ca868">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=lightyellow empty bold\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 2\n#direction: right\n  \n# [<database>SINON Design]-> [<state>LD task]\n#  [LD task] --> [NV]\n#    [NV] --> [Blocks (4) |||]\n#    [Blocks (4)] --> [<table>Trials (2 x 5 x 9 = 80)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]\n# [LD task] --> [SSN]\n#    [SSN] --> [...]\n#    [...] --> [....]\n# \n# [<database>SINON Design]-> [<state>. Task]\n# [<state>. Task] --> [..]\n# [..] --> [:..]\n# [:..] --> [:...]\n\n#```\n\n### SINEEG\n\n ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 

@@ -11,9 +11,13 @@ output:
       collapsed: no
 runhead: SPINCO
 abstract: 'Overview of ongoing projects at Neurolinguistics group (University of Zurich) '
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 <!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(gridExtra)
@@ -25,8 +29,8 @@ library(kableExtra)
 library(DT) # for saving tables
 ```
 
-
 <!-- ## Projects {.tabset} -->
+
 ## Projects
 
 ### Overview
@@ -66,9 +70,9 @@ library(DT) # for saving tables
 
 ```
 
-### Data flow
+### Data workflow
 
-```{nomnoml, echo = FALSE, out.height=400,out.width=1000}
+```{nomnoml, echo = FALSE, out.height=400,out.width=850}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
 #fontSize: 6
 #arrowSize: .5
@@ -81,9 +85,9 @@ library(DT) # for saving tables
 #direction: right
 #leading: .75
 #lineWidth: .75
-#padding: 8
+#padding: 5
 #spacing: 0
-#zoom: 5
+#zoom: 2
   
 [<state>user]-> local[<comment> PC |]
 [PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]
@@ -102,20 +106,21 @@ library(DT) # for saving tables
 [<database> NFS-share] <--> shared [spinco_data]
 ```
 
-
 <!-- ## Stimuli {.tabset} -->
+
 ## Stimuli
 
 ### Recordings
 
-Selected items were recorded in a single session (shuffled order) by xxx. 
-.wav files at 48000 Hz; 24 bits. 
+Selected items were recorded in a single session (shuffled order) by
+xxx. .wav files at 48000 Hz; 24 bits.
+
 ```{nomnoml , echo = FALSE, out.height=400,out.width=850}
 # From  https://nomnoml.com/
 #arrowSize: 1
 #bendSize: 0.3
 #direction:  right 
-#gutter: 5
+#gutter: 15
 #edgeMargin: 0
 #gravity: 1
 #edges: hard | rounded
@@ -136,10 +141,11 @@ Selected items were recorded in a single session (shuffled order) by xxx.
 #.box: fill=#8f8 dashed
 #.blob: visual=ellipse title=bold
 
-[<usecase>raw | versions] -> prorrec[<table> Separate files: | words | pseudowords]
-[<table> Separate files:] --> [<state>normalize]
-[normalize] --> matlab (auto) [<state>detectSpeech|trim]
-[detectSpeech] --> [<actor>audiocheck|plots]
+[<usecase>raw | versions] ->  [<table> Separate files (prorrec) | words | pseudowords]
+[<state>normalize] -->  [<state>detectSpeech;(matlab func) |+trim]
+[<table> Separate files (prorrec)] --> [<state> normalize]
+
+[detectSpeech;(matlab func) ] --> [<actor>audiocheck|plots]
 
 [<actor>audiocheck] --> if OK  [<abstract>Experiment]
     [<abstract>Experiment]  -->  [<state>clear]
@@ -147,14 +153,40 @@ Selected items were recorded in a single session (shuffled order) by xxx.
     [<abstract>Experiment] --> [<state>vocoder]
       [<state>vocoder] -- Lvls[<start>st.]
       [<state>in SSN] -- SNRs[<start>st]
-[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler | matlab; manual trim; clicks rmv]
-
+[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler* | matlab app; manual trim; select clicks]
       
 ```
 
- 
+#### **Audio labeler**
 
-<!-- ## SINON {.tabset} -->
+Matlab app to apply speech detection in one or more wav files and to
+manually adjust the output as a label.
+
+1.   Type: **AudioLabeler** in command line to initialize the app
+
+2.   Go to Label and **load** one or several audio files
+
+3.   **Select all** files and click on Speech detector. This will open a
+    new tab with the option to run speech detector. Run it in all files
+
+4.   Now a new **label SpeechDetected** has been created in the ROI
+    labels panel.
+
+5.   To **adjust** the label click in one audio file and then in the
+    yellow segment marked by the speech detector . If it is not adjust
+    the edges of the highlight and then click away in the panel below.
+    Make sure the label doesn't reset to the original size!
+
+6.   If you find a '**click**' add a new label called 'click' and select
+    a short segment around it. Mark it as 'true' so it is saved.
+
+7.   **Saving** the output. One option is to select all files and then
+    click Labels/Export to workspace. This will create a new variable:
+    labeledSet_hhmmss (time stamped)
+
+8.   Run **script to use the label info** , transform the click segment
+    (if any ) to zero and trim the file.
+
 ## SINON
 
 ### Design
@@ -185,10 +217,6 @@ Selected items were recorded in a single session (shuffled order) by xxx.
   
 
 ```
-
- 
-
-
 
 ```{nomnoml, echo = FALSE, out.height=400,out.width=850}
 

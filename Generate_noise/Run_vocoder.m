@@ -15,11 +15,11 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 
 %% Inputs 
 % paths and files 
-dirinput =      'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\words_v1' ;
-diroutput =     'V:\gfraga\SPINCO\Sound_files\LIRI_voice_SM\words_v1_vocoded';
+dirinput =      'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_speechDetect_OK' ;
+diroutput =     'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_speechDetect_OK_vocoded';
 wavfiles =      dir([dirinput, '\*.wav']);
 wavfiles =      fullfile(dirinput, {wavfiles.name});
-
+mkdir(diroutput)
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
  
 srate =         48000;
@@ -35,7 +35,7 @@ MinFreq =       50;
 MaxFreq =        5000;
 
 % Degradation levels
-target_nchannels = [4,8,12,16,20];
+target_nchannels = [3,4,5,6,7,8,9];
  
 % Call vocoder function (save in structure array)
 
@@ -55,7 +55,7 @@ for i = 1:length(signals)
     
     
    for ii = 1:length(target_nchannels)       
-       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'NoiseVocoded_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
+       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'\NoVoc_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
        nvStimuli(i).vocoded(ii).channels = target_nchannels(ii);
        nvStimuli(i).vocoded(ii).nvsignal = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, nvStimuli(i).vocoded(ii).channels, nvStimuli(i).ursignal, srate, MinFreq, MaxFreq);            
         disp('ok')
@@ -65,11 +65,15 @@ end
 
 %% Saving 
 % Matlab 
-save([diroutput,'stimuli_nv'],'nvStimuli')
+cd (diroutput)
+save([diroutput,'\stimuli_nv'],'nvStimuli')
 % Audio
 for i = 1:length(nvStimuli)
    for ii = 1:length(nvStimuli(i).vocoded)       
-        audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate)
+       
+       % save to file 
+        text = ['Noise vocoded with ',num2str(nvStimuli(i).vocoded(ii).channels),' ch'];
+        audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate,'BitsPerSample',24,'comment',text)
          disp(['...saved ',nvStimuli(i).vocoded(ii).filename]);
    end
     

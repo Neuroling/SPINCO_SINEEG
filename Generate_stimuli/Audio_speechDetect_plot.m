@@ -7,11 +7,11 @@ clear all
 % - Option to add some extended head/tail to the boundaries from detectSpeech
 addpath('C:\Users\gfraga\Documents\MATLAB\')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')% tool for plot
-dirinput= 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v2';
+dirinput= 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1';
 diroutput = [dirinput,'_speechDetect']; 
 mkdir(diroutput)
 % find files 
-files = dir([dirinput,'/*.wav']);
+files = dir([dirinput,'/Zahn*.wav']);
 folders = {files.folder};
 files = {files.name};
 %
