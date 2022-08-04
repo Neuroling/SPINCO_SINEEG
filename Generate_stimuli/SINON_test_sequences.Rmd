@@ -62,8 +62,8 @@ library(DT) # for saving tables
 ```{r read,  warning = FALSE, verbose = FALSE, results ='hide'}
 # Read data
 rm(list=ls())
-if( .Platform$OS.type == "windows" ){ dirinput <- 'V:/spinco_data/'
-} else if ( .Platform$OS.type == "unix"){ dirinput <- '/run/user/891957923/gvfs/smb-share:domain=d.uzh.ch,server=idnas12.d.uzh.ch,share=g_psyneulin_data$,user=gfraga/spinco_data'
+if( .Platform$OS.type == "windows" ){ dirinput <- 'V:/gfraga/'
+} else if ( .Platform$OS.type == "unix"){ dirinput <- '/run/user/891957923/gvfs/smb-share:domain=d.uzh.ch,server=idnas12.d.uzh.ch,share=g_psyneulin_data$,user=gfraga/gfraga'
 }
  
 Merged <- openxlsx::read.xlsx(paste0(dirinput,'/Neuroling_SINON_stimuli.xlsx'),sheet = 'Merged')

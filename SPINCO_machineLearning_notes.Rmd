@@ -1,0 +1,121 @@
+---
+title: "Notes on machine learning classification methods for EEG"
+author: "G.Fraga Gonzalez"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    code_folding: hide
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: no
+runhead: EEG-ML decoding and classification
+#abstract: ''
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+<!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gridExtra)
+library(dplyr)
+library(plotly)
+library(ggplot2)
+library(nomnoml)
+library(DiagrammeR)
+library(DT) # for saving tables
+```
+
+<!-- ## Projects {.tabset} -->
+
+## Multivariate pattern analysis (MVPA)
+MVPA is used to map distributed patterns of activation to specific
+stimuli, other relevant dimensions of the task or of the individual
+participant ([Haynes and Rees, 2006](10.1038/nrn1931)). See at practical
+guide for application to infant EEG data in [Ashton et al.,
+2022](https://www.sciencedirect.com/science/article/pii/S187892932200038X#bib39).
+
+## Workflows
+
+### Overview
+
+```{r, out.height=400,out.width=850}
+ #https://rich-iannone.github.io/DiagrammeR/graphviz_and_mermaid.html
+
+
+DiagrammeR::grViz("digraph flow {
+
+graph [rankdir = LR]
+
+
+# define the global styles of the nodes. We can override these in box if we wish
+node [shape = egg, style = filled, fillcolor = Azure]
+crossvalidation 
+
+  node [shape = rectangle, style = filled, fillcolor = Azure]
+  kfold LeaveOneOut
+
+node [shape = egg, style = filled, fillcolor = Beige]
+classification
+
+  node [shape = rectangle, style = filled, fillcolor = Beige]
+    Linear  SVM LDA LogReg
+    NonLinear GaussianKernelSVM DeepNeuralNetwork    
+
+node [shape = rectangle, style = filled, fillcolor = HoneyDew]
+Features timeDomain freqDomain
+
+node [shape = rectangle, style = filled, fillcolor = Linen]
+EEG
+
+
+
+# edge definitions with the node IDs
+Features->{timeDomain freqDomain}
+crossvalidation->{kfold LeaveOneOut}
+classification->Linear->{SVM LDA LogReg}
+classification->NonLinear->{GaussianKernelSVM DeepNeuralNetwork}
+
+}")
+
+```
+
+### Data workflow
+
+```{nomnoml, echo = FALSE, out.height=400,out.width=850}
+# https://cran.r-project.org/web/packages/nomnoml/readme/README.html
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=Wheat empty bold
+#.client: fill=LavenderBlush empty bold
+#background: FloralWhite
+#lineWidth: 1
+#direction: right
+#leading: .75
+#lineWidth: .75
+#padding: 5
+#spacing: 0
+#zoom: 2
+#   
+# [<state>user]-> local[<comment> PC |]
+# [PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]
+# [user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]
+# [PC] -- [<database> SMB-share ]
+#  
+# [<database> SMB-share] <-> private [<client>gfraga | scripts]
+#   [gfraga | scripts]-:> push2web [<state>github repo]
+# 
+# [<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]
+# 
+# [Linux] -- [<database> NFS-share | heavy processing]
+# [Linux] -- [<database> SMB-share]
+# [<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]
+# [<database> NFS-share] <-> private [mnt/gfraga-data]
+# [<database> NFS-share] <--> shared [spinco_data]
+```
+
