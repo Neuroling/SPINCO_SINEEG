@@ -24,15 +24,20 @@ dat$outlier_Ned1_Diff <- !(dat$Ned1_Diff > boxstats$stats[1] & dat$Ned1_Diff < b
  
 #Outlier in any
 dat$outlier_any <-  (dat$outlier_lgSUBTLEX==TRUE | dat$outlier_PTAN==TRUE | dat$outlier_Ned1_Diff==TRUE)
+dat$nSyllables <- sapply(strsplit(dat$Pseudoword,'-'),length)
 
 # save 
 openxlsx::write.xlsx(dat,fileoutput)
 
 
 ##################################################
-# Export a selection for matching 
-dat2export <- dat[which(dat$outlier_any==FALSE),]
-dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','Length_Ortho'))
+# Export a selection for matching  
+dat2export <- dat[which(dat$outlier_lgSUBTLEX==FALSE & !is.na(dat$PTAN)),]
+dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables'))
 write.table(dat2export,'list2match.txt',col.names=FALSE,row.names = FALSE,sep = "\t")
+
+dat2export <- dat[which(dat$outlier_any==FALSE),]
+dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables'))
+write.table(dat2export,'list2match_hard.txt',col.names=FALSE,row.names = FALSE,sep = "\t")
 
 
