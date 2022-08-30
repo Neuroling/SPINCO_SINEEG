@@ -7,11 +7,11 @@ clear all
 % - Option to add some extended head/tail to the boundaries from detectSpeech
 addpath('C:\Users\gfraga\Documents\MATLAB\')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')% tool for plot
-dirinput= 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1';
-diroutput = [dirinput,'_speechDetect']; 
+dirinput= 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1';
+diroutput = [dirinput,'_speechDetect2']; 
 mkdir(diroutput)
 % find files 
-files = dir([dirinput,'/Zahn*.wav']);
+files = dir([dirinput,'/*.wav']);
 folders = {files.folder};
 files = {files.name};
 %
@@ -19,7 +19,8 @@ headms = 100; % ms
 tailms = 100;
 PLOTME = 1;
 cd (dirinput)
-
+ 
+ 
 %% Read all files
 signals = cell(1,length(files));
 fss = cell(1,length(files));
@@ -30,20 +31,24 @@ for i = 1:length(files)
    disp(['read ',files{i}]);
 end
 
-%% Normalize by rms 
-allrms  = cellfun(@(x) rms(x),signals);
-RMS_mean = mean(allrms);
-signals_nrm = cellfun(@(x) x.*RMS_mean/rms(x), signals,'UniformOutput',false);
 %% Main loop  
 cd (diroutput)
-for i = 1:length(signals_nrm)   
+for i = 1:length(signals)   
+
     % read data 
-    dat=signals_nrm{i};
+    dat=signals{i};
     srate = fss{i};
     times = (0:length(dat)-1)/srate;     
+    
     %  Try automatic detection of speech (show boundaries in time x amp plot) 
-      [idx, thresh] = detectSpeech(dat,srate);
-   if PLOTME==1 
+       windowDuration= 0.07;
+       numWindowSamples = round(windowDuration*srate);
+       win = hamming(numWindowSamples,'periodic');
+       %mergeDuration = 0.2;
+       %mergeDist = round(mergeDuration*srate);
+       [idx, thresh] = detectSpeech(dat,srate,"Window",win);
+      
+    if PLOTME==1 
         % plots
         figure('color','white');
         subplot(3,1,1)
@@ -70,20 +75,29 @@ for i = 1:length(signals_nrm)
         disp(files{i})
    
       %Save
-      print(gcf, '-djpeg', [diroutput,'/',strrep(files{i},'.wav','_nrm.jpg')]);
+      print(gcf, '-djpeg', [diroutput,'/',strrep(files{i},'.wav','.jpg')]);
       close gcf
    end
   
   %Save audio       
    if size(idx,1)> 1 
        trimdat = dat;
-      outputname = strrep(files{i},'.wav','_nrm_badDetect.wav');
+      outputname = strrep(files{i},'.wav','_badDetect.wav');
    else 
-      % trim 
-      startpoint = idx(1)-((headms/1000)*srate);
+     % setting boundaries to trim 
+     % if adding head leads to negative value start from 1st datapoint
+       startpoint = idx(1)-((headms/1000)*srate);
+       if startpoint < 1 
+           startpoint = 1;
+       end 
+      % if endpoint + tail larger than data, just cut to last data point
       endpoint = idx(2)+ ((tailms/1000)*srate);
+      if endpoint > length(dat)
+        endpoint = length(dat);
+      end
+      % trim signal
       trimdat = dat(startpoint:endpoint);
-      outputname = strrep(files{i},'.wav','_nrm_trim.wav');
+      outputname = strrep(files{i},'.wav','_trim.wav');
    end 
    
       % save to file 

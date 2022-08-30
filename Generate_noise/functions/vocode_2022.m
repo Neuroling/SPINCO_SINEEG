@@ -210,7 +210,14 @@ for i=1:nCh
     % here we multiply y - the envelope, by some noise
     if strcmp(exc,'noise')==1
         % -- excite with noise ---
-        ModC(i,:)=y.*sign(rand(1,nSmp)-0.5);
+        noise=sign(rand(1,nSmp)-0.5);
+        if FILTER_BEFORE %filter the noise carrier prior to modulating with signal envelope
+            %filter the noise
+            noise=filtfilt(filterB(i,:),filterA(i,:),noise);
+            ModC(i,:)=y.*noise; 
+        else %modulate broadband noise with signal
+            ModC(i,:)=y.*noise;
+        end
     elseif strcmp(exc,'sine')==1
         % ---- multiply by a sine wave carrier of the appropriate carrier ----
         if strcmp(mapping,'n')==1
@@ -261,13 +268,11 @@ if DOFIGURES; figure(2), hold off; figure(3), plot(ModC'); end
 for i=1:nCh
     if sum(abs(ModC(i,:)))>0
         if strcmp(mapping,'n')==1
-            if FILTER_BEFORE
-            band=filtfilt(filterB(i,:),filterA(i,:),ModC(i,:));%;filter(filterB(i,:),filterA(i,:),ModC(i,:));
-            else
-                band=ModC(i,:);
-            end
+                
             if FILTER_AFTER
                band=filtfilt(filterB(i,:),filterA(i,:),ModC(i,:) );
+            else
+                band=ModC(i,:);
             end
                 
             % scale component output waveform to have

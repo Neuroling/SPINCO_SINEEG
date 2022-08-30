@@ -13,7 +13,7 @@
 % directory as the original files that were used by audioLabeler 
 
 % Specify which label Set you want to use 
-labelSet  = labeledSet_143741;
+labelSet  = labeledSet_164154 ;
 
 %% Read labels 
 for f = 1:length(labelSet.Source)

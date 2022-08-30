@@ -31,7 +31,7 @@ library(DT) # for saving tables
 
 <!-- ## Projects {.tabset} -->
 
-## Projects
+## Projects {.tabset} 
 
 ### Overview
 
@@ -57,7 +57,7 @@ library(DT) # for saving tables
   [SINON]-->Rmd [database | words | pseudowords] 
   [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]
   [Manipulations] --> .m[SNR | x 5 Lvls] 
-  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 4FC | pict match]
+  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 2FC | pict match]
   
   [<comment>SINEEG]-->Openvibe[Real-time EEG]
   [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]
@@ -108,12 +108,12 @@ library(DT) # for saving tables
 
 <!-- ## Stimuli {.tabset} -->
 
-## Stimuli
+## Stimuli {.tabset} 
 
 ### Recordings
 
-Selected items were recorded in a single session (shuffled order) by
-xxx. .wav files at 48000 Hz; 24 bits.
+Words and pseudowords were recorded in shuffled order in a single session by
+dr. D. Friedrichs (at LIRI, UZH). The session recorded video and .wav files at 48000 Hz; 24 bits.
 
 ```{nomnoml , echo = FALSE, out.height=400,out.width=850}
 # From  https://nomnoml.com/
@@ -156,7 +156,6 @@ xxx. .wav files at 48000 Hz; 24 bits.
 [<actor>audiocheck] <--> not OK?[<abstract>audioLabeler* | matlab app; manual trim; select clicks]
       
 ```
-
 #### **Audio labeler**
 
 Matlab app to apply speech detection in one or more wav files and to
@@ -187,7 +186,7 @@ manually adjust the output as a label.
 8.   Run **script to use the label info** , transform the click segment
     (if any ) to zero and trim the file.
 
-## SINON
+## SINON {.tabset} 
 
 ### Design
 
@@ -213,7 +212,7 @@ manually adjust the output as a label.
   [Within ss] --> [SNR | 1 | 2| 3| 4| 5]
 
 [<database>SINON| manipulations]-> [Between ss]
-  [Between ss] --> [Task | Lexical decision | 4FC | Pict match]
+  [Between ss] --> [Task | Lexical decision | 2FC | Pict match]
   
 
 ```

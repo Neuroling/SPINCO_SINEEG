@@ -12,12 +12,14 @@ clear all ;
 addpath('V:\gfraga\scripts_neulin\Generate_noise\functions')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')
 addpath('C:\Users\gfraga\Documents\MATLAB\')
+addpath('V:\gfraga\scripts_neulin\Generate_noise\functions\mp3readwrite')
 
 %% Inputs 
+makeplots = 0;
 % paths and files 
-dirinput =      'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_speechDetect_OK' ;
-diroutput =     'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_speechDetect_OK_vocoded';
-wavfiles =      dir([dirinput, '\*.wav']);
+dirinput =      'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\items_OK_norm' ;
+diroutput =     'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\items_OK_norm_vocoded';
+wavfiles =      dir([dirinput, '\Tür*.wav']);
 wavfiles =      fullfile(dirinput, {wavfiles.name});
 mkdir(diroutput)
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
@@ -32,13 +34,13 @@ EnvelopeExtractor = 'half';
 smooth=          30 ; 
 nCh =           4; 
 MinFreq =       50;
-MaxFreq =        5000;
+MaxFreq =        8000;
 
 % Degradation levels
 target_nchannels = [3,4,5,6,7,8,9];
  
-% Call vocoder function (save in structure array)
-
+%% Call vocoder function (save in structure array)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % read signals
 [signals, freqs] = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
 
@@ -55,15 +57,15 @@ for i = 1:length(signals)
     
     
    for ii = 1:length(target_nchannels)       
-       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'\NoVoc_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
+       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'\NV_',name,'_',num2str(target_nchannels(ii)),'chans',ext],'\\','\');
        nvStimuli(i).vocoded(ii).channels = target_nchannels(ii);
        nvStimuli(i).vocoded(ii).nvsignal = vocode_2022(exc, mapping, filters, EnvelopeExtractor, smooth, nvStimuli(i).vocoded(ii).channels, nvStimuli(i).ursignal, srate, MinFreq, MaxFreq);            
-        disp('ok')
-        
+       disp(['I just vocoded:  NV_',name,'_',num2str(target_nchannels(ii)),'chans'])        
     end
 end
 
-%% Saving 
+%% Saving vododed audio 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Matlab 
 cd (diroutput)
 save([diroutput,'\stimuli_nv'],'nvStimuli')
@@ -71,59 +73,65 @@ save([diroutput,'\stimuli_nv'],'nvStimuli')
 for i = 1:length(nvStimuli)
    for ii = 1:length(nvStimuli(i).vocoded)       
        
-       % save to file 
+       % save to wav file 
         text = ['Noise vocoded with ',num2str(nvStimuli(i).vocoded(ii).channels),' ch'];
-        audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate,'BitsPerSample',24,'comment',text)
-         disp(['...saved ',nvStimuli(i).vocoded(ii).filename]);
+        %audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate,'BitsPerSample',24,'comment',text)
+        
+        %save mp3
+        mp3write(nvStimuli(i).vocoded(ii).nvsignal,srate,strrep(nvStimuli(i).vocoded(ii).filename,'.wav','.mp3'));    
+        disp(['...saved ',nvStimuli(i).vocoded(ii).filename]);
    end
     
 end
 
-%% Summary figures 
-for i = 1:length(target_nchannels) 
+%% Summary figures
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if makeplots==1
+    for i = 1:length(nvStimuli)
+       for ii = 1:length(nvStimuli(i).vocoded)       
+                   %%% Save summary plot 
+                   footnote = ['Vocoder_2022 run for ', nvStimuli(i).filename,' (srate: ',num2str(nvStimuli(i).srate),' Hz) with arguments: exc (', exc, '), mapping (',mapping, '), filters(',...
+                       filters ,'), min-max freqs(',num2str(MinFreq),'-',num2str(MaxFreq),'), channels (',num2str(target_nchannels(ii)),'), smooth (',num2str(smooth),')'];
 
-       %%% Save summary plot 
-       footnote = ['Vocoder_2022 run for ',name,' (srate: ',num2str(srate),' Hz) with arguments: exc (', exc, '), mapping (',mapping, '), filters(',...
-           filters ,'), min-max freqs(',num2str(MinFreq),'-',num2str(MaxFreq),'), channels (',num2str(target_nchannels(i)),'), smooth (',num2str(smooth),')'];
-       
-       signal_nv2plot = signal_nv{ii};
-       original2plot = signals{ii}';
-       variables2plot = {'original2plot','signal_nv2plot'};
-       %
-       figure ('position', [1 1 800 800],'color','white');
-       annotation('textbox', [0, 0.075, 1, 0], 'string',footnote)
-       % Amplitude x  time
-       titles = {'speech','signal NV'};
-       for p = 1:2
-           subplot(3,2,p);
-           plot(eval(variables2plot{p}))
-           title(titles{p});  ylabel('Amplitude (a.u.)');  xlabel('Time (ms)');
-       end
-       % Spectral plots
-       titles = {'LTAS speech ','LTAS signal NV '};
-       for p = 1:2
-           subplot(3,2,2+p);
-           iosr.dsp.ltas(eval(variables2plot{p}),srate,'noct',6,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
-           xline(50, '--k'); xline(5000, '--k');
-           title(titles{p});
-       end
-       % Surf plots
-       titles = {'Spectrogram speech', 'Spectrogram signal NV'};
-       for p = 1:2
-           subplot(3,2,4 + p);
-           parameter = [];
-           parameter.fsAudio = srate;
-           parameter.zeroPad = srate/10;
-           [spec2plot,f,t] = stft(eval(variables2plot{p})',parameter);
-           surf(t,f,abs(spec2plot));
-           hold on; set(gcf,'renderer','zbuffer'); shading interp; view(0,90); axis tight; caxis([0 50])
-           title(titles{p});
-       end
-       
-       print(gcf, '-djpeg', strrep(outputfilename,'.wav','.jpg'));
-       disp(['....saved figure for ',outputfilename]);
-       %
-       close gcf
+                   signal_nv2plot = nvStimuli(i).vocoded(ii).nvsignal;
+                   original2plot = nvStimuli(i).ursignal';
+                   variables2plot = {'original2plot','signal_nv2plot'};
+                   %
+                   figure ('position', [1 1 800 800],'color','white');
+                   annotation('textbox', [0, 0.075, 1, 0], 'string',footnote)
+                   % Amplitude x  time
+                   titles = {'original','signal NV'};
+                   for p = 1:2
+                       subplot(3,2,p);
+                       plot(eval(variables2plot{p}))
+                       title(titles{p});  ylabel('Amplitude (a.u.)');  xlabel('Time (ms)');
+                   end
+                   % Spectral plots
+                   titles = {'LTAS original ','LTAS signal NV '};
+                   for p = 1:2
+                       subplot(3,2,2+p);
+                       iosr.dsp.ltas(eval(variables2plot{p}),srate,'noct',6,'graph',true,'units','none','scaling','max0','win',srate/10);  % requires the IoSR Matlab Toolbox
+                       xline(50, '--k'); xline(5000, '--k');
+                       title(titles{p});
+                   end
+                   % Surf plots
+                   titles = {'Spectrogram original', 'Spectrogram signal NV'};
+                   for p = 1:2
+                       subplot(3,2,4 + p);
+                       parameter = [];
+                       parameter.fsAudio = srate;
+                       parameter.zeroPad = srate/10;
+                       [spec2plot,f,t] = stft(eval(variables2plot{p})',parameter);
+                       surf(t,f,abs(spec2plot));
+                       hold on; set(gcf,'renderer','zbuffer'); shading interp; view(0,90); axis tight; caxis([0 0.2]); ylim([0 10000])
+                       title(titles{p});
+                   end
+                   outputfilename = nvStimuli(i).vocoded(ii).filename;
+                   print(gcf, '-djpeg', strrep(outputfilename,'.wav','.jpg'));
+                   disp(['....saved figure for ',outputfilename]);
+                   %
+                   close gcf
+      end
+    end
 end
-
  

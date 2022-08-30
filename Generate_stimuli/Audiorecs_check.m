@@ -4,35 +4,32 @@
 % Enter rater name, save output 
 addpath('C:\Users\gfraga\Documents\MATLAB\')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')% tool for plot
-dirinput= 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_speechDetect';
-diroutputOK = 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_speechDetect_OK';
-diroutputBAD = 'V:\spinco_data\Sound_files\LIRI_voice_SM\words_v1_bad';
-
+dirinput= 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1';
+diroutputOK = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1_OK';
+diroutputBAD = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1_BAD';
 mkdir (diroutputOK)
 mkdir (diroutputBAD)
 
-outputfilename = 'audio_check.xlsx';
 files = dir([dirinput,'/*.wav']);
 folders = {files.folder};
 files = {files.name};
- srate = 48000;
+srate = 44100;
 
  %% Main loop Loop 
 cd(dirinput)
 i = 1;
 rate=0; 
-
-while i < length(files)   
+while i <= length(files)   
     % read data 
     [dat, srate] = audioread(files{i});
     dat = dat(:,1);
     % play audio 
      sound(dat,srate);     
-     disp(['Word played: ', files{i}])    
+     disp(['item played: ', files{i}])    
  
     %% display image 
-    pic2read = strsplit(files{i},'_');
-    pic2read= strcat(pic2read{1},'_',pic2read{2},'.jpg');
+    
+    pic2read= strrep(files{i},'wav','jpg');
     pic = imread(pic2read);
     imshow(pic)
     %%

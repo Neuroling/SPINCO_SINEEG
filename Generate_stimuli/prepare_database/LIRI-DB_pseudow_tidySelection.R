@@ -2,8 +2,8 @@ rm(list=ls())
 library(dplyr)
 library(tidyr)
 
-fileinput <- 'V:/spinco_data/Database_stimuli/Neuroling_stimuli.xlsx'
-fileoutput <- 'V:/spinco_data/Database_stimuli/tmp_merged.xlsx'
+fileinput <- 'V:/spinco_data/LIRI_database/Neuroling_stimuli.xlsx'
+fileoutput <- 'V:/spinco_data/LIRI_database/tmp_merged.xlsx'
 
 
 # Read tables 
