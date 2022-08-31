@@ -64,4 +64,55 @@ local({
   fs::dir_tree(params$dirinput,recurse=TRUE)
 ```
 
- 
+
+<!-- ####  file overview -->
+<!-- ```{r, out.width='1000px'} -->
+
+
+<!--    # Read all files -->
+<!--   files <- gsub(".*\\EEG_SIN/", "", dir(params$dirinput,recursive =TRUE))  # trimmed list of subdirectories and files from main data directory  -->
+
+<!--   # Identify unique measurements -->
+<!--   measurements <- unique(sapply(strsplit(files,split='/'),'[[',1)) # first directory should indicate measurement -->
+<!--   idxs <- formatC(as.numeric(sapply(strsplit(measurements,split = ' '),'[[',2)),  width = 2, format = "d", flag = "0") -->
+
+
+<!--   #summary content  -->
+<!--   datSummary <- list() -->
+<!--   for (m in 1:length(measurements)){ -->
+
+<!--     # search files for current measurement -->
+<!--     curfiles <- files[grep(pattern = measurements[m],files)]   -->
+
+
+<!--       # Apply function to summarize file (only processed file) -->
+<!--       if (length(which(grepl(pattern = "*processed.vhdr$",x = curfiles)))==1) { -->
+
+<!--               processedfile <- paste0(params$dirinput,'/',curfiles[grep(curfiles,pattern='*processed.vhdr')])  -->
+
+<!--               #run my function -->
+<!--               suppressWarnings(fun_check_eeg(processedfile)) -->
+<!--               info <- cbind(dimensions, mrkrsInfo) -->
+
+<!--               rm(processedfile) -->
+
+<!--       } else { print(paste0('No file found for ',measurements[m])) -->
+<!--        } -->
+
+<!--       # Add to main summary table             -->
+<!--       datSummary[[m]] <- cbind(paste0('M',idxs[m]), # measurement  -->
+<!--                                length(which(grepl(pattern = "*processed.*.eeg*",x = curfiles))), #count processed files -->
+<!--                                info) -->
+<!--       colnames(datSummary[[m]])[1:2] <- c('measurement','n_processed_files') -->
+
+<!--   } -->
+
+
+<!-- datSummary <- data.table::rbindlist(datSummary,fill = TRUE) -->
+
+
+<!--   # Make Interactive table to display -->
+<!--    reactable(datSummary,filterable = TRUE,    -->
+<!--                         defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),   -->
+<!--                         bordered = TRUE, highlight =TRUE) -->
+<!-- ``` -->

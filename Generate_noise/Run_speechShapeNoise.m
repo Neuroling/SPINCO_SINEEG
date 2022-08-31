@@ -113,7 +113,7 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
          %SiSSN{i,1} = normalize(SiSSN{i,1}, 'range',[-1 1]);
     end
      
-   %% Save audio and summary plots 
+   %% Save audio (and plots if requested)
      audio2save= cell(length(SiSSN),1);
      for i = 1:length(SiSSN)
          
