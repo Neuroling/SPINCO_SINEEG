@@ -2,9 +2,9 @@ rm(list=ls())
 library(dplyr)
 library(tidyr)
 
-fileinput <- 'V:/spinco_data/Database_stimuli/Neuroling_stimuli.xlsx'
-fileoutput <- 'V:/spinco_data/Database_stimuli/tmp_markOutliers.xlsx'
-
+fileinput <- 'V:/spinco_data/LIRI_database/LIRI_database_stimuli.xlsx'
+fileoutput <- 'V:/spinco_data/LIRI_database/tmp_markOutliers.xlsx'
+setwd('V:/spinco_data/LIRI_database/')
 # read 
 Merged <- openxlsx::read.xlsx(fileinput,sheet = 'Merged')
 dat <- Merged
@@ -33,11 +33,13 @@ openxlsx::write.xlsx(dat,fileoutput)
 ##################################################
 # Export a selection for matching  
 dat2export <- dat[which(dat$outlier_lgSUBTLEX==FALSE & !is.na(dat$PTAN)),]
-dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables'))
+dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables','PTAF'))
 write.table(dat2export,'list2match.txt',col.names=FALSE,row.names = FALSE,sep = "\t")
 
 dat2export <- dat[which(dat$outlier_any==FALSE),]
-dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables'))
+dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables','PTAF'))
 write.table(dat2export,'list2match_hard.txt',col.names=FALSE,row.names = FALSE,sep = "\t")
 
-
+dat2export <- dat[which(!is.na(dat$OSAW) | !is.na(dat$PSAW)),]
+dat2export <- select(dat2export,c('CORRECT_SPELL','lgSUBTLEX','PTAN','Ned1_Diff','nSyllables','PTAF'))
+write.table(dat2export,'list2match_2FC.txt',col.names=FALSE,row.names = FALSE,sep = "\t")

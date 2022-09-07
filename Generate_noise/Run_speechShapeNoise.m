@@ -78,8 +78,7 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
     
      sigs_filt_adj = cell(length(sigs_filt),1);
      SiSSN= cell(length(sigs_filt),1);
-     for i = 1:length(sigs_filt)
-             
+     for i = 1:length(sigs_filt)             
       %%%% get a noise segment
          % Define intro and outro and ramps
          head_points = head_length * srate;
