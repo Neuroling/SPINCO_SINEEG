@@ -11,7 +11,7 @@ diroutput <-  'V:/spinco_data/SINON/Spreadsheets'
 
 # read old 
 setwd(dirinput)
-fileinput <- paste0(dirinput,"/2ForcedChoice/TrialSequences_2FC.xlsx")
+fileinput <- paste0(dirinput,"/PictureMatching/TrialSequences_PM.xlsx")
 tbl <- openxlsx::read.xlsx(fileinput)
 
 
@@ -21,11 +21,16 @@ if (grepl('LexicalDecision',fileinput,perl=TRUE)) {
     tbl$display <- 'trial_LD'
   
 } else if (grepl('PictureMatching',fileinput,perl=TRUE)){
-  tbl <- tbl %>%  dplyr::rename(ANSWER= match, 
+  tbl <- tbl %>%  dplyr::rename(correctAnswer= match, 
                                 audio=file,
                                 image_presentation=pic)  
   tbl$display <- 'trial_PM' 
+
+  } else if (grepl('2ForcedChoice',fileinput,perl=TRUE)){
+  tbl <- tbl %>%  dplyr::rename(audio=file_target)  
+  tbl$display <- 'trial_2FC' 
 }
+
 
 tbl$randomise_trials <- ''
   tbl$randomise_trials[which(tbl$block=='block1')] <- 1
@@ -54,9 +59,7 @@ tbl$display[1:3] <- c('instruction','example','block_start')
 # break text in between blocks
 breakRow <- data.frame(matrix('',nrow = 1,ncol = ncol(tbl)))
 colnames(breakRow) <- colnames(tbl)
-breakRow$display <- 'break'
-breakRow$instruction_left <- brk
-breakRow$instruction_right <- brk
+breakRow$display <- 'break' 
   
   
 idxBlockBreaks <- which(!duplicated(tbl$block))[c(-1,-2)]
@@ -73,18 +76,9 @@ newtbl <- rbind(tbl[1:idxBlockBreaks[1]-1,],
 # break text in between blocks
 endRow <- data.frame(matrix('',nrow = 1,ncol = ncol(tbl)))
 colnames(endRow) <- colnames(tbl)
-endRow$display <- 'end'
-endRow$instruction_left <- end
-endRow$instruction_right <- end
+endRow$display <- 'end' 
 newtbl <- rbind(newtbl,endRow)
-#add count of trials 
 
-newtbl$trialNum <- newtbl$block  
-trialidxseq <- paste0('trial_',sprintf("%03d", 1:length(which(newtbl$trialNum == 'block1'))))
-newtbl$trialNum[which(newtbl$trialNum == 'block1')] <- trialidxseq
-newtbl$trialNum[which(newtbl$trialNum == 'block2')] <- trialidxseq
-newtbl$trialNum[which(newtbl$trialNum == 'block3')] <- trialidxseq
-newtbl$trialNum[which(newtbl$trialNum == 'block4')] <- trialidxseq
 
 
 ###### save table 

@@ -9,7 +9,7 @@ library(tidyr)
 # - Export XLS file (indicating block etc)
 ###############################################################################
 dirinput <- 'V:/spinco_data/LIRI_database/LIRI_database_subsets/'
-diroutput <- 'V:/spinco_data/SINON/Spreadsheets'
+diroutput <- 'V:/spinco_data/SINON/Spreadsheets/'
 setwd(dirinput)
 #audiofiles
 audiofiles_nvoc <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_vocoded/'
@@ -70,8 +70,8 @@ for (i in 1:4){
      trials[[i]]$item_right <- trials[[i]]$item_distractor
      trials[[i]]$item_right[randomhalf] <- trials[[i]]$item_target[randomhalf]
      
-     trials[[i]]$correctAnswer <- 'L'
-     trials[[i]]$correctAnswer[randomhalf] <- 'R'
+     trials[[i]]$correctAnswer <- 'left'
+     trials[[i]]$correctAnswer[randomhalf] <- 'right'
          
      
              

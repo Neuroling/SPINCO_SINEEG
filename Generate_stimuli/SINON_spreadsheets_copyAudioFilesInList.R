@@ -7,9 +7,9 @@ library(tidyr)
 # - Read xls spreadsheet for Gorilla containing file names
 # - copy the corresponding files in the same folder as spreadsheet
 ###############################################################################
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2ForcedChoice/'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/PictureMatching/'
 diroutput <- dirinput
-filename <- 'TrialSequences_2FC.xlsx'
+filename <- 'TrialSequences_PM.xlsx'
 setwd(dirinput)
 
 #audiofiles dir 
@@ -19,9 +19,11 @@ audiofiles_sissn <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/all_
 # 
 filesnvoc <- dir(audiofiles_nvoc,pattern = '*.mp3')
 filessissn <- dir(audiofiles_sissn,pattern = '*.mp3')
- 
+
+# `%nin%` = Negate(`%in%`)
+
 #-----------------------------------------------------------------------
-# search files and concat
+# search files and concat 
 sheet <- openxlsx::read.xlsx(filename)
 colwithfiles <- grepl('*.mp3',sheet)
  
@@ -32,7 +34,11 @@ colwithfiles <- grepl('*.mp3',sheet)
   file.copy(paste0(audiofiles_sissn,filessissn[which(filessissn %in% files2copy)]),newdir)
   file.copy(paste0(audiofiles_nvoc,filesnvoc[which(filesnvoc %in% files2copy)]),newdir)
    
- `%nin%` = Negate(`%in%`)
-
- audios[,1][which(audios[,1] %nin% names[,1])]
-
+if (grepl('PictureMatching',dirinput)) {
+  
+     pics <- dir('V:/spinco_data/LIRI_database/Multipic_pictures/colored_TIFF',pattern='*.tif')
+     files2copy <-  pics[which(pics %in% paste0(sheet$pic,'.tif'))]
+    file.copy(paste0('V:/spinco_data/LIRI_database/Multipic_pictures/colored_TIFF/',files2copy),newdir)
+  
+}
+ 
