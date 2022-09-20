@@ -1,0 +1,11 @@
+Align_StartToSelStart:
+Select:End="0.05" Mode="Set" Start="0"
+Copy:
+Select:End="0" Mode="Set" Start="0"
+Paste:
+Silence:Use_Preset="<Current Settings>"
+Select:End="0" Mode="Set" RelativeTo="ProjectEnd" Start="0.05"
+Copy:
+Paste:
+Silence:Use_Preset="<Current Settings>"
+Select:End="0" Mode="Set" Start="0"

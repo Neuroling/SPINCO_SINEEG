@@ -11,24 +11,29 @@ diroutput <-  'V:/spinco_data/SINON/Spreadsheets'
 
 # read old 
 setwd(dirinput)
-fileinput <- paste0(dirinput,"/PictureMatching/TrialSequences_PM.xlsx")
+fileinput <- paste0(dirinput,"/LexicalDecision/TrialSequences_LD.xlsx")
 tbl <- openxlsx::read.xlsx(fileinput)
 
 
 # prepare for new 
 if (grepl('LexicalDecision',fileinput,perl=TRUE)) {
-  tbl <- tbl %>%  dplyr::rename(audio=file)  
+  tbl <- tbl %>%  dplyr::rename(audio=file, correctAnswer= answer, type = noise)  
     tbl$display <- 'trial_LD'
-  
+    tbl$type <- gsub('NVoc','NV',tbl$type)
+     
 } else if (grepl('PictureMatching',fileinput,perl=TRUE)){
   tbl <- tbl %>%  dplyr::rename(correctAnswer= match, 
                                 audio=file,
                                 image_presentation=pic)  
   tbl$display <- 'trial_PM' 
-
+  tbl$image_presentation <- paste0(tbl$image_presentation,'.tif')
+  
   } else if (grepl('2ForcedChoice',fileinput,perl=TRUE)){
   tbl <- tbl %>%  dplyr::rename(audio=file_target)  
   tbl$display <- 'trial_2FC' 
+  tbl$display_left <- paste0( '<h4><strong>',tbl$item_left,'</strong></h4>')
+  tbl$display_right <- paste0( '<h4><strong>',tbl$item_right,'</strong></h4>')
+  
 }
 
 

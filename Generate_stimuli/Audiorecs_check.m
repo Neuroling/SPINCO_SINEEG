@@ -4,12 +4,12 @@
 % Enter rater name, save output 
 addpath('C:\Users\gfraga\Documents\MATLAB\')
 addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')% tool for plot
-dirinput= 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1';
-diroutputOK = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1_OK';
-diroutputBAD = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\words_take1_BAD';
+dirinput= 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\macro-output';
+diroutputOK = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\good';
+diroutputBAD = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\bad';
 mkdir (diroutputOK)
 mkdir (diroutputBAD)
-
+cd(dirinput)
 files = dir([dirinput,'/*.wav']);
 folders = {files.folder};
 files = {files.name};
@@ -29,9 +29,9 @@ while i <= length(files)
  
     %% display image 
     
-    pic2read= strrep(files{i},'wav','jpg');
-    pic = imread(pic2read);
-    imshow(pic)
+    %pic2read= strrep(files{i},'wav','jpg');
+    %pic = imread(pic2read);
+    %imshow(pic)
     %%
     %Request input    
     rate = inputdlg(['Rate sound:',files{i},':',],'s');

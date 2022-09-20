@@ -1,5 +1,5 @@
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/PictureMatching/'
-basefilename <- 'TrialSequences_PM_Gorilla'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LexicalDecision/'
+basefilename <- 'TrialSequences_LD_Gorilla'
 setwd(dirinput)
 
 

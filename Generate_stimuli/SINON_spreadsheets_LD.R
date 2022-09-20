@@ -16,12 +16,6 @@ dirinput100 <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v2/SINON_MATCH_subsets_
 databasedfile <-'V:/spinco_data/LIRI_database/LIRI_database_stimuli.xlsx'
 diroutput <- 'V:/spinco_data/SINON/Spreadsheets'
 setwd(dirinput)
-#audiofiles
-audiofiles_nvoc <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_vocoded/'
-audiofiles_sissn <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_SiSSN/'
-# 
-filesnvoc <- dir(audiofiles_nvoc,pattern = '*.mp3')
-filessissn <- dir(audiofiles_sissn,pattern = '*.mp3')
 
 # search files and concat
 database <- openxlsx::read.xlsx(databasedfile,sheet = 'Merged')
@@ -92,7 +86,7 @@ ds$noise <- ifelse(ds$block=='block1' | ds$block=='block3','NVoc','SiSSN')
 print(ds)
 
 # fixsome bugs in the name so in the spreadsheet corresponds to actual files:
-ds$file <- gsub('äsleyre_','äsleyre.2_', ds$file)
+ds$file <- gsub('C$sleyre_','C$sleyre.2_', ds$file)
 ds$file <- gsub('Nacaer_','Nacaer.2_',ds$file)
 ds$file <- gsub('Lelfer_','Lelfer.1_',ds$file)
 
@@ -102,69 +96,4 @@ dirout <-  paste0(diroutput,'/LexicalDecision/')
 outputname <- paste0(dirout,'TrialSequences_LD.xlsx')
 openxlsx::write.xlsx(ds,outputname)
 
-
  
-# ###############
-# # Picture matching task ----------------------------------------------------------
-# setwd(dirinput100)
-# rm(ds)
-# ds <- list()
-# for (i in 1:4){
-#   currSet <-read.table(paste0('list2match100_set',i,'.txt'))
-#   
-#   if (nrow(currSet) %% length(snrLev)!=0){
-#     stop("not possible to balance n trials per snr ! ")
-#   }
-#   # first add all pictures 
-#   picture <- database$PICTURE[which(database$CORRECT_SPELL %in% currSet$V1 )]
-#   name <- database$CORRECT_SPELL[which(database$CORRECT_SPELL %in% currSet$V1 )]
-#   # Add whether they are match or not (50% match)
-#   match <- c(rep(1,nrow(currSet)/2),rep(0,nrow(currSet)/2)) %>% sample()
-#   
-#   #Combine 
-#   spreadsheet  <- as.data.frame(cbind(rep(paste0('block',i),nrow(currSet)), 
-#                                       name,
-#                                       rep(snrLev,nrow(currSet)/length(snrLev)),
-#                                       picture,
-#                                       match))
-#                
-#   # shuffle the pictures for the trials marked as not a match
-#   original  <- spreadsheet$picture[which(spreadsheet$match==0)]
-#   replacement <- sample(original)
-#     while (length(which(original==replacement)>0)!=0) {# shuffle again until no name repeats position 
-#     replacement <- sample(original)
-#   } 
-#   
-#   spreadsheet <- spreadsheet[sample(nrow(spreadsheet)),]
-#   # Add to list 
-#   ds[[i]] <- spreadsheet
-# }
-# # Gather
-# ds <- data.table::rbindlist(ds)
-# colnames(ds) <- c('block','item','snr','pic','match') 
-#  
-# # fill the file names based on multiple matching/replacements 
-# ds$file <- paste0(ds$snr,'.mp3')
-# ds$file <- ifelse(ds$block=='block1' | ds$block=='block3',
-#                   stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm_',snrs_voco),vectorize = FALSE),
-#                   stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm',snrs_sissn),vectorize = FALSE))
-# 
-# ds$file <- ifelse(ds$block=='block1' | ds$block=='block3',
-#                   paste('NV',ds$item,ds$file,sep='_'),
-#                   paste('SiSSN',ds$item,ds$file,sep='_'))
-# 
-# ds$type <- ifelse(ds$block=='block1' | ds$block=='block3','NV','SiSSN') 
-# 
-#  
-# # save in output dir 
-# dirout <-  paste0(diroutput,'/PictureMatching/')
-# outputname <- paste0(dirout,'TrialSequences_PIC.xlsx')
-#  
-# # save in output dir 
-# openxlsx::write.xlsx(ds,outputname) 
-# if (!dir.exists(paste0(dirout,'/files'))){
-#   dir.create(paste0(dirout,'/files'))
-#   file.copy(paste0(audiofiles_sissn,filessissn[which(filessissn %in% ds$file)]),paste0(dirout,'/files')) 
-#   file.copy(paste0(audiofiles_nvoc,filesnvoc[which(filesnvoc %in% ds$file)]),paste0(dirout,'/files'))  
-# }
-# rm(ds)

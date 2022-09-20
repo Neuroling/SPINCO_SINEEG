@@ -17,10 +17,11 @@ addpath('V:\gfraga\scripts_neulin\Generate_noise\functions\mp3readwrite')
 %% Inputs 
 makeplots = 0;
 % paths and files 
-dirinput =      'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\items_OK_norm' ;
-diroutput =     'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\items_OK_norm_vocoded';
-wavfiles =      dir([dirinput, '\Tür*.wav']);
-wavfiles =      fullfile(dirinput, {wavfiles.name});
+dirinput =      'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_norm-25db';
+diroutput =     'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_norm-25db_NV';
+cd (dirinput)
+audiofiles =      dir([dirinput, '\*.mp3']);
+audiofiles =      fullfile(dirinput, {audiofiles.name});
 mkdir(diroutput)
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
  
@@ -42,12 +43,12 @@ target_nchannels = [3,4,5,6,7,8,9];
 %% Call vocoder function (save in structure array)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % read signals
-[signals, freqs] = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
+[signals, freqs] = cellfun(@(x) audioread(x), audiofiles, 'UniformOutput',0);
 
 % Loop and vocode for each degradation level
 nvStimuli = struct(); 
 for i = 1:length(signals)     
-    [pathstr, name , ext] = fileparts(wavfiles{i});
+    [pathstr, name , ext] = fileparts(audiofiles{i});
     nvStimuli(i).filename = name;
     nvStimuli(i).srate = srate;
     
@@ -73,8 +74,8 @@ save([diroutput,'\stimuli_nv'],'nvStimuli')
 for i = 1:length(nvStimuli)
    for ii = 1:length(nvStimuli(i).vocoded)       
        
-       % save to wav file 
-        text = ['Noise vocoded with ',num2str(nvStimuli(i).vocoded(ii).channels),' ch'];
+       % save to wav file  (output commented )
+        text = ['Noise vocoded with ',num2str(nvStimuli(i).vocoded(ii).channels),' ch']; 
         %audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate,'BitsPerSample',24,'comment',text)
         
         %save mp3

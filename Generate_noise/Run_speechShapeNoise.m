@@ -6,12 +6,11 @@ clear all ;
 % Description
 %   - Reads list of .wav files 
 %   - Filters signal (butterworth), 
-%   - Normalize (using median rms of all files)
+%   - Normalize 
 %   - Concatenate 
 %   - Generate speech shaped noise-SSN
 %   - Adjust speech intensity to different levels
-%   - SiSSN: adds the noise with a head and a tail and ramps
-%   - Normalises SinSSN to range [-1 1] to prevent clipping
+%   - SiSSN: adds the noise (optional:  a head and a tail and ramps)
 %   - Plots summary figures  
 %
 %-------------------------------------------------------------------------
@@ -25,20 +24,22 @@ addpath('V:\gfraga\scripts_neulin\Generate_noise\functions\mp3readwrite')
 %% Inputs 
 makeplots = 0;
 % paths and files 
-dirinput =      'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\items_OK_norm\' ;
-diroutput =     'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\items_OK_norm_SiSSN\' ;
-wavfiles =      dir([dirinput, '*.wav']); % must be more than one 
-wavfiles =      fullfile(dirinput, {wavfiles.name}); 
+dirinput =      'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_norm-25db' ;
+diroutput =     'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_norm-25db_SiSSN\' ;
+cd (dirinput)
+audiofiles =      dir(['*.mp3']); % must be more than one 
+audiofiles =      fullfile(dirinput, {audiofiles.name}); 
 
+audiofiles = audiofiles(1:2); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   ! 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
 filt_low =      50 ;
 filt_upper =    8000;
 
 % Length of intro/outro (with ramp in/out)
-head_length =   0.1; % desired start noise length in seconds % 
-tail_length =   0.1; % desired tail noise length in seconds
-rampin_length =   0.1; % desired start noise length in seconds
-rampout_length =   0.05; % desired tail noise length in seconds
+head_length =   0.05; % desired start noise length in seconds % 
+tail_length =   0; % desired tail noise length in seconds
+rampin_length =   0.01; % desired start noise length in seconds
+rampout_length =   0; % desired tail noise length in seconds
 
 % Parameters for SSN function
 nfft =          1000;
@@ -51,7 +52,7 @@ target_dB_snr = -10:5:10;
 %% Generate noise from concatenated data
 
 % Filter
-[signals, fss] = cellfun(@(x) audioread(x), wavfiles, 'UniformOutput',0);
+[signals, fss] = cellfun(@(x) audioread(x), audiofiles, 'UniformOutput',0);
 if fss{1}~=srate 
     error('wrong sampling rate!')
 end 
@@ -67,18 +68,19 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
  ssn = speechshapednoise(sigs_filt_concat,nfft,noctaves,srate);
  disp('...generated speech-shaped noise from concatenated files '); 
  
- %% Loop thru SNR values and embed  the speech in SSN 
- 
+ %% Loop thru SNR values and embed  the speech in SSN  
  for L=1:length(target_dB_snr)
-    disp('....Starting SNR loop');       
+     disp('....Starting SNR loop');       
  
-    %%% Add noise to each file  with intro and outro noise and ramps
+   % set up the signal manipulation (see later below)
     dblevel = target_dB_snr(L); 
-    target_lin_snr = db2mag(dblevel);  % db2mag matlab func does: 10.^(target_dB_SNR/20);
+    target_lin_snr = db2mag(dblevel);  % db2mag matlab func does: 10.^(target_dB_SNR/20);    
     
-     sigs_filt_adj = cell(length(sigs_filt),1);
-     SiSSN= cell(length(sigs_filt),1);
-     for i = 1:length(sigs_filt)             
+    
+    %%% Add noise to each file  with intro and outro noise and ramps     
+    sigs_filt_adj = cell(length(sigs_filt),1);
+    SiSSN= cell(length(sigs_filt),1);
+     for i = 1:length(sigs_filt)              
       %%%% get a noise segment
          % Define intro and outro and ramps
          head_points = head_length * srate;
@@ -89,28 +91,35 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
              error('You tried to add too long head/tail noise periods');
          end
          
-         % normalize noise to current signal rms         
-         ssn_norm = ssn.*(rms(sigs_filt{i})/rms(ssn));
-       
+                
       %%%% add noise to signal
          % adjust signal intensity
          sigs_filt_adj{i} = sigs_filt{i}.*target_lin_snr;
          
          %Cut noise chunk
          noise2use_points = head_points + length(sigs_filt_adj{i})+ tail_points;
-         seed = randperm(length(ssn_norm)-noise2use_points) ;%find a random data point(prevent out of bounds)
-         noise2use = ssn_norm(seed(1):seed(1)+noise2use_points); % take that noise segment
+         seed = randperm(length(ssn)-noise2use_points) ;%find a random data point(prevent out of bounds)
+         noise2use = ssn(seed(1):seed(1)+noise2use_points); % take that noise segment
          
+         % normalize noise to current signal rms         
+         noise2use_norm = noise2use.*(rms(sigs_filt{i})/rms(noise2use));       
+                  
          %Speech in Speech-shaped noise:
-         SiSSNpart = sigs_filt_adj{i}' + noise2use(1+head_points:head_points+length(sigs_filt_adj{i}));
-         ssn_head = noise2use(1:head_points);
-         ssn_tail = noise2use((end-tail_points)+1:end);
-         SiSSN{i,1} = [ssn_head.*rampin, SiSSNpart, ssn_tail.*rampout];
-         disp(['Applying SNR: ', num2str(target_dB_snr(L)) ,'db to file: ' wavfiles{i}])
-         % Revise this...: 
-         %Normalize to [-1 1] range the combined signal + noise to avoid clipping 
-         %SiSSN{i,1} = normalize(SiSSN{i,1}, 'range',[-1 1]);
-    end
+         SiSSNpart = sigs_filt_adj{i}' + noise2use_norm(1+head_points:head_points+length(sigs_filt_adj{i}));
+         ssn_head = noise2use_norm(1:head_points);
+         ssn_tail = noise2use_norm((end-tail_points)+1:end);
+         sissn = [ssn_head.*rampin, SiSSNpart, ssn_tail.*rampout];              
+         disp(['Applying SNR: ', num2str(target_dB_snr(L)) ,'db to file: ' audiofiles{i}])
+         
+        % Normalize SiSSN to some db avoiding clipping in any file
+        desired_db  = -25;
+        desired_db_mag = db2mag(desired_db);
+        scaling_factor = sqrt((length(sissn)*desired_db_mag^2)/(sum(sissn.^2)));
+         SiSSN{i,1} = sissn.*scaling_factor;
+         % prevent clipping
+        SiSSN{i,1} = SiSSN{i,1}*(0.99/max(abs(SiSSN{i,1})));  
+     end
+      
      
    %% Save audio (and plots if requested)
      audio2save= cell(length(SiSSN),1);
@@ -118,7 +127,7 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
          
          %%% Save audio (speech in speech-shaped noise
          %--------------------------------------------
-         [pathstr, name , ext] = fileparts(wavfiles{i});
+         [pathstr, name , ext] = fileparts(audiofiles{i});
          outputfilename = strrep([diroutput,'SiSSN_',name,num2str(dblevel),'db',ext],'\\','\');
          text = ['Speech in speech-shaped noise with ',num2str(target_dB_snr(L)),' db'];
 
@@ -131,9 +140,9 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
              %%% Figures of original and SiSSN
              %---------------------------------------
              SiSSN2plot = SiSSN{i};
-             original2plot = audioread(wavfiles{i})';
+             original2plot = audioread(audiofiles{i})';
              variables2plot = {'original2plot','SiSSN2plot'};
-             footnote = ['SSN from ', num2str(length(wavfiles)),' files (srate: ',num2str(srate),' Hz) concat and filt (',num2str(filt_low),...
+             footnote = ['SSN from ', num2str(length(audiofiles)),' files (srate: ',num2str(srate),' Hz) concat and filt (',num2str(filt_low),...
                  ' ',num2str(filt_upper),' Hz). Extra noise intro (', num2str(head_length),' s), outro (', num2str(tail_length),' s) with ramps.',...
                  ' Noct ',num2str(noctaves),'. NFFT ',num2str(nfft),'. SSN norm-',num2str(dblevel),'db'];
 

@@ -70,7 +70,11 @@ library(DT) # for saving tables
 
 ```
 
-### Data workflow
+### Data storage
+
+Main directories highlighted in pink: (1) Documents, presentations and publications (2) scripts (3) data, results, statistics.
+
+All scripts regularly backed up to a private repo in Github
 
 ```{nomnoml, echo = FALSE, out.height=400,out.width=850}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
@@ -113,7 +117,7 @@ library(DT) # for saving tables
 ### Recordings
 
 Words and pseudowords were recorded in shuffled order in a single session by
-dr. D. Friedrichs (at LIRI, UZH). The session recorded video and .wav files at 48000 Hz; 24 bits.
+dr. D. Friedrichs (at LIRI, UZH). The session recorded video and .wav files at 44100 Hz; 24 bits per sample.
 
 ```{nomnoml , echo = FALSE, out.height=400,out.width=850}
 # From  https://nomnoml.com/
@@ -142,21 +146,21 @@ dr. D. Friedrichs (at LIRI, UZH). The session recorded video and .wav files at 4
 #.blob: visual=ellipse title=bold
 
 [<usecase>raw | versions] ->  [<table> Separate files (prorrec) | words | pseudowords]
-[<state>normalize] -->  [<state>detectSpeech;(matlab func) |+trim]
-[<table> Separate files (prorrec)] --> [<state> normalize]
+[<table> Separate files (prorrec)] -->  [<state>inspect | +trim]
 
-[detectSpeech;(matlab func) ] --> [<actor>audiocheck|plots]
+[inspect ] --> [<actor>audiocheck|plots]
 
-[<actor>audiocheck] --> if OK  [<abstract>Experiment]
+[<actor>audiocheck] --> if OK  [<abstract>Audacity macro | trunc silence | fade ends | add silence | normalize loudness]
+  [<abstract>Audacity macro] --> [Experiment]
     [<abstract>Experiment]  -->  [<state>clear]
     [<abstract>Experiment] --> [<state>in SSN]
     [<abstract>Experiment] --> [<state>vocoder]
       [<state>vocoder] -- Lvls[<start>st.]
       [<state>in SSN] -- SNRs[<start>st]
-[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler* | matlab app; manual trim; select clicks]
+[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler app | or discard]
       
 ```
-#### **Audio labeler**
+#### **Audio labeler** (optional: recommended to use Audacity instead)
 
 Matlab app to apply speech detection in one or more wav files and to
 manually adjust the output as a label.
@@ -188,7 +192,7 @@ manually adjust the output as a label.
 
 ## SINON {.tabset} 
 
-### Design
+### Noise generation
 
 ```{nomnoml, echo = FALSE, out.height=400,out.width=850}
 # https://cran.r-project.org/web/packages/nomnoml/readme/README.html
@@ -196,60 +200,99 @@ manually adjust the output as a label.
 #arrowSize: .5
 #stroke: black
 #.box: dashed center
-#.comment: fill=lightyellow empty bold
+#.comment: fill=Wheat empty bold
+#.client: fill=LavenderBlush empty bold
+#background: FloralWhite
 #lineWidth: 1
 #direction: right
 #leading: 1.25
 #lineWidth: .75
 #padding: 8
 #spacing: 40
-#zoom: 2
-#direction: down
-  
-[<database>SINON| manipulations]-> [Within ss]
-  [Within ss] --> [Item type | word | pseudo]
-  [Within ss] --> ['Noise' type | vocoding | speech-shaped noise]
-  [Within ss] --> [SNR | 1 | 2| 3| 4| 5]
+#zoom: 3
+[<database>audio |files  normalized to X db | head + tail silence] --> each [filtered]
+  [filtered] --> all [<comment>concatenate]
+    [<comment>concatenate] --> [<comment>long SSN]
+      [long SSN] --> file loop [<client>SSN | file cuts + head | match file rms]
+        
+  [<database>SSN] --> [<choice> SNR lev | adjust db lv]
+    [SNR lev ]-> [SiSSN]
+    [filtered ] -> [SiSSN | signal*(0.99/max(abs(signal)))]
+      [SiSSN]-> audacity [<usecase> SiSSN. | norm perceived loudness]
 
-[<database>SINON| manipulations]-> [Between ss]
-  [Between ss] --> [Task | Lexical decision | 2FC | Pict match]
-  
-
+[<database>audio |files  normalized to X db | head + tail silence] --> each [SNR ctrl | n channels]
+ [<client>SNR ctrl | n channels] --> [<choice>filter bank | greenwood spacing]  
+  [filter bank | Greenwood spacing]--> [<client>vocoder]
+        [vocoder]--> [NV speech]
+        [NV speech]--> audacity[<usecase>NV speech.| norm perceived loudness]
+   
 ```
 
+### Trial sequences
+
 ```{nomnoml, echo = FALSE, out.height=400,out.width=850}
-
-# https://cran.r-project.org/web/packages/nomnoml/readme/README.html
-#fontSize: 6
-#arrowSize: .5
-#stroke: black
-#.box: dashed center
-#.comment: fill=lightyellow empty bold
-#lineWidth: 1
-#direction: right
+# From  https://nomnoml.com/
+#arrowSize: 1
+#bendSize: 0.3
+#direction:  right 
+#gutter: 15
+#edgeMargin: 0
+#gravity: 1
+#edges: hard | rounded
+#background: transparent
+#fill: #eee8d5; #fdf6e3
+#fillArrows: false
+#font: Calibri
+#fontSize: 12
 #leading: 1.25
-#lineWidth: .75
+#lineWidth: 1.5
 #padding: 8
-#spacing: 40
-#zoom: 2
-#direction: right
-  
-# [<database>SINON Design]-> [<state>LD task]
-#  [LD task] --> [NV]
-#    [NV] --> [Blocks (4) |||]
-#    [Blocks (4)] --> [<table>Trials (2 x 5 x 9 = 80)| Words | Pseudo || .SNR Lv1 | .SNR Lv1 || ... | ... ]
-# [LD task] --> [SSN]
-#    [SSN] --> [...]
-#    [...] --> [....]
-# 
-# [<database>SINON Design]-> [<state>. Task]
-# [<state>. Task] --> [..]
-# [..] --> [:..]
-# [:..] --> [:...]
+#spacing: 45
+#stroke: #33322E
+#title: filename
+#zoom: 1
+#acyclicer: greedy
+#ranker: network-simplex | tight-tree | longest-path
+#.box: fill=#8f8 dashed
+#.blob: visual=ellipse title=bold
 
-#```
+[<usecase>MATCH | subsets] -> R[<table>SINON_spreadsheets_LD | distribute words/pseudo; distribute snr; list file names]
+[<state>SINON_spreadsheets_LD]-->R[<table>SINON_spreadsheets_LD_Gorilla | added formatting]
+[<state>SINON_spreadsheets_LD_Gorilla | added formatting] --> R[<table> SINON_spreadsheets_LD_Gorila_cbxxx | copies with counterbalanced block order]
 
-### SINEEG
+[<state>SINON_spreadsheets_LD]-->R[<state>copy audiofiles | copy mp3s of trials to folder]
 
+[<state>SINON_spreadsheets_LD_Gorilla]-->.m[<state>table audiofiles | summary rms and duration]
+[<state>copy audiofiles]-->[<state>table audiofiles | summary rms and duration]
+[<state>table audiofiles]-->R[<state>summary plots]
+
+```
+<!-- ### Design -->
+
+<!-- ```{nomnoml, echo = FALSE, out.height=400,out.width=850} -->
+<!-- # https://cran.r-project.org/web/packages/nomnoml/readme/README.html -->
+<!-- #fontSize: 6 -->
+<!-- #arrowSize: .5 -->
+<!-- #stroke: black -->
+<!-- #.box: dashed center -->
+<!-- #.comment: fill=lightyellow empty bold -->
+<!-- #lineWidth: 1 -->
+<!-- #direction: right -->
+<!-- #leading: 1.25 -->
+<!-- #lineWidth: .75 -->
+<!-- #padding: 8 -->
+<!-- #spacing: 40 -->
+<!-- #zoom: 2 -->
+<!-- #direction: down -->
+
+<!-- [<database>SINON| manipulations]-> [Within ss] -->
+<!--   [Within ss] -  [Item type | word | pseudo] -->
+<!--   [Within ss]   ['Noise' type | vocoding | speech-shaped noise] -->
+<!--   [Within ss]  [SNR | 1 | 2| 3| 4| 5] -->
+
+<!-- [<database>SINON| manipulations]-> [Between ss] -->
+<!--   [Between ss]   [Task | Lexical decision | 2FC | Pict match] -->
+
+
+<!-- ``` -->
  
-```

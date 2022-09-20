@@ -8,14 +8,15 @@ clear all  %#ok<CLALL>
 %% Parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Data path and file
-%if ispc; basePath = 'V:/gfraga/';
-%end 
-scriptPath = 'V:/gfraga/scripts_neulin/Projects/SINEEG/EEG-MVPA-tutorial-master/code';
-DataPath      = 'V:/spinco_data/SINEEG/analysis/mvpa/data_examples';
-diroutput = 'V:/spinco_data/SINEEG/analysis/mvpa/';
-ToolboxesPath = 'C:/Program Files/MATLAB/R2021a/toolbox/libsvm-3.25'; % See README for complete description of additional toolboxes that could not be shared. Change this path to the folder containing dependencies
-Datafile      = 'Infants_included.mat'; % Adjust file name here to decode on different data sets
+if ispc; basePath = 'V:/gfraga/';else; basePath = '/run/user/891957923/gvfs/smb-share:server=idnas12.d.uzh.ch,share=g_psyneulin_data$/';end
 
+
+scriptPath = [basePath,'gfraga/scripts_neulin/Projects/SINEEG/EEG-MVPA-tutorial-master/code_adaptedGFG'];
+DataPath      =  [basePath 'spinco_data/SINEEG/analysis/mvpa/data_examples']; 
+diroutput = [basePath 'spinco_data/SINEEG/analysis/mvpa/'];
+ToolboxesPath = [basePath 'gfraga/scripts_neulin/Projects/SINEEG/EEG-MVPA-tutorial-master/libsvm-3.25'];   % See README for complete description of additional toolboxes that could not be shared. Change this path to the folder containing dependencies
+Datafile      = 'Infants_included.mat'; % Adjust file name here to decode on different data sets
+cd(DataPath)
 % Run
 parforArg          = Inf;   % 0 = no parfor; Inf = parfor (parallel recommended)
 ExitMatlabWhenDone = false; % if running as batch on a cluster
@@ -39,8 +40,8 @@ if SaveAll
 end
 
 % Path
-addpath(genpath(ToolboxesPath));
-addpath(genpath([scriptPath,'/helpers']));
+%addpath(genpath(ToolboxesPath));
+%addpath(genpath([scriptPath,'/helpers']));
 load(fullfile(DataPath,Datafile));
 [~,params_decoding.DataName] = fileparts(Datafile);
 params_decoding.Date = date;
