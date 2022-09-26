@@ -13,22 +13,22 @@ filename <- 'TrialSequences_2FC.xlsx'
 setwd(dirinput)
 
 #audiofiles dir 
-audiofiles_nvoc <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/Take1_all_trimmed/trim_norm-25db_NV_loudnessNorm/'
-audiofiles_sissn <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/Take1_all_trimmed/trim_norm-25db_SiSSN_loudnessNorm/'
+audiofiles_nvoc <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_NV/'
+audiofiles_sissn <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_SiSSN/'
 
 # 
-filesnvoc <- dir(audiofiles_nvoc,pattern = '*.mp3')
-filessissn <- dir(audiofiles_sissn,pattern = '*.mp3')
+filesnvoc <- dir(audiofiles_nvoc,pattern = 'N*.wav')
+filessissn <- dir(audiofiles_sissn,pattern = 'S*.wav')
 
 # `%nin%` = Negate(`%in%`)
 
 #-----------------------------------------------------------------------
 # search files and concat 
 sheet <- openxlsx::read.xlsx(filename)
-colwithfiles <- grepl('*.mp3',sheet)
+colwithfiles <- grepl('*.wav',sheet)
  
 # save only if not previously saved
-  files2copy <- sheet[,colwithfiles][grepl('.mp3',sheet[,colwithfiles])]
+  files2copy <- sheet[,colwithfiles][grepl('.wav',sheet[,colwithfiles])]
   newdir <- paste0(diroutput, 'files')
   dir.create(newdir)
   file.copy(paste0(audiofiles_sissn,filessissn[which(filessissn %in% files2copy)]),newdir)

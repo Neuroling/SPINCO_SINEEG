@@ -16,12 +16,7 @@ dirinput100 <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v2/SINON_MATCH_subsets_
 databasedfile <-'V:/spinco_data/LIRI_database/LIRI_database_stimuli.xlsx'
 diroutput <- 'V:/spinco_data/SINON/Spreadsheets'
 setwd(dirinput)
-#audiofiles
-audiofiles_nvoc <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_vocoded/'
-audiofiles_sissn <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_SiSSN/'
-# 
-filesnvoc <- dir(audiofiles_nvoc,pattern = '*.mp3')
-filessissn <- dir(audiofiles_sissn,pattern = '*.mp3')
+
 
 # search files and concat
 database <- openxlsx::read.xlsx(databasedfile,sheet = 'Merged')
@@ -73,7 +68,7 @@ ds <- data.table::rbindlist(ds)
 colnames(ds) <- c('block','item','snr','pic','match') 
 
 # fill the file names based on multiple matching/replacements 
-ds$file <- paste0(ds$snr,'.mp3')
+ds$file <- paste0(ds$snr,'.wav')
 ds$file <- ifelse(ds$block=='block1' | ds$block=='block3',
                   stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm_',snrs_voco),vectorize = FALSE),
                   stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm',snrs_sissn),vectorize = FALSE))
@@ -89,74 +84,4 @@ ds$type <- ifelse(ds$block=='block1' | ds$block=='block3','NV','SiSSN')
 dirout <-  paste0(diroutput,'/PictureMatching/')
 outputname <- paste0(dirout,'TrialSequences_PIC.xlsx')
 
-# save in output dir 
-openxlsx::write.xlsx(ds,outputname) 
-if (!dir.exists(paste0(dirout,'/files'))){
-  dir.create(paste0(dirout,'/files'))
-  file.copy(paste0(audiofiles_sissn,filessissn[which(filessissn %in% ds$file)]),paste0(dirout,'/files')) 
-  file.copy(paste0(audiofiles_nvoc,filesnvoc[which(filesnvoc %in% ds$file)]),paste0(dirout,'/files'))  
-}
-rm(ds)
-# 
-# # Lexical Decision ------------------------------------------
-# words <- list()
-# for (i in 1:5){
-#   currSet <-read.table(paste0('list2match_set',i,'.txt'))
-#   if (nrow(currSet) %% length(snrLev)!=0){
-#     stop("not possible to balance n trials per snr ! ")
-#   }
-#   #find matching pseudowords  # shuffle and add snr 
-#   wordsInSet <-database$CORRECT_SPELL[which(database$CORRECT_SPELL %in% currSet$V1)]
-#   wordsInSet <- wordsInSet %>% sample 
-#   snrInSet <- rep(snrLev,length(wordsInSet)/5)
-#   stimInSet <- rep('word',length(wordsInSet))
-#   words[[i]] <-as.data.frame(cbind(rep(paste0('block',i),length(wordsInSet)),
-#                                    wordsInSet,
-#                                    snrInSet,
-#                                    stimInSet))
-# }
-# words <- data.table::rbindlist(words)
-# colnames(words) <- c('block','item','snr','answer')
-# #
-# pseudo <- list()
-# for (i in 1:5){
-#   currSet <-read.table(paste0('list2match_set',i,'.txt'))
-#   if (nrow(currSet) %% length(snrLev)!=0){
-#     stop("not possible to balance n trials per snr ! ")
-#   }
-#   #find matching pseudowords  # shuffle and add snr 
-#   pseudoInSet <-database$Pseudoword[which(database$CORRECT_SPELL %in% currSet$V1)]
-#   pseudoInSet <- pseudoInSet %>% gsub('-','',.) %>% sample
-#   snrInSet <- rep(snrLev,length(pseudoInSet)/5)
-#   stimInSet <- rep('pseudo',length(pseudoInSet))
-#   pseudo[[i]] <-as.data.frame(cbind(rep(paste0('block',i),length(pseudoInSet)),
-#                                     pseudoInSet,
-#                                     snrInSet,
-#                                     stimInSet))
-# }
-# pseudo <- data.table::rbindlist(pseudo)
-# pseudo$V1 <- rev(pseudo$V1) # reverse block assignment  so that words in each set do not appear together with the corresponding pseudo words from that set (avoid phonol bias)
-# colnames(pseudo) <- c('block','item','snr','answer')
-# 
-# # bring together, shuffle
-# ds <- rbind(words,pseudo)
-# ds <- ds[sample(1:nrow(ds)),] 
-# ds <- ds[order(block),]
-# 
-# # fill the file names based on multiple matching/replacements 
-# ds$file <- paste0(ds$snr,'.mp3')
-# ds$file <- ifelse(ds$block=='block1' | ds$block=='block3',
-#                   stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm_',snrs_voco),vectorize = FALSE),
-#                   stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm',snrs_sissn),vectorize = FALSE))
-# 
-# ds$file <- ifelse(ds$block=='block1' | ds$block=='block3',
-#                   paste('NV',ds$item,ds$file,sep='_'),
-#                   paste('SiSSN',ds$item,ds$file,sep='_'))
-# 
-# ds$noise <- ifelse(ds$block=='block1' | ds$block=='block3','NVoc','SiSSN') 
-# print(ds)
-# 
-# # fixsome bugs in the name so in the spreadsheet corresponds to actual files:
-# ds$file <- gsub('äsleyre_','äsleyre.2_', ds$file)
-# ds$file <- gsub('Nacaer_','Nacaer.2_',ds$file)
-# ds$file <- gsub('Lelfer_','Lelfer.1_',ds$file)
+ 

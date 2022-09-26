@@ -73,7 +73,7 @@ ds <- ds[sample(1:nrow(ds)),]
 ds <- ds[order(block),]
 
 # fill the file names based on multiple matching/replacements 
-ds$file <- paste0(ds$snr,'.mp3')
+ds$file <- paste0(ds$snr,'.wav')
 ds$file <- ifelse(ds$block=='block1' | ds$block=='block3',
                  stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm_',snrs_voco),vectorize = FALSE),
                  stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm',snrs_sissn),vectorize = FALSE))

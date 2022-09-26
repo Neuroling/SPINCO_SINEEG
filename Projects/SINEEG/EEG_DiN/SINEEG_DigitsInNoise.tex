@@ -1,0 +1,95 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={Digits in Noise EEG},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Digits in Noise EEG}
+\author{true}
+\date{September 21, 2022}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+The data current experiment is used in a submited manuscript by Thomas
+Houweling (under review). It is set to examine associations between EEG
+activity and speech in noise recognition. Task requires hearing a digit
+name embbeded in different levels of noise and pressing the
+corresponding digit in a pad (digits are 1:6,8:9). Data from N = 25
+adults (after 7 subjects discarded;initial sample mean age 23.5, SD=3.9
+years; 29 female) Performance measures per trial are accuracy
+(correct/incorrect) and clarity rating (1-9 subjective scale). SNR of
+presentation are calibrated per individual in a pretest, defining 3 SNR
+levels: SRT50 (50\% correctness in calibration test), SRT-1.5db
+(noisier), SRT+1.5db (less noisy). Prestimulus alpha power (8.5-12Hz) in
+noisy trials was higher for correct than for incorrect trials, and for
+those rated as clearer vs less clear. Linear mixed effect logistic
+regression model: accuracy \textasciitilde{} α power * SNR +
+(1\textbar subject:digit) using source-reconstructed power found
+significant prediction in a left posterior temporal area in -300 to -50
+ms. Interaction with stimuli difficulty: positive influence of alpha for
+recognizing clearer targets, but negative influence for the less clear
+targets.
+\end{abstract}
+
+
+
+\end{document}

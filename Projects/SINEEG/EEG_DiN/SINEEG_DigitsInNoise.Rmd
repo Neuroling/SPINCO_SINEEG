@@ -1,0 +1,132 @@
+---
+title: "Digits in Noise EEG" 
+abstract: "The data current experiment is used in a submited manuscript by Thomas Houweling (under review). It is set to examine associations between EEG activity and speech in noise recognition. Task requires hearing a digit name embbeded in different levels of noise and pressing the corresponding digit in a pad (digits are 1:6,8:9). <br><br> Data from N = 25 adults (after 7 subjects discarded;initial sample mean age 23.5, SD=3.9 years; 29 female)  <br><br>  Performance measures per trial are accuracy (correct/incorrect) and clarity rating (1-9 subjective scale). SNR of presentation are calibrated per individual in a pretest,  defining 3 SNR levels: SRT50 (50% correctness in calibration test), SRT-1.5db (noisier), SRT+1.5db (less noisy). <br><br> Prestimulus alpha power (8.5-12Hz) in noisy trials was higher for correct than for incorrect trials, and for those rated as clearer vs less clear. Linear mixed effect logistic regression model: accuracy ~ α power * SNR + (1|subject:digit) using source-reconstructed power found significant prediction in a left posterior temporal area in -300  to -50 ms. Interaction with stimuli difficulty: positive influence of alpha for recognizing clearer targets, but negative influence for the less clear targets." 
+runhead: "A Running Head"
+author:
+  name: Gorka Fraga Gonzalez  [Thomas Houweling dataset]
+  affiliation: University of Zurich 
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document:
+      code_folding: hide
+      highlight: espresso
+      theme: spacelab
+      toc: true
+      toc_float:
+          collapsed: false
+          smooth_scroll: true
+          toc_depth: 6
+params:
+    dirinput:  "W:/Transfer/forGorka"
+        
+      #self_contained: false
+---
+
+```{r, include=FALSE}
+ 
+    knitr::opts_knit$set(root.dir = 'V:/gfraga/scripts_neulin/Projects/SINEEG')    
+    knitr::opts_chunk$set(echo=TRUE,warning=FALSE)
+    library(tidyr)
+    library(dplyr)
+   library(reactable)
+    source('V:/gfraga/scripts_neulin/Projects/SINEEG/funs/eeg_funs.R')
+    
+
+    
+```
+
+```{r, include = FALSE}
+options(width=60)
+local({
+  hook_output <- knitr::knit_hooks$get('output')
+  knitr::knit_hooks$set(output = function(x,options) {
+    if (!is.null(options$max.height)) options$attr.output <- c(
+      options$attr.output,
+      sprintf('style="max-height: %s;"',options$max.height)
+    )
+   hook_output(x, options)    
+  })
+})
+
+```
+
+### Description
+
+#### Data folders
+
+All Digits-in-noise (DiN) EEG data are to be found under 'EEG_DATA' folder under the subject's main folder (which also contains behavioral performance among others)
+
+-   In **EEG_DATA** the '.raw' files are the raw recordings (4-6 files containing several tasks). Then, raw are saved into multiple .mat files (with parts)
+
+-   *InterpChans.mat* file contains info about channels interpolated for later steps
+
+-   In **'EEG_DATA/Downsampled'** the .raw files are transformed into '.set' files (different parts). It follows the main preprocessing pipeline, used in the submitted manuscript. ['Downsamp' contains changes in revision. Do not use.]
+
+-   **'EEG_DATA/Downsampled/DiN'** contains *epoched* sets, and *epoched_ICrem* sets (after removal of IC components) as well as a *trialInfo.mat* file
+
+
+#### Scripts 
+
+- **xxx** preprocessing scripts. Each contains multiple preprocessing steps. Each script represents a 'part' in the preprocessing sequence (parts 1-3)
+- **'Utils'** contains all required functions for the preprocessing scripts 
+- 'BAK' contains unorganized copies of files. Ignore. 
+
+### Folder tree {.tabset}
+
+#### file overview
+
+```{r, out.width='1000px'}
+
+  # Find subdirectories
+  allfiles <- dir(params$dirinput,recursive=TRUE)
+  
+  # get all subjects list
+  subjects <- unique(sapply(strsplit(allfiles,'/'),'[',2))
+  subjects <- subjects[!is.na(subjects)]
+  subjects <- sort(subjects)
+  sbjNewLabel<- paste0('SUBJECT_',formatC(as.numeric(sapply(strsplit(subjects,split = '_'),'[[',2)),  width = 2, format = "d", flag = "0"))
+
+    #summary content
+  tbl <-  data.frame(subjects)
+  #tbl <- data.frame(matrix(nrow=length(subjects)))
+  for (s in 1:length(tbl$subjects)){
+
+  # search files for current measurement
+    curfiles <- allfiles[grepl(pattern = paste0(subjects[s],'/'),allfiles)]
+    tbl$subjects[s] <- sbjNewLabel[s]
+    tbl$nRaw[s] <-  length(curfiles[grepl('/EEG_DATA/.*.raw',curfiles)])
+    tbl$nDownsampled[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/.*.downsampled_merged.set',curfiles)])
+    tbl$nInterpChanFiles[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/interpChans.mat',curfiles)])
+    tbl$nEpochedSet[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/DiN/.*.epoched.set',curfiles)])
+    tbl$nICrmSet[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/DiN/.*.epoched_ICrem.set',curfiles)])
+  }
+  tbl <- tbl[order(tbl$subjects),]
+  
+```
+
+
+Total N = `r nrow(tbl)` 
+
+Valid N = `r length(which(tbl$nICrmSet!=0))` [epoched_ICrem files found]
+
+```{r, out.width='1000px'}
+  reactable(tbl,filterable = TRUE,
+                        defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),
+                        bordered = TRUE, highlight =TRUE) 
+```
+
+#### all subfolders
+
+```{r,max.height='600px'}
+  
+  # Print folder tree    
+  fs::dir_tree(params$dirinput,recurse=TRUE,type='directory')
+
+```
+
+#### all subfolders & files
+
+```{r, max.height = '600px' }
+  fs::dir_tree(params$dirinput,recurse=TRUE)
+```
+

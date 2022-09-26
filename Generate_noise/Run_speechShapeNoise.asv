@@ -24,13 +24,13 @@ addpath('V:\gfraga\scripts_neulin\Generate_noise\functions\mp3readwrite')
 %% Inputs 
 makeplots = 0;
 % paths and files 
-dirinput =      'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS' ;
-diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN\' ;
-mkdir(diroutput)
+dirinput =      'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm' ;
+diroutput =     'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm_SiSSN\' ;
 cd (dirinput)
 audiofiles =      dir(['*.wav']); % must be more than one 
 audiofiles =      fullfile(dirinput, {audiofiles.name}); 
- 
+
+%audiofiles = audiofiles(1:2); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  test ! 
 % Filter settings (butterworth filter lower and upper cut freqs in Hz)
 filt_low =      50 ;
 filt_upper =    8000;
@@ -47,13 +47,14 @@ srate =         44100;
 noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which the bandwidth of the smoothing window is a constant percentage of the center frequency).
 
 % SNR levels
- target_dB_snr = -10:5:10;
+%target_dB_snr = [-7 -5 -3 -1 1];
+target_dB_snr = -10:5:10;
 %% Generate noise from concatenated data
 
 % Filter
 [signals, fss] = cellfun(@(x) audioread(x), audiofiles, 'UniformOutput',0);
 if fss{1}~=srate 
-    error('wrong sampling rate specified!')
+    error('wrong sampling rate!')
 end 
 
 NyqFreq = srate/2;            % fs = 2kHz; Nyquist freq. = 1 kHz
@@ -65,8 +66,6 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
  
  % speech-shape noise
  ssn = speechshapednoise(sigs_filt_concat,nfft,noctaves,srate);
- audiowrite([diroutput,'ssn.wav'],ssn,srate,'BitsPerSample',16,'comment','speech-shaped noise with length of all files in folder concatenated');        
-
  disp('...generated speech-shaped noise from concatenated files '); 
  
  %% Loop thru SNR values and embed  the speech in SSN  
@@ -121,11 +120,8 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
            target_loudnessDB = -23;
            SiSSN{i,1} =  normalize_by_perceivedLoudness(sissn',fss{i},target_loudnessDB);
 
-         % prevent clipping only if needed 
-           if any(SiSSN{i,1}>0.99 | SiSSN{i,1} < -0.99)
-                 SiSSN{i,1} = SiSSN{i,1}*(0.999999/max(abs(SiSSN{i,1})));  
-                 disp('preventing clipping')
-           end
+         % prevent clipping
+           SiSSN{i,1} = SiSSN{i,1}*(0.999999/max(abs(SiSSN{i,1})));  
      end
       
      
@@ -137,7 +133,7 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
          %--------------------------------------------
          [pathstr, name , ext] = fileparts(audiofiles{i});
          outputfilename = strrep([diroutput,'SiSSN_',name,num2str(dblevel),'db',ext],'\\','\');
-         text = ['Speech in speech-shaped noise with ',num2str(target_dB_snr(L)),' SNR db. Normalized at ',num2str(target_loudnessDB),'db'];
+         text = ['Speech in speech-shaped noise with ',num2str(target_dB_snr(L)),' SNR db. Normalized at ',str2num(targ];
          audiowrite(outputfilename, SiSSN{i},srate,'BitsPerSample',16,'comment',text);        
          disp(['...saved ',outputfilename]);
         

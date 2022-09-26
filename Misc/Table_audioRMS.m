@@ -6,13 +6,13 @@ clear all;
 %- Read audiofiles, calculate RMS, plot and save table 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-dirinput = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\trim_norm-25db_SiSSN_loudnessNorm';
-diroutput = 'V:\spinco_data\Audio_recordings\LIRI_voice_DF\segments\Take1_all_trimmed\';
+dirinput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV';
+diroutput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\';
 parts = strsplit(dirinput,'\');
 foldername = parts{end};
 cd (dirinput)
 
-files = dir('*.mp3');
+files = dir('NV*.wav');
 files = {files.name};
 
 % read sig

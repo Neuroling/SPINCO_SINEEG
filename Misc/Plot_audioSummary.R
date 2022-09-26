@@ -3,8 +3,8 @@ library('raincloudplots')
 library('ggdist')
 library('ggplot2')
 #dir 
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LexicalDecision/'
-diroutput <- 'V:/spinco_data/SINON/Spreadsheets/LexicalDecision/'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2ForcedChoice/'
+diroutput <- 'V:/spinco_data/SINON/Spreadsheets/2ForcedChoice/'
 
 # read file with info 
 setwd(dirinput)
@@ -14,7 +14,7 @@ head(tab)
 
 foldername <- strsplit(dirinput,'/')[[1]][[length(strsplit(dirinput,'/')[[1]])]]
 
-variables <- c('duration', 'rms')
+variables <- c('duration', 'rms', 'loudness')
 
 for (i in 1:length(variables)){
   

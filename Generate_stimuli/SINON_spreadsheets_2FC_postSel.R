@@ -11,12 +11,7 @@ library(tidyr)
 dirinput <- 'V:/spinco_data/LIRI_database/LIRI_database_subsets/'
 diroutput <- 'V:/spinco_data/SINON/Spreadsheets/'
 setwd(dirinput)
-#audiofiles
-audiofiles_nvoc <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_vocoded/'
-audiofiles_sissn <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/items_OK_norm_SiSSN/'
-# 
-filesnvoc <- dir(audiofiles_nvoc,pattern = '*.mp3')
-filessissn <- dir(audiofiles_sissn,pattern = '*.mp3')
+ 
 #directory with matching subsets
 matchDir <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v2/SINON_MATCH_subsets_2FC'
 
@@ -83,7 +78,7 @@ ds <- ds[sample(1:nrow(ds)),]
 ds <- ds[order(block),]
 
 # fill the file names based on multiple matching/replacements 
-ds$file_target <- paste0(ds$snr,'.mp3')
+ds$file_target <- paste0(ds$snr,'.wav')
 ds$file_target <- ifelse(ds$block=='block1' | ds$block=='block3',
                          stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm_',snrs_voco),vectorize = FALSE),
                          stringi::stri_replace_all_regex(ds$file,pattern = snrLev,replacement = paste0('norm',snrs_sissn),vectorize = FALSE))

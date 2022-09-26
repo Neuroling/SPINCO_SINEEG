@@ -149,7 +149,7 @@ else
   
   tmpfile = fullfile(tmpdir,['tmp',num2str(round(1000*rand(1))),'.wav']);
 
-  psychwavwrite(D',SR,string(tmpfile)); %wavwrite(D',SR,tmpfile);%wavwrite replaced by GFraga]
+  psychwavwrite(D',SR,string(tmpfile)); %wavwrite(D',SR,tmpfile);%wavwrite replaced by GFraga as previous was outdated]
   
   cmd = ['"',lame,'"', lameopts, '"',tmpfile, '" "', FILE, '"'];
 
