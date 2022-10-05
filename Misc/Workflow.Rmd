@@ -1,0 +1,58 @@
+---
+title: "Workflow"
+author: "G.FragaGonzalez"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(nomnoml)
+```
+ 
+```{nomnoml , echo = FALSE, out.height=900,out.width=1050}
+
+# https://cran.r-project.org/web/packages/nomnoml/readme/README.html
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=Wheat empty bold
+#.client: fill=LavenderBlush empty bold
+#background: FloralWhite
+#lineWidth: 1
+#direction: right
+#leading: 1.25
+#lineWidth: .75
+#padding: 8
+#spacing: 40
+#zoom: 8
+[<client> preprocessing] ->  [<table> filter]
+[<client> preprocessing] ->  [<table> artifact rej]
+[<client> preprocessing] ->  [<table> temp smooth]
+[<client> preprocessing] ->  [<table> z-scoring]
+
+[<client> Features] ->  [<table> time-domain]
+[<client> Features] ->  [<table> freq-domain]
+ 
+[<client> Cross-validation] ->  [<table> kfold]
+[<client> Cross-validation] ->  [<table> pseudotrials]
+
+[<client> Classifier] ->  [Linear]
+[<client> Classifier] ->  [Non-linear]
+  [Linear] ->  [<table> Linear kernel SVM]
+  [Linear] ->  [<table> LDA]
+  [Linear] ->  [<table> LogRegression]
+  [Non-linear] ->  [<table> Gaussian kernel SVM]
+  [Non-linear] ->  [<table> Deep neural networks]
+ 
+ 
+[<client> Output] ->  [DA]
+  [DA] ->  [<table> mean DA against chance]
+  [DA] ->  [<table> RDM]
+[<client> Output] ->  [Euclidian distance]
+
+ 
+
+```
+ 

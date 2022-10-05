@@ -1,14 +1,18 @@
 
 rm(list=ls())
-basedir <- 'V:/spinco_data/Audio_recordings/LIRI_voice_DF/segments/macro-output/normalized-25db/'
+basedir <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_SiSSN/'
 setwd(basedir)
 
 files <- 
-  dir(pattern = '*.mp3',recursive = TRUE)
-
-
+  c(dir(pattern = '*.1_*'))
 file.rename(from = paste0(basedir,'/',files),
-              to = paste0(basedir,'/', gsub('_trim','_norm',files)))
+              to = paste0(basedir,'/', gsub('.1_','_',files)))
+
+
+files <- 
+  c(dir(pattern = '*.2_*'))
+file.rename(from = paste0(basedir,'/',files),
+            to = paste0(basedir,'/', gsub('.2_','_',files)))
 
 
        

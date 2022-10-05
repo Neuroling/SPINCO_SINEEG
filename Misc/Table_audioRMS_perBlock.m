@@ -5,7 +5,7 @@ clear all;
 %[GFragaGonzalez 2022]
 %- Read audiofiles, calculate RMS, and save table 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+addpath('V:\gfraga\scripts_neulin\Generate_noise\functions')
 dirinput = 'V:\spinco_data\SINON\Spreadsheets\2ForcedChoice\files';
 diroutput = 'V:\spinco_data\SINON\Spreadsheets\2ForcedChoice\';
 % spreasheet with stimuli list and block info
