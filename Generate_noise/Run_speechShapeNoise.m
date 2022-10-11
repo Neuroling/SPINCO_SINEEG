@@ -25,7 +25,7 @@ addpath('V:\gfraga\scripts_neulin\Generate_noise\functions\mp3readwrite')
 makeplots = 0;
 % paths and files 
 dirinput =      'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS' ;
-diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN\' ;
+diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN_v2\' ;
 mkdir(diroutput)
 cd (dirinput)
 audiofiles =      dir(['*.wav']); % must be more than one 
@@ -36,9 +36,9 @@ filt_low =      50 ;
 filt_upper =    8000;
 
 % Length of intro/outro (with ramp in/out)
-head_length =   0.05; % desired start noise length in seconds % 
+head_length =   0.1; % desired start noise length in seconds % 
 tail_length =   0; % desired tail noise length in seconds
-rampin_length =   0.01; % desired start noise length in seconds
+rampin_length =   0.02; % desired start noise length in seconds
 rampout_length =   0; % desired tail noise length in seconds
 
 % Parameters for SSN function

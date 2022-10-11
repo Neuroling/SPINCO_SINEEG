@@ -12,7 +12,7 @@ cd(dirinput)
 for i = 1:length(files)
         currfile = files{i};
         [sig, srate] = audioread(currfile);
-        sig = sig(:,1);
+        %sig = sig(:,1);
         
           %Normalize to perceived loudness            
           target_loudnessDB = -23;
@@ -25,7 +25,7 @@ for i = 1:length(files)
            end
            
          % Save  
-         outputfilename = strrep(currfile,'.flac',['_norm',num2str(target_loudnessDB),'db.wav']);
+         outputfilename = strrep(currfile,'.flac',['_norm',num2str(target_loudnessDB),'LUFS.wav']);
          audiowrite(outputfilename,sig_normal,srate,'BitsPerSample',16);        
          disp(['...saved ',outputfilename]);
         

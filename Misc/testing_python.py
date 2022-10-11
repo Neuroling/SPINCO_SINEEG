@@ -7,6 +7,7 @@ This is a temporary script file.
 import os
 from scipy.stats import sem
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import mne  
 import mne.stats as mstats
@@ -41,7 +42,8 @@ partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) f
 # calculate the group average classification accuracy over all conditions at each time point, flatten condition x condition matrix to look at pairwise accuracy
 groupAccuracy = np.array([np.nanmean(np.ndarray.flatten(DA[:,point,:,:])) for point in range(timeInds[0],timeInds[1])])
 
-######################################################################
+
+#################
 
 ## Calculate significance of group average classification
 
@@ -50,7 +52,33 @@ b = np.full([numParts,550],50) # What are you testing against: in this case, the
 T_obs, clusters, cluster_p_values, H0 = mstats.permutation_cluster_test([partAccuracies,b], tail=1, out_type="mask")
 
 #########################
+#[GFG]
+# PLOTLY!
+# Using plotly.express
+import plotly.express as px
 
+df =  pd.DataFrame(partAccuracies)
+df.append(np.array(range(-50,500)))
+df = pd.DataFrame(df)
+ 
+df = px.data.stocks()
+fig = px.line(df, x='date', y="GOOG")
+fig.show()
+
+
+timeseq = list(range(-50,500))
+fig = px.line(partAccuracies, x=timeseq)
+
+
+df.index.name = 'subj'
+df.reset_index(inplace=True)
+df.subj = ['s' + str(x) for x in df.subj]
+
+
+
+
+
+######################################################################
 ## Plot group accuracy, participant accuracies over time series, and bars indicating where accuracy was significantly above chance
 
 plt.figure(figsize=(20,10))  
