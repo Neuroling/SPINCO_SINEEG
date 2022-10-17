@@ -37,6 +37,8 @@ os.chdir(dirinput)
 from functions_for_preprocessing import *
 # read data, select columns
 dat = pd.read_excel(fileinput)
+ 
+# Preprocessing and descriptive statistics
 df = preprocess_gorilla_output(dat)
 (accu,rt) = describe_gorilla_output(df)
             
