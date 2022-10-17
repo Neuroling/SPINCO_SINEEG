@@ -8,9 +8,7 @@ import os
 from scipy.stats import sem
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
-import mne  
-import mne.stats as mstats
+import numpy as np 
 from scipy.io import loadmat
 
 

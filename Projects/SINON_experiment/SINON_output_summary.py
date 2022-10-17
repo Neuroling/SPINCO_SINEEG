@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-%reset -f #clear all ? 
+#%reset -f #clear all ? 
 """
 Created on Mon Oct 10 10:04:55 2022
 @author: gfraga
@@ -8,57 +8,90 @@ Created on Mon Oct 10 10:04:55 2022
 import os  # Commands to remember: os.getcwd(), os.listdir() 
 import pandas as pd
 import numpy as np 
+import sys as sys
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.tools import FigureFactory as FF
-
-#conda install ptitprince
-
-# Fix for issue with spyder not showing plotly 
 import plotly.io as io
+import seaborn as sns
+import matplotlib.pyplot as plt
+import ptitprince as pt
+# %% 
+# Fix for issue with spyder not showing plotly 
 io.renderers.default='browser'
 
-# inputs 
-dirinput = 'V:/spinco_data/SINON/outputs'
+# paths
+if sys.platform=='linux':  basedir  = '/home/d.uzh.ch/gfraga/smbmount/'
+else:  basedir ='V:/'
+
+scriptsdir = basedir + 'gfraga/scripts_neulin/Projects/SINON_experiment/'
+sys.path.insert(0,scriptsdir)
+
+dirinput =  basedir + 'spinco_data/SINON/outputs'
+diroutput = basedir + '/spinco_data/SINON/outputs'
 fileinput = 'data_2FC_matthias.xlsx'
 os.chdir(dirinput)
 
-# DATA PREP
+# %%  DATA PREP
 #----------------------------------------------------------------
+from functions_for_preprocessing import *
 # read data, select columns
 dat = pd.read_excel(fileinput)
-dat = dat.iloc[:,(dat.columns.get_loc('Checkpoint')  + 1): len(dat.columns)] #discard some initial cols
-
-# find rows with response(rows following 'audio play requested')
-df = dat.iloc[dat.index[(dat.Response == 'AUDIO PLAY REQUESTED') & (dat.display!= 'example')] + 1]
-
-#  Get Additional audio info (type, SNR) from Audio file name
-df.insert(2,"STIM",df[np.unique(df.list)]) # audio presented for this subject
-df.insert(2,"TYPE",df['STIM'].str.split('norm').str[0].str.split('_').str[0])
-
-df.insert(2,"SNR",df['STIM'].str.split('norm').str[1].str.replace('_','').str.replace('.wav','')) # use string split from filenames
-df['SNR'].replace({'-10db': '1','-5db': '2', '0db': '3', '5db': '4','10db': '5',\
-                   '4chans': '1','5chans': '2', '6chans': '3', '7chans': '4','8chans': '5' }, inplace=True)
-    
- 
-# DESCRIPTIVE STATS 
+df = preprocess_gorilla_output(dat)
+(accu,rt) = describe_gorilla_output(df)
+            
+df.to_csv(r'prep_'+fileinput.replace('.xlsx','.csv'), index = False)
+# %% PLOTs
 #----------------------------------------------------------------
-ds1 =     df.groupby(['block','TYPE','SNR'])['Correct'].describe().reset_index()
-ds2 = df.groupby(['TYPE','SNR'])['Correct'].describe().reset_index()
-ds2.insert(2,"block",'mean')
-ds = pd.concat([ds1,ds2])
+#load plotting functions
+from functions_for_plotting import *
+# Accuracy plots 
+xvar = 'LV' ; yvar = 'prop_hits'; yvar2='count_miss' ; zvar= 'block' ; facet_var = 'TYPE' # here column that defines different plots /facets
+data = accu
+multi_title = 'Summary accuracy'
+fi1= multiplot_lines_scatter(data,xvar,yvar,yvar2, zvar,facet_var,multi_title)
 
-# add col specfying messure
+# %
+# RT plots
+xvar = 'LV'; yvar = 'mean'; zvar= 'block'; facet_var = 'TYPE' # here column that defines different plots /facets
+data = rt
+multi_title= 'RT summary'
+fi2 = multiplot_lines(data, xvar, yvar, zvar, facet_var,multi_title)
 
- # add rt  
+# % Rain cloud
+xvar = 'LV'; yvar = 'Reaction Time'; zvar= 'block'; 
+facet_var = 'TYPE' ; facet_var2 = 'block' 
+data = df.loc[(df['Correct']==1.0),]
+multi_title='RTs '
+ort="v";
+color_pals=['mako','rocket']
+fi3 = multiplots_rainclouds(data,xvar,yvar,zvar,facet_var,facet_var2,multi_title,color_pals,ort)
+      
+# %% RTs per block and per correct/incorrect responses
+
+# blocks2plot = df.block.unique()
+fi4= sns.catplot(data=df, x="LV", y="Reaction Time", hue="Correct", 
+    kind="violin",split=True,title='RTs per Block and correctness',col='TYPE',row='block',
+    inner='stick',palette='pastel')
+
+# %%  SAVE 
+os.chdir(diroutput)
+fi1.savefig('FIG_lin_accu.jpg')
+fi2.savefig('FIG_lin_rt.jpg')
+fi3.savefig('FIG_rain_rt.jpg')
+fi4.savefig('FIG_vio_rt.jpg')
 
 
 
-# PLOTs
-#----------------------------------------------------------------
-# PLOT accuracy
-px.line(ds,x='SNR',y ='mean',facet_col='TYPE',color='block',markers=True, title='Accuracy')
-#fig.update_traces(marker=dict(size=12, line=dict(width=2)), selector=dict(mode='markers'))
-fig.show()
-                  
- 
+
+
+
+
+
+
+
+
+
+
+
+

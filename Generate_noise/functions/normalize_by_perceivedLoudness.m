@@ -9,7 +9,7 @@ function signals_loudNorm = normalize_by_perceivedLoudness(signal,fs,targetLUFS)
         error('Failed: signal less than 0.4 sec: could not calculate integratedLoudness!')
     end 
     loudness = integratedLoudness(signal,fs);
-    gaindB = targetLUFS - loudness;
-    gain = 10^(targetLUFS/20);
+    gain = targetLUFS - loudness;
+    gain = 10^(gain/20);
     signals_loudNorm = signal.*gain;
 
