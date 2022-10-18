@@ -30,7 +30,7 @@ Alternatively, for launching Spyder you can open the Spyder stand alone from the
 Imagine you created an environment in one computer and you want now to run those analysis in a remote desktop in another computer (which may have a different operating system). You can export the environment and import it in the other computer. But if the OS are different the dependencies might change (but you still want to have the same version of python and packages if possible). 
 https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#sharing-an-environment 
 * Create an environment: specify python version 
-* Export your environment:  e.g., conda export > spyder-env.yml --from-history
+* Export your environment:  e.g., conda env export > spyder-env.yml --from-history
 * Import: 
 
 
