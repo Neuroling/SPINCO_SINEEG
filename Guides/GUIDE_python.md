@@ -13,38 +13,33 @@ We are likely to have several instances of python in our PC. We need to ensure w
 
 Main documentation: https://docs.spyder-ide.org/current/installation.html  
 
- Download Anaconda3 for windows and installed  
+### Download Anaconda3 for windows and installed  
 
-Set environment variables. Add to PATH: Anaconda3, Anaconda3/Scripts and Anaconda3/Library/bin folder 
+### Set environment variables. Add to PATH: Anaconda3, Anaconda3/Scripts and Anaconda3/Library/bin folder 
 
-Check installation : Open Anaconda prompt and type: conda info --envs 
+### Check installation : Open Anaconda prompt and type: conda info --envs 
 
-Create a environment with modules.In Anaconda prompt type:   
- 
+### Create a environment with modules.In Anaconda prompt type:   
+  conda create –n spyder-env –y  
 
- conda create –n spyder-env –y  
-
- 
-
-Activate environment in the prompt  
-
+### Activate environment in the prompt  
 conda activate spyder-env 
 
- 
-
-Install packages and spyder kernle 
-
+### Install packages and spyder kernle 
 (Notice the prompt will change now indicating you are within the creted environment ). Type 'Spyder' to launch spyder from wihin this environment.You can also install  packages like scikit-learn by typing this either in the console or in Spyder (but must be within the enviornment): 
-
- 
-
-conda install spyder-kernels scikit-learn seaborn  
-
- 
+    
+     conda install spyder-kernels scikit-learn seaborn   
 
 Alternatively, for launching Spyder you can open the Spyder stand alone from the windows menu, and then go to preferences and set up the Python environment from the newly created env (located in Anaconda3/env folder) 
-
  
+## Exporting environment across platforms (e.g., from windows to Linux)
+Imagine you created an environment in one computer and you want now to run those analysis in a remote desktop in another computer (which may have a different operating system). You can export the environment and import it in the other computer. But if the OS are different the dependencies might change (but you still want to have the same version of python and packages if possible). 
+https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html#sharing-an-environment 
+
+- Export your environent:  e.g., conda export > spyder-env.yml --from-history
+- Import: 
+
+
 
 ## Tips
 
