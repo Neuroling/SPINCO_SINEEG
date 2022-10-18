@@ -3,8 +3,8 @@ close all
 cd ('V:\spinco_data\AudioRecs\')
 addpath('V:\gfraga\scripts_neulin\Generate_noise\functions')
 %% Read files 
-dirinput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN';
-diroutput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN_cued';
+dirinput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV2';
+diroutput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV2_cued';
 files = dir([dirinput,'/*.wav']);
 files = {files.name};
 %% read beep
@@ -24,7 +24,7 @@ for i = 1:length(files)
         [sig, srate] = audioread(currfile);
         %sig = sig(:,1);
         if contains(currfile(1:2),'NV')
-            newsig = [beep2;repmat(0,(srate*0.05),1);sig];
+            newsig = [beep2;repmat(0,(srate*0.1),1);sig];
         else  contains(currfile(1:2),'SiSSN')
            newsig = [beep2;sig];
         end

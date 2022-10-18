@@ -29,7 +29,7 @@ sys.path.insert(0,scriptsdir)
 
 dirinput =  basedir + 'spinco_data/SINON/outputs'
 diroutput = basedir + '/spinco_data/SINON/outputs'
-fileinput = 'data_2FC_matthias.xlsx'
+fileinput = 'data_PM_matthias.xlsx'
 os.chdir(dirinput)
 
 # %%  DATA PREP
@@ -70,7 +70,6 @@ color_pals=['mako','rocket']
 fi3 = multiplots_rainclouds(data,xvar,yvar,zvar,facet_var,facet_var2,multi_title,color_pals,ort)
       
 # %% RTs per block and per correct/incorrect responses
-
 # blocks2plot = df.block.unique()
 fi4= sns.catplot(data=df, x="LV", y="Reaction Time", hue="Correct", 
     kind="violin",split=True,title='RTs per Block and correctness',col='TYPE',row='block',
@@ -78,10 +77,10 @@ fi4= sns.catplot(data=df, x="LV", y="Reaction Time", hue="Correct",
 
 # %%  SAVE 
 os.chdir(diroutput)
-fi1.savefig('FIG_lin_accu.jpg')
-fi2.savefig('FIG_lin_rt.jpg')
-fi3.savefig('FIG_rain_rt.jpg')
-fi4.savefig('FIG_vio_rt.jpg')
+fi1.savefig('FIG_lin_accu_' + fileinput.replace('.xlsx','.jpg'))
+fi2.savefig('FIG_lin_rt_' + fileinput.replace('.xlsx','.jpg'))
+fi3.savefig('FIG_rain_rt_' + fileinput.replace('.xlsx','.jpg'))
+fi4.savefig('FIG_vio_rt_' + fileinput.replace('.xlsx','.jpg'))
 
 
 

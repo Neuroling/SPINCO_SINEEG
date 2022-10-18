@@ -17,22 +17,21 @@ output:
           smooth_scroll: true
           toc_depth: 6
 params:
-    dirinput:  "W:/Transfer/forGorka"
+    dirinput:  "/mnt/nfs/din_v1/experimentData"
         
       #self_contained: false
 ---
 
 ```{r, include=FALSE}
- 
-    knitr::opts_knit$set(root.dir = 'V:/gfraga/scripts_neulin/Projects/SINEEG')    
-    knitr::opts_chunk$set(echo=TRUE,warning=FALSE)
-    library(tidyr)
-    library(dplyr)
-   library(reactable)
-    source('V:/gfraga/scripts_neulin/Projects/SINEEG/funs/eeg_funs.R')
-    
+  
+  knitr::opts_knit$set(root.dir = '~/smbmount/gfraga/scripts_neulin/Projects/SINEEG')    
+  knitr::opts_chunk$set(echo=TRUE,warning=FALSE)
+  library(tidyr)
+  library(dplyr)
+  library(reactable)
+  source('~/smbmount/gfraga/scripts_neulin/Projects/SINEEG/funs/eeg_funs.R')
+  
 
-    
 ```
 
 ```{r, include = FALSE}
@@ -71,48 +70,50 @@ All Digits-in-noise (DiN) EEG data are to be found under 'EEG_DATA' folder under
 - **'Utils'** contains all required functions for the preprocessing scripts 
 - 'BAK' contains unorganized copies of files. Ignore. 
 
-### Folder tree {.tabset}
+### Folder overview{.tabset}
 
 #### file overview
 
 ```{r, out.width='1000px'}
-
-  # Find subdirectories
-  allfiles <- dir(params$dirinput,recursive=TRUE)
+    # Find subdirectories
+    allfiles <- dir(params$dirinput,recursive=TRUE)
+    
+    # get all subjects list
+    subjects <- unique(sapply(strsplit(allfiles[grep(pattern = 'SUBJECT_',allfiles)],'/'),'[',1))
+    subjects <- subjects[!is.na(subjects)]
+    subjects <- sort(subjects)
+    sbjNewLabel<- paste0('SUBJECT_',formatC(as.numeric(sapply(strsplit(subjects,split = '_'),'[[',2)),  width = 2, format = "d", flag = "0"))
   
-  # get all subjects list
-  subjects <- unique(sapply(strsplit(allfiles,'/'),'[',2))
-  subjects <- subjects[!is.na(subjects)]
-  subjects <- sort(subjects)
-  sbjNewLabel<- paste0('SUBJECT_',formatC(as.numeric(sapply(strsplit(subjects,split = '_'),'[[',2)),  width = 2, format = "d", flag = "0"))
+      #summary content
+    tbl <-  data.frame(subjects)
+    #tbl <- data.frame(matrix(nrow=length(subjects)))
+    for (s in 1:length(tbl$subjects)){
+    # search files for current measurement
+      curfiles <- allfiles[grepl(pattern = paste0(subjects[s],'/EEG_DATA/'),allfiles)]
+      levels(tbl$subjects)[s] <- sbjNewLabel[s]
+      tbl$nRaw[s] <-  length(curfiles[grepl('/EEG_DATA/.*.raw',curfiles)])
+      tbl$nDownsampled[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/.*.downsampled_merged.set',curfiles)])
+      tbl$nInterpChanFiles[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/interpChans.mat',curfiles)])
+      tbl$nEpochedSet[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/DiN/.*.epoched.set',curfiles)])
+      tbl$nICrmSet[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/DiN/.*.epoched_ICrem.set',curfiles)])
+    }
+    tbl <- tbl[order(sapply(strsplit(as.character(tbl$subjects),'_'),'[[',2)),]
 
-    #summary content
-  tbl <-  data.frame(subjects)
-  #tbl <- data.frame(matrix(nrow=length(subjects)))
-  for (s in 1:length(tbl$subjects)){
 
-  # search files for current measurement
-    curfiles <- allfiles[grepl(pattern = paste0(subjects[s],'/'),allfiles)]
-    tbl$subjects[s] <- sbjNewLabel[s]
-    tbl$nRaw[s] <-  length(curfiles[grepl('/EEG_DATA/.*.raw',curfiles)])
-    tbl$nDownsampled[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/.*.downsampled_merged.set',curfiles)])
-    tbl$nInterpChanFiles[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/interpChans.mat',curfiles)])
-    tbl$nEpochedSet[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/DiN/.*.epoched.set',curfiles)])
-    tbl$nICrmSet[s] <-  length(curfiles[grepl('/EEG_DATA/DOWNSAMPLED/DiN/.*.epoched_ICrem.set',curfiles)])
-  }
-  tbl <- tbl[order(tbl$subjects),]
-  
 ```
 
+#Total N = `r nrow(tbl)` 
 
-Total N = `r nrow(tbl)` 
+#Valid N = `r length(which(tbl$nICrmSet!=0))` [epoched_ICrem files found]
 
-Valid N = `r length(which(tbl$nICrmSet!=0))` [epoched_ICrem files found]
 
 ```{r, out.width='1000px'}
-  reactable(tbl,filterable = TRUE,
-                        defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),
+
+reactable(tbl,filterable = TRUE,
+                       defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),
                         bordered = TRUE, highlight =TRUE) 
+
+
 ```
 
 #### all subfolders
@@ -124,9 +125,29 @@ Valid N = `r length(which(tbl$nICrmSet!=0))` [epoched_ICrem files found]
 
 ```
 
-#### all subfolders & files
+#### tree under EEG_DATA
 
 ```{r, max.height = '600px' }
-  fs::dir_tree(params$dirinput,recurse=TRUE)
-```
 
+for (s in 1:length(subjects)){
+  
+  fs::dir_tree(paste0(params$dirinput,'/',subjects[s],'/EEG_DATA/'),recurse=TRUE)
+  
+}
+  
+```
+#### tree under EEG_DATA/DOWNSAMPLED/
+
+```{r, max.height = '600px' }
+
+for (s in 1:length(subjects)){
+  folder <- paste0(params$dirinput,'/',subjects[s],'/EEG_DATA/DOWNSAMPLED/')
+  if (dir.exists(folder)){
+      fs::dir_tree(folder,recurse=TRUE)
+     print('---------------------------------')
+  }
+    
+  
+}
+  
+```

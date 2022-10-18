@@ -47,7 +47,7 @@ srate =         44100;
 noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which the bandwidth of the smoothing window is a constant percentage of the center frequency).
 
 % SNR levels
- target_dB_snr = [-10,-7.5,-5,-2.5,0];
+ target_dB_snr = [-10,-7.5,:5:5;
 %% Generate noise from concatenated data
 
 % Filter
