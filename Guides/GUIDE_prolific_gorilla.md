@@ -6,6 +6,9 @@ For online experiments. Easy builder.
 
 UZH-LIRI offers licenses and support.  
 
+## How to randomly apply different lists of stimuli 
+(...)  You can create a spreadsheet with multiple columns and then use a node in the spreadsheet node an spreadsheet manipulation to select a different column for each participant
+
  
 # Prolific  
 
