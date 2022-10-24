@@ -7,14 +7,14 @@ library(tidyr)
 # - Read xls spreadsheet for Gorilla containing file names
 # - copy the corresponding files in the same folder as spreadsheet
 ###############################################################################
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/PM/'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LD/'
 diroutput <- dirinput
-filename <- 'Spreadsheets_PM.xlsx'
+filename <- 'Spreadsheets_LD.xlsx'
 setwd(dirinput)
 
 #audiofiles dir 
-audiofiles_nvoc <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_NV_cued/'
-audiofiles_sissn <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_SiSSN_cued/'
+audiofiles_nvoc <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_NV2_cued/'
+audiofiles_sissn <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_SiSSN2_cued/'
 
 # 
 filesnvoc <- dir(audiofiles_nvoc,pattern = 'N*.wav')

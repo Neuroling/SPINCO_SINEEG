@@ -9,9 +9,9 @@ setwd('V:/spinco_data/LIRI_database/SINON_MATCH_v3/')
 Merged <- openxlsx::read.xlsx(fileinput,sheet = 'Merged')
 dat <- Merged
 # Discards those for which there is no audiofile 
-audiofiles_sissn <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_SiSSN/'
+audiofiles_sissn <- 'V:/spinco_data/AudioRecs/LIRI_voice_DF/segments/Take1_all_trimmed/trim_loudNorm-23LUFS_SiSSN2/'
 filessissn <- dir(audiofiles_sissn,pattern = 'S*.wav')
-itemsWithFiles <- sapply(strsplit(filessissn,'_'),'[[',2)
+itemsWithFiles <- sapply(strsplit(filessissn,'_'),'[',2)
 indices <- c(which(dat$CORRECT_SPELL %in% itemsWithFiles),which(gsub('-','',dat$Pseudoword) %in% itemsWithFiles))
 dat <- dat[indices[duplicated(indices)],]
 
@@ -33,7 +33,7 @@ dat$outlier_Ned1_Diff <- !(dat$Ned1_Diff > boxstats$stats[1] & dat$Ned1_Diff < b
 dat$outlier_any <-  (dat$outlier_lgSUBTLEX==TRUE | dat$outlier_PTAN==TRUE | dat$outlier_Ned1_Diff==TRUE)
 dat$nSyllables <- sapply(strsplit(dat$Pseudoword,'-'),length)
 # save 
-#openxlsx::write.xlsx(dat,fileoutput)
+openxlsx::write.xlsx(dat,fileoutput)
 
 
 

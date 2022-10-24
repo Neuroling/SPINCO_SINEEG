@@ -21,8 +21,8 @@ setwd(dirinput)
 # search files and concat
 database <- openxlsx::read.xlsx(databasefile,sheet = 'Merged')
 # SNR assignments to file suffices
-snrs_voco <- c('4chans','5chans','6chans','7chans','8chans')
-snrs_sissn <- c('10db','5db','0db','-5db','-10db')
+snrs_voco <- c('0.7p','0.75p','0.8p','0.85p','0.9p')
+snrs_sissn <- c('-10db','-7.5db','-5db','-2.5db','0db')
 
 # Create design temple to fill in later
 snrs <- as.numeric(c(1,2,3,4,5))
