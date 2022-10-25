@@ -24,8 +24,8 @@ def preprocess_gorilla_output(dat):
     df.insert(2,"STIM",df[np.unique(df.list)]) # audio presented for this subject
     df.insert(2,"TYPE",df['STIM'].str.split('norm').str[0].str.split('_').str[0])
     df.insert(2,"LV",df['STIM'].str.split('norm').str[1].str.replace('_','').str.replace('.wav','')) # use string split from filenames
-    df['LV'].replace({'-10db': '1','-5db': '2', '0db': '3', '5db': '4','10db': '5',\
-                       '4chans': '1','5chans': '2', '6chans': '3', '7chans': '4','8chans': '5' }, inplace=True)
+    df['LV'].replace({'-10db': '1','-7.5db': '2', '-5db': '3', '-2.5db': '4','0db': '5',\
+                       '0.7p': '1','0.75p': '2', '0.8p': '3', '0.85p': '4','0.9p': '5' }, inplace=True)
         
     df['block'] = pd.Categorical(df.block)    
     df['LV'] = pd.Categorical(df.LV)    

@@ -27,16 +27,17 @@ else:  basedir ='V:/'
 scriptsdir = basedir + 'gfraga/scripts_neulin/Projects/SINON_experiment/'
 sys.path.insert(0,scriptsdir)
 
-dirinput =  basedir + 'spinco_data/SINON/outputs'
-diroutput = basedir + '/spinco_data/SINON/outputs'
-fileinput = 'data_PM_matthias.xlsx'
+dirinput =  basedir + 'spinco_data/SINON/outputs_pilot_241022'
+diroutput = basedir + '/spinco_data/SINON/outputs_pilot_241022'
+fileinput = 'gorka_2FC_test.csv'
 os.chdir(dirinput)
 
 # %%  DATA PREP
 #----------------------------------------------------------------
 from functions_for_preprocessing import *
 # read data, select columns
-dat = pd.read_excel(fileinput)
+#dat = pd.read_excel(fileinput)
+dat = pd.read_csv(fileinput)
  
 # Preprocessing and descriptive statistics
 df = preprocess_gorilla_output(dat)
@@ -82,7 +83,10 @@ fi2.savefig('FIG_lin_rt_' + fileinput.replace('.xlsx','.jpg'))
 fi3.savefig('FIG_rain_rt_' + fileinput.replace('.xlsx','.jpg'))
 fi4.savefig('FIG_vio_rt_' + fileinput.replace('.xlsx','.jpg'))
 
-
+fi1.savefig('FIG_lin_accu_' + fileinput.replace('.csv','.jpg'))
+fi2.savefig('FIG_lin_rt_' + fileinput.replace('.csv','.jpg'))
+fi3.savefig('FIG_rain_rt_' + fileinput.replace('.csv','.jpg'))
+fi4.savefig('FIG_vio_rt_' + fileinput.replace('.csv','.jpg'))
 
 
 
