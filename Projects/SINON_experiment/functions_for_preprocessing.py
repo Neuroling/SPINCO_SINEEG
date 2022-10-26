@@ -21,7 +21,9 @@ def preprocess_gorilla_output(dat):
     df.loc[df['Timed Out']==1,'Reaction Time'] = np.nan
     
     #  Additional info (type, LV) from parts of Audiofile name
-    df.insert(2,"STIM",df[np.unique(df.list)]) # audio presented for this subject
+    #df.insert(2,"STIM",df[df['counterbalance-6nlr'].unique()]) # audio presented for this subject
+    df.insert(2,"STIM",df[df['counterbalance-4g72'].unique()]) 
+    
     df.insert(2,"TYPE",df['STIM'].str.split('norm').str[0].str.split('_').str[0])
     df.insert(2,"LV",df['STIM'].str.split('norm').str[1].str.replace('_','').str.replace('.wav','')) # use string split from filenames
     df['LV'].replace({'-10db': '1','-7.5db': '2', '-5db': '3', '-2.5db': '4','0db': '5',\

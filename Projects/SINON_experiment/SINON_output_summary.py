@@ -27,9 +27,9 @@ else:  basedir ='V:/'
 scriptsdir = basedir + 'gfraga/scripts_neulin/Projects/SINON_experiment/'
 sys.path.insert(0,scriptsdir)
 
-dirinput =  basedir + 'spinco_data/SINON/outputs_pilot_241022'
-diroutput = basedir + '/spinco_data/SINON/outputs_pilot_241022'
-fileinput = 'gorka_2FC_test.csv'
+dirinput =  basedir + 'spinco_data/SINON/outputs_pilot_241022/data_exp_90730-v36_2' 
+diroutput = basedir + '/spinco_data/SINON/outputs_pilot_241022/data_exp_90730-v36_2'
+fileinput = 'data_exp_90730-v36_task-ysw2.csv'
 os.chdir(dirinput)
 
 # %%  DATA PREP
@@ -78,10 +78,10 @@ fi4= sns.catplot(data=df, x="LV", y="Reaction Time", hue="Correct",
 
 # %%  SAVE 
 os.chdir(diroutput)
-fi1.savefig('FIG_lin_accu_' + fileinput.replace('.xlsx','.jpg'))
-fi2.savefig('FIG_lin_rt_' + fileinput.replace('.xlsx','.jpg'))
-fi3.savefig('FIG_rain_rt_' + fileinput.replace('.xlsx','.jpg'))
-fi4.savefig('FIG_vio_rt_' + fileinput.replace('.xlsx','.jpg'))
+#fi1.savefig('FIG_lin_accu_' + fileinput.replace('.xlsx','.jpg'))
+#fi2.savefig('FIG_lin_rt_' + fileinput.replace('.xlsx','.jpg'))
+#fi3.savefig('FIG_rain_rt_' + fileinput.replace('.xlsx','.jpg'))
+#fi4.savefig('FIG_vio_rt_' + fileinput.replace('.xlsx','.jpg'))
 
 fi1.savefig('FIG_lin_accu_' + fileinput.replace('.csv','.jpg'))
 fi2.savefig('FIG_lin_rt_' + fileinput.replace('.csv','.jpg'))
