@@ -1,4 +1,4 @@
-function [wave]=vocode_aller(nCh,p,smooth,InputSignal,Srate,MinFreq,MaxFreq)
+function [wave]=vocode_aller(nCh,morph,smooth,InputSignal,Srate,MinFreq,MaxFreq)
 
 % Vocode according to Aller et al. J Neuroscience 2022, modified from
 % Zoefel et al. 2020
@@ -8,8 +8,9 @@ function [wave]=vocode_aller(nCh,p,smooth,InputSignal,Srate,MinFreq,MaxFreq)
 % 70 - 5000 Hz
 % Half-wave rectification of envelope
 % LP filtering of HW rectified envelope <30Hz
-% Manipulation of difficulty is achieved using a ratio of broad to
-% narrowband envelope: env_final(b) = env(b)*p + env(broadband)*(1-p)
+% morph is the p factor for manipulating difficulty:
+    % Manipulation of difficulty is achieved using a ratio of broad to
+    % narrowband envelope: env_final(b) = env(b)*p + env(broadband)*(1-p)
 
 nSmp=length(InputSignal);
 srat2=Srate/2;
@@ -66,34 +67,27 @@ for i=1:nCh
     level=norm(y,2);
     %Smooth the half-wave rectified signal: gives the band envelope
     y=filtfilt(blo,alo,0.5*(abs(y)+y));
+
+%%%MORPHING AS IMPLEMENTED BY MATT DAVIS:
+
+  % mix channel envelope (y) and 1-channel envelope (envelope) in different proportions 
+  % according to morph percentage
+  y = (y .* (morph/100)) + (envelope .* (1 - (morph/100)));
+  
+
     % here we multiply y - the envelope, by some noise
-    % -- excite with noise ---
+    % -- excite with noise -- 
     % generate and filter noise:
     noise = sign(rand(1,nSmp)-0.5);
     bandnoise = filtfilt(filterB(i,:),filterA(i,:),noise);
     %multiply by envelope
     band=y.*bandnoise;
-    %refilter nosie:
+    %refilter noise:
     band=filtfilt(filterB(i,:),filterA(i,:),band);
-
-    % -- Sum proportionally with broadband envelope -- %
-    % Unspecified in either paper (can contact Zoefel or Davis or Aller) is
-    % how RMS (or level) of the Broadband Envelope and the Narrowband are
-    % matched/handled.  The implication of the manipulation is that there
-    % is a morphing from equivalent to 1-Chann (p=0) to 'standard' NV (p=1)
-    % this suggests that they match the levels such that it is a linear
-    % mixing. This is to be verified but will not make huge differences to
-    % intelligibility [or will it?]
-    %%%  scaled_broadband_envelope =  broadband_envelope*level/norm(broadband_envelope,2);
-    %Excite noise with BB envelope:
-    BBnoise = broadband_envelope.*bandnoise;
-    Scaled_BBnoise = BBnoise * level/norm(BBnoise,2);
-    band = (p*band) + ((1-p) * Scaled_BBnoise);
-    band = band*level/norm(band,2);
-
+    %Equalise RMS to input level
+    band = band*level(i)/norm(band,2);
     wave = wave + band;
 end
-%renorm levels all at once? [to be implemented in future]
 
 
 function [filterB,filterA,center]=estfilt(nChannels,type,Srate,LowFreq,UpperFreq)
@@ -376,4 +370,5 @@ else
     wave=wave * ratio;
     audiowrite(Filename,wave,Srate);
 end
+
 
