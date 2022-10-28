@@ -16,9 +16,9 @@ nSmp=length(InputSignal);
 srat2=Srate/2;
 
 %broadband filter:
-[BfilterB,BfilterA]=butter(4,[70 5000]/srat2,"bandpass");
+[BfilterB,BfilterA]=butter(4,[MinFreq MaxFreq]/srat2,"bandpass");
 
-filters='greenwood'; % could also do log, but stick with this for the moment
+filters='log'; % could also do log, but stick with this for the moment
 
 %---------------------Design the filters ----------------
 [filterB,filterA,center]=estfilt(nCh,filters,Srate,MinFreq,MaxFreq);
@@ -72,7 +72,7 @@ for i=1:nCh
 
   % mix channel envelope (y) and 1-channel envelope (envelope) in different proportions 
   % according to morph percentage
-  y = (y .* (morph/100)) + (envelope .* (1 - (morph/100)));
+  y = (y .* (morph)) + (broadband_envelope.* (1 - (morph)));
   
 
     % here we multiply y - the envelope, by some noise
@@ -85,7 +85,7 @@ for i=1:nCh
     %refilter noise:
     band=filtfilt(filterB(i,:),filterA(i,:),band);
     %Equalise RMS to input level
-    band = band*level(i)/norm(band,2);
+    band = band*level/norm(band,2); % band = band*level(i)/norm(band,2);
     wave = wave + band;
 end
 

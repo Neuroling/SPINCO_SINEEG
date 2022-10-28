@@ -12,7 +12,7 @@ library(tidyr)
 ###############################################################################
 
 # directories 
-dirinput <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v3/2FC_13items/'
+dirinput <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v3/2FC_12items/'
 databasefile <-'V:/spinco_data/LIRI_database/LIRI_database_stimuli.xlsx'
 sel <- openxlsx::read.xlsx('V:/spinco_data/LIRI_database/LIRI_database_subsets/2FC_postselection_ZH_AS_GFG.xlsx') # table with neighbors 
 

@@ -3,9 +3,10 @@ close all
 cd ('V:\spinco_data\AudioRecs\')
 addpath('V:\gfraga\scripts_neulin\Generate_noise\functions')
 %% Read files 
-dirinput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV2';
-diroutput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV2_cued';
-files = dir([dirinput,'/*0.7p.wav']);
+dirinput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN_15db';
+diroutput = 'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN_15db_cued';
+mkdir(diroutput)
+files = dir([dirinput,'/*.wav']);
 files = {files.name};
 %% read beep
 beepfile = 'V:\spinco_data\AudioRecs\beep.wav';

@@ -9,7 +9,7 @@ library(tidyr)
 ###############################################################################
 dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LD/'
 diroutput <- dirinput
-filename <- 'Spreadsheets_LD.xlsx'
+filename <- 'Spreadsheets_LD_GorillaC.xlsx'
 setwd(dirinput)
 
 #audiofiles dir 

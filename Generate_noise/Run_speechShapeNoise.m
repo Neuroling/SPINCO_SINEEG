@@ -25,7 +25,7 @@ addpath('V:\gfraga\scripts_neulin\Generate_noise\functions\mp3readwrite')
 makeplots = 0;
 % paths and files 
 dirinput =      'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS' ;
-diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN_v2\' ;
+diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_SiSSN_15db\' ;
 mkdir(diroutput)
 cd (dirinput)
 audiofiles =      dir(['*.wav']); % must be more than one 
@@ -48,6 +48,7 @@ noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which th
 
 % SNR levels
  target_dB_snr = [-10,-7.5,-5,-2.5,0];
+ target_dB_snr = [15];
 %% Generate noise from concatenated data
 
 % Filter

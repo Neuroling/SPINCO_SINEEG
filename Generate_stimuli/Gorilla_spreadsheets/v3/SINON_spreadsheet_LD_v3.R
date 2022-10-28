@@ -27,7 +27,7 @@ snrs_sissn <- c('-10db','-7.5db','-5db','-2.5db','0db')
 # Create design temple to fill in later
 snrs <- as.numeric(c(1,2,3,4,5))
 noise <-  c('nv','sissn')
-subset <- letters[1:20]
+subset <- letters[1:(4*length(snrs))]
 
 df <- as.data.frame(subset)
 rots <- list()

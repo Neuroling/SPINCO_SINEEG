@@ -17,7 +17,7 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 makeplots = 0;
 % paths and files 
 dirinput =      'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS';
-diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV2';
+diroutput =     'V:\spinco_data\AudioRecs\LIRI_voice_DF\segments\Take1_all_trimmed\trim_loudNorm-23LUFS_NV3';
 cd (dirinput)
 audiofiles =      dir([dirinput, '\*.wav']);
 audiofiles =      fullfile(dirinput, {audiofiles.name});
@@ -28,15 +28,15 @@ mkdir(diroutput)
 % Parameters for Vocoding function 
 exc =           'noise' ; 
 mapping=        'n'; 
-filters =       'greenwood'; % greenwood
+filters =       'log'; % greenwood
 EnvelopeExtractor = 'half'; 
 smooth=          30 ; 
-nCh =           16; 
+nCh =           64; 
 MinFreq =       70;
 MaxFreq =        5000;
 % Degradation levels
 target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
-target_proportions = [0.7];
+ 
  
 %% Call vocoder function (save in structure array)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -59,10 +59,10 @@ for i = 1:length(signals)
        nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'\NV_',name,'_',num2str(target_proportions(ii)),'p',ext],'\\','\');
        nvStimuli(i).vocoded(ii).proportions = target_proportions(ii);
        %call function 
-       p = target_proportions(ii); 
+       morph = target_proportions(ii); 
        InputSignal =  nvStimuli(i).ursignal;
        Srate = nvStimuli(i).srate;
-       nvStimuli(i).vocoded(ii).nvsignal =  vocode_aller(nCh,p,smooth,InputSignal,Srate,MinFreq,MaxFreq);
+       nvStimuli(i).vocoded(ii).nvsignal =  vocode_aller(nCh,morph,smooth,InputSignal,Srate,MinFreq,MaxFreq);
        
        disp(['I just vocoded:  NV_',name,'_',num2str(target_proportions(ii)),'proportions'])        
        
