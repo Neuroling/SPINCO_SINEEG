@@ -1,6 +1,6 @@
 # Github
 
-Github allow us version control of our script, backing up and sharing our code. More complex uses allow several people to work on some code (branching). 
+Github allows us version control of our script, backing up and sharing our code. More complex uses allow several people to work on some code (branching). 
 Recommended to use **Github Desktop** is a GUI to manage pulls and push... This can facilitate these actions, otherwise they can be made from command line
 
 The basic workflow for us would be:
