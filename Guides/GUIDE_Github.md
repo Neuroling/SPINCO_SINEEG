@@ -5,7 +5,7 @@ Recommended to use **Github Desktop** is a GUI to manage pulls and push... This 
 
 The basic workflow for us would be:
 - Clone a repository from **ORIGIN** (github web: e.g. ,.github.com/yourusername/reponame) to our local machine
-- Work on our local folder edit scripts, add files etc. Then **COMMIT** (this will detect differences from your local folder to your origin). Then **PUSH** the changes to your origin. In the website you will be able to see history of changes. 
+- Work on our local folder edit scripts, add files etc. Then **COMMIT** (this will detect differences from your local folder to your origin). Then **PUSH** the changes to your origin (this will upload the changes in your online repo). In the website you will be able to see history of changes. 
 - If you make changes in the origin directly (you are in the web and add some files or edit scripts). Then you can **PULL** origin, which will bring the stuff into your local 
 
 NOTE: if you *FORK* someones repository you will make a copy of it in your machine or github repo. That copy will be independent. If you *CLONE* a repository, you will copy it but changes on it will also go to the origin (e.g., Somebody Clones my repository, makes changes and then PUSH them to Github. I will then get some notification requesting to merge those changes with my version). So unless you are collaborating on some code it will be safer to just FORK and work on it independently. 
