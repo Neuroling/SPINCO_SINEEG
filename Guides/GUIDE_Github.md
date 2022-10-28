@@ -4,7 +4,7 @@ Github allow us version control of our script, backing up and sharing our code. 
 Recommended to use **Github Desktop** is a GUI to manage pulls and push... This can facilitate these actions, otherwise they can be made from command line
 
 The basic workflow for us would be:
-- Clone a repository from **ORIGIN** (github web: e.g. ,.github.com/yourusername/reponame) to our local machine
+- We clone a repository from **ORIGIN** (github web: e.g. ,.github.com/yourusername/reponame) to our local machine
 - Work on our local folder edit scripts, add files etc. Then **COMMIT** (this will detect differences from your local folder to your origin). Then **PUSH** the changes to your origin (this will upload the changes in your online repo). In the website you will be able to see history of changes. 
 - If you make changes in the origin directly (you are in the web and add some files or edit scripts). Then you can **PULL** origin, which will bring the stuff into your local 
 
