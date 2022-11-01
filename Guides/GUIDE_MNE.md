@@ -1,4 +1,4 @@
-# MNE- MEG and EEG data analysis and visualization  
+# MNE toolbox for M/EEG analysis and visualization 
 MNE is an open-source Python package for exploring, visualizing, and analyzing human neurophysiological data: MEG, EEG, sEEG, ECoG, NIRS, and more.
 
 ## Example from MVPA analysis 
