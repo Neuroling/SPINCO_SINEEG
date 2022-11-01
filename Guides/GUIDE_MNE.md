@@ -8,7 +8,7 @@ Here we use epoched .set files (EEGlab formated containing both header and data)
 The MVPA analysis is based on the code provided in: https://github.com/BayetLab/infant-EEG-MVPA-tutorial
 
 ### Importing EEG data in MNE 
-- First consult this site: https://mne.tools/0.17/manual/migrating.html
+- First consult this site: https://eeglab.org/others/EEGLAB_and_python.html,  https://mne.tools/0.17/manual/migrating.html
 - Read epoched data. 
           EEG = mne.io.read_epochs_eeglab('s9_DiN_epoched_ICrem.set')
 
