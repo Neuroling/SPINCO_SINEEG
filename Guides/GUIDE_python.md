@@ -14,7 +14,9 @@ Main documentation: https://docs.spyder-ide.org/current/installation.html
 * Check installation : Open Anaconda prompt and type: conda info --envs 
 
 * Create a environment with modules.In Anaconda prompt type:   
-  conda create –n spyder-env –y  
+ conda create –n spyder-env –y   or 
+  conda create -n spyder-env spyder numpy scipy pandas matplotlib sympy cython
+
 
 * Activate environment in the prompt  
 conda activate spyder-env 
