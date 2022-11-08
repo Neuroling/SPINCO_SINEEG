@@ -1,5 +1,5 @@
 # Machine learning glossary (in the context of MVPA)
-The following glossary is copied from a paper on describing a matlab toolbox for MVPA: https://www.frontiersin.org/articles/10.3389/fnins.2020.00289/fullMVPA 
+The following glossary is copied from a paper on describing a matlab toolbox for MVPA: [https://www.frontiersin.org/articles/10.3389/fnins.2020.00289/fullMVPA ](https://www.frontiersin.org/articles/10.3389/fnins.2020.00289/full)
 For an in-depth introduction to machine learning refer to standard textbooks (Bishop, 2007; Hastie et al., 2009; James et al., 2013).
 
 * **Binary classifier**. A classifier trained on data that contains two classes, such as in the “faces vs. houses” experiment. If there is more than two classes, the classifier is called a multi-class classifier.
