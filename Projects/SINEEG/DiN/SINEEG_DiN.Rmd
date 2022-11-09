@@ -1,0 +1,51 @@
+---
+title: "SINEEG_DiN"
+author: "G.FragaGonzalez"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{nomnoml flowchart, echo = FALSE, out.height=400,out.width=850}
+# https://cran.r-project.org/web/packages/nomnoml/readme/README.html
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=Wheat empty bold
+#background: FloralWhite
+#lineWidth: 1
+#direction: right
+#leading: 1.25
+#lineWidth: .75
+#padding: 8
+#spacing: 40
+#zoom: 3
+  
+[<database>SPINCO]-> EEG[<comment>SINEEG]
+[<database>SPINCO]-> online[<comment>SINON]
+  
+  [SINON]-->Rmd [database | words | pseudowords] 
+  [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]
+  [Manipulations] --> .m[SNR | x 5 Lvls] 
+  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 2FC | pict match]
+  
+  [<comment>SINEEG]-->Openvibe[Real-time EEG]
+  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]
+  [Manipulation] --> .m[SNR. | 3 x Lvls]
+  [Real-time EEG] --> [brain-states | alpha | beta-connect?]
+  [brain-states] --> [stim trigger]
+  [SNR.] -->  [stim trigger]
+  [stim trigger] -> psyexp [Task | Lexical Decision]
+  
+
+```

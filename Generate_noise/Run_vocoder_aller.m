@@ -22,16 +22,14 @@ cd (dirinput)
 audiofiles =      dir([dirinput, '\*.wav']);
 audiofiles =      fullfile(dirinput, {audiofiles.name});
 mkdir(diroutput)
-% Filter settings (butterworth filter lower and upper cut freqs in Hz)
- 
- 
+
 % Parameters for Vocoding function 
 exc =           'noise' ; 
 mapping=        'n'; 
 filters =       'log'; % greenwood
 EnvelopeExtractor = 'half'; 
 smooth=          30 ; 
-nCh =           64; 
+nCh =           16; 
 MinFreq =       70;
 MaxFreq =        5000;
 % Degradation levels

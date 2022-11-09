@@ -1,0 +1,156 @@
+---
+title: "Speech in Noise (SIN) and EEG" 
+abstract: "The current experiment is used in a submited manuscript by Thomas Houweling (under review). It is set to examine associations between EEG activity and speech in noise recognition. Task requires hearing a digit name embbeded in different levels of noise and pressing the corresponding digit in a pad (digits are 1:6,8:9). <br><br> Data from N = 25 adults (after 7 subjects discarded;initial sample mean age 23.5, SD=3.9 years; 29 female)  <br><br>  Performance measures per trial are accuracy (correct/incorrect) and clarity rating (1-9 subjective scale). SNR of presentation are calibrated per individual in a pretest,  defining 3 SNR levels: SRT50 (50% correctness in calibration test), SRT-1.5db (noisier), SRT+1.5db (less noisy). <br><br> Prestimulus alpha power (8.5-12Hz) in noisy trials was higher for correct than for incorrect trials, and for those rated as clearer vs less clear. Linear mixed effect logistic regression model: accuracy ~ α power * SNR + (1|subject:digit) using source-reconstructed power found significant prediction in a left posterior temporal area in -300  to -50 ms. Interaction with stimuli difficulty: positive influence of alpha for recognizing clearer targets, but negative influence for the less clear targets." 
+runhead: "A Running Head"
+author:
+  name: Gorka Fraga Gonzalez
+  affiliation: University of Zurich 
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document:
+      code_folding: hide
+      highlight: espresso
+      theme: spacelab
+      toc: true
+      toc_float:
+          collapsed: false
+          smooth_scroll: true
+          toc_depth: 6
+params:
+    dirinput:  "W:/share_gfraga/SINEEG/Data/Pilot_October_2021"
+        
+      #self_contained: false
+---
+
+
+```{r, include=FALSE}
+    #rmarkdown::render("SINEEG_pilot.Rmd",output_dir = 'W:/Gorka_share',output_file = 'SIN-EEG_pilot', output_format = c("html_document"))
+
+    knitr::opts_knit$set(root.dir = 'W:/Gorka_share')    
+    knitr::opts_chunk$set(echo=TRUE,warning=FALSE)
+    library(tidyr)
+    library(dplyr)
+    library(reactable)
+    source('W:/share_gfraga/scripts_neulin/SINEEG/funs/eeg_funs.R')
+    
+
+    
+```
+
+```{r, include = FALSE}
+options(width=60)
+local({
+  hook_output <- knitr::knit_hooks$get('output')
+  knitr::knit_hooks$set(output = function(x,options) {
+    if (!is.null(options$max.height)) options$attr.output <- c(
+      options$attr.output,
+      sprintf('style="max-height: %s;"',options$max.height)
+    )
+   hook_output(x, options)    
+  })
+})
+
+```
+
+### Folder structure {.tabset}
+#### subfolders
+```{r,max.height='300px'}
+  
+  # Print folder tree    
+  fs::dir_tree(params$dirinput,recurse=TRUE,type='directory')
+
+```
+#### subfolders & files
+```{r, max.height = '300px' }
+  fs::dir_tree(params$dirinput,recurse=TRUE)
+```
+
+### {-}
+
+### Data overview {.tabset} 
+#### files available
+
+```{r, out.width='1000px'}
+  # Read all files
+  files <- gsub(".*\\EEG_SIN/", "", dir(params$dirinput,recursive =TRUE))  # trimmed list of subdirectories and files from main data directory 
+  
+  # Identify unique measurements
+  measurements <- unique(sapply(strsplit(files,split='/'),'[[',1)) # first directory should indicate measurement
+  idxs <- formatC(as.numeric(sapply(strsplit(measurements,split = ' '),'[[',2)),  width = 2, format = "d", flag = "0")
+  
+  
+  #summary content 
+  datSummary <- list()
+  for (m in 1:length(measurements)){
+    
+    curfiles <- files[grep(pattern = measurements[m],files)]  
+    datSummary[[m]] <-  as.data.frame(cbind(paste0('M',idxs[m]),
+                                            length(curfiles), 
+                                            length(which(grepl(pattern = "*raw.*.eeg",x = curfiles))),
+                                            length(which(grepl(pattern = "*processed.*.eeg*",x = curfiles))),
+                                            ifelse(length(which(grepl(pattern = "*.wav$",x = curfiles)))>0,'yes','no'),
+                                            ifelse(length(which(grepl(pattern = "Readme*",x = curfiles)))>0,'yes','no')))
+                      
+       }
+
+  datSummary <- data.table::rbindlist(datSummary,fill = TRUE)
+  colnames(datSummary) <- c('measurement','n_total_files','n_rawfiles','n_procecssedfiles','contains_wav','contains_readme')
+  
+  
+  # Make Interactive table to display
+   reactable(datSummary,filterable = TRUE,   
+                        defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),  
+                        bordered = TRUE, highlight =TRUE)
+```
+
+#### eeg file overview
+```{r, out.width='1000px'}
+  
+  
+   # Read all files
+  files <- gsub(".*\\EEG_SIN/", "", dir(params$dirinput,recursive =TRUE))  # trimmed list of subdirectories and files from main data directory 
+  
+  # Identify unique measurements
+  measurements <- unique(sapply(strsplit(files,split='/'),'[[',1)) # first directory should indicate measurement
+  idxs <- formatC(as.numeric(sapply(strsplit(measurements,split = ' '),'[[',2)),  width = 2, format = "d", flag = "0")
+  
+  
+  #summary content 
+  datSummary <- list()
+  for (m in 1:length(measurements)){
+    
+    # search files for current measurement
+    curfiles <- files[grep(pattern = measurements[m],files)]  
+    
+    
+      # Apply function to summarize file (only processed file)
+      if (length(which(grepl(pattern = "*processed.vhdr$",x = curfiles)))==1) {
+
+              processedfile <- paste0(params$dirinput,'/',curfiles[grep(curfiles,pattern='*processed.vhdr')]) 
+            
+              #run my function
+              suppressWarnings(fun_check_eeg(processedfile))
+              info <- cbind(dimensions, mrkrsInfo)
+
+              rm(processedfile)
+
+      } else { print(paste0('No file found for ',measurements[m]))
+       }
+           
+      # Add to main summary table            
+      datSummary[[m]] <- cbind(paste0('M',idxs[m]), # measurement 
+                               length(which(grepl(pattern = "*processed.*.eeg*",x = curfiles))), #count processed files
+                               info)
+      colnames(datSummary[[m]])[1:2] <- c('measurement','n_processed_files')
+
+  }
+
+
+datSummary <- data.table::rbindlist(datSummary,fill = TRUE)
+  
+  
+  # Make Interactive table to display
+   reactable(datSummary,filterable = TRUE,   
+                        defaultColDef = colDef( align = "center", minWidth = 70,headerStyle = list(background = "#f7f7f8")),  
+                        bordered = TRUE, highlight =TRUE)
+```

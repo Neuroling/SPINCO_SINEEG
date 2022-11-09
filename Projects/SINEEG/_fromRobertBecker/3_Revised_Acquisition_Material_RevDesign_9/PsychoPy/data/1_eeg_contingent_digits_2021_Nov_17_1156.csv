@@ -1,0 +1,8 @@
+﻿TrialID,NFB_digit1,NFB_digit2,NFB_digit3,Speaker_trial,practice_block.thisRepN,practice_block.thisTrialN,practice_block.thisN,practice_block.thisIndex,practice_trials.thisRepN,practice_trials.thisTrialN,practice_trials.thisN,practice_trials.thisIndex,response_practice.thisRepN,response_practice.thisTrialN,response_practice.thisN,response_practice.thisIndex,Digit1_clear.started,Digit1_clear.stopped,response_practice_resp.keys,response_practice_resp.rt,response_practice_resp.started,response_practice_resp.stopped,participant,session,date,expName,psychopyVersion,frameRate,
+0.0,6.0,2.0,4.0,33.0,0,0,0,0,0,0,0,0,0,0,0,0,0.005284190000566014,None,['return'],[4.501807100000406],19.61348519999956,None,1,001,2021_Nov_17_1156,eeg_contingent_digits,2021.2.3,60.0445530582704,
+0.0,6.0,2.0,4.0,33.0,0,0,0,0,0,0,0,0,,,,,,,,,,,1,001,2021_Nov_17_1156,eeg_contingent_digits,2021.2.3,60.0445530582704,
+1.0,1.0,9.0,3.0,13.0,0,0,0,0,0,1,1,1,0,0,0,0,0.006269290001000627,None,['return'],[2.4515079000002515],24.653758799999196,None,1,001,2021_Nov_17_1156,eeg_contingent_digits,2021.2.3,60.0445530582704,
+1.0,1.0,9.0,3.0,13.0,0,0,0,0,0,1,1,1,,,,,,,,,,,1,001,2021_Nov_17_1156,eeg_contingent_digits,2021.2.3,60.0445530582704,
+2.0,8.0,0.0,1.0,21.0,0,0,0,0,0,2,2,2,0,0,0,0,0.00931329000104597,None,['return'],[1.4564928999998301],27.639789799999562,None,1,001,2021_Nov_17_1156,eeg_contingent_digits,2021.2.3,60.0445530582704,
+2.0,8.0,0.0,1.0,21.0,0,0,0,0,0,2,2,2,,,,,,,,,,,1,001,2021_Nov_17_1156,eeg_contingent_digits,2021.2.3,60.0445530582704,
+,,,,,,,,,,,,,,,,,0.009322790000624082,None,,,,,,,,,,,

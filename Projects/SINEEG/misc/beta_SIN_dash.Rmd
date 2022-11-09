@@ -1,0 +1,98 @@
+---
+title: "SIN_dash"
+author: "G.FragaGonzalez"
+date: "`r Sys.Date()`"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+---
+
+```{r include = FALSE}
+library(viridis)
+library(ggplot2)
+library(plotly)
+library(marmap)
+library(tidyr)
+library(dplyr)
+source('Y:/Scripts_neulin_EEG/SPINEEG/funs/eeg_funs.R')
+
+```
+
+# Intro {.sidebar}
+
+Dashboard with EEG data
+
+* Loads processed file
+* Time amplitude plots
+* Power spectra
+
+# 1st Level
+
+## Column 1
+
+### ERP
+
+```{r echo = FALSE}
+headerfile <- "Y:/Data/Pilot (October 2021)/Measurement 10/processed.vhdr"
+header  <-   raveio::read_eeg_header(file = headerfile)
+eeg     <-      raveio::read_eeg_data(header, path = gsub('.vhdr','.eeg',headerfile))
+
+
+# Create data frame with EEG data 
+#-------------------------------------
+srate <- 200
+time <- round(seq(from=(1/srate),to=ncol(eeg$data)/srate, by = 1/srate),2)
+secs2show <- 1
+#wide
+eegdat <- cbind(time,as.data.frame(t(eeg$data)))
+colnames(eegdat)[2:ncol(eegdat)] <- eeg$header$channels$number
+
+#convert to long format
+eegdatlong <- tidyr::pivot_longer(eegdat,
+                    cols = colnames(eegdat)[2:ncol(eegdat)],names_to = 'channel')
+
+
+# Filter some data for now 
+#dlong <- eegdatlong %>% dplyr::filter(.,channel %in% c('FP1','O2') & time < srate*secs2show)
+dlong <- eegdatlong %>% dplyr::filter(., time < srate*secs2show)
+
+dlong$channel <- as.factor(dlong$channel)
+dlong$time <- as.factor(dlong$time)
+
+# Plotly time series 
+
+  plot_ly(dlong, x = ~time,y=~value) %>%
+  add_lines(y = ~value,split=~channel,visible = "legendonly") %>%
+  layout(
+    title = "Amplitude x Time ",
+    xaxis = list(
+      rangeslider = list(type = "time")),
+ yaxis=list(title="amplitude"))
+
+
+#
+x <-eegdatlong %>% dplyr::filter(.,channel=='FP1' & time < srate*secs2show) %>% select(.,value)
+
+```
+
+This shows the ERP data.
+
+## Power
+
+### Hawaii
+
+```{r echo = FALSE}
+data(hawaii)
+autoplot(hawaii)
+```
+
+### Alaska
+
+```{r echo = FALSE}
+data(aleutians)
+autoplot(aleutians)
+```
+
+
+# Group EEG
+
