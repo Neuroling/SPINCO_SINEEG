@@ -8,15 +8,15 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
  * ‘EEG_DATA/Downsampled/DiN’ contains epoched sets, and epoched_ICrem sets (after removal of IC components) as well as a trialInfo.mat file
 
 ## Scripts info
-* xxx preprocessing scripts. Each contains multiple preprocessing steps. Each script represents a ‘part’ in the preprocessing sequence (parts 1-3)
+* xxx preprocessing scripts. Each script is a ‘part’ in the preprocessing sequence (parts 1-3) with multiple steps. 
 * ‘Utils’ contains all required functions for theT.Houweling Data 
 * ‘BAK’ contains unorganized copies of files. Ignore.
 
 ## Preprocessing pipeline \[For data in 'Downloaded' folder] 
 ### \[Script: DiN_pt01_preprocess_segment01.m]
-* *  1. Import data (raw)
+  1. Import data (raw)
   2. Add channel locations and measurement unit
-   3.* Downsample (from 2kHz to 200Hz)
+  3. Downsample (from 2kHz to 200Hz)
   4. Filter (highpass: 0.1Hz, lowpass: 48Hz)
   5. Remove line noise
   6. Remove bad channels & data segments
