@@ -13,7 +13,7 @@ import argparse
 import sys
 
 ##
-DataPath      =  "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/25subj" 
+DataPath      =  "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_alpha/" 
 
 
 # %%
@@ -100,7 +100,7 @@ if np.any(args != None):
 
 else: 
 
-    DataPath      =  "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/25subj" 
+    #DataPath      =  "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/25subj" 
     #Datafile      = 'Infants_included.mat' # set data file for decoding here
     
     parforArg          = 1   # 0 = not parallel 1 = parallel
@@ -120,7 +120,7 @@ else:
 
 #Extract data name from filename defined above
 #params_decoding['DataName'] = Datafile[:len(Datafile)-4]
-params_decoding['DataName'] = DataPath.split('/')[-1]
+params_decoding['DataName'] = DataPath.split('/')[-2]
 params_decoding['Date'] = date.today().strftime('%m.%d.%Y')
 
 now = datetime.datetime.now().strftime("%H.%M.%S")
@@ -139,9 +139,7 @@ times = t[frames]
 # Filter for participant data within the selected epoch
 x=ParData['X'][:,frames[0],:]
 x=x[:,:,selected_epochs[0]]
-
 labels=Labels[selected_epochs]
-
 s=ParData['S'][selected_epochs]
 
 # Do classification
@@ -165,7 +163,6 @@ if SaveAll:
         timetime_case =''
 
     out = 'Results_'+ params_decoding['DataName']+'_'+ params_decoding['function']+ timetime_case
-
     out = out+'_'+params_decoding['Date']+'_'+now+'.mat'
 
     results['out'] = out
@@ -175,3 +172,4 @@ if SaveAll:
     outputdir = DataPath + '/Results/'
     os.makedirs(outputdir) 
     scipy.io.savemat(outputdir+out, results, do_compression=True)
+    np.save(outputdir+out.replace('.mat','.npy'), results)

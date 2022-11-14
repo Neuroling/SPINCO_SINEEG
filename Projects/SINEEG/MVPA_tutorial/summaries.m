@@ -1,9 +1,9 @@
 %% Gather results of MVPA
 %------------------------
-dirinput  = 'V:\spinco_data\SINEEG\analysis\mvpa';
-cd (dirinput);
+%dirinput  = 'V:\spinco_data\SINEEG\analysis\mvpa';
+%cd (dirinput);
 % read data 
-load('Results_Infants_included_decode_within_SVM_22-Sep-2022_44205.mat')
+load('Results_25subj_alpha_decode_within_SVM_11.10.2022_15.20.11.mat')
 DA = results.DA;
 
 %% Get mean classification accuracy

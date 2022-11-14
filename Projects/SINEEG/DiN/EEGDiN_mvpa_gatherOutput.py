@@ -12,14 +12,16 @@ import mne.stats as mstats
 from scipy.io import loadmat
 
 # provide path to folder where results are stored
-DataPath = "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/25subj/Results/" 
+DataPath = "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_alpha/Results/" 
 
 # define the name of the output file
-fname='Results_25subj_decode_within_SVM_11.07.2022_14.31.10.mat'
+from glob import glob 
+fname= glob(DataPath + '*.mat')[0].split('/')[-1]
 
 # Extract the decoding accuracy results     
 data = loadmat(DataPath+fname)['results'][0,0]
 DA = data['DA']
+ 
 
 
 # %% Calculate average classification accuracy over the time series
@@ -28,27 +30,30 @@ DA = data['DA']
 numParts = np.shape(DA)[0]
 
 # set time window in ms
-times = [-2000, -5]
-
+times = [-2000, 0]
 # set baseline length 
 base = 0 
 
 # get array indices
-idx1 = int(np.where(data['times'] == times[0]+base)[1])
-idx2 =  int(np.where(data['times'] == times[1]+base)[1])
-timeInds = [idx1, idx2]
-
+datatimes= np.array(data['times'])
+idx1 = int(np.where(datatimes == times[0]+base)[1])
+idx2 =  int(np.where(datatimes == times[1]+base)[1])
 
 # calculate average classification accuracy for each participant over all conditions at each time point, flatten condition x condition matrix to look at pairwise accuracy
-partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(timeInds[0],timeInds[1])] for part in range(np.shape(DA)[0])])
+
+
+partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(idx1,idx2)] for part in range(np.shape(DA)[0])])
+
+
+partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(idx1,idx2)] for part in range(np.shape(DA)[0])])
 
 # calculate the group average classification accuracy over all conditions at each time point, flatten condition x condition matrix to look at pairwise accuracy
-groupAccuracy = np.array([np.nanmean(np.ndarray.flatten(DA[:,point,:,:])) for point in range(timeInds[0],timeInds[1])])
+groupAccuracy = np.array([np.nanmean(np.ndarray.flatten(DA[:,point,:,:])) for point in range(idx1,idx2)])
 
 # %% Significance of classification accuracy against chance
 ## Calculate significance of group average classification
 
-b = np.full([numParts,399],50) # What are you testing against: in this case, theoretical chance of 50%
+b = np.full([numParts,400],50) # What are you testing against: in this case, theoretical chance of 50%
 
 T_obs, clusters, cluster_p_values, H0 = mstats.permutation_cluster_test([partAccuracies,b], tail=1, out_type="mask")
 
@@ -61,8 +66,8 @@ times2plot = np.linspace(times[0],times[1],num=399)
 for part in partAccuracies:
     #plt.plot(range(times[0],times[1]),part)
     plt.plot(times2plot,part)
-    
-    
+    #plt.ylim([25, 100])
+# %%    
 # Calculate standard error 
 #error = [sem(partAccuracies[:,i]) for i in range(timeInds[0],timeInds[1])]
 error = [sem(partAccuracies[:,i]) for i in range(timeInds[0],timeInds[1])]

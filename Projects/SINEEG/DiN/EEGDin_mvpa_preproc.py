@@ -16,7 +16,7 @@ import mne
 
 home = os.path.expanduser("~")
 
-# %% Gather Target File info
+#% Gather Target File info
 # %------------------------
 basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_alpha/' 
 diroutput = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_alpha/' 
@@ -69,7 +69,7 @@ for fileinput in files:
    
     # Get index of the time window of interest to trim the data
     idx1 =  int(np.where(mdat['times'] == -2000)[0])
-    idx2 =  int(np.where(mdat['times'] == 0)[0])
+    idx2 =  int(np.where(mdat['times'] == 0)[0])+1
 
     # Data array  transposed to CH x pts x Trials
     dat = np.transpose(epochs._data,[1,2,0])
