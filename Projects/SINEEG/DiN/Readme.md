@@ -23,10 +23,10 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
   7. Interpolate the removed channels
   8. Re-reference to average
 
-#### \[Script: DiN_pt01_preprocess_segment02.m]
+### \[Script: DiN_pt01_preprocess_segment02.m]
   This script merges .set files resulting in one dataset per subject
   
-#### \[Script: DiN_pt01_preprocess_segment03.m]
+### \[Script: DiN_pt01_preprocess_segment03.m]
   
   9.  Checks data consistency
   10. Epoch
