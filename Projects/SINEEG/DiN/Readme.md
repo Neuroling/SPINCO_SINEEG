@@ -49,7 +49,7 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
   3. Downsample (from 2kHz to 200Hz)
   4. Filter (highpass: 0.1Hz, lowpass: 48Hz)
   5. Remove line noise
-  6. Remove bad channels & data segments
+  6. Remove bad channels & data segments (includes ASR corrections https://github.com/sccn/clean_rawdata/blob/master/clean_artifacts.m)
   7. Interpolate the removed channels
   8. Re-reference to average
 
