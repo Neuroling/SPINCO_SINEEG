@@ -12,6 +12,23 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 * ‘Utils’ contains all required functions for theT.Houweling Data 
 * ‘BAK’ contains unorganized copies of files. Ignore.
 
+## Triggers
+ trigger code legend:
+* 'DIN2' = block start
+* 'DI28' = block end
+* 'DIN6' = stim onset digit 0
+* 'DIN8' = stim onset digit 1
+* 'DI10' = stim onset digit 2
+* 'DI12' = stim onset digit 3
+* 'DI14' = stim onset digit 4
+* 'DI16' = stim onset digit 5
+* 'DI18' = stim onset digit 6
+* 'DI20' = stim onset digit 8
+* 'DI22' = stim onset digit 9
+* 'DI24' = comprehension response onset
+* 'DI26' = clarity response onset
+
+
 ## Preprocessing pipeline \[For data in 'Downsampled' folder] 
 ### \[Script: DiN_pt01_preprocess_segment01.m]
   1. Import data (raw)
