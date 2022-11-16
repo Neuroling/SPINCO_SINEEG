@@ -8,7 +8,7 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
  * ‘EEG_DATA/Downsampled/DiN’ contains epoched sets, and epoched_ICrem sets (after removal of IC components) as well as a trialInfo.mat file
 
 ## Scripts info
-* xxx preprocessing scripts. Each script is a ‘part’ in the preprocessing sequence (parts 1-3) with multiple steps. 
+* Preprocessing scripts. Each script is a ‘part’ in the preprocessing sequence (parts 1-3) with multiple steps. 
 * ‘Utils’ contains all required functions for theT.Houweling Data 
 * ‘BAK’ contains unorganized copies of files. Ignore.
 
