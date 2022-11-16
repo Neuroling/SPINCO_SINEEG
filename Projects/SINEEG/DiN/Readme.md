@@ -17,14 +17,14 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 
 ## Events
 
-### Events of interest in preprocessed data 
+### Event fields (epoched data)
 *  **EEG.epochs.accuracy** - indicates performance in identifying the digit presented 
 * **EEG.epochs.clarityOrig** - subjective rating of how hard the trial was (by participant)
 * **EEG.epochs.clarityBin** - clarityOrig transformed to thirtiles
 * **EEG.epochs.degLvlOrig** - degradation of stimuli (SNR of presentation, which depended of degradation task) if 'none' it means there was no noise added. 
 * **EEG.epochs.degBin** - transformation of degradation scores to more objective values. Values are 'none'= clear, 1='easy', 2= 'medium' SRT 50% correct in calibration. 3='difficult'  
-* 
-### trigger code legend:
+
+### Triggers
 *Note: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
 * 'DIN2' = block start
 * 'DI28' = block end
@@ -39,7 +39,6 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 * 'DI22' = stim onset digit 9
 * 'DI24' = comprehension response onset
 * 'DI26' = clarity response onset
-
 
 ## Preprocessing pipeline \[For data in 'Downsampled' folder] 
 ### \[Script: DiN_pt01_preprocess_segment01.m]
