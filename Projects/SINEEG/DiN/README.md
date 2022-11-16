@@ -22,10 +22,10 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 
 ## Visualizations
 The following plots summarize data\[by G.FragaGonzalez] 
-SubjectID is used as preffix. When not specified in filename the file contains separate plots for correct and incorrect responses
+SubjectID is used as preffix. When not specified in filename the file contains separate plots for correct and incorrect responses.s\* = subject id
 | Filename     | content          
 | ------------- |:-------------|
-|`Time_ERP_img_*_s*` | Time-domain. ERP image (y axis = trials, mean all channels, x= time,color map = amplitude). Per difficulity, accuracy (*). s* = subject id
+|`Time_ERP_img_*_s*` | Time-domain. ERP image (y axis = trials, mean all channels, x= time,color map = amplitude). Per difficulty, accuracy. 
 |`Time_ERP_GFG_s*` | Time-domain ERP butterfly plots (channels as colored lines). Includes GFP
 |`Time_ERP_topopost/topoprestim`| topographical maps of activity in several time points before or after the stimli
 | `Freq_PSD_spec_s*Orig` | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
