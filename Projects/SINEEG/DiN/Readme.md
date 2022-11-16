@@ -1,9 +1,6 @@
-Table of Contents 
------------------
-* [DiN Data](#DiN Data)
-    
+   
 
-# DiN Data 
+# DiN_Data 
 Data from Thomas Houweling study (digits in noise)
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
