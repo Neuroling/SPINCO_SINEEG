@@ -12,8 +12,9 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 * ‘Utils’ contains all required functions for theT.Houweling Data 
 * ‘BAK’ contains unorganized copies of files. Ignore.
 
-## Triggers
- trigger code legend:
+## Events
+### trigger code legend:
+*Note: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
 * 'DIN2' = block start
 * 'DI28' = block end
 * 'DIN6' = stim onset digit 0
@@ -28,6 +29,9 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 * 'DI24' = comprehension response onset
 * 'DI26' = clarity response onset
 
+### Events of interest in preprocessed data 
+*  *EEG.epochs.accuracy* indicates performance in identifying the digit presented 
+* *EEG.epochs.clarityBin* indicates how hard the trial was  (SNR) 
 
 ## Preprocessing pipeline \[For data in 'Downsampled' folder] 
 ### \[Script: DiN_pt01_preprocess_segment01.m]
