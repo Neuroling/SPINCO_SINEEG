@@ -2,7 +2,7 @@
 
 # Digits in Noise (DiN)
 Data from Thomas Houweling study (digits in noise)
-<details><summary>click for details on folders and scripts</summary> <p>
+<details><summary>click for details on data and script FOLDERS </summary> <p>
 
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
