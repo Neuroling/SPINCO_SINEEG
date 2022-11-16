@@ -1,22 +1,37 @@
    
 
-# DiN_Data 
+# Digits in Noise (DiN)
 Data from Thomas Houweling study (digits in noise)
+<details><summary>click for details on folders and scripts</summary> <p>
+
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
+
 
 * In EEG_DATA the ‘.raw’ files are the raw recordings (4-6 files containing several tasks). Then, raw are saved into multiple .mat files (with parts)
 * InterpChans.mat file contains info about channels interpolated for later steps
 * In ‘EEG_DATA/Downsampled’ the .raw files are transformed into ‘.set’ files (different parts). It follows the main preprocessing pipeline, used in the submitted manuscript. \[‘Downsamp’ contains changes in revision. Do not use.]
  * ‘EEG_DATA/Downsampled/DiN’ contains epoched sets, and epoched_ICrem sets (after removal of IC components) as well as a trialInfo.mat file
 
+
 ## Scripts info
 * Preprocessing scripts. Each script is a ‘part’ in the preprocessing sequence (parts 1-3) with multiple steps. 
 * ‘Utils’ contains all required functions for theT.Houweling Data 
 * ‘BAK’ contains unorganized copies of files. Ignore.
+</p></details>
+
+## Visualizations
+The following plots summarize data\[by G.FragaGonzalez] 
+SubjectID is used as preffix. When not specified in filename the file contains separate plots for correct and incorrect responses
+| Filename     | content          
+| ------------- |:-------------|
+|`Time_ERP_img_*_s*` | Time-domain. ERP image (y axis = trials, mean all channels, x= time,color map = amplitude). Per difficulity, accuracy (*). s* = subject id
+|`Time_ERP_GFG_s*` | Time-domain ERP butterfly plots (channels as colored lines). Includes GFP
+|`Time_ERP_topopost/topoprestim`| topographical maps of activity in several time points before or after the stimli
+| `Freq_PSD_spec_s*Orig` | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
+| `Freq_PSD_topo_s*Orig` | Topography of power for the 5 frequeny bands.
 
 ## Events
-
 ### Event fields (epoched data)
 
 | Field id     | content          
@@ -33,7 +48,7 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 'DIN2' = block start; 'DI28' = block end ;  'DIN6' = stim onset digit 0; 'DIN8' = stim onset digit 1;  'DI10' = stim onset digit 2 ; 'DI12' = stim onset digit 3 ; 'DI14' = stim onset digit 4; 'DI16' = stim onset digit 5; 'DI18' = stim onset digit 6;  'DI20' = stim onset digit 8; 'DI22' = stim onset digit 9;  'DI24' = comprehension response onset; 'DI26' = clarity response onset
 
 ## Preprocessing 
-Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage) The main scripts were: 
+Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage) 
 ### \[DiN_pt01_preprocess_segment01.m]
   1. Import data (raw)
   2. Add channel locations and measurement unit
@@ -54,4 +69,7 @@ Pipeline implemented in the data within the 'Downsampled' folder (eeg data stora
   11. Reject noisy epochs
   12. Remove trials with no responses
   13. Runs ICA and rejects non-brain components
-  
+   
+   
+ 
+ 
