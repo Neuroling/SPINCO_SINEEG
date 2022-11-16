@@ -18,29 +18,22 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 ## Events
 
 ### Event fields (epoched data)
-*  **EEG.epochs.accuracy** - indicates performance in identifying the digit presented 
-* **EEG.epochs.clarityOrig** - subjective rating of how hard the trial was (by participant)
-* **EEG.epochs.clarityBin** - clarityOrig transformed to thirtiles
-* **EEG.epochs.degLvlOrig** - degradation of stimuli (SNR of presentation, which depended of degradation task) if 'none' it means there was no noise added. 
-* **EEG.epochs.degBin** - transformation of degradation scores to more objective values. Values are 'none'= clear, 1='easy', 2= 'medium' SRT 50% correct in calibration. 3='difficult'  
+
+| Field id     | content          
+| ------------- |:-------------|
+|`EEG.epochs.accuracy` | indicates performance in identifying the digit presented 
+|` EEG.epochs.clarityOrig` | subjective rating of how hard the trial was (by participant)
+|`EEG.epochs.clarityBin`| clarityOrig transformed to thirds
+| `EEG.epochs.degLvlOrig` | degradation of stimuli (SNR of presentation, which depended of degradation task) if 'none' it means there was no noise added. 
+| `EEG.epochs.degBin` | transformation of degradation scores to more objective values. Values are 'none'= clear, 1='easy', 2= 'medium' SRT 50% correct in calibration. 3='difficult' 
+
 
 ### Triggers
-*Note: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
-* 'DIN2' = block start
-* 'DI28' = block end
-* 'DIN6' = stim onset digit 0
-* 'DIN8' = stim onset digit 1
-* 'DI10' = stim onset digit 2
-* 'DI12' = stim onset digit 3
-* 'DI14' = stim onset digit 4
-* 'DI16' = stim onset digit 5
-* 'DI18' = stim onset digit 6
-* 'DI20' = stim onset digit 8
-* 'DI22' = stim onset digit 9
-* 'DI24' = comprehension response onset
-* 'DI26' = clarity response onset
+*Note*: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
+'DIN2' = block start; 'DI28' = block end ;  'DIN6' = stim onset digit 0; 'DIN8' = stim onset digit 1;  'DI10' = stim onset digit 2 ; 'DI12' = stim onset digit 3 ; 'DI14' = stim onset digit 4; 'DI16' = stim onset digit 5; 'DI18' = stim onset digit 6;  'DI20' = stim onset digit 8; 'DI22' = stim onset digit 9;  'DI24' = comprehension response onset; 'DI26' = clarity response onset
 
-## Preprocessing pipeline \[For data in 'Downsampled' folder] 
+## Preprocessing 
+Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage)
 ### \[Script: DiN_pt01_preprocess_segment01.m]
   1. Import data (raw)
   2. Add channel locations and measurement unit
