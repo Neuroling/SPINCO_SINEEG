@@ -28,8 +28,8 @@ SubjectID is used as preffix. When not specified in filename the file contains s
 |`Time_ERP_img_*_s*` | Time-domain. ERP image (y axis = trials, mean all channels, x= time,color map = amplitude). Per difficulty, accuracy. 
 |`Time_ERP_GFG_s*` | Time-domain ERP butterfly plots (channels as colored lines). Includes GFP
 |`Time_ERP_topopost/topoprestim`| topographical maps of activity in several time points before or after the stimli
-| `Freq_PSD_spec_s*Orig` | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
-| `Freq_PSD_topo_s*Orig` | Topography of power for the 5 frequeny bands.
+| `Freq_PSD_spec_s*` | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
+| `Freq_PSD_topo_s*` | Topography of power for the 5 frequeny bands.
 
 ## Events
 ### Event fields (epoched data)
