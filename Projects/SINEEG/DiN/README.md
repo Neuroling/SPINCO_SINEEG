@@ -33,8 +33,8 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 'DIN2' = block start; 'DI28' = block end ;  'DIN6' = stim onset digit 0; 'DIN8' = stim onset digit 1;  'DI10' = stim onset digit 2 ; 'DI12' = stim onset digit 3 ; 'DI14' = stim onset digit 4; 'DI16' = stim onset digit 5; 'DI18' = stim onset digit 6;  'DI20' = stim onset digit 8; 'DI22' = stim onset digit 9;  'DI24' = comprehension response onset; 'DI26' = clarity response onset
 
 ## Preprocessing 
-Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage)
-### \[Script: DiN_pt01_preprocess_segment01.m]
+Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage) The main scripts were: 
+### \[DiN_pt01_preprocess_segment01.m]
   1. Import data (raw)
   2. Add channel locations and measurement unit
   3. Downsample (from 2kHz to 200Hz)
@@ -44,10 +44,10 @@ Pipeline implemented in the data within the 'Downsampled' folder (eeg data stora
   7. Interpolate the removed channels
   8. Re-reference to average
 
-### \[Script: DiN_pt01_preprocess_segment02.m]
+### \[DiN_pt01_preprocess_segment02.m]
   This script merges .set files resulting in one dataset per subject
   
-### \[Script: DiN_pt01_preprocess_segment03.m]
+### \[DiN_pt01_preprocess_segment03.m]
   
   9.  Checks data consistency
   10. Epoch
