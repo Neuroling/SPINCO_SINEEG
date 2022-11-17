@@ -44,8 +44,10 @@ SubjectID is used as preffix. When not specified in filename the file contains s
 
 
 ### Triggers
-*Note*: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
-'DIN2' = block start; 'DI28' = block end ;  'DIN6' = stim onset digit 0; 'DIN8' = stim onset digit 1;  'DI10' = stim onset digit 2 ; 'DI12' = stim onset digit 3 ; 'DI14' = stim onset digit 4; 'DI16' = stim onset digit 5; 'DI18' = stim onset digit 6;  'DI20' = stim onset digit 8; 'DI22' = stim onset digit 9;  'DI24' = comprehension response onset; 'DI26' = clarity response onset
+>**Warning!** In the EEGlab datasets, the variable EEG.actualTimes should be taken. The data are epoched to the DI24 marker indicating sound offset when using EEG.times as the time variable. When using EEG.actualTimes your 0 time will indicate the digit onset (note that in the experiment the trials have noise for > 4 secs and then the digits embedded in noise, and then the sound stops and participant can respond). 
+
+*Note 2*: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
+'DIN2' = block start; 'DI28' = block end ;  'DIN6' = stim onset digit 0; 'DIN8' = stim onset digit 1;  'DI10' = stim onset digit 2 ; 'DI12' = stim onset digit 3 ; 'DI14' = stim onset digit 4; 'DI16' = stim onset digit 5; 'DI18' = stim onset digit 6;  'DI20' = stim onset digit 8; 'DI22' = stim onset digit 9;  'DI24' = comprehension response onset-cue / sound offset ; 'DI26' = clarity response onset
 
 ## Preprocessing 
 Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage) 
