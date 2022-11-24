@@ -6,14 +6,13 @@ library(dplyr)
 # - Read spreadsheets with lists of stimuli
 # - Add some instructions in the breaks and format for Gorilla presentation 
 
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LD'
-diroutput <-  'V:/spinco_data/SINON/Spreadsheets/LD'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2FC'
+diroutput <-  'V:/spinco_data/SINON/Spreadsheets/2FC'
 
 # read old 
 setwd(dirinput)
-fileinput <- paste0(dirinput,"/Spreadsheets_LD.xlsx")
+fileinput <- paste0(dirinput,"/Spreadsheets_2FC.xlsx")
 tbl <- openxlsx::read.xlsx(fileinput)
-
 
 # prepare for new 
 if (grepl('_LD',fileinput,perl=TRUE)) {

@@ -1,5 +1,5 @@
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LD/'
-basefilename <- 'Spreadsheets_LD_GorillaC'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2FC/'
+basefilename <- 'Spreadsheets_2FC_GorillaC'
 setwd(dirinput)
 
 

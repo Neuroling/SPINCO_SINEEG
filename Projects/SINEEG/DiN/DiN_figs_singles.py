@@ -41,11 +41,13 @@ for fileinput in files:
     # Read Epochs in MNE 
     epochs = mne.io.read_epochs_eeglab(fileinput)
     
-       
-    # Relevant event fields
-    #mdat = sio.loadmat(fileinput,squeeze_me = True,simplify_cells = True,mat_dtype=True)
+    
+    # ADD CRUCIAL INFO FROM READING THE MAT FILE (missed by mne read)
     mdat = sio.loadmat(fileinput,squeeze_me = True,simplify_cells = True,mat_dtype=True)['EEG']
-    # accuracy
+    # Correct times using the actualTimes variable (were 0 = digit onset) 
+    epochs.shift_time(mdat['actualTimes']/1000-epochs.times)[0]
+    
+    #trial accuracy
     epochAccu = [epoch['accuracy'] for epoch in mdat['epoch']]
     
     # degradation levels    

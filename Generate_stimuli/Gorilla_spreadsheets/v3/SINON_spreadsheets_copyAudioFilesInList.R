@@ -7,9 +7,9 @@ library(tidyr)
 # - Read xls spreadsheet for Gorilla containing file names
 # - copy the corresponding files in the same folder as spreadsheet
 ###############################################################################
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/LD/'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2FC/'
 diroutput <- dirinput
-filename <- 'Spreadsheets_LD_GorillaC.xlsx'
+filename <- 'Spreadsheets_2FC_GorillaC.xlsx'
 setwd(dirinput)
 
 #audiofiles dir 
@@ -40,7 +40,7 @@ colwithfiles <- which(grepl('*.wav',sheet))
 if (grepl('/PM/',dirinput)) {
   
      pics <- dir('V:/spinco_data/LIRI_database/Multipic_pictures/colored_TIFF',pattern='*.tif')
-     files2copy <-  pics[which(pics %in% paste0(sheet$picture,'.tif'))]
+     files2copy <-  pics[which(pics %in% paste0(sheet$image_presentation,'.tif'))]
      file.copy(paste0('V:/spinco_data/LIRI_database/Multipic_pictures/colored_TIFF/',files2copy),newdir)
      
      
@@ -58,5 +58,5 @@ if (grepl('/PM/',dirinput)) {
     
   
 }
-  `%nin%` = Negate(`%in%`)
+
   

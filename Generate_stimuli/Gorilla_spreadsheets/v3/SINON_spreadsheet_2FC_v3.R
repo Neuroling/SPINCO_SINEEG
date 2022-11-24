@@ -59,7 +59,7 @@ refTab <- cbind(df,rots1,rots2)
 setwd(dirinput)
 allNamesTab <- list()
 for (i in 1:length(refTab$subset)){
-  fileinput <- paste0('list2match13_set',i,'.txt')
+  fileinput <- paste0('list2match12_set',i,'.txt')
   tab <- read.delim(fileinput,header = FALSE)
   items <- tab$V1
   
@@ -104,7 +104,7 @@ for (i in 1:length(refTab$subset)){
 
 allNamesTab <- as.data.frame(do.call(rbind,allNamesTab))
 colnames(allNamesTab)[1:10] <- colnames(refTab)[-1]
-allNamesTab$block <- rep(c(1,2,3,4),each=65)
+allNamesTab$block <- rep(c(1,2,3,4),each=60)
  
 # Formatting
 tab2save <- allNamesTab

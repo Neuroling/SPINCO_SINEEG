@@ -20,20 +20,35 @@ database <- openxlsx::read.xlsx(databasefile,sheet = 'Merged')
 # find 4  additional sets..
 catches <- list()
 for (i in 1:4){
-  fileinput <- paste0(matchedSets,'list2match10_set',20+i,'.txt')
+  fileinput <- paste0(matchedSets,'list2match20_set',20+i,'.txt')
   tab <- read.delim(fileinput,header = FALSE)  
   items <- tab$V1 
-  pseudos <- gsub('-','',database$Pseudoword[which(database$CORRECT_SPELL %in% items)])
+  # picture selection  ------------------------------------------------
+  pic <- ''
+    for (p in 1:nrow(tab)){
+      pic[p] <- database$PICTURE[which(database$CORRECT_SPELL == items[p])]    
+    }
+  urpic <- pic  #this one is just for testing
+  
+    # shuffle the pictures for the trials marked as not a match
+    match <- c(rep(1,length(items)/2),rep(0,length(items)/2)) %>% sample()
+    original  <-pic[which(match==0)]
+    replacement <- sample(original)
+    while (length(which(original==replacement)>0)!=0) {# shuffle again until no name repeats position 
+      replacement <- sample(original)
+    } 
+    pic[match==0] <- replacement
+  # ------------------------------------------------
   # compose catch trials
   catches [[i]]<- 
-    as.data.frame(rbind(cbind('',i,'catch_trial',i,items,'word',
+    as.data.frame(rbind(cbind('',i,'catch_trial',i,items,paste0(pic,'.jpg'),match,
                               replicate(n=5,paste0('SiSSN_',items,'_norm15db.wav')),
-                              replicate(n=5,paste0('NV_',items,'_norm_32ch_1p.wav'))),
-                        #
-                        cbind('',i,'catch_trial',i,pseudos,'pseudo',
-                              replicate(n=5,paste0('SiSSN_',pseudos,'_norm15db.wav')),
-                              replicate(n=5,paste0('NV_',pseudos,'_norm_32ch_1p.wav')))))
-  colnames(catches[[i]]) <- colnames(dat)
+                              replicate(n=5,paste0('NV_',items,'_norm_32ch_1p.wav')))))
+  
+
+    colnames(catches[[i]]) <- colnames(dat)
+
+  
 }
 idx1 <- which(dat$block==1)[1]
 idx2 <- which(dat$block==2)[1]
