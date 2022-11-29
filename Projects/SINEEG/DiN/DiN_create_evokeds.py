@@ -22,7 +22,7 @@ home = os.path.expanduser("~")
 
 #% Gather Target File info
 # %------------------------
-basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/' 
+basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/' 
 diroutput = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/evoked/' 
 
 if not os.path.exists(diroutput): 
@@ -59,7 +59,7 @@ for fileinput in files:
     
     # Subject info: subject number repeated n trial times 
     subjectID = fileinput.split('/')[-1].split('_')[0]
-    types = [['corr/clear','corr/easy','corr/mid','corr/hard'],['incorr/clear','incorr/easy','incorr/mid','incorr/hard']]
+    types = [['corr/easy','corr/mid','corr/hard'],['incorr/easy','incorr/mid','incorr/hard']] # Clear conditions are excluded from this average to avoid bias
     difficulty = [['corr/clear','incorr/clear'],['corr/easy','incorr/easy'],['corr/mid','incorr/mid'],['corr/hard','incorr/hard']]
     
     # %%  Creating and saving evoked objects

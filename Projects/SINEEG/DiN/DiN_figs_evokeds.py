@@ -7,8 +7,8 @@
 
 import os
 from glob import glob
-import scipy.io as sio
 import mne 
+import matplotlib.pyplot as plt
 
 home = os.path.expanduser("~")
 
@@ -21,14 +21,15 @@ if not os.path.exists(diroutput):
     os.mkdir(diroutput)
 # find target files
 
-os.chdir(basedirinput)
+
 # %% 
 files = glob('*ave*.fif')  
 #print(files)
 subjects = set([fullpath.split('/')[-1].split('_')[0] for fullpath in files])
 # %% 
-#conditions = ['clear','easy','mid','hard','corr','incorr']
-conditions = ['clear','easy','mid','hard','corr','incorr']
+
+os.chdir(basedirinput)
+conditions = ['clear','easy','mid','hard','corr','incorr','corr-easy','incorr-easy','corr-mid','incorr-mid','corr-hard','incorr-hard']
 evokeds = {} # evokeds will be a dictionary with each condition as a key,each key having all files for a given condition
 for c in conditions:
     files = glob('*_' + c+'-ave*.fif')  
@@ -37,17 +38,28 @@ for c in conditions:
     #del files
  
 # save dictionary with evoked objects     
-mne.write_evokeds(diroutput + '/group_evokeds.fif', evokeds)
+#mne.write_evokeds(diroutput + '/group_evokeds.fif', evokeds)
 
 
 # %%  PLOTS
-import matplotlib.pyplot as plt
+os.chdir(diroutput)
+roi =  ['E55','E54','E61','E62','E79','E78']
+# %% 
+
+dummyepochs = mne.Evoked(files[0])
+dummyepochs.info['bads'] = roi
+mne.viz.plot_sensors(dummyepochs.info,sphere = [0,0,0,14],pointsize=45, linewidth=0)
+plt.savefig(diroutput + '/scalp_selection.jpg',dpi=350)                                    
+dummyepochs.info['bads'] = roi
+
+# %%
+
 plt.close('all')
 
 # % ERP WAVE 
 
 #roi = ['E45', 'E40', 'E46','E39', 'E38']
-roi =  ['E55','E54','E61','E62','E79','E78']
+
 mne.viz.plot_compare_evokeds(dict((k, evokeds[k]) for k in ('clear', 'easy','mid','hard')),
                              combine = 'mean', 
                              vlines = [0, 1],
@@ -59,19 +71,82 @@ mne.viz.plot_compare_evokeds(dict((k, evokeds[k]) for k in ('clear', 'easy','mid
                              title = 'Group ERPs. Chans ' + str(roi),
                              truncate_xaxis=False
                              )
-plt.savefig('ERP_group.jpg',dpi=350)                          
+plt.savefig('ERP_group_byDifficulty.jpg',dpi=350)                          
 plt.close()
  
 
+mne.viz.plot_compare_evokeds(dict((k, evokeds[k]) for k in ('corr', 'incorr')),
+                             combine = 'mean', 
+                             vlines = [0, 1],
+                             legend='lower right',
+                             picks = roi, 
+                             show_sensors = False,
+                             #colors = color_dict,
+                             #linestyles=linestyle_dict,
+                             title = 'Group ERPs. Chans ' + str(roi),
+                             truncate_xaxis=False
+                             )
+plt.savefig('ERP_group_byAccu.jpg',dpi=350)    
+plt.close()
+
+
+
+# %%
+mne.viz.plot_compare_evokeds(dict((k, evokeds[k]) for k in ('corr-easy', 'incorr-easy')),
+                             combine = 'mean', 
+                             vlines = [0, 1],
+                             legend='lower right',
+                             picks = roi, 
+                             show_sensors = False,                             
+                             #linestyles=linestyle_dict,
+                             title = 'Group ERPs. Chans ' + str(roi),
+                             truncate_xaxis=False
+                             )
+
+
+
+plt.savefig(diroutput + '/ERP_group_byAccu-easy.jpg',dpi=350)                                    
+plt.close()
+
+
+mne.viz.plot_compare_evokeds(dict((k, evokeds[k]) for k in ('corr-mid', 'incorr-mid')),
+                          combine = 'mean', 
+                          vlines = [0, 1],
+                          legend='lower right',
+                          picks = roi, 
+                          show_sensors = False,
+                          #colors = color_dict,
+                          #linestyles=linestyle_dict,
+                          title = 'Group ERPs. Chans ' + str(roi),
+                          truncate_xaxis=False
+                          )
+plt.savefig(diroutput + '/ERP_group_byAccu-mid.jpg',dpi=350)                                    
+plt.close()
+  
+mne.viz.plot_compare_evokeds(dict((k, evokeds[k]) for k in ('corr-hard', 'incorr-hard')),
+                         combine = 'mean', 
+                         vlines = [0, 1],
+                         legend='lower right',
+                         picks = roi, 
+                         show_sensors = False,
+                         #colors = color_dict,
+                         #linestyles=linestyle_dict,
+                         title = 'Group ERPs. Chans ' + str(roi),
+                         truncate_xaxis=False
+                         )
+plt.savefig(diroutput + '/ERP_group_byAccu-hard.jpg',dpi=350)                                    
+plt.close()
+ 
 
 # %% TOPOGRAPHIES 
 os.chdir(diroutput)
+
 
 import matplotlib.pyplot as plt
 plt.close('all')
 import numpy as np
 
-times = np.arange(0.10, 0.350, 0.01)
+times = np.arange(0.10, 0.600, 0.01)
 for con in conditions:
     grandAvg = mne.grand_average(evokeds[con])                  
     # animated 
