@@ -34,7 +34,7 @@ def FUNC_run_MVPA_decoding(DataPath,
                            time_time  = False):
 
 ##
-# DataPath      =  "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_alpha/" 
+ #   DataPath      =  "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_TFR/" 
    
 
     """Run MVPA decoding.
@@ -98,7 +98,7 @@ def FUNC_run_MVPA_decoding(DataPath,
     # Read individual x files  and trial info file with Y, S and times [gfraga]
     from glob import glob
     ParData = loadmat(DataPath +'/info_trials_mvpa.mat')
-    files = glob(DataPath+'/s*.mat', recursive=True)
+    files = glob(DataPath+'/s*_prep4mvpa.mat', recursive=True)
     xlist = []
     for inputfile in files:
         dat = loadmat(inputfile)            

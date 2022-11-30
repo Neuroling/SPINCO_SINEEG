@@ -12,7 +12,7 @@ import mne.stats as mstats
 from scipy.io import loadmat
 
 # provide path to folder where results are stored
-DataPath = "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_alpha/Results/" 
+DataPath = "/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/mvpa/25subj_TFR/Results/" 
 
 # define the name of the output file
 from glob import glob 
@@ -42,18 +42,16 @@ idx2 =  int(np.where(datatimes == times[1]+base)[1])
 # calculate average classification accuracy for each participant over all conditions at each time point, flatten condition x condition matrix to look at pairwise accuracy
 
 
-partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(idx1,idx2)] for part in range(np.shape(DA)[0])])
-
-
-partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(idx1,idx2)] for part in range(np.shape(DA)[0])])
+partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(len(datatimes[0]))] for part in range(np.shape(DA)[0])])
+#partAccuracies = np.array([[np.nanmean(np.ndarray.flatten(DA[part,point,:,:])) for point in range(idx1,idx2)] for part in range(np.shape(DA)[0])])
 
 # calculate the group average classification accuracy over all conditions at each time point, flatten condition x condition matrix to look at pairwise accuracy
-groupAccuracy = np.array([np.nanmean(np.ndarray.flatten(DA[:,point,:,:])) for point in range(idx1,idx2)])
+groupAccuracy = np.array([np.nanmean(np.ndarray.flatten(DA[:,point,:,:])) for point in range(len(datatimes[0]))])
 
 # %% Significance of classification accuracy against chance
 ## Calculate significance of group average classification
 
-b = np.full([numParts,400],50) # What are you testing against: in this case, theoretical chance of 50%
+b = np.full([numParts,],50) # What are you testing against: in this case, theoretical chance of 50%
 
 T_obs, clusters, cluster_p_values, H0 = mstats.permutation_cluster_test([partAccuracies,b], tail=1, out_type="mask")
 
@@ -61,12 +59,13 @@ T_obs, clusters, cluster_p_values, H0 = mstats.permutation_cluster_test([partAcc
 # %% Plot 
 plt.figure(figsize=(20,10))  
 times2plot = np.linspace(times[0],times[1],num=399)
-
+times2plot = datatimes[0]
 # Plot all participant accuracies  
 for part in partAccuracies:
     #plt.plot(range(times[0],times[1]),part)
-    plt.plot(times2plot,part)
+    plt.plot(datatimes[0],part)
     #plt.ylim([25, 100])
+    
 # %%    
 # Calculate standard error 
 #error = [sem(partAccuracies[:,i]) for i in range(timeInds[0],timeInds[1])]
