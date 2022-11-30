@@ -22,7 +22,7 @@ home = os.path.expanduser("~")
 
 #% Gather Target File info
 # %------------------------
-basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/' 
+basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/urepochs/' 
 diroutput = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/evoked/' 
 
 if not os.path.exists(diroutput): 
