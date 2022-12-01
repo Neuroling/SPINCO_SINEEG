@@ -125,7 +125,7 @@ graph LR
     subgraph 3g[Analysis]
       3 --> 31[25subj_TFR]
       31 --> 32[epochs_labeled_*]
-      32 --> 33[band]
+      32 --> 33[band*]
       33 --> 34[results]
     end
     subgraph 2g[Preprocessed data]
