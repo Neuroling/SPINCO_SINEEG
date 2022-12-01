@@ -93,7 +93,7 @@ flowchart TB
     B --> |average|C(Evoked .fif)
     C -->|gathered subjects & conditions| D(Evokeds .fif)
     end
-    subgraph Summaries
+    subgraph O_o
     C .-> V[visualizations]
     D .-> V[visualizations]
     end
