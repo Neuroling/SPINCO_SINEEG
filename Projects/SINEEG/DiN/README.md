@@ -105,7 +105,7 @@ flowchart TB
     subgraph ML decoding
     B --> E((MVPA))
     E --> CO(label epochs)
-    CO --> FEA{features}
+    CO --> |epochs coded by accuracy or difficulty| FEA{features}
     FEA --> TA[Amplitudes]
     FEA --> TF[Time-freq]
     TF --> |freqBand power|G[Classifier]
