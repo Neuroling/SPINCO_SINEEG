@@ -25,22 +25,22 @@ The following plots summarize data\[by G.FragaGonzalez]
 SubjectID is used as preffix. When not specified in filename the file contains separate plots for correct and incorrect responses.s\* = subject id
 | Filename     | content          
 | ------------- |:-------------|
-|`Time_ERP_img_*_s*` | Time-domain. ERP image (y axis = trials, mean all channels, x= time,color map = amplitude). Per difficulty, accuracy. 
-|`Time_ERP_GFG_s*` | Time-domain ERP butterfly plots (channels as colored lines). Includes GFP
-|`Time_ERP_topopost/topoprestim`| topographical maps of activity in several time points before or after the stimli
-| `Freq_PSD_spec_s*` | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
-| `Freq_PSD_topo_s*` | Topography of power for the 5 frequeny bands.
+|Time_ERP_img_.*._s* | Time-domain. ERP image (y axis = trials, mean all channels, x= time,color map = amplitude). Per difficulty, accuracy. 
+|Time_ERP_GFG_s* | Time-domain ERP butterfly plots (channels as colored lines). Includes GFP
+|Time_ERP_topopost/topoprestim| topographical maps of activity in several time points before or after the stimli
+|Freq_PSD_spec_s* | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
+|Freq_PSD_topo_s* | Topography of power for the 5 frequeny bands.
 
 ## Events
 ### Event fields (epoched data)
 
 | Field id     | content          
 | ------------- |:-------------|
-|`EEG.epochs.accuracy` | indicates performance in identifying the digit presented 
-|` EEG.epochs.clarityOrig` | subjective rating of how hard the trial was (by participant)
-|`EEG.epochs.clarityBin`| clarityOrig transformed to thirds
-| `EEG.epochs.degLvlOrig` | degradation of stimuli (SNR of presentation, which depended of degradation task) if 'none' it means there was no noise added. 
-| `EEG.epochs.degBin` | transformation of degradation scores to more objective values. Values are 'none'= clear, 1='easy', 2= 'medium' SRT 50% correct in calibration. 3='difficult' 
+|EEG.epochs.accuracy | indicates performance in identifying the digit presented 
+| EEG.epochs.clarityOrig | subjective rating of how hard the trial was (by participant)
+|EEG.epochs.clarityBin| clarityOrig transformed to thirds
+|EEG.epochs.degLvlOrig | degradation of stimuli (SNR of presentation, which depended of degradation task) if 'none' it means there was no noise added. 
+|EEG.epochs.degBin | transformation of degradation scores to more objective values. Values are 'none'= clear, 1='easy', 2= 'medium' SRT 50% correct in calibration. 3='difficult' 
 
 
 ### Triggers
@@ -73,6 +73,33 @@ Pipeline implemented in the data within the 'Downsampled' folder (eeg data stora
   12. Remove trials with no responses
   13. Runs ICA and rejects non-brain components
    
-   
- 
- 
+
+## Multivariate pattern analysis 
+
+ Machine learning decoding
+
+```mermaid
+flowchart TB
+    subgraph Data preparation  
+    
+    A[preprocessed EEGlab .set] -->| mne.read, correct time vals, recode events| B(MNE epochs.fif)
+    B --> |average|C(Evoked)
+    C -->|gathered subjects & conditions| D(Evokeds)
+    end
+    subgraph ERP analysis
+    C --> V[visualizations]
+    D --> V[visualizations]
+    end
+
+    subgraph ML decoding
+    B --> E((MVPA))
+    E --> CO(label epochs)
+    CO --> FEA{features}
+    FEA --> TA[Amplitudes]
+    FEA --> TF[Time-freq]
+    TF --> |freqBand power|G[Classifier]
+    TA --> G
+    G --> CV[Cross validation]
+
+    end
+```
