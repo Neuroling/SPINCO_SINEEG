@@ -89,9 +89,9 @@ Pipeline implemented in the data within the 'Downsampled' folder (eeg data stora
 flowchart TB
     subgraph Data preparation  
     
-    A[preprocessed EEGlab .set] -->| mne.read, correct time vals, recode events| B(MNE epochs.fif)
-    B --> |average|C(Evoked)
-    C -->|gathered subjects & conditions| D(Evokeds)
+    A[preprocessed EEGlab .set] -->| mne.read, correct time vals, recode events| B(MNE epochs .fif)
+    B --> |average|C(Evoked .fif)
+    C -->|gathered subjects & conditions| D(Evokeds .fif)
     end
     subgraph Summaries
     C .-> V[visualizations]
