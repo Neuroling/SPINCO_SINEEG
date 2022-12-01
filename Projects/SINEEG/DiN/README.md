@@ -35,6 +35,7 @@ SubjectID is used as preffix. When not specified in filename the file contains s
 </p></details>
 
 <details><summary>Event Fields and Triggers </summary> <p>
+   
 ## Events
 ### Event fields (epoched data)
 
@@ -92,9 +93,9 @@ flowchart TB
     B --> |average|C(Evoked)
     C -->|gathered subjects & conditions| D(Evokeds)
     end
-    subgraph ERP analysis
-    C --> V[visualizations]
-    D --> V[visualizations]
+    subgraph Summaries
+    C .-> V[visualizations]
+    D .-> V[visualizations]
     end
 
     subgraph ML decoding
@@ -104,6 +105,8 @@ flowchart TB
     FEA --> TA[Amplitudes]
     FEA --> TF[Time-freq]
     TF --> |freqBand power|G[Classifier]
+    TF .-> V
+    G .-> V
     TA --> G
     G --> CV[Cross validation]
 
