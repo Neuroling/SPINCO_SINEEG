@@ -72,7 +72,8 @@ Pipeline implemented in the data within the 'Downsampled' folder (eeg data stora
 
 ### segment02
 \[DiN_pt01_preprocess_segment02.m]
-  This script merges .set files resulting in one dataset per subject
+
+This script merges .set files resulting in one dataset per subject
   
 ### segment03
 \[DiN_pt01_preprocess_segment03.m]
