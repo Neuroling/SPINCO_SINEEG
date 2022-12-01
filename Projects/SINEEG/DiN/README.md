@@ -2,7 +2,7 @@
 
 # Digits in Noise (DiN)
 Data from Thomas Houweling study (digits in noise)
-<details><summary>click for details on data and script FOLDERS </summary> <p>
+<details><summary> Data and script FOLDERS </summary> <p>
 
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
@@ -20,6 +20,8 @@ All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder u
 * ‘BAK’ contains unorganized copies of files. Ignore.
 </p></details>
 
+<details><summary>Visualizations filenames </summary> <p>
+
 ## Visualizations
 The following plots summarize data\[by G.FragaGonzalez] 
 SubjectID is used as preffix. When not specified in filename the file contains separate plots for correct and incorrect responses.s\* = subject id
@@ -30,7 +32,9 @@ SubjectID is used as preffix. When not specified in filename the file contains s
 |Time_ERP_topopost/topoprestim| topographical maps of activity in several time points before or after the stimli
 |Freq_PSD_spec_s* | power spectral densitiy. Spectra plots for average of all channels (x axis = frequency)
 |Freq_PSD_topo_s* | Topography of power for the 5 frequeny bands.
+</p></details>
 
+<details><summary>Event Fields and Triggers </summary> <p>
 ## Events
 ### Event fields (epoched data)
 
@@ -49,6 +53,8 @@ SubjectID is used as preffix. When not specified in filename the file contains s
 Triggers: 'DIN2' = block start; 'DI28' = block end ;  'DIN6' = stim onset digit 0; 'DIN8' = stim onset digit 1;  'DI10' = stim onset digit 2 ; 'DI12' = stim onset digit 3 ; 'DI14' = stim onset digit 4; 'DI16' = stim onset digit 5; 'DI18' = stim onset digit 6;  'DI20' = stim onset digit 8; 'DI22' = stim onset digit 9;  'DI24' = comprehension response onset-cue / sound offset ; 'DI26' = clarity response onset
 
 *Note*: in one of the preprocessing scripts there was some correction of triggers due to issues (splitted triggers) with EGI system. 
+</p></details>
+
 
 ## Preprocessing 
 Pipeline implemented in the data within the 'Downsampled' folder (eeg data storage) 
