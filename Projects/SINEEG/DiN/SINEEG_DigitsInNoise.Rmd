@@ -24,12 +24,12 @@ params:
 
 ```{r, include=FALSE}
   
-  knitr::opts_knit$set(root.dir = '~/smbmount/gfraga/scripts_neulin/Projects/SINEEG')    
+  knitr::opts_knit$set(root.dir = '~/smbmount/gfraga/scripts_neulin/Projects/SINEEG/DiN')    
   knitr::opts_chunk$set(echo=TRUE,warning=FALSE)
   library(tidyr)
   library(dplyr)
   library(reactable)
-  source('~/smbmount/gfraga/scripts_neulin/Projects/SINEEG/funs/eeg_funs.R')
+  source('~/smbmount/gfraga/scripts_neulin/Projects/SINEEG/functions/eeg_funs.R')
   
 
 ```
