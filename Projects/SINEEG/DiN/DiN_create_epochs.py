@@ -12,7 +12,7 @@ home = os.path.expanduser("~")
 
 #% Gather Target File info
 # %------------------------
-basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/urepochs/' 
+basedirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/_urepochs_eeglab/' 
 diroutput = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/' 
 
 if not os.path.exists(diroutput): 
@@ -53,6 +53,6 @@ for fileinput in files:
     difficulty = [['corr/clear','incorr/clear'],['corr/easy','incorr/easy'],['corr/mid','incorr/mid'],['corr/hard','incorr/hard']]
     
     # saving epochs -------------------------
-    epochs.save(diroutput + fileinput.split('/')[-1].replace('.set','.fif'),overwrite=True)
+    epochs.save(diroutput + fileinput.split('/')[-1].replace('.set','-epo.fif'),overwrite=True)
     
     

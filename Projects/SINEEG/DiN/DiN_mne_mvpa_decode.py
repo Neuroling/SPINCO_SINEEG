@@ -20,6 +20,11 @@ from glob import glob
 import scipy.io as sio
 import numpy as np
 import pandas as pd
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
+from sklearn.svm import SVC                    
+from  sklearn.model_selection import cross_val_score, ShuffleSplit
 
 
 # mne.set_log_level('WARNING') # set log-level to 'WARNING' so the output is less verbose 
@@ -44,7 +49,7 @@ for thisSubject in subjects:
             conditions_sets = {'accuracy': ['corr/easy','corr/mid','corr/hard','incorr/easy','incorr/mid','incorr/hard'],
                                'difficulty':['corr/clear','corr/easy','corr/mid','corr/hard','incorr/clear','incorr/easy','incorr/mid','incorr/hard']}  
             
-            # %%
+            # %% Class (epoch) Labeling 
             for cidx, cset in enumerate(conditions_sets): 
                 curEpochs = epochs[conditions_sets[cset]]            
                 csetname = list(conditions_sets.keys())[cidx]
@@ -86,8 +91,7 @@ for thisSubject in subjects:
                     mne.epochs.equalize_epoch_counts(epochs_list)
                     print('--------')
                 
-          
-                
+           
                 # %% FEATURE SELECTION 
                 #-----------------------------------------------------------------------------------------
                 # Time-frequency power per epoch for some bands 
@@ -109,20 +113,19 @@ for thisSubject in subjects:
             
                    
                 # Filter to retain only relevant frequency bands:
-                freq_bands_of_interest = ['delta','theta','alpha','beta','gamma']                
+                #freq_bands_of_interest = ['delta','theta','alpha','beta','gamma']                
+                freq_bands_of_interest = ['alpha']                
                 df = df[df.band.isin(freq_bands_of_interest)]                
                 df['band'] = df['band'].cat.remove_unused_categories()
                     
                 
-                
-                # %%  LOOP thru frequency bands 
+                #  LOOP thru frequency bands 
                 for thisband in freq_bands_of_interest:                     
                     # Mean 
                     curBandDF = df[df.band.isin([thisband])]
                     dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
                 
-                    # Save data in arrays formated for mvpa 
-                    #----------------------------------------------------------------
+                    # Save data in arrays formated for mvpa                     
                     x = []
                     epIds = dfmean.index.get_level_values('epoch').unique()
                     for ep in epIds:
@@ -139,20 +142,18 @@ for thisSubject in subjects:
                     y = np.array([e[2] for e in curEpochs.events])# epochs codes should have dimensions [ n_trials , ]
                     times = power.times
                     
-                    # %% 
-                    from sklearn.svm import SVC                    
-                    from  sklearn.model_selection import cross_val_score, ShuffleSplit
-                    
+                    # %%  MACHINE LEARNING                    
+                    # -----------------------------------------------------------------------------------------                    
                     # Define an SVM classifier (SVC) with a linear kernel
                     clf = SVC(C=1, kernel='linear')
                     
                     # define a monte-carlo cross validation generator (to reduce variance) : 
                     #  cv = ShuffleSplit(len(X), n_splits = 10, test_size=0.2, random_state=42)
                     cv = ShuffleSplit(n_splits = 10, test_size=0.2, random_state=42)
-                    
+                    cv = 5 # k-fold validation 
                     # This will learn on 80 % of the epochs and evaluate the remaining 20 % (test_size = ) to predict accurcay 
                     
-                    # %% 
+                    # % 
                     # Classify using all time points 
                     X_2d = X.reshape(len(X), -1)
                     X_2d = X_2d / np.std(X_2d)
@@ -160,11 +161,11 @@ for thisSubject in subjects:
                                                   X = X_2d, 
                                                   y= y, 
                                                   cv=cv, 
-                                                  n_jobs=1)
+                                                  n_jobs=8)
                     
                     print("Classification score: %s (std. %s)" % (np.mean(scores_full), np.std(scores_full)))
                     
-                    # %% classify running the decoder at each time point 
+                    # % classify running the decoder at each time point 
                     scores = np.empty(n_times)
                     std_scores = np.empty(n_times)
                     
@@ -179,14 +180,16 @@ for thisSubject in subjects:
                         std_scores[t] = scores_t.std()
                     
                     
+                  
+                    # %% Plotting 
+                    #------------------------------------------------
                     # %%  Some rescaling
                     times = 1e3 * times # to have times in ms
                     scores *= 100  # make it percentage accuracy
                     std_scores *= 100
                     
-                    # %% Plotting 
-                    import matplotlib.pyplot as plt
                     
+                    plt.ioff() #uncomment to suppress interactive plots 
                     plt.plot(times, scores, label="Classif. score")
                     plt.axhline(50, color='k', linestyle='--', label="Chance level")
                     plt.axvline(0, color='r', label='stim onset')
@@ -205,7 +208,6 @@ for thisSubject in subjects:
                     newdiroutput = diroutput + 'epochs_labels_' + csetname[0:4] 
                     if not os.path.exists(newdiroutput):
                         os.mkdir(newdiroutput)
-                        os.mkdir(newdiroutput + '/' + thisband)
                         
                     outputfilename = thisSubject + '_epochLabels_' + csetname[0:4] + '_' + thisband  + '.mat'
                     sio.savemat(newdiroutput + '/' +  outputfilename,dict2save)                                                    

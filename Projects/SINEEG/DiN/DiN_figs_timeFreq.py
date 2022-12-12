@@ -73,6 +73,19 @@ for c, con in enumerate(conditions):
         power.comment = fileinput.split('/')[-1]
         conditionTFR.append(power)
         
+        power.plot(roi, mode='logratio', title=power.ch_names[roi],average=True)
+        
+        fig, axes = plt.subplots(1, 2, figsize=(7, 4))
+        topomap_kw = dict(ch_type='grad', tmin=0.5, tmax=1.5, baseline=(-0.5, 0),
+                          mode='logratio', show=False)
+        plot_dict = dict(Alpha=dict(fmin=8, fmax=12), Beta=dict(fmin=13, fmax=25))
+        for ax, (title, fmin_fmax) in zip(axes, plot_dict.items()):
+            power.plot_topomap(**fmin_fmax, axes=ax, **topomap_kw)
+            ax.set_title(title)
+        fig.tight_layout()
+        fig.show()
+        
+        
 evokedsTFR[con] = conditionTFR
 
 # %%
