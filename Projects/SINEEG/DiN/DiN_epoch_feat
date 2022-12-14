@@ -8,7 +8,8 @@
 * Makes a report for quality assessment and results inspection 
 * 
 @author: gfraga
-Created on Tue Dec  6 15:03:56 2022
+Created on Tue Dec 13 16:36:25 2022
+
 """
 import mne
 from mne.time_frequency import tfr_morlet
@@ -33,9 +34,7 @@ condition_sets = {'corr': ['corr/easy','corr/mid','corr/hard'],
             'mid':['corr/mid','incorr/mid'],
             'hard':['corr/hard','incorr/hard'],
             'clear':['corr/clear','incorr/clear']}  
-
-
-
+ 
 # %% Read epochs of each subject
 allsubs = {}
 subjects = [f.split('/')[-1].split('_')[0] for f in files ]

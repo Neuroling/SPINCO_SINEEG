@@ -15,7 +15,7 @@ from mne.time_frequency import tfr_morlet
 import os
 from glob import glob
 import numpy as np
-# %%  Access epoched data
+# %  Access epoched data
 dir_epoched = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/'
 dir_evoked  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/evoked/'
 diroutput = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/reports_singles' 
@@ -25,7 +25,7 @@ if not os.path.exists(diroutput):
 files = glob(dir_epoched + "s*.fif", recursive=True)
 subjects = [f.split('/')[-1].split('_')[0] for f in files ]
 
-
+# %% 
 for thisSubject in subjects:
     # %% read epochs
     #-----------------------------------------------------------------------------------------            
@@ -45,8 +45,9 @@ for thisSubject in subjects:
     
     # %% Start report                       
     #-----------------------------------------------------------------------
-    
     roi =  ['E55','E54','E61','E62','E79','E78'] # select  some  electrodes for figs
+    
+    
     report = mne.Report(title= 'TIME-AMP summary of ' + thisSubject )
     #report.add_epochs(epochs=epochs, title= fileinput, psd=False, tags = 'allEpochs')  # omit PSD plot. Use this just for the summary table of number of epochs/condition
     eventInfo = str(list(epochs.event_id.items())).replace('(','').replace(')','').replace('\', ' ,'\'=').replace('[','').replace(']','')
@@ -89,6 +90,10 @@ for thisSubject in subjects:
         report.add_figure(fig = fig, title = figname , tags = figname)
         del fig
         
+        
+        
+        GA.plot_joint(mode='mean', tmin=-.7, tmax=-.1)
+       
         # topo 
         fig = epo_spectrum.plot_topomap(ch_type='eeg', agg_fun=np.median, show = False)
         figname = set + '_powerTopo'
