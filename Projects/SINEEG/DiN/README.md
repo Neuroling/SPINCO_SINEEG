@@ -84,6 +84,21 @@ This script merges .set files resulting in one dataset per subject
   12. Remove trials with no responses
   13. Runs ICA and rejects non-brain components
    
+## Comments on preprocessing
+
+Notes for consideration from the pipeline described above (THouweling): 
+
+* A less aggressive downsampling (currently 200 hz , maybe  giving more data at expenses of longer wait times is a good idea)
+
+* A more aggressive high pass filter  (some from EEGlab even recommend 1 Hz) and perhaps less aggressive low pass (e.g. 70 Hz) . Here they recommend to apply them sequentially, first  low pass and then high pass https://eeglab.org/tutorials/05_Preprocess/Filtering.html
+
+*	Potential issues with rank reduction if applying average reference before ICA. https://eeglab.org/tutorials/06_RejectArtifacts/RunICA.html So  I would ref to common average after 
+
+*	If bad channels are removed they should be left out of the data before ICA,I think it would not make sense to interpolate before ICA (redundant data since they are a combi of all others), and interpolate after ICA correction  
+
+*	I am not sure about the ASR and will be careful if it does 'repairs', I would just use some automatic junk rejection (implausible amplitudes / slopes) and manual rejection of junk segments
+
+*	Minor: epochs without responses were excluded , which makes sense for analysis but maybe still useful data for ICA detection of artifacts.  
 
 ## Multivariate pattern analysis 
 
