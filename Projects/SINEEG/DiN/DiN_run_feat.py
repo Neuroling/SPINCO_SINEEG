@@ -16,7 +16,7 @@ from glob import glob
 #  paths
 dirinput  = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/' 
 diroutput = '/home/d.uzh.ch/gfraga/smbmount/spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/'
-os.chdir(dirinput)
+os.chdir(diroutput)
 
 
  
@@ -26,6 +26,9 @@ files = glob(dirinput + "s*.fif", recursive=True)
 # File loop: 
 
 for thisFile in files:
+ 
+    # %% 
+ 
     epochs = mne.read_epochs(thisFile)
     epochs.info['description'] = thisFile # store source filename 
     
@@ -41,6 +44,7 @@ for thisFile in files:
         if not os.path.exists(newdirout): os.mkdir(newdirout)
         fileout = thisFile.split('/')[-1].split('_')[0] + '_epochs_' + i +'.h5'
         #
+    
         out[i].save(newdirout + fileout,overwrite=True)
         
     
