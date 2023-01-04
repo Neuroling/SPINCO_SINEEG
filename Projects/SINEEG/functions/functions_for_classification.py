@@ -7,8 +7,8 @@ from mne_connectivity import spectral_connectivity_epochs
 from mne.epochs import equalize_epoch_counts
 from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold,cross_validate
 
+####################################################################################    
 # % ----------------------------------------------------------
-
 def eeg_epochSelect_relabel(epochs,
                                 classify_by,
                                 equalize_epoch_count = True):
@@ -16,20 +16,21 @@ def eeg_epochSelect_relabel(epochs,
     """Select and relabel epochs for classification
     =================================================================
     Created on Wed Dec 21 13:16:09 2022
-    @author: gfraga\n Study-specific function to label classes. 
+    @author: gfraga\n 
+    Project-specific function to label classes. 
     - Selects epochs and relabels event names depending on our classification choice
     - Returns selected epochs and an 'y' array with their labels for classification
        
     Parameters
     ----------
-    epochs: Instance of 'Epochs'
+    epochs: instance of mne 'Epochs'
         Epoched Object from mne. Contains event info
     
     classify_by: str 
         A string indicating your target classification to relabel classes:
             'accuracy' will take epochs correct/incorrect labels (and take only epochs that had noise) 
             
-            'difficulty' will use the easy,mid , hard labels (ignoring accuracy and clear epochs)
+            'difficulty' will use the easy, mid, hard labels (ignoring accuracy and clear epochs)
     
     equalize_epoch_count: bool | Default True 
         If True it will run the mne equalize the number of epochs to classify using mne.epochs.equalize_epoch_counts()                
@@ -92,10 +93,11 @@ def eeg_epochSelect_relabel(epochs,
 
     return epochs_sel,y, times
 
+
 ####################################################################################    
 # % ----------------------------------------------------------
     
-def eeg_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = True):
+def eeg_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = False):
  
     """Extract features from EEG epochs
     =================================================================
@@ -116,7 +118,7 @@ def eeg_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = T
     power: bool | (default True)
          True = run power analysis (spectrum of the entire epoch). False = do not run 
      
-    spectral_connectivity: bool | (default True)   
+    spectral_connectivity: bool | (default False)   
          True = run connectivity analysis in the entire epoch (broadband and per band). False = do not run
         
     Returns
@@ -124,7 +126,7 @@ def eeg_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = T
     features_dict : dictionary
         A dictionary containing mne objects with the selected features
          
-    >>>>> Work in progress
+    >> Work in progress
     -----------------------
     spectroTemporalConnectivity: bool | (default True)   
          True = run connectivity analysis in the entire epoch (broadband and per band). False = do not run
@@ -202,46 +204,6 @@ def eeg_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = T
     return features_dict if features_dict else None
  
 ####################################################################################    
-# % ----------------------------------------------------------      
-def plot_decoding_scores(scores, std_scores, scores_full, times,title,scoretype):
- 
-    """Plot decoding scores 
-    =================================================================
-    Created on Thu Dec 22 13:44:33 2022
-    @author: gfraga\n
-        
-    Parameters
-    ----------
-    scores = classification scores for each time point
-    std_scores = std of scores
-    scores_full = classification score for the whole epoch
-    title = plot main title
-    scoretype = to label y-axis
-    
-    Returns
-    -------        
-    fig : a matplotlib figure object 
-    """  
-    # % Some rescaling
-    times = 1e3 * times # to have times in ms  
-    fig = plt.figure();
-    #plt.ioff() #uncomment to suppress interactive plots 
-    plt.plot(times, scores, label="Classif. score")
-    plt.axhline(0.5, color='k', linestyle='--', label="Chance level")
-    plt.axvline(0, color='r', label='stim onset')
-    plt.axhline(1* np.mean(scores_full), color='g', label='Accuracy full epoch')
-    plt.legend()
-    hyp_limits = (scores - std_scores, scores + std_scores)
-    plt.fill_between(times, hyp_limits[0], y2=hyp_limits[1], color='b', alpha=0.5)
-    plt.xlabel('Times (ms)')
-    plt.ylabel('CV classification score (' + scoretype + ')')
-    plt.ylim([0.3, 1])
-    plt.title(title)
-    plt.close()
-    return fig
-
-
-####################################################################################    
 
 # % ----------------------------------------------------------      
 def get_crossval_scores(X,y,clf,cv,scoretype):    
@@ -249,7 +211,7 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
     =================================================================
     Created on Thu Dec 22 13:44:33 2022
     @author: gfraga\n
-    Ref: visit scikit-learn.org documentation 
+    Ref: visit documentation in https://scikit-learn.org/stable/modules/classes.html
     
     Parameters
     ----------
@@ -278,31 +240,96 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
     std_scores: std of scores
     
     """  
-    X_2d = X.reshape(len(X), -1)               
     
-    # [MVPA] Use entire epoch
-    #scores_full = cross_val_score(estimator = clf, X = X_2d, y= y, cv=cv,n_jobs=8)
-    all_scores_full = cross_validate(estimator = clf, X = X_2d, y= y, cv=cv,n_jobs=8, scoring=['accuracy','f1','roc_auc'])
-    scores_full=all_scores_full['test_' + scoretype] # get your selected score
+    
+    # #[MVPA]------Use entire epoch
+    X_2d = X.reshape(len(X), -1)               
+    all_scores_full = cross_validate(estimator = clf,
+                                     X = X_2d,
+                                     y= y, 
+                                     cv=cv, 
+                                     n_jobs=8,
+                                     scoring=scoretype)
+    
+    all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the different scores from the result
+    ## alternative line with only one type of scoring: 
+    #scores_full = cross_val_score(estimator = clf, X = X_2d, y= y, cv=cv,n_jobs=8)        
+    
     print('--> run classification on the full epoch')
     
-    #[MVPA]  running the decoder at each time point <~~~
-    n_times = X.shape[2]
-    scores = np.empty(n_times)
-    std_scores = np.empty(n_times)
+    #[MVPA]------ running the decoder at each time point 
+    n_times = X.shape[2]       
+    #Use dictionaries to store values for each score type 
+    scores = {name: [] for name in scoretype}
+    std_scores = {name: [] for name in scoretype}
     print('[--> starting classification per time point....')
+    #loop thru time points
     for t in range(n_times):
         Xt = X[:, :, t]
         # Standardize features
         Xt -= Xt.mean(axis=0)
         Xt /= Xt.std(axis=0)
-        # Run cross-validation
-        #scores_t = cross_val_score(clf, Xt, y, cv=cv, n_jobs=8)
-        scores_t = cross_validate(clf, Xt, y, cv=cv, n_jobs=8,scoring=['accuracy','f1','roc_auc'])
-        scores_t=scores_t['test_' + scoretype] # get your selected score
-        scores[t] = scores_t.mean()
-        std_scores[t] = scores_t.std()
-    
-    print('Done <--]')
-    return scores_full, scores, std_scores
         
+        #[O_O] Run cross-validation 
+        scores_t = cross_validate(clf, Xt, y, cv=cv, n_jobs=8,scoring=scoretype)     
+        ##alternative line with only one type of scoring:
+        # scores_t = cross_val_score(clf, Xt, y, cv=cv, n_jobs=8)        
+        
+        #Add CV mean and std of this time point to the dict 
+        for name in scoretype:
+            scores[name].append(scores_t['test_' + name].mean()) 
+            std_scores[name].append(scores_t['test_' + name].std())
+    
+    #transform lists to arrays 
+    scores = {key: np.array(value) for key, value in scores.items()}
+    std_scores = {key: np.array(value) for key, value in std_scores.items()}
+      
+    print('Done <--]')
+    return all_scores_full, scores, std_scores
+        
+
+####################################################################################    
+# % ----------------------------------------------------------      
+def plot_decoding_scores(scores, std_scores, scores_full, times,title,scoretype):
+ 
+    """Plot decoding scores 
+    =================================================================
+    Created on Thu Dec 22 13:44:33 2022
+    @author: gfraga\n
+        
+    Parameters 
+    ----------
+    Expected input is derived from scikit-learn crossvalidate output
+    
+    scores: classification scores for each time point
+    
+    std_scores: std of scores
+    
+    scores_full: classification score for the whole epoch
+    
+    title: plot main title
+    
+    scoretype: label of y-axis e.g., accuracy
+    
+    Returns
+    -------        
+    fig : a matplotlib figure object 
+    """  
+    # % Some rescaling
+    times = 1e3 * times # to have times in ms  
+    fig = plt.figure();
+    #plt.ioff() #uncomment to suppress interactive plots 
+    plt.plot(times, scores, label="Classif. score")
+    plt.axhline(0.5, color='k', linestyle='--', label="Chance level")
+    plt.axvline(0, color='r', label='stim onset')
+    plt.axhline(1* np.mean(scores_full), color='g', label='Accuracy full epoch')
+    plt.legend()
+    hyp_limits = (scores - std_scores, scores + std_scores)
+    plt.fill_between(times, hyp_limits[0], y2=hyp_limits[1], color='b', alpha=0.5)
+    plt.xlabel('Times (ms)')
+    plt.ylabel('CV classification score (' + scoretype + ')')
+    plt.ylim([0.3, 1])
+    plt.title(title)
+    plt.close()
+    return fig
+
