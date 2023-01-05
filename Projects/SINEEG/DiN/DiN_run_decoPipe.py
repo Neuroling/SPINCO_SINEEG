@@ -10,18 +10,17 @@ Created on Tue Dec 20 09:37:46 2022
 """
 # Libraries
 import sys
-import secrets
 import numpy as np
 import os
 from glob import glob
 import mne
-from sklearn import svm
 #----
 #  paths and custom functions
 homedir = 'V:/' if os.name == 'nt' else '/home/d.uzh.ch/gfraga/smbmount/'
+sys.path.append(homedir + "gfraga/scripts_neulin/Projects/SINEEG/functions/")
 
-sys.path.insert(0,homedir + "gfraga/scripts_neulin/Projects/SINEEG/functions/")
-from functions_for_classification import *
+from mvpa_funs import EEG_epochSelect_relabel,EEG_extract_feat, get_crossval_scores, plot_decoding_scores
+#%%
 dirinput  = homedir + 'spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/' 
 diroutput = homedir + 'spinco_data/SINEEG/DiN/mvpa/'
 os.chdir(diroutput)
@@ -29,9 +28,10 @@ os.chdir(diroutput)
 # list files
 files = glob(dirinput + "s*.fif", recursive=True)
 
-# File loop: 
-for thisFile in files:     
-    
+# %% File loop: 
+#thisFile = files[0]
+for thisFile in files:         
+
     # %% 
     # EEG features 
     #======================================================================
@@ -41,10 +41,10 @@ for thisFile in files:
     
     # % Select epochs and labels  [FUN]
     classBy ='accuracy'
-    [epochs_sel, y, times] = eeg_epochSelect_relabel(epochs, classify_by= classBy,equalize_epoch_count = True, crop_epoch_times=None)
-    
+    [epochs_sel, y, times] = EEG_epochSelect_relabel(epochs, classify_by= classBy,equalize_epoch_count = True, crop_epoch_times=None)  
+        
     # % get features [FUN]
-    features_dict = eeg_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False)
+    features_dict = EEG_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False) 
     
     
     # % Select Data for classification (shape: samples (e.g., trials) x features(e.g., chans) x times)
@@ -108,6 +108,13 @@ for thisFile in files:
         
 # %%%%%%%%%%%%%%% 
 """ 
+TO DO NOW : 
+    -make a separate function to split the tfr in freq bands
+    - checkthe times in the feature dictionary are correct 
+    -TFR: 
+        - On the TFR object, calculate the cone of influence and use it as a mask 
+        - Then allow time window selection for the freq band averaging and X output for classification 
+    
 What about: 
 - Further separate functions? 
 - Cross validation based 
