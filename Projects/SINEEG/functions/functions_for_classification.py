@@ -11,7 +11,8 @@ from sklearn.model_selection import cross_val_score, train_test_split, GridSearc
 # % ----------------------------------------------------------
 def eeg_epochSelect_relabel(epochs,
                                 classify_by,
-                                equalize_epoch_count = True):
+                                equalize_epoch_count = True,
+                                crop_epoch_times = None):
  
     """Select and relabel epochs for classification
     =================================================================
@@ -32,10 +33,12 @@ def eeg_epochSelect_relabel(epochs,
             
             'difficulty' will use the easy, mid, hard labels (ignoring accuracy and clear epochs)
     
-    equalize_epoch_count: bool | Default True 
-        If True it will run the mne equalize the number of epochs to classify using mne.epochs.equalize_epoch_counts()                
+    equalize_epoch_count: bool | default True 
+        If True it will run the mne equalize the number of epochs to classify using mne.epochs.equalize_epoch_counts()
+        
+    crop_epoch_times: tuple | default None
+        Specify tmin and tmax (in sec) If you want to crop the epoch before feature extraction e.g. (-2, 1). If None the entire epochs will be passed on 
     
-           
     Returns
     -------
     y_epochLabels : dictionary
@@ -86,10 +89,16 @@ def eeg_epochSelect_relabel(epochs,
         print('....equalizing number of epochs between ' + classify_by + ' conditions')
         epochs_sel.equalize_event_counts()     
     
-        
+    if crop_epoch_times is None:
+        print('--Done. The entire epochs length was selected.')
+    else:
+        print('--Done. Epochs were cropped to ' + str(crop_epoch_times) + ' (tmax not included)')
+        epochs_sel.crop(tmin=crop_epoch_times[0], tmax=crop_epoch_times[1], include_tmax=False)
+    
     # Save labels in vector
     y = np.array([e[2] for e in epochs_sel.events])# epochs codes should have dimensions [ n_trials , ]
-    times = epochs.times
+    times = epochs_sel.times
+
 
     return epochs_sel,y, times
 

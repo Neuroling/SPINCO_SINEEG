@@ -17,9 +17,8 @@ from glob import glob
 import mne
 from sklearn import svm
 #----
-#  paths
-if os.name == 'nt': homedir = 'V:/' 
-else: homedir = '/home/d.uzh.ch/gfraga/smbmount/'
+#  paths and custom functions
+homedir = 'V:/' if os.name == 'nt' else '/home/d.uzh.ch/gfraga/smbmount/'
 
 sys.path.insert(0,homedir + "gfraga/scripts_neulin/Projects/SINEEG/functions/")
 from functions_for_classification import *
@@ -32,22 +31,26 @@ files = glob(dirinput + "s*.fif", recursive=True)
 
 # File loop: 
 for thisFile in files:     
+    
     # %% 
     # EEG features 
-    #---------------------------------
+    #======================================================================
     # % Read epochs 
     epochs = mne.read_epochs(thisFile)
     epochs.info['description'] = thisFile # store source filename 
     
-    # % Select epochs and labels
+    # % Select epochs and labels  [FUN]
     classBy ='accuracy'
-    [epochs_sel, y, times] = eeg_epochSelect_relabel(epochs, classify_by= classBy,equalize_epoch_count = True)
+    [epochs_sel, y, times] = eeg_epochSelect_relabel(epochs, classify_by= classBy,equalize_epoch_count = True, crop_epoch_times=None)
     
-    # % get features
-    features_dict = eeg_extract_feat(epochs_sel, power=False, spectral_connectivity =False)
+    # % get features [FUN]
+    features_dict = eeg_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False)
+    
     
     # % Select Data for classification (shape: samples (e.g., trials) x features(e.g., chans) x times)
+    #---------------------------------
     measure = 'tfr_bands'
+    
     #freqBand = 'Alpha' # Select band of interest     
     for freqBand in features_dict['tfr_bands'].keys():        
         
@@ -56,10 +59,12 @@ for thisFile in files:
         
         # %% Decoding 
         #---------------------------------
-        # Define an SVM classifier (SVC) 
+        # Define an SVM classifier (SVC)  
         clf = svm.SVC(C=1, kernel='linear')
         cv = 5
         scoretype = ['accuracy','f1','roc_auc']
+        
+        #Get cross validation scores [FUN]
         [scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
         
         # %% Plot accuracy scores 
@@ -98,7 +103,21 @@ for thisFile in files:
             f.write("Feature: " + measure + ".\n")    
             f.write("Classifier: " + str(clf) + ".\n")
             f.write("Cross-validation: " + str(cv) + ".\n")
+        
             
+        
+# %%%%%%%%%%%%%%% 
+""" 
+What about: 
+- Further separate functions? 
+- Cross validation based 
+- Training set classification scores (not saved currently)
+
+To do: 
+    - Stats on CV scores (function + call )
+
+"""        
+        
         
 
 # %% [just testing]  Print tree view 
