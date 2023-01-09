@@ -53,7 +53,7 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
                                      n_jobs=8,
                                      scoring=scoretype)
     
-    all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the different scores from the result
+    all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
     ## alternative line with only one type of scoring: 
     #scores_full = cross_val_score(estimator = clf, X = X_2d, y= y, cv=cv,n_jobs=8)        
     
@@ -77,7 +77,7 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
         ##alternative line with only one type of scoring:
         # scores_t = cross_val_score(clf, Xt, y, cv=cv, n_jobs=8)        
         
-        #Add CV mean and std of this time point to the dict 
+        #Add CV mean and std of this time point to my output dict 
         for name in scoretype:
             scores[name].append(scores_t['test_' + name].mean()) 
             std_scores[name].append(scores_t['test_' + name].std())

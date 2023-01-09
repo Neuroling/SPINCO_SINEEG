@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from mne.time_frequency import tfr_morlet
 from mne_connectivity import spectral_connectivity_epochs
+import matplotlib.pyplot as plt
+import numpy as np
 
 ####################################################################################    
 # % ----------------------------------------------------------
@@ -71,17 +73,26 @@ def EEG_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = F
         wavelet_width = n_cycles/freqs
         coi = wavelet_width/2      
         
-        
+        plt.plot(coi,range(0,56))
         # Create a mask using broadcasting
         mask = np.abs(tfr.times) < coi[:, np.newaxis]
+        # %% 
         
+        # cone-of-influence, anything "below" is dubious
+        ts = time;
+        coi_area = np.concatenate([[np.max(scale)], coi, [np.max(scale)],[np.max(scale)]])
+        ts_area = np.concatenate([[ts[0]], ts, [ts[-1]] ,[ts[0]]]);
+        L = bx.plot(ts_area,np.log2(coi_area),'k',linewidth=3)
+        F=bx.fill(ts_area,np.log2(coi_area),'k',alpha=0.3,hatch="x")
+
+
         # %%
         data = tfr.data[0]
         fig, ax = plt.subplots()
 
         im = ax.imshow(data[0])
         masked_data = np.ma.masked_array(data[0], mask=mask)
-        ax.imshow(masked_data, cmap='Reds_r', alpha=0.5)
+#        ax.imshow(masked_data, cmap='Reds_r', alpha=0.5)
 
         plt.show()
         
@@ -90,8 +101,6 @@ def EEG_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = F
         data = np.random.randn(128, 56, 354)
         
         # Create a figure and axes
-       import matplotlib.pyplot as plt
-       import numpy as np
        fig, ax = plt.subplots(nrows=1, ncols=2)
        ax[0].imshow(data[0])
        ax[1].imshow(mask, cmap='gray')

@@ -14,6 +14,9 @@ import numpy as np
 import os
 from glob import glob
 import mne
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
+
 #----
 #  paths and custom functions
 homedir = 'V:/' if os.name == 'nt' else '/home/d.uzh.ch/gfraga/smbmount/'
@@ -27,9 +30,9 @@ os.chdir(diroutput)
  
 # list files
 files = glob(dirinput + "s*.fif", recursive=True)
-
+thisFile = files[0]
 # %% File loop: 
-#thisFile = files[0]
+
 for thisFile in files:         
 
     # %% 
@@ -46,8 +49,12 @@ for thisFile in files:
     # % get features [FUN]
     features_dict = EEG_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False) 
     
+    # %% 
+    tfr = features_dict['tfr']
     
-    # % Select Data for classification (shape: samples (e.g., trials) x features(e.g., chans) x times)
+        
+    
+    # %% Select Data for classification (shape: samples (e.g., trials) x features(e.g., chans) x times)
     #---------------------------------
     measure = 'tfr_bands'
     
@@ -59,10 +66,20 @@ for thisFile in files:
         
         # %% Decoding 
         #---------------------------------
+        #types of scores we want to obtain 
+        scoretype = ['accuracy','f1','roc_auc']
+        
         # Define an SVM classifier (SVC)  
         clf = svm.SVC(C=1, kernel='linear')
-        cv = 5
-        scoretype = ['accuracy','f1','roc_auc']
+        cv = 5       
+        
+        #Get cross validation scores [FUN]
+        [scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
+        
+        # %% lets try now with a random forest
+        RandomForestClassifier(n_estimators=10, random_state=42)
+        clf = svm.SVC(C=1, kernel='linear')
+        cv = 5       
         
         #Get cross validation scores [FUN]
         [scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
