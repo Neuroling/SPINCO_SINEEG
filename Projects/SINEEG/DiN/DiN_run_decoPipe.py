@@ -22,7 +22,7 @@ from sklearn.ensemble import RandomForestClassifier
 homedir = 'V:/' if os.name == 'nt' else '/home/d.uzh.ch/gfraga/smbmount/'
 sys.path.append(homedir + "gfraga/scripts_neulin/Projects/SINEEG/functions/")
 
-from mvpa_funs import EEG_epochSelect_relabel,EEG_extract_feat, get_crossval_scores, plot_decoding_scores
+from mvpa_funs import EEG_epochSelect_relabel,EEG_extract_feat, EEG_tfr_cone_of_influence, EEG_tfr_extract_freqBands,get_crossval_scores, plot_decoding_scores
 #%%
 dirinput  = homedir + 'spinco_data/SINEEG/DiN/data_preproc_ep_ICrem/epochs/' 
 diroutput = homedir + 'spinco_data/SINEEG/DiN/mvpa/'
@@ -46,23 +46,27 @@ for thisFile in files:
     classBy ='accuracy'
     [epochs_sel, y, times] = EEG_epochSelect_relabel(epochs, classify_by= classBy,equalize_epoch_count = True, crop_epoch_times=None)  
         
-    # % get features [FUN]
+    # %% get tfr features [FUN]
+    freqs = np.logspace(*np.log10([1, 48]), num=56)
+    n_cycles = 3
     features_dict = EEG_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False) 
+       
     
-    # %% 
-    tfr = features_dict['tfr']
+    # %% TFR: cone of influence and 
+    tfr_df = EEG_tfr_cone_of_influence(features_dict['tfr'])
     
-        
+    # Extract freq bands        
+    tfr_bands = EEG_tfr_extract_freqBands(tfr_df)
+    
     
     # %% Select Data for classification (shape: samples (e.g., trials) x features(e.g., chans) x times)
     #---------------------------------
-    measure = 'tfr_bands'
-    
-    #freqBand = 'Alpha' # Select band of interest     
-    for freqBand in features_dict['tfr_bands'].keys():        
         
-        X = features_dict[measure][freqBand]
-        times = features_dict['tfr'].times
+    #freqBand = 'Alpha' # Select band of interest     
+    for freqBand in tfr_bands['freqbands']:        
+        
+        X = tfr_bands[freqBand]
+        times = tfr_bands['times_'+freqBand]
         
         # %% Decoding 
         #---------------------------------
@@ -77,12 +81,12 @@ for thisFile in files:
         [scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
         
         # %% lets try now with a random forest
-        RandomForestClassifier(n_estimators=10, random_state=42)
-        clf = svm.SVC(C=1, kernel='linear')
-        cv = 5       
+        #RandomForestClassifier(n_estimators=10, random_state=42)
+        #clf = svm.SVC(C=1, kernel='linear')
+        #cv = 5       
         
         #Get cross validation scores [FUN]
-        [scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
+        #[scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
         
         # %% Plot accuracy scores 
         #---------------------------------- 
@@ -97,29 +101,29 @@ for thisFile in files:
         
         # %% Save 
         # Create Output dir 
-        decodeInf = str(clf).split('(')[0] + '_' +  str(clf.kernel) + '_c' + str(clf.C) + '_cv' + str(cv)
-        newdir = diroutput + measure + '_' + decodeInf + '/' + os.path.basename(thisFile).split('_')[0] + '_labels-' + classBy
-        os.makedirs(newdir, exist_ok=True)
-        os.chdir(newdir)
+        # decodeInf = str(clf).split('(')[0] + '_' +  str(clf.kernel) + '_c' + str(clf.C) + '_cv' + str(cv)
+        # newdir = diroutput + measure + '_' + decodeInf + '/' + os.path.basename(thisFile).split('_')[0] + '_labels-' + classBy
+        # os.makedirs(newdir, exist_ok=True)
+        # os.chdir(newdir)
         
-        #File suffix
-        outputSuffix = '_' + measure + '_' + freqBand + '.npy'
+        # #File suffix
+        # outputSuffix = '_' + measure + '_' + freqBand + '.npy'
         
-        # Save data matrix, labels and figures
-        np.save('X'+outputSuffix, X)
-        np.save('Y.npy',y)
-        np.save('Figs'+outputSuffix,figures)
-        for i, fig in enumerate(figures):
-            fig.savefig('FIG_' + scoretype[i] + outputSuffix.replace('.npy','.jpg') )
+        # # Save data matrix, labels and figures
+        # np.save('X'+outputSuffix, X)
+        # np.save('Y.npy',y)
+        # np.save('Figs'+outputSuffix,figures)
+        # for i, fig in enumerate(figures):
+        #     fig.savefig('FIG_' + scoretype[i] + outputSuffix.replace('.npy','.jpg') )
         
         
-        #%%  Log file 
-        with open('README.txt', 'w') as f:
-            # Write the desired text to the file
-            f.write("Trials labeled by: " + classBy + ".\n")
-            f.write("Feature: " + measure + ".\n")    
-            f.write("Classifier: " + str(clf) + ".\n")
-            f.write("Cross-validation: " + str(cv) + ".\n")
+        # #%%  Log file 
+        # with open('README.txt', 'w') as f:
+        #     # Write the desired text to the file
+        #     f.write("Trials labeled by: " + classBy + ".\n")
+        #     f.write("Feature: " + measure + ".\n")    
+        #     f.write("Classifier: " + str(clf) + ".\n")
+        #     f.write("Cross-validation: " + str(cv) + ".\n")
         
             
         

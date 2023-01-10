@@ -3,11 +3,10 @@ import numpy as np
 from mne.time_frequency import tfr_morlet
 from mne_connectivity import spectral_connectivity_epochs
 import matplotlib.pyplot as plt
-import numpy as np
 
 ####################################################################################    
 # % ----------------------------------------------------------
-def EEG_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = False):
+def EEG_extract_feat(epochs,freqs = None, n_cycles = None, power = True, TFR = True, spectral_connectivity = False):
  
     """Extract features from EEG epochs
     =================================================================
@@ -22,6 +21,12 @@ def EEG_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = F
     epochs: Instance of 'Epochs'
         Epoched Object from mne. Features are extracted per epoch
     
+    freqs: array (optional)
+        Frequencies for the time frequency analysis. If none, the default is: np.logspace(*np.log10([1, 48]), num=56)
+    
+    n_cycles: int (optional)
+        number of cycles for the wavelet analysis. If none, the default is: 3
+        
     TFR: bool | (default True)
         True = run time frequency analysis (broadband and per band). False = do not run
         
@@ -30,6 +35,7 @@ def EEG_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = F
      
     spectral_connectivity: bool | (default False)   
          True = run connectivity analysis in the entire epoch (broadband and per band). False = do not run
+         
         
     Returns
     -------
@@ -64,106 +70,20 @@ def EEG_extract_feat(epochs, power = True, TFR = True, spectral_connectivity = F
     #  Time frequency analysis
     if TFR:                
         print(' ¸.·´¯`·.¸><(((º>  Running time frequency analysis')        
+        if freqs is None or n_cycles is None:            
+            freqs = np.logspace(*np.log10([1, 48]), num=56)
+            n_cycles=3
+            print('---> No frequencies and n_cycles specified for the TFR analysis...Using default 3 cycles and 56 log-spaced freqs from 1 to 48 hz')
+            
+            
+        
         # Time freq
-        freqs = np.logspace(*np.log10([1, 48]), num=56)
-        n_cycles = 3
         tfr = tfr_morlet(epochs, freqs=freqs, decim= 3, n_cycles=n_cycles, average=False, use_fft=True, return_itc=False,n_jobs=8)
+        tfr.comment = {'n_cycles':n_cycles}
         features_dict['tfr'] = tfr        
-        # %% get coi
-        wavelet_width = n_cycles/freqs
-        coi = wavelet_width/2      
-        
-        plt.plot(coi,range(0,56))
-        # Create a mask using broadcasting
-        mask = np.abs(tfr.times) < coi[:, np.newaxis]
-        # %% 
-        
-        # cone-of-influence, anything "below" is dubious
-        ts = time;
-        coi_area = np.concatenate([[np.max(scale)], coi, [np.max(scale)],[np.max(scale)]])
-        ts_area = np.concatenate([[ts[0]], ts, [ts[-1]] ,[ts[0]]]);
-        L = bx.plot(ts_area,np.log2(coi_area),'k',linewidth=3)
-        F=bx.fill(ts_area,np.log2(coi_area),'k',alpha=0.3,hatch="x")
-
-
-        # %%
-        data = tfr.data[0]
-        fig, ax = plt.subplots()
-
-        im = ax.imshow(data[0])
-        masked_data = np.ma.masked_array(data[0], mask=mask)
-#        ax.imshow(masked_data, cmap='Reds_r', alpha=0.5)
-
-        plt.show()
-        
-        # %% plot mask
-        mask = np.tile(mask[np.newaxis, :, :], (128, 1, 1))
-        data = np.random.randn(128, 56, 354)
-        
-        # Create a figure and axes
-       fig, ax = plt.subplots(nrows=1, ncols=2)
-       ax[0].imshow(data[0])
-       ax[1].imshow(mask, cmap='gray')
-
-       plt.show()
-        #%%
-        
-                
-        # Generate a random data array
-        data = np.random.rand(128, 56, 354)
-        
-        # Generate a random boolean mask
-        mask = np.random.randint(0, 2, (56, 354), dtype=bool)
-        
-        # Plot the data and the mask
-        fig, ax = plt.subplots(nrows=1, ncols=2)
-        ax[0].imshow(data[0])
-        ax[1].imshow(mask, cmap='gray')
-        
-        plt.show()
-
-        
-        
-        
-        
-
-        
-        #%%
-        
         print('Done.')             
-
-        
-
-        print('>> Creating data set with tfr power per frequency band')
-        #Create a data frame with TFR power indicating frequency band
-        df = tfr.to_data_frame(time_format=None)  
-        freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()] 
-        df['band'] = pd.cut(df['freq'], list(freq_bounds),labels=list(freqbands))    
-        
-        #save averaged power per band in a dictionary
-        tfr_bands= {}
-        print('>> O_o Adding power averages per band to a dictionary')
-        for thisband in list(freqbands):                     
-            # Mean 
-            curBandDF = df[df.band.isin([thisband])]
-            dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
-            
-            # Save data in arrays formated for mvpa                     
-            x = []
-            epIds = dfmean.index.get_level_values('epoch').unique()
-            for ep in epIds:
-                thisEpoch = dfmean.filter(regex='^E.*',axis = 1 ).loc[ep].to_numpy().transpose() # find columns with channel values (start with E*.) for each epoch and transpose 
-                x.append(thisEpoch)
-                del thisEpoch  
-            X = np.dstack(x)                                                                        
-            
-            # Add to dictionary in shape:  epochs x Channels x TimePoints
-            tfr_bands[thisband] = X.transpose(2,0,1)       
-            print('>>> ' + thisband + ' avg per epoch added')
-            
-    # Add to function output dict
-    features_dict['tfr_bands'] = tfr_bands
-        
+                
+       
     # % Phase connectivity     
     if spectral_connectivity: 
         print(' ¸.·´¯`·.¸><(((º>  Running spectral connectivity per band')
