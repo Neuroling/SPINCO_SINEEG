@@ -42,22 +42,20 @@ for thisFile in files:
     epochs = mne.read_epochs(thisFile)
     epochs.info['description'] = thisFile # store source filename 
     
-    # % Select epochs and labels  [FUN]
+    # % Select epochs and create class labels  [FUN]
     classBy ='accuracy'
     [epochs_sel, y, times] = EEG_epochSelect_relabel(epochs, classify_by= classBy,equalize_epoch_count = True, crop_epoch_times=None)  
         
     # %% get tfr features [FUN]
     freqs = np.logspace(*np.log10([1, 48]), num=56)
     n_cycles = 3
-    features_dict = EEG_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False) 
-       
+    features_dict = EEG_extract_feat(epochs_sel, TFR=True,power=False, spectral_connectivity=False)        
     
-    # %% TFR: cone of influence and 
-    tfr_df = EEG_tfr_cone_of_influence(features_dict['tfr'])
+    # %% TFR: leave only cone of influence  
+    tfr_df = EEG_tfr_cone_of_influence(features_dict['tfr'])    
     
     # Extract freq bands        
-    tfr_bands = EEG_tfr_extract_freqBands(tfr_df)
-    
+    tfr_bands = EEG_tfr_extract_freqBands(tfr_df)    
     
     # %% Select Data for classification (shape: samples (e.g., trials) x features(e.g., chans) x times)
     #---------------------------------
@@ -70,14 +68,14 @@ for thisFile in files:
         
         # %% Decoding 
         #---------------------------------
-        #types of scores we want to obtain 
-        scoretype = ['accuracy','f1','roc_auc']
-        
         # Define an SVM classifier (SVC)  
         clf = svm.SVC(C=1, kernel='linear')
         cv = 5       
         
-        #Get cross validation scores [FUN]
+        #types of scores we want to obtain 
+        scoretype = ['accuracy','f1','roc_auc']
+        
+        #Get cross validation scores [FUN]        
         [scores_full, scores, std_scores] = get_crossval_scores(X, y, clf, cv, scoretype)
         
         # %% lets try now with a random forest

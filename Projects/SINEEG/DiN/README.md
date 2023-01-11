@@ -7,17 +7,17 @@ Data from Thomas Houweling study (digits in noise)
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
 
-
 * In EEG_DATA the ‘.raw’ files are the raw recordings (4-6 files containing several tasks). Then, raw are saved into multiple .mat files (with parts)
 * InterpChans.mat file contains info about channels interpolated for later steps
 * In ‘EEG_DATA/Downsampled’ the .raw files are transformed into ‘.set’ files (different parts). It follows the main preprocessing pipeline, used in the submitted manuscript. \[‘Downsamp’ contains changes in revision. Do not use.]
  * ‘EEG_DATA/Downsampled/DiN’ contains epoched sets, and epoched_ICrem sets (after removal of IC components) as well as a trialInfo.mat file
 
 
-## Scripts info
-* Preprocessing scripts. Each script is a ‘part’ in the preprocessing sequence (parts 1-3) with multiple steps. 
-* ‘Utils’ contains all required functions for theT.Houweling Data 
-* ‘BAK’ contains unorganized copies of files. Ignore.
+## Info - Scripts from T.H. 
+
+* Preprocessing scripts from T.Houweling. Copied in this repo in "DiN_pt01_preprocess". Each script is a ‘part’ in the preprocessing sequence (parts 1-3) with multiple steps. 
+* ‘Utils’ folder [local mnt in server] contains all required functions for the T.Houweling Data 
+* ‘BAK’ [local mnt in server]  contains unorganized copies of files. Ignore.
 </p></details>
 
 <details><summary>Visualizations filenames </summary> <p>
