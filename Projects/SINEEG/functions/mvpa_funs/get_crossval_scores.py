@@ -1,10 +1,4 @@
-import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
-import mne 
-from mne.time_frequency import tfr_morlet
-from mne_connectivity import spectral_connectivity_epochs
-from mne.epochs import equalize_epoch_counts
 from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold,cross_validate  
 ####################################################################################    
 # % ----------------------------------------------------------      
@@ -54,11 +48,31 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
                                      scoring=scoretype)
     
     all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
+    
+    # %%
+    from sklearn.metrics import confusion_matrix
+    X_train, X_test, y_train, y_test = train_test_split(X_2d, y)
+    #train model
+    clf.fit(X_train, y_train)
+    #predict test data
+    y_pred = clf.predict(X_test)
+    y_true = y_test  
+    cm= confusion_matrix(y_true, y_pred)
+    
+    cross_validate(estimator = clf,
+                                    X = X_2d,
+                                    y= y, 
+                                    cv=cv, 
+                                    n_jobs=8,
+                                    scoring=scoretype)
+    
+    # %% 
+    
     ## alternative line with only one type of scoring: 
     #scores_full = cross_val_score(estimator = clf, X = X_2d, y= y, cv=cv,n_jobs=8)        
     
-    print('--> run classification on the full epoch')
     
+    print('--> run classification on the full epoch')
     #[MVPA]------ running the decoder at each time point 
     n_times = X.shape[2]       
     #Use dictionaries to store values for each score type 
