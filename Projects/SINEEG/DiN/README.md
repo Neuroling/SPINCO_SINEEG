@@ -9,7 +9,8 @@ Ongoing analysis (by G.FragaGonzalez) to test time-resolved mvpa decoding of tri
  
   - `SINEEG/functions/mvpa_funs`. Main functions used to analyze DiN and other experiments (WiN). They mostly call MNE and scikit-learn functions. 
   - `SINEEG/DiN/`. Main scripts for analysis (many require `mvpa_funs`). *DiN_run_decode.py* is the main script to prepare data, extract features , run decoding
-  
+ 
+
 ### Workflow
   
 ```mermaid
