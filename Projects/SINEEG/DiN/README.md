@@ -1,7 +1,6 @@
   
 # Digits in Noise (DiN)
 Data from Thomas Houweling study (digits in noise)
-<details><summary> Data and script FOLDERS </summary> <p>
 
 ## Multivariate pattern analysis 
 Ongoing analysis to test time-resolved mvpa decoding of trials (as correct vs incorrect trials with digits in noise)
@@ -12,6 +11,7 @@ Ongoing analysis to test time-resolved mvpa decoding of trials (as correct vs in
   - `SINEEG/DiN/`. Main scripts for analysis (many require `mvpa_funs`). *DiN_run_decode.py* is the main script to run the decoding
   
 ### Workflow
+  
 ```mermaid
 flowchart TB
     subgraph Data preparation  
@@ -40,6 +40,7 @@ flowchart TB
     end
 ```
 ### MVPA folder
+  
 ```mermaid
 graph LR
     root[DiN] --> 1[README.md]
@@ -67,7 +68,8 @@ style 1g fill:transparent,stroke:#E5E5E5,stroke-width:1px,stroke-dasharray:5;
 style 2g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
 style 3g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
 ```
-  
+# Data
+<details><summary> Data and script FOLDERS </summary> <p>  
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
 
