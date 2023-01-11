@@ -10,6 +10,35 @@ Ongoing analysis (by G.FragaGonzalez) to test time-resolved mvpa decoding of tri
   - `SINEEG/functions/mvpa_funs`. Main functions used to analyze DiN and other experiments (WiN). They mostly call MNE and scikit-learn functions. 
   - `SINEEG/DiN/`. Main scripts for analysis (many require `mvpa_funs`). *DiN_run_decode.py* is the main script to prepare data, extract features , run decoding
  
+ ### MVPA data folder
+  
+```mermaid
+graph LR
+    root[DiN] --> 1[README.md]
+    root --> 2[data_preproc_ep_ICrem]
+    root --> 3[mvpa]
+    
+    subgraph 3g[Analysis]
+      3 --> 31[modelname*]
+      31 --> 32[subject*]
+      32 --> 33[results]
+    end
+    subgraph 2g[Preprocessed data]
+      2 --> 21[epochs]
+      2 --> 22[evoked]
+      2 --> 23[evokeds]
+    end
+    subgraph 1g[ ]
+      1
+    end
+    
+
+linkStyle 0,1,2,3,4,5,6,7,8 stroke-width:.6px;
+
+style 1g fill:transparent,stroke:#E5E5E5,stroke-width:1px,stroke-dasharray:5;
+style 2g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
+style 3g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
+```
 
 ### Workflow
   
@@ -39,35 +68,7 @@ flowchart TB
 
     end
 ```
-### MVPA folder
-  
-```mermaid
-graph LR
-    root[DiN] --> 1[README.md]
-    root --> 2[data_preproc_ep_ICrem]
-    root --> 3[mvpa]
-    subgraph 3g[Analysis]
-      3 --> 31[25subj_TFR]
-      31 --> 32[epochs_labeled_*]
-      32 --> 33[band*]
-      33 --> 34[results]
-    end
-    subgraph 2g[Preprocessed data]
-      2 --> 21[epochs]
-      2 --> 22[evoked]
-      2 --> 23[evokeds]
-    end
-    subgraph 1g[ ]
-      1
-    end
-    
 
-linkStyle 0,1,2,3,4,5,6,7,8,9 stroke-width:.6px;
-
-style 1g fill:transparent,stroke:#E5E5E5,stroke-width:1px,stroke-dasharray:5;
-style 2g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
-style 3g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
-```
 # Data
 <details><summary> Data and script FOLDERS </summary> <p>  
 ## Data folders
