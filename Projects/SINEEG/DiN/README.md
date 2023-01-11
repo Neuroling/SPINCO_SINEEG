@@ -1,5 +1,4 @@
-   
-
+  
 # Digits in Noise (DiN)
 Data from Thomas Houweling study (digits in noise)
 <details><summary> Data and script FOLDERS </summary> <p>
