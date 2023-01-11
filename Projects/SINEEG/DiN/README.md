@@ -3,6 +3,71 @@
 Data from Thomas Houweling study (digits in noise)
 <details><summary> Data and script FOLDERS </summary> <p>
 
+## Multivariate pattern analysis 
+Ongoing analysis to test time-resolved mvpa decoding of trials (as correct vs incorrect trials with digits in noise)
+
+### Scripts organization 
+ 
+  - `SINEEG/functions/mvpa_funs`. Main functions used to analyze DiN and other experiments (WiN). They mostly call MNE and scikit-learn functions. 
+  - `SINEEG/DiN/`. Main scripts for analysis (many require `mvpa_funs`). *DiN_run_decode.py* is the main script to run the decoding
+  
+### Workflow
+```mermaid
+flowchart TB
+    subgraph Data preparation  
+    
+    A[preprocessed EEGlab .set] -->| mne.read, correct time vals, recode events| B(MNE epochs .fif)
+    B --> |average|C(Evoked .fif)
+    C -->|gathered subjects & conditions| D(Evokeds .fif)
+    end
+    subgraph O_o
+    C .-> V[visualizations]
+    D .-> V[visualizations]
+    end
+
+    subgraph ML decoding
+    B --> E((MVPA))
+    E --> CO(label epochs)
+    CO --> |epochs coded by accuracy or difficulty| FEA{features}
+    FEA --> TA[Amplitudes]
+    FEA --> TF[Time-freq]
+    TF --> |freqBand power|G[Classifier]
+    TF .-> V
+    G .-> V
+    TA --> G
+    G --> CV[Cross validation]
+
+    end
+```
+### MVPA folder
+```mermaid
+graph LR
+    root[DiN] --> 1[README.md]
+    root --> 2[data_preproc_ep_ICrem]
+    root --> 3[mvpa]
+    subgraph 3g[Analysis]
+      3 --> 31[25subj_TFR]
+      31 --> 32[epochs_labeled_*]
+      32 --> 33[band*]
+      33 --> 34[results]
+    end
+    subgraph 2g[Preprocessed data]
+      2 --> 21[epochs]
+      2 --> 22[evoked]
+      2 --> 23[evokeds]
+    end
+    subgraph 1g[ ]
+      1
+    end
+    
+
+linkStyle 0,1,2,3,4,5,6,7,8,9 stroke-width:.6px;
+
+style 1g fill:transparent,stroke:#E5E5E5,stroke-width:1px,stroke-dasharray:5;
+style 2g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
+style 3g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
+```
+  
 ## Data folders
 All Digits-in-noise (DiN) EEG data are to be found under ‘EEG_DATA’ folder under the subject’s main folder (which also contains behavioral performance among others)
 
@@ -99,62 +164,3 @@ Notes for consideration from the pipeline described above (THouweling):
 
 *	Minor: epochs without responses were excluded , which makes sense for analysis but maybe still useful data for ICA detection of artifacts.  
 
-## Multivariate pattern analysis 
-
- Machine learning decoding
-
-```mermaid
-flowchart TB
-    subgraph Data preparation  
-    
-    A[preprocessed EEGlab .set] -->| mne.read, correct time vals, recode events| B(MNE epochs .fif)
-    B --> |average|C(Evoked .fif)
-    C -->|gathered subjects & conditions| D(Evokeds .fif)
-    end
-    subgraph O_o
-    C .-> V[visualizations]
-    D .-> V[visualizations]
-    end
-
-    subgraph ML decoding
-    B --> E((MVPA))
-    E --> CO(label epochs)
-    CO --> |epochs coded by accuracy or difficulty| FEA{features}
-    FEA --> TA[Amplitudes]
-    FEA --> TF[Time-freq]
-    TF --> |freqBand power|G[Classifier]
-    TF .-> V
-    G .-> V
-    TA --> G
-    G --> CV[Cross validation]
-
-    end
-```
-## MVPA folder
-```mermaid
-graph LR
-    root[DiN] --> 1[README.md]
-    root --> 2[data_preproc_ep_ICrem]
-    root --> 3[mvpa]
-    subgraph 3g[Analysis]
-      3 --> 31[25subj_TFR]
-      31 --> 32[epochs_labeled_*]
-      32 --> 33[band*]
-      33 --> 34[results]
-    end
-    subgraph 2g[Preprocessed data]
-      2 --> 21[epochs]
-      2 --> 22[evoked]
-      2 --> 23[evokeds]
-    end
-    subgraph 1g[ ]
-      1
-    end
-    
-
-linkStyle 0,1,2,3,4,5,6,7,8,9 stroke-width:.6px;
-
-style 1g fill:transparent,stroke:#E5E5E5,stroke-width:1px,stroke-dasharray:5;
-style 2g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
-style 3g fill:transparent,stroke:#323232,stroke-width:1px,stroke-dasharray:5;
-```
