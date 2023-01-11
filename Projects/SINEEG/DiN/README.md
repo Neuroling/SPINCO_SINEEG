@@ -3,12 +3,12 @@
 Data from Thomas Houweling study (digits in noise)
 
 ## Multivariate pattern analysis 
-Ongoing analysis to test time-resolved mvpa decoding of trials (as correct vs incorrect trials with digits in noise)
+Ongoing analysis (by G.FragaGonzalez) to test time-resolved mvpa decoding of trials (as correct vs incorrect trials with digits in noise)
 
 ### Scripts organization 
  
   - `SINEEG/functions/mvpa_funs`. Main functions used to analyze DiN and other experiments (WiN). They mostly call MNE and scikit-learn functions. 
-  - `SINEEG/DiN/`. Main scripts for analysis (many require `mvpa_funs`). *DiN_run_decode.py* is the main script to run the decoding
+  - `SINEEG/DiN/`. Main scripts for analysis (many require `mvpa_funs`). *DiN_run_decode.py* is the main script to prepare data, extract features , run decoding
   
 ### Workflow
   
@@ -21,7 +21,7 @@ flowchart TB
     C -->|gathered subjects & conditions| D(Evokeds .fif)
     end
     subgraph O_o
-    C .-> V[visualizations]
+    CV .-> V[visualizations]
     D .-> V[visualizations]
     end
 
@@ -32,8 +32,7 @@ flowchart TB
     FEA --> TA[Amplitudes]
     FEA --> TF[Time-freq]
     TF --> |freqBand power|G[Classifier]
-    TF .-> V
-    G .-> V
+    TF .-> V    
     TA --> G
     G --> CV[Cross validation]
 
