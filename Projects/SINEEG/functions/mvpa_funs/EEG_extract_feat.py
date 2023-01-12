@@ -1,10 +1,7 @@
-import pandas as pd
 import numpy as np
 from mne.time_frequency import tfr_morlet
-from mne_connectivity import spectral_connectivity_epochs
-import matplotlib.pyplot as plt
+#from mne_connectivity import spectral_connectivity_epochs
 
-####################################################################################    
 # % ----------------------------------------------------------
 def EEG_extract_feat(epochs,freqs = None, n_cycles = None, power = True, TFR = True, spectral_connectivity = False):
  
@@ -42,23 +39,16 @@ def EEG_extract_feat(epochs,freqs = None, n_cycles = None, power = True, TFR = T
     features_dict : dictionary
         A dictionary containing mne objects with the selected features
          
-    >> Work in progress
+    >> to dos...
     -----------------------
     spectroTemporalConnectivity: bool | (default True)   
          True = run connectivity analysis in the entire epoch (broadband and per band). False = do not run
          
     """      
-    #% Some definitions:    
-    freqbands = dict(Delta = [1,4],
-                     Theta = [4,8],
-                     Alpha=[8,13], 
-                     Beta= [13,25],
-                     Gamma =[25,48])
+  
     
-    features_dict = {}
-    
-    #%  Analysis
-    # Power spectrum per epoch
+    features_dict = {}    
+    # Power spectrum (Whole epoch)
     if power: 
         print(' ¸.·´¯`·.¸><(((º>  Running spectra per epoch')        
         spec = epochs.compute_psd() # Power Spectrum object has power per epoch, preserves event info from Epochs object
@@ -75,8 +65,7 @@ def EEG_extract_feat(epochs,freqs = None, n_cycles = None, power = True, TFR = T
             n_cycles=3
             print('---> No frequencies and n_cycles specified for the TFR analysis...Using default 3 cycles and 56 log-spaced freqs from 1 to 48 hz')
             
-            
-        
+              
         # Time freq
         tfr = tfr_morlet(epochs, freqs=freqs, decim= 3, n_cycles=n_cycles, average=False, use_fft=True, return_itc=False,n_jobs=8)
         tfr.comment = {'n_cycles':n_cycles}
@@ -84,15 +73,15 @@ def EEG_extract_feat(epochs,freqs = None, n_cycles = None, power = True, TFR = T
         print('Done.')             
                 
        
-    # % Phase connectivity     
-    if spectral_connectivity: 
-        print(' ¸.·´¯`·.¸><(((º>  Running spectral connectivity per band')
-        method = 'pli2_unbiased' #['coh', 'cohy', 'imcoh', 'plv', 'ciplv', 'ppc', 'pli', 'dpli', 'wpli', 'wpli2_debiased'].        
-        fmin = [vals[0] for vals in freqbands.values()] # get lower bounds of freq bands
-        fmax = [vals[1] for vals in freqbands.values()] 
-        conn= spectral_connectivity_epochs(epochs,method=method,fmin=fmin, fmax=fmax, faverage=True)
+    # % Phase connectivity (draft)
+    #if spectral_connectivity: 
+       # print(' ¸.·´¯`·.¸><(((º>  Running spectral connectivity per band')
+       # method = 'pli2_unbiased' #['coh', 'cohy', 'imcoh', 'plv', 'ciplv', 'ppc', 'pli', 'dpli', 'wpli', 'wpli2_debiased'].        
+        #fmin = [vals[0] for vals in freqbands.values()] # get lower bounds of freq bands
+       # fmax = [vals[1] for vals in freqbands.values()] 
+       # conn= spectral_connectivity_epochs(epochs,method=method,fmin=fmin, fmax=fmax, faverage=True)
         
-        print('Done.')        
-        features_dict['conn'] = conn
+       # print('Done.')        
+       # features_dict['conn'] = conn
         
     return features_dict if features_dict else None

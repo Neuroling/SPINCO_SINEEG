@@ -16,7 +16,7 @@ def EEG_tfr_cone_of_influence(tfr):
         
     Returns
     -------
-    tfr_bands : data frame with tfr values per channel, and columns: freq, time, epoch. Rows with values outside COI were dropped
+    tfr_df : large data frame with tfr values per channel,epoch, tp, freqbin (columns: freq, time, epoch). Rows with values outside COI were dropped
                  
     """            
     if not tfr.comment['n_cycles']:
@@ -48,7 +48,8 @@ def EEG_tfr_cone_of_influence(tfr):
     print('Done.')             
     
     return tfr_df
-    # %% Some Old-unverified coi plots left here for recycling... 
+    
+# %% Some Old-unverified coi plots left here for future recycling... 
     # data = tfr.data[1,0].copy()           
     # ts =tfr.times.copy()
     # for c,cval in enumerate(coi):
