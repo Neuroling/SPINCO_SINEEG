@@ -1,22 +1,22 @@
 # SiN Experiment Scripts
 Sentence-in-noise EEG experiment 
+
 Folders: 
-- *PsychoPy* folders contain the actual experiment 
+- **PsychoPy** folders contain the actual experiment 
 
-# Experiment design
-## Goals
-- **Pre-stimuli**  features involved in better speech-in-noise comprehension. **2-class decoding of trial accuracy** based on pre-stimuli data
-- **stimuli representations**. Impact of noise / degradation level on items' representation (post-stimuli activity). **Multi-class (4) decoding** of **word choice**
- 
+## Goal
 
-## Stimuli 
+Analysis aims
+| Data | Decoding-classes | Goal | 
+|:-----|:-----------|:-------|
+| Pre-stimuli | 2-class correct vs incorrect  | Finding EEG features associated with better speech-in-noise comprehension. Find targets for neurofeedback | 
+| ERP, post-stimuli | Multiclass decoding of 4 possible word choices  |Explore impact of noise/degradation levels on internal representation of words  ||
+
+## Design
+### Stimuli 
 - Description: Simple sentences with a defined structured of which the last word is to be filled in with 1 out of 4 possible words 
-- Source: XXX 
-- n_sentences:  XXX
-- n_ words: XXX
-
-## Task 
-Response screen: 
+- Source: (paper ref or extend description here 
+- n_sentences, n_ words, etc (...) 
 
 ## Manipulations
 
@@ -24,3 +24,8 @@ Response screen:
 |:-----|:-----------|:-------|
 | Type | 2 | SiSSN or VC || 
 | Level | 3 |  SNR/vocoding chan mixing || 
+
+## Task 
+Response screen with 4 choices
+
+
