@@ -18,14 +18,14 @@ Analysis aims
 - Source: (paper ref or extend description here 
 - n_sentences, n_ words, etc (...) 
 
-## Manipulations
+### Manipulations
 
  | Condition | Levels | Description | 
 |:-----|:-----------|:-------|
 | Type | 2 | SiSSN or VC || 
 | Level | 3 |  SNR/vocoding chan mixing || 
 
-## Task 
+### Task 
 Response screen with 4 choices
 
 
