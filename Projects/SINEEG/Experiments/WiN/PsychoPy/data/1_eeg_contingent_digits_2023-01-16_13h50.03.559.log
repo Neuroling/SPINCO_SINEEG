@@ -1,0 +1,10 @@
+1.4740 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+11.2643 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x00000234EA270B20>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x00000234964970A0>, multiSample=False, name='window1', numSamples=2, pos=(0, 0), screen=0, size=array([2560, 1440]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+11.2644 	EXP 	window1: mouseVisible = True
+11.2645 	EXP 	window1: mouseVisible = False
+11.2645 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+11.2645 	EXP 	window1: recordFrameIntervals = False
+11.4306 	EXP 	window1: recordFrameIntervals = True
+11.6144 	EXP 	Screen (0) actual frame rate measured at 59.90Hz
+11.6145 	EXP 	window1: recordFrameIntervals = False
+13.5292 	EXP 	window1: mouseVisible = True

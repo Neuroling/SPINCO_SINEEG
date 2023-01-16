@@ -522,7 +522,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename (header in vhdr format)</Name>
 					<DefaultValue>record-[$core{date}-$core{time}].vhdr</DefaultValue>
-					<Value>V:/gfraga/scripts_neulin/Projects/SINEEG/Experiments/WiN/OpenVibe/raw_post_ME_debug.vhdr</Value>
+					<Value>V:/gfraga/scripts_neulin/Projects/SINEEG/Experiments/WiN/OpenVibe/</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 				<Setting>
@@ -589,7 +589,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename (header in vhdr format)</Name>
 					<DefaultValue>record-[$core{date}-$core{time}].vhdr</DefaultValue>
-					<Value>V:/gfraga/scripts_neulin/Projects/SINEEG/Experiments/WiN/OpenVibe/processed_post_ME_debug.vhdr</Value>
+					<Value>V:/gfraga/scripts_neulin/Projects/SINEEG/Experiments/WiN/OpenVibe/</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 				<Setting>
@@ -656,7 +656,7 @@
 					<TypeIdentifier>(0x330306dd, 0x74a95f98)</TypeIdentifier>
 					<Name>Filename (header in vhdr format)</Name>
 					<DefaultValue>record-[$core{date}-$core{time}].vhdr</DefaultValue>
-					<Value>V:/gfraga/scripts_neulin/Projects/SINEEG/Experiments/WiN/OpenVibe//processed_sf_post_ME_debug.vhdr</Value>
+					<Value>V:/gfraga/scripts_neulin/Projects/SINEEG/Experiments/WiN/OpenVibe/</Value>
 					<Modifiability>false</Modifiability>
 				</Setting>
 				<Setting>
