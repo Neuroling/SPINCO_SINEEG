@@ -6,7 +6,7 @@ Folders:
 # Experiment design
 ## Goals
 - **Pre-stimuli**  features involved in better speech-in-noise comprehension. **2-class decoding of trial accuracy** based on pre-stimuli data
-- **stimuli representations**. nImpact of noise / degradation level on items' representation. **Multi-class (4) decoding** of **word choice**
+- **stimuli representations**. Impact of noise / degradation level on items' representation (post-stimuli activity). **Multi-class (4) decoding** of **word choice**
  
 
 ## Stimuli 
