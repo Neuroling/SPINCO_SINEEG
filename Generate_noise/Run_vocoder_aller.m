@@ -5,7 +5,7 @@ clear all ;
 % ========================================================================
 % Author: G.FragaGonzalez 2022(based on snippets from T.Houweling)
 % Description
-%  BLABlahblah
+%  (...)
 %
 %-------------------------------------------------------------------------
 % add paths of associated functions and toolbox TSM required by function 
@@ -26,8 +26,6 @@ mkdir(diroutput)
 % Parameters for Vocoding function 
 exc =           'noise' ; 
 mapping=        'n'; 
-filters =       'log'; % greenwood
-EnvelopeExtractor = 'half'; 
 smooth=          30 ; 
 nCh =           16; 
 MinFreq =       70;
@@ -81,7 +79,7 @@ for i = 1:length(nvStimuli)
    for ii = 1:length(nvStimuli(i).vocoded)       
        
        % save to wav file  (output commented )
-        text = ['Noise vocoded with ',num2str(nvStimuli(i).vocoded(ii).proportions),' p, normalized for loudness -23 LUFS']; 
+        text = ['Noise vocoded with ',num2str(nvStimuli(i).vocoded(ii).proportions),' p, normalized for loudness -23 LUFS. ',num2str(nCh), ' ch' ]; 
         audiowrite(nvStimuli(i).vocoded(ii).filename, nvStimuli(i).vocoded(ii).nvsignal,srate,'BitsPerSample',24,'comment',text);
         disp(['...saved ',nvStimuli(i).vocoded(ii).filename]);
    end
@@ -95,7 +93,7 @@ if makeplots==1
        for ii = 1:length(nvStimuli(i).vocoded)       
                    %%% Save summary plot 
                    footnote = ['Vocoder_2022 run for ', nvStimuli(i).filename,' (srate: ',num2str(nvStimuli(i).srate),' Hz) with arguments: exc (', exc, '), mapping (',mapping, '), filters(',...
-                       filters ,'), min-max freqs(',num2str(MinFreq),'-',num2str(MaxFreq),'), proportions (',num2str(target_proportions(ii)),'), smooth (',num2str(smooth),')'];
+                       '), min-max freqs(',num2str(MinFreq),'-',num2str(MaxFreq),'), proportions (',num2str(target_proportions(ii)),'), smooth (',num2str(smooth),')'];
 
                    signal_nv2plot = nvStimuli(i).vocoded(ii).nvsignal;
                    original2plot = nvStimuli(i).ursignal';

@@ -18,7 +18,7 @@ srat2=Srate/2;
 %broadband filter:
 [BfilterB,BfilterA]=butter(4,[MinFreq MaxFreq]/srat2,"bandpass");
 
-filters='log'; % could also do log, but stick with this for the moment
+filters='greenwood'; % could also do log, but stick with this for the moment
 
 %---------------------Design the filters ----------------
 [filterB,filterA,center]=estfilt(nCh,filters,Srate,MinFreq,MaxFreq);

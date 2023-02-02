@@ -18,6 +18,11 @@ Analysis aims
 - Source: (paper ref or extend description here 
 - n_sentences, n_ words, etc (...) 
 
+### TO DO
+#### EEG triggers
+- Audio timing: take direct line of the audio and record it into an Aux chan on the EEG to ensure we have exact stimulus onsets
+- Extract times of the key words in the sentences for EEG analysis
+
 ### Manipulations
 
  | Condition | Levels | Description | 

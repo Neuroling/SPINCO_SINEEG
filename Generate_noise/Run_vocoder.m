@@ -5,7 +5,7 @@ clear all ;
 % ========================================================================
 % Author: G.FragaGonzalez 2022(based on snippets from T.Houweling)
 % Description
-%  BLABlahblah
+%  (...)
 %
 %-------------------------------------------------------------------------
 % add paths of associated functions and toolbox TSM required by function 

@@ -1,0 +1,128 @@
+6.1502 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x000001DCA546C370>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x000001DCCC2ACC70>, multiSample=False, name='window1', numSamples=2, pos=(0, 0), screen=1, size=array([2560, 1440]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+6.1503 	EXP 	window1: mouseVisible = True
+6.1503 	EXP 	window1: mouseVisible = False
+6.1503 	EXP 	window1: Attempting to measure frame rate of screen (1) ...
+6.1504 	EXP 	window1: recordFrameIntervals = False
+6.3168 	EXP 	window1: recordFrameIntervals = True
+6.5047 	EXP 	Screen (1) actual frame rate measured at 58.63Hz
+6.5048 	EXP 	window1: recordFrameIntervals = False
+8.3870 	EXP 	Created instrTrainText = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='instrTrainText', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1.5)
+8.4066 	EXP 	Created blankScreen = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image='images/blankScreen.png', interpolate=True, mask=None, maskParams=None, name='blankScreen', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1920., 1080.]), texRes=128, units='height', win=Window(...))
+8.4861 	EXP 	Created call1 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-5.0, flipHoriz=False, flipVert=False, image='images/adler.png', interpolate=True, mask=None, maskParams=None, name='call1', opacity=1.0, ori=0.0, pos=array([-0.4   ,  0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.5661 	EXP 	Created call2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-6.0, flipHoriz=False, flipVert=False, image='images/drossel.png', interpolate=True, mask=None, maskParams=None, name='call2', opacity=1.0, ori=0.0, pos=array([-0.4       ,  0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.6485 	EXP 	Created call3 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-7.0, flipHoriz=False, flipVert=False, image='images/tiger.png', interpolate=True, mask=None, maskParams=None, name='call3', opacity=1.0, ori=0.0, pos=array([-0.4       , -0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.7309 	EXP 	Created call4 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-8.0, flipHoriz=False, flipVert=False, image='images/unke.png', interpolate=True, mask=None, maskParams=None, name='call4', opacity=1.0, ori=0.0, pos=array([-0.4   , -0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.7493 	EXP 	Created colour1 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-9.0, flipHoriz=False, flipVert=False, image='images/gelb.png', interpolate=True, mask=None, maskParams=None, name='colour1', opacity=1.0, ori=0.0, pos=array([0.    , 0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.7671 	EXP 	Created colour2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-10.0, flipHoriz=False, flipVert=False, image='images/gruen.png', interpolate=True, mask=None, maskParams=None, name='colour2', opacity=1.0, ori=0.0, pos=array([0.        , 0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.7847 	EXP 	Created colour3 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-11.0, flipHoriz=False, flipVert=False, image='images/rot.png', interpolate=True, mask=None, maskParams=None, name='colour3', opacity=1.0, ori=0.0, pos=array([ 0.        , -0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.8044 	EXP 	Created colour4 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-12.0, flipHoriz=False, flipVert=False, image='images/weiss.png', interpolate=True, mask=None, maskParams=None, name='colour4', opacity=1.0, ori=0.0, pos=array([ 0.    , -0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.8227 	EXP 	Created number1 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-13.0, flipHoriz=False, flipVert=False, image='images/1.png', interpolate=True, mask=None, maskParams=None, name='number1', opacity=1.0, ori=0.0, pos=array([0.4   , 0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.8392 	EXP 	Created number2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-14.0, flipHoriz=False, flipVert=False, image='images/2.png', interpolate=True, mask=None, maskParams=None, name='number2', opacity=1.0, ori=0.0, pos=array([0.4       , 0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.8586 	EXP 	Created number3 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-15.0, flipHoriz=False, flipVert=False, image='images/3.png', interpolate=True, mask=None, maskParams=None, name='number3', opacity=1.0, ori=0.0, pos=array([ 0.4       , -0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.8755 	EXP 	Created number4 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-16.0, flipHoriz=False, flipVert=False, image='images/4.png', interpolate=True, mask=None, maskParams=None, name='number4', opacity=1.0, ori=0.0, pos=array([ 0.4   , -0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.8756 	EXP 	window1: mouseVisible = True
+8.8756 	EXP 	window1: mouseVisible = True
+8.8757 	EXP 	window1: mouseVisible = True
+8.8863 	EXP 	Created instrExpText = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='instrExpText', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+8.8994 	EXP 	Created blankScreen = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image='images/blankScreen.png', interpolate=True, mask=None, maskParams=None, name='blankScreen', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([1920., 1080.]), texRes=128, units='height', win=Window(...))
+8.9130 	EXP 	Created call1 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-5.0, flipHoriz=False, flipVert=False, image='images/adler.png', interpolate=True, mask=None, maskParams=None, name='call1', opacity=1.0, ori=0.0, pos=array([-0.4   ,  0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.9266 	EXP 	Created call2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-6.0, flipHoriz=False, flipVert=False, image='images/drossel.png', interpolate=True, mask=None, maskParams=None, name='call2', opacity=1.0, ori=0.0, pos=array([-0.4       ,  0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.9403 	EXP 	Created call3 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-7.0, flipHoriz=False, flipVert=False, image='images/tiger.png', interpolate=True, mask=None, maskParams=None, name='call3', opacity=1.0, ori=0.0, pos=array([-0.4       , -0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.9551 	EXP 	Created call4 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-8.0, flipHoriz=False, flipVert=False, image='images/unke.png', interpolate=True, mask=None, maskParams=None, name='call4', opacity=1.0, ori=0.0, pos=array([-0.4   , -0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.9677 	EXP 	Created colour1 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-9.0, flipHoriz=False, flipVert=False, image='images/gelb.png', interpolate=True, mask=None, maskParams=None, name='colour1', opacity=1.0, ori=0.0, pos=array([0.    , 0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.9803 	EXP 	Created colour2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-10.0, flipHoriz=False, flipVert=False, image='images/gruen.png', interpolate=True, mask=None, maskParams=None, name='colour2', opacity=1.0, ori=0.0, pos=array([0.        , 0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+8.9947 	EXP 	Created colour3 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-11.0, flipHoriz=False, flipVert=False, image='images/rot.png', interpolate=True, mask=None, maskParams=None, name='colour3', opacity=1.0, ori=0.0, pos=array([ 0.        , -0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+9.0078 	EXP 	Created colour4 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-12.0, flipHoriz=False, flipVert=False, image='images/weiss.png', interpolate=True, mask=None, maskParams=None, name='colour4', opacity=1.0, ori=0.0, pos=array([ 0.    , -0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+9.0212 	EXP 	Created number1 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-13.0, flipHoriz=False, flipVert=False, image='images/1.png', interpolate=True, mask=None, maskParams=None, name='number1', opacity=1.0, ori=0.0, pos=array([0.4   , 0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+9.0334 	EXP 	Created number2 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-14.0, flipHoriz=False, flipVert=False, image='images/2.png', interpolate=True, mask=None, maskParams=None, name='number2', opacity=1.0, ori=0.0, pos=array([0.4       , 0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+9.0469 	EXP 	Created number3 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-15.0, flipHoriz=False, flipVert=False, image='images/3.png', interpolate=True, mask=None, maskParams=None, name='number3', opacity=1.0, ori=0.0, pos=array([ 0.4       , -0.10416667]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+9.0605 	EXP 	Created number4 = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-16.0, flipHoriz=False, flipVert=False, image='images/4.png', interpolate=True, mask=None, maskParams=None, name='number4', opacity=1.0, ori=0.0, pos=array([ 0.4   , -0.3125]), size=array([0.18, 0.18]), texRes=128, units='height', win=Window(...))
+9.0606 	EXP 	window1: mouseVisible = True
+9.0607 	EXP 	window1: mouseVisible = True
+9.0607 	EXP 	window1: mouseVisible = True
+9.0681 	EXP 	Created thanksText = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoDraw=False, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='thanksText', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text=str(...), units='height', win=Window(...), wrapWidth=1)
+9.0681 	EXP 	window1: mouseVisible = False
+9.0869 	EXP 	instrTrainText: autoDraw = True
+10.2899 	DATA 	Mouse: Left button down, pos=(1558,247)
+10.4297 	DATA 	Mouse:  Left button up, pos=(1563,252)
+11.2860 	EXP 	Imported trainingStimuliList.xlsx as conditions, 10 conditions, 7 params
+11.2865 	EXP 	Created sequence: sequential, trialTypes=10, nReps=1, seed=None
+11.2868 	EXP 	New trial (rep=0, index=0): {'videoFile': 'audio/zh_sp01_Ad_Ge_1.wav', 'condition': 'vocoded', 'video': 'noVideo', 'speaker': 'sp01', 'callSign': 'Ad', 'colour': 'We', 'number': 4}
+11.3256 	EXP 	window1: mouseVisible = False
+11.3266 	DATA 	Keypress: space
+11.3368 	EXP 	instrTrainText: autoDraw = False
+11.3368 	EXP 	call1: texRes = 128
+11.3368 	EXP 	call2: texRes = 128
+11.3368 	EXP 	call3: texRes = 128
+11.3368 	EXP 	call4: texRes = 128
+11.3368 	EXP 	colour1: texRes = 128
+11.3368 	EXP 	colour2: texRes = 128
+11.3368 	EXP 	colour3: texRes = 128
+11.3368 	EXP 	colour4: texRes = 128
+11.3368 	EXP 	number1: texRes = 128
+11.3368 	EXP 	number2: texRes = 128
+11.3368 	EXP 	number3: texRes = 128
+11.3368 	EXP 	number4: texRes = 128
+11.3369 	EXP 	window1: mouseVisible = False
+11.3535 	EXP 	blankScreen: autoDraw = True
+11.3536 	EXP 	window1: mouseVisible = False
+11.3702 	EXP 	window1: mouseVisible = False
+11.3872 	EXP 	window1: mouseVisible = False
+11.4037 	EXP 	window1: mouseVisible = False
+11.4203 	EXP 	window1: mouseVisible = False
+11.4372 	EXP 	window1: mouseVisible = False
+11.4540 	EXP 	window1: mouseVisible = False
+11.4705 	EXP 	window1: mouseVisible = False
+11.4873 	EXP 	window1: mouseVisible = False
+11.5039 	EXP 	window1: mouseVisible = False
+11.5206 	EXP 	window1: mouseVisible = False
+11.5370 	EXP 	window1: mouseVisible = False
+11.5538 	EXP 	window1: mouseVisible = False
+11.5703 	EXP 	window1: mouseVisible = False
+11.5871 	EXP 	window1: mouseVisible = False
+11.6041 	EXP 	window1: mouseVisible = False
+11.6204 	EXP 	window1: mouseVisible = False
+11.6379 	EXP 	window1: mouseVisible = False
+11.6543 	EXP 	window1: mouseVisible = False
+11.6709 	EXP 	window1: mouseVisible = False
+11.6874 	EXP 	window1: mouseVisible = False
+11.7041 	EXP 	window1: mouseVisible = False
+11.7208 	EXP 	window1: mouseVisible = False
+11.7377 	EXP 	window1: mouseVisible = False
+11.7547 	EXP 	window1: mouseVisible = False
+11.7711 	EXP 	window1: mouseVisible = False
+11.7874 	EXP 	window1: mouseVisible = False
+11.8041 	EXP 	window1: mouseVisible = False
+11.8207 	EXP 	window1: mouseVisible = False
+11.8375 	EXP 	window1: mouseVisible = False
+11.8539 	EXP 	window1: mouseVisible = False
+11.8713 	EXP 	window1: mouseVisible = False
+11.8877 	EXP 	window1: mouseVisible = False
+11.9043 	EXP 	window1: mouseVisible = False
+11.9209 	EXP 	window1: mouseVisible = False
+11.9381 	EXP 	window1: mouseVisible = False
+11.9546 	EXP 	window1: mouseVisible = False
+11.9708 	EXP 	window1: mouseVisible = False
+11.9878 	EXP 	window1: mouseVisible = False
+12.0048 	EXP 	window1: mouseVisible = False
+12.0210 	EXP 	window1: mouseVisible = False
+12.0377 	EXP 	window1: mouseVisible = False
+12.0541 	EXP 	window1: mouseVisible = False
+12.0713 	EXP 	window1: mouseVisible = False
+12.0877 	EXP 	window1: mouseVisible = False
+12.1041 	EXP 	window1: mouseVisible = False
+12.1208 	EXP 	window1: mouseVisible = False
+12.1379 	EXP 	window1: mouseVisible = False
+12.1547 	EXP 	window1: mouseVisible = False
+12.1715 	EXP 	window1: mouseVisible = False
+12.1879 	EXP 	window1: mouseVisible = False
+12.2043 	EXP 	window1: mouseVisible = False
+12.2209 	EXP 	window1: mouseVisible = False
+12.2381 	EXP 	window1: mouseVisible = False
+12.2545 	EXP 	window1: mouseVisible = False
+12.2712 	EXP 	window1: mouseVisible = False
+12.2879 	EXP 	window1: mouseVisible = False
+12.3044 	EXP 	window1: mouseVisible = False
+12.3214 	EXP 	window1: mouseVisible = False
+12.3376 	EXP 	window1: mouseVisible = False
+12.4494 	EXP 	window1: mouseVisible = True

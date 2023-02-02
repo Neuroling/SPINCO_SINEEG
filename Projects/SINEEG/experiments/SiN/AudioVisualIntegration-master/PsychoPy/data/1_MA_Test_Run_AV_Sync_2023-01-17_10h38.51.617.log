@@ -1,0 +1,14 @@
+1.4123 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+6.5809 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x0000023186855700>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x00000231ADA3DCD0>, multiSample=False, name='window1', numSamples=2, pos=(2560, 0), screen=0, size=array([3840, 2160]), stencilBits=0, stereo=False, units='pix', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+6.5811 	EXP 	window1: mouseVisible = True
+6.5811 	EXP 	window1: mouseVisible = True
+6.5811 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+6.5811 	EXP 	window1: recordFrameIntervals = False
+6.7464 	EXP 	window1: recordFrameIntervals = True
+6.9286 	EXP 	Screen (0) actual frame rate measured at 60.30Hz
+6.9286 	EXP 	window1: recordFrameIntervals = False
+7.0238 	WARNING 	launchHubServer: If using the iohub mouse or eyetracker devices, fullScr should be True.
+8.4982 	EXP 	Created sequence: sequential, trialTypes=1, nReps=100, seed=None
+8.4985 	EXP 	New trial (rep=0, index=0): None
+8.7621 	EXP 	Created videoStimulus = MovieStim3(__class__=<class 'psychopy.visual.movie3.MovieStim3'>, anchor=('center', 'center'), autoLog=True, color=UNKNOWN, colorSpace=UNKNOWN, depth=-3.0, filename=str(...), flipHoriz=False, flipVert=False, fps=UNKNOWN, interpolate=True, loop=False, name='videoStimulus', noAudio=False, opacity=1, ori=method-wrapper(...), pos=array([0., 0.]), size=None, units='pix', vframe_callback=UNKNOWN, volume=UNKNOWN, win=Window(...))
+8.8469 	EXP 	window1: mouseVisible = True

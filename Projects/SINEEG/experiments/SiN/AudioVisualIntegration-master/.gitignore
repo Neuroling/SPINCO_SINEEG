@@ -1,0 +1,19 @@
+Stimuli/
+*.avi
+Final_Stimuli/
+Final_Stimuli_*
+PsychoPy/data/111*
+Swiss_CRM_RMS_eq*/
+PsychoPy/video/
+*_lastrun.py
+
+*.DS_Store
+
+
+### macOS ###
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+
