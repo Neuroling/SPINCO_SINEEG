@@ -36,13 +36,20 @@ def gorilla_out_summary(df):
 
     
     # %% Summarize accuracy 
-    grouped = df.groupby(['SubjectID', 'block', 'TYPE', 'LV'])[['Correct', 'Miss', 'RT']].agg(['count', 'mean', 'std','sum'])
+    grouped = df.groupby(['SubjectID', 'block', 'TYPE', 'LV'])[['Correct', 'Incorrect','Miss', 'RT']].agg(['count', 'mean', 'std','sum'])
     grouped = grouped.reset_index()
     print(grouped)
     #make a single header (join by '-')
     grouped.columns  =  ['_'.join(i) if len(i[1]) else ''.join(i) for i in grouped.columns.tolist() ]
     print(grouped)
-    #dstats = dstats.melt(id_vars=['SubjectID', 'block', 'TYPE', 'LV'], var_name='Metric', value_name='Value')
+    
+    
+    # %% group2
+    g2 = df.groupby(['SubjectID', 'block', 'TYPE', 'LV','Correct'])[['RT']].agg(['count', 'mean', 'std','sum'])
+    g2 = g2.reset_index()
+    g2.columns  =  ['_'.join(i) if len(i[1]) else ''.join(i) for i in g2.columns.tolist() ]
+
+    g3 = df.groupby(['SubjectID', 'block', 'TYPE', 'LV'])[['RT']].agg(['count', 'mean', 'std','sum']).reset_index()
     
     # %%
     
