@@ -14,10 +14,8 @@ def gorilla_out_summary(df):
         
     Returns
     -------
-    accu: data frame
-        data frame with a summary of accuracy per subject, block, etc
-    rt:
-        data frame wtih a summary of reaction times per subject,block, etc
+    grouped: data frame
+        A long formatted dataframe 
     
     """ 
     import pandas as pd     
@@ -34,61 +32,32 @@ def gorilla_out_summary(df):
         print(df[df['TYPE']=='NV'].LV.value_counts())
         print(df[df['TYPE']=='SiSSN'].LV.value_counts())
 
+    # %% # Stats per block, type and level (averaging trials)          
+    names = ['SubjectID','task', 'block', 'TYPE', 'LV','Accuracy']
     
-    # %% Summarize accuracy 
-    grouped = df.groupby(['SubjectID', 'block', 'TYPE', 'LV'])[['Correct', 'Incorrect','Miss', 'RT']].agg(['count', 'mean', 'std','sum'])
-    grouped = grouped.reset_index()
-    print(grouped)
-    #make a single header (join by '-')
-    grouped.columns  =  ['_'.join(i) if len(i[1]) else ''.join(i) for i in grouped.columns.tolist() ]
-    print(grouped)
+    # accuracy summary 
     
+    accu = df.groupby(names)['trial'].agg(['count']).reset_index()
+    accu['propTrials'] = round(accu['count']/nreps,ndigits=2)
     
-    # %% group2
-    g2 = df.groupby(['SubjectID', 'block', 'TYPE', 'LV','Correct'])[['RT']].agg(['count', 'mean', 'std','sum'])
-    g2 = g2.reset_index()
-    g2.columns  =  ['_'.join(i) if len(i[1]) else ''.join(i) for i in g2.columns.tolist() ]
+    #Fix header (join by '-')
+    rts = df.groupby(names)[['RT']].agg(['mean', 'std']).reset_index()
+    rts.columns  =  ['_'.join(i) if len(i[1]) else ''.join(i) for i in rts.columns.tolist() ]
+    
+    grouped = pd.merge(accu, rts, on=names)
 
-    g3 = df.groupby(['SubjectID', 'block', 'TYPE', 'LV'])[['RT']].agg(['count', 'mean', 'std','sum']).reset_index()
+    # % Expand with all combinations of the variables 
+    unique_categories = [grouped[col].unique() for col in names]    
+    multiindex = pd.MultiIndex.from_product(unique_categories, names=names)
     
-    # %%
+    # reindexing
+    grouped = (grouped
+                 .set_index(names) 
+                 .reindex(multiindex,fill_value= '')
+                 .reset_index())
     
-    
-    # dv= 'Correct'
-    # #one block    
-    # means = df.groupby(['SubjectID','block','TYPE','LV'])[dv].describe().reset_index()           
-    # proportions = df.groupby(['SubjectID','block','TYPE','LV'])[dv].sum().reset_index()
-    # proportions['Correct'] = proportions[dv]/nreps     
-    
-    # #both blocks
-    # meansAllBlocks = df.groupby(['SubjectID','TYPE','LV'])[dv].describe().reset_index()
-    # meansAllBlocks.insert(0,'block','all')
-    # proportionAllBlocks = df.groupby(['SubjectID','TYPE','LV'])[dv].sum().reset_index()
-    # proportionAllBlocks['Correct'] = proportionAllBlocks[dv]/(nreps*nblocks) # assumes 2 blocks per type of noise      
-    # proportionAllBlocks.insert(0,'block','all')
-      
-    # # merge descriptives
-    # accu = pd.merge(pd.concat([means,meansAllBlocks]),pd.concat([proportions,proportionAllBlocks]))
-    # accu.rename({dv:'prop_hits'},axis='columns',inplace=True)
-    # accu.insert(4,'count_miss', nreps-accu['count'])
-    # accu.loc[accu['count']>nreps,'count_miss']  =  (nreps*nblocks) - accu[accu['count']>nreps]['count']
-    # #accu.loc[:,'block'] = accu['block'].replace({1:1,2.0:1,3.0:2,4.0:2}) # recode blocks for clarity in plots (1 and 2 value only)
-    # accu['block'] = pd.Categorical(accu.block)    
-     
-    # del dv,means,meansAllBlocks
-    
-    #-------------------------------------------------------------------
-    # %% Summarize Reaction Times
-    dv= 'RT'
-    means = df.groupby(['SubjectID','block','TYPE','LV'])[dv].describe().reset_index()           
-    meansAllBlocks = df.groupby(['SubjectID','TYPE','LV'])[dv].describe().reset_index()
-    meansAllBlocks.insert(1,'block','all')
-    
-      
-    # merge descriptives
-    rt = pd.concat([means,meansAllBlocks])
-    rt.insert(4,'count_miss', nreps-rt['count'])
-    rt.loc[rt['count']>nreps,'count_miss']  =  (nreps*nblocks) - rt[rt['count']>nreps]['count']
-    rt.rename(columns={'top':'mean'},inplace=True)
-    rt['mean'] = pd.to_numeric(rt['mean'], errors='coerce')
-    return (accu,rt)
+
+    grouped['SubjectID'] = grouped['SubjectID'].astype('object')
+    grouped['block'] = grouped['block'].astype('object')
+
+    return grouped

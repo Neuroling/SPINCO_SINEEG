@@ -13,7 +13,7 @@ if sys.platform=='linux':  basedir  = '/home/d.uzh.ch/gfraga/smbmount/'
 else:  basedir ='V:/'
 
 dirinput =  basedir + 'spinco_data/SINON/outputs/data_exp_116083-v1/'
-diroutput = basedir + '/spinco_data/SINON/outputs/data_exp_116083-v1/gathered'
+diroutput = basedir + '/spinco_data/SINON/outputs/data_exp_116083-v1/preprocessed'
 
 # % find relevant files
 files = glob.glob(dirinput + "data_exp*task*.csv", recursive=True)

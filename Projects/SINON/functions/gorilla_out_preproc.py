@@ -30,8 +30,7 @@ def gorilla_out_preproc(dat):
     df = dat.iloc[idx_resp]
     df = df[df.display.str.contains('trial_')]
     # Replace Correct responses of 'miss' trials by NAs
-    df.loc[df['Timed Out']==1,'Correct'] = np.nan
-    df.loc[df['Timed Out']==1,'Incorrect'] = np.nan
+    df.loc[df['Timed Out']==1,'Correct'] = 'miss'
     df.loc[df['Timed Out']==1,'Reaction Time'] = np.nan
       
     
@@ -62,7 +61,7 @@ def gorilla_out_preproc(dat):
         
     df['LV'] = df['LV'].map(replace_map)
              
-    # some  formatting    
+    # some  formatting        
     df['block'] = df['block'].astype('object')
     df['LV'] = df['LV'].astype('object')
     df['Reaction Time'] = df['Reaction Time'].astype('float64')
@@ -71,8 +70,14 @@ def gorilla_out_preproc(dat):
     df.rename(columns={'Task Name': 'task'}, inplace=True)    
     df.rename(columns={'Reaction Time': 'RT'}, inplace=True)    
     df.rename(columns={'Timed Out': 'Miss'}, inplace=True)    
+    df.rename(columns={'Correct': 'Accuracy'}, inplace=True)    
      
+    df['task'] = df['task'].str.replace('SINON_task_','')
+    
     # recode blocks for clarity in plots (1 and 2 value only)
     df.loc[:,'block'] = df['block'].replace({1:1,2.0:1,3.0:2,4.0:2})     
-    df = df.loc[:,['SubjectID','task','STIMLIST', 'set','block','trial', 'AUDIO', 'LV','TYPE','Correct','Incorrect','Miss','RT']]
+    df = df.loc[:,['SubjectID','task','STIMLIST', 'set','block','trial', 'AUDIO', 'LV','TYPE','Accuracy','RT']]
+    
+    #Reset index 
+    df = df.reset_index(drop=True)
     return (df)
