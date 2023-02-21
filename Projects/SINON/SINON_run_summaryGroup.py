@@ -35,11 +35,12 @@ concat_df = pd.concat(dfs, axis=0)
 #concat_df['LV'] = concat_df['LV'].astype('object')    
 concat_df.Accuracy = concat_df.Accuracy.replace('1.0','1').replace('0.0','0').replace(0.0,'0').replace(1.0,'1')
 
-# %%
+
+ # %% 
 os.chdir(dirinput)
 for currTask in concat_df.task.unique():
     concat_df = concat_df[concat_df['Accuracy']=='1']
-    
+    #%
     plt.close('all')
     d2plot = concat_df[concat_df['task']== currTask]
     
@@ -47,12 +48,29 @@ for currTask in concat_df.task.unique():
     g.map(sns.lineplot, 'LV','propTrials','block',palette='Set2')
     g.map_dataframe(sns.lineplot, x ='LV',y=0.5, color='gray',linestyle='dotted')
     g.map_dataframe(sns.scatterplot, x='LV', y='propTrials', marker='o', hue='block',palette='Set2')
-    #g.map_dataframe(sns.lineplot, x='LV', y='propTrials', marker='o')
+    g.map(sns.lineplot, 'LV','propTrials',color='black', ci = None)
+    #g.map_dataframe(sns.scatterplot, x='LV', y='propTrials', marker='o', color='black')
     g.add_legend()
-    g.fig.suptitle(currTask)
+    g.fig.suptitle(currTask, fontsize=20, y=1.0, x= 0.08)
 
+    # save     
+    g.savefig('FIG_' + currTask + '_stats_Acc.jpg')
+# %% 
+os.chdir(dirinput)
+for currTask in concat_df.task.unique():
+    concat_df = concat_df[concat_df['Accuracy']=='1']
+    #%
+    plt.close('all')
+    d2plot = concat_df[concat_df['task']== currTask]
+    
+    g = sns.FacetGrid(d2plot, col="TYPE",  row="SubjectID")
+    g.map(sns.lineplot, 'LV','RT_mean','block',palette='Set2')
+    g.map_dataframe(sns.lineplot, x ='LV',y=0.5, color='gray',linestyle='dotted')
+    g.map_dataframe(sns.scatterplot, x='LV', y='RT_mean', marker='o', hue='block',palette='Set2')
+    g.map(sns.lineplot, 'LV','RT_mean',color='black', ci = None)
+    g.add_legend()
+    g.fig.suptitle(currTask, fontsize=20, y=1.0, x= 0.08)
 
-    # ssave     
-    g.savefig('FIG_' + currTask + '_stats.jpg')
+    # save     
+    g.savefig('FIG_' + currTask + '_stats_RT.jpg')
 
- 

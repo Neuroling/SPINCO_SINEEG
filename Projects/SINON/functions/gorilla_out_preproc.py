@@ -56,8 +56,8 @@ def gorilla_out_preproc(dat):
     df.insert(2,"LV",df['AUDIO'].str.split('norm').str[1].str.replace('_','').str.replace('.wav','')) # use string split from filenames
     #replace_map = {'-10db': '1','-7.5db': '2', '-5db': '3', '-2.5db': '4','0db': '5','15db':'6',\
      #                  '0.7p': '1','0.75p': '2', '0.8p': '3', '0.85p': '4','0.9p': '5' ,'32ch1p':'6'}
-    replace_map = {'-10db': '1','-7.5db': '2', '-5db': '3', '-2.5db': '4','0db': '5',\
-                           '0.7p': '1','0.75p': '2', '0.8p': '3', '0.85p': '4','0.9p': '5'}
+    replace_map = {'-10db': 'L1','-7.5db': 'L2', '-5db': 'L3', '-2.5db': 'L4','0db': 'L5',\
+                           '0.7p': 'L1','0.75p': 'L2', '0.8p': 'L3', '0.85p': 'L4','0.9p': 'L5'}
         
     df['LV'] = df['LV'].map(replace_map)
              
