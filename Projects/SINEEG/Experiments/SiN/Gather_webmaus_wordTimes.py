@@ -14,7 +14,7 @@ import textgrids
 if sys.platform=='linux':  basedir  = '/home/d.uzh.ch/gfraga/smbmount/'
 else:  basedir ='V:/'
 
-dirinput = basedir + 'spinco_data/AudioGens/text-to-speech-golang-v2_webmaus_praat' # folder with .wav files
+dirinput = basedir + 'spinco_data/AudioGens/tts-golang-selected' # folder with .wav files
 diroutput = basedir + 'spinco_data/AudioGens/'
 
 os.chdir(dirinput)
@@ -24,8 +24,7 @@ os.getcwd()
 files = glob.glob('*.textGrid')
 gathertimes = pd.DataFrame()
 for fileinput in files:
-    praatDict = textgrids.TextGrid(fileinput)
-    
+    praatDict = textgrids.TextGrid(fileinput)    
     
     times= \
     [fileinput] + \
@@ -42,4 +41,5 @@ for fileinput in files:
 header = ['file','firstSound_tmin','lastSound_tmax','token_1_tmin','token_1_tmax','token_2_tmin','token_2_tmax','token_3_tmin','token_3_tmax']
 gathertimes.columns=header
 
-gathertimes.to_csv(diroutput+'Gathered_word_times.csv')
+gathertimes.to_csv(diroutput+'tts-golang-selected_wordTimes.csv')
+
