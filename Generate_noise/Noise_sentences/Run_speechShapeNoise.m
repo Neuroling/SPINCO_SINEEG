@@ -23,7 +23,7 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 
 % paths and files 
 dirinput =      'V:\spinco_data\AudioGens\tts-golang-selected' ;
-diroutput =     'V:\spinco_data\AudioGens\tts-golang-selected-SiSSN'  ;
+diroutput =     'V:\spinco_data\AudioGens\tts-golang-selected-SiSSN\'  ;
 mkdir(diroutput)
 cd (dirinput)
 audiofiles =      dir(['*.wav']); % must be more than one 
