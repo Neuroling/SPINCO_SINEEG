@@ -1,7 +1,6 @@
 # SINEEG
-
-- DiN: digits-in-noise
-- WiN: words-in-noise
+- SiN: sentence-in-noise 
+- (old) DiN: digits-in-noise
 - utils: various generic utilities 
 - functions: main functions for analyses
 - Experiment: scripts to generate experiments (e.g. psychopy)
