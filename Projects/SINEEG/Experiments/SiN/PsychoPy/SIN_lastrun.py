@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.1),
-    on February 22, 2023, at 14:05
+    on March 02, 2023, at 11:52
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -35,7 +35,7 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 # Store info about the experiment session
 psychopyVersion = '2022.2.1'
-expName = 'MA_Theta_Exp'  # from the Builder filename that created this script
+expName = 'SentenceInNoise'  # from the Builder filename that created this script
 expInfo = {
     'participant': '',
     'order': '',
@@ -68,7 +68,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # --- Setup the Window ---
 win = visual.Window(
-    size=[2560, 1440], fullscr=True, screen=1, 
+    size=[1440, 2560], fullscr=True, screen=1, 
     winType='pyglet', allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -389,7 +389,7 @@ routineTimer.reset()
 # set up handler to look after randomisation of conditions etc
 training = data.TrialHandler(nReps=1, method='sequential', 
     extraInfo=expInfo, originPath=-1,
-    trialList=data.importConditions('stimList.xlsx'),
+    trialList=[None],
     seed=None, name='training')
 thisExp.addLoop(training)  # add the loop to the experiment
 thisTraining = training.trialList[0]  # so we can initialise stimuli with some values

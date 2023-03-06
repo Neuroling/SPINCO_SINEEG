@@ -16,15 +16,14 @@ if sys.platform=='linux':  basedir  = '/home/d.uzh.ch/gfraga/smbmount/'
 else:  basedir ='V:/'
 
 
-
-
-
 dirs2search = [basedir + 'spinco_data/AudioGens/tts-golang-selected-NV' ,
                basedir + 'spinco_data/AudioGens/tts-golang-selected-SiSSN']
 
+diroutput = basedir + 'spinco_data/AudioGens/'
+
 tab2save= pd.DataFrame() 
 for dirinput in dirs2search:   
-    diroutput = basedir + 'spinco_data/AudioGens/'
+    
     praatSummaryFile = basedir + 'spinco_data/AudioGens/tts-golang-selected_wordTimes.csv'
     
     os.chdir(dirinput)
@@ -35,11 +34,11 @@ for dirinput in dirs2search:
     praatTimes = praatTimes.iloc[:, 1:] # delete fist column (row labels)
     
     # Create dict summarizing files, add times from praat 
-    fileDict = {'audiofile':[],'duration':[],'noise':[],'voice':[],'words':[],'callSign':[],'colour':[],'number':[],'level':[]}
+    fileDict = {'audiofile':[],'duration':[],'noise':[],'voice':[],'words':[],'callSign':[],'colour':[],'number':[],'levels':[]}
     times=pd.DataFrame()
     for i,fileinput in enumerate(files):           
         # Extract file info
-        fileDict['audiofile'].append(fileinput)
+        fileDict['audiofile'].append('audio/'+fileinput)
         fileDict['noise'].append(fileinput.split('_')[0])
         fileDict['voice'].append(fileinput.split('_')[2])
         # info about sentence content
@@ -48,7 +47,7 @@ for dirinput in dirs2search:
         fileDict['colour'].append(fileinput.split('_')[3].split('-')[1])
         fileDict['number'].append(fileinput.split('_')[3].split('-')[2])
         # degradation/noise levels
-        fileDict['level'].append(fileinput.split('_')[-1].split('.wav')[0])
+        fileDict['levels'].append(fileinput.split('_')[-1].split('.wav')[0])
         
         # file duration         
         with wave.open(fileinput, 'r') as wav_file:
@@ -73,7 +72,8 @@ for dirinput in dirs2search:
 
     #merge to main dataframe 
     tab2save = tab2save.append(tab)
+ 
+# %% save to file
+with open(diroutput + 'tts-golang-selected_stimList.csv','w', newline='') as csvfile:
+    tab2save.to_csv(csvfile,index=False)
 
-
-# save to file
-tab2save.to_csv(diroutput + 'tts-golang-selected_list.csv', index=False )

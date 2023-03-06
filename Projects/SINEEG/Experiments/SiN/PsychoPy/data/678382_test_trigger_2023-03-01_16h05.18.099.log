@@ -1,0 +1,14 @@
+1.4670 	WARNING 	We strongly recommend you activate the PTB sound engine in PsychoPy prefs as the preferred audio engine. Its timing is vastly superior. Your prefs are currently set to use ['sounddevice', 'PTB', 'pyo', 'pygame'] (in that order).
+6.7261 	WARNING 	User requested fullscreen with size [1024  768], but screen is actually [2560, 1440]. Using actual size
+7.7319 	EXP 	Created window1 = Window(allowGUI=True, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x00000218E34376D0>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x000002188AD37220>, multiSample=False, name='window1', numSamples=2, pos=(0, 0), screen=0, size=array([2560, 1440]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+7.7320 	EXP 	window1: mouseVisible = True
+7.7321 	EXP 	window1: mouseVisible = False
+7.7321 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+7.7321 	EXP 	window1: recordFrameIntervals = False
+7.8983 	EXP 	window1: recordFrameIntervals = True
+8.0817 	EXP 	Screen (0) actual frame rate measured at 60.18Hz
+8.0817 	EXP 	window1: recordFrameIntervals = False
+9.7503 	EXP 	Created audiotrial = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, image='images/grayScreen.png', interpolate=True, mask=None, maskParams=None, name='audiotrial', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([0.5, 0.5]), texRes=128.0, units='height', win=Window(...))
+9.7537 	EXP 	Created fixation = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, anchor=('center', 'center'), autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=-1.0, fillColor=array([1, 1, 1]), fillColorSpace='rgb', fillRGB=array([1, 1, 1]), interpolate=True, lineColor=array([1., 1., 1.]), lineColorSpace='rgb', lineRGB=array([1, 1, 1]), lineWidth=0.5, name='fixation', opacity=0.75, ori=0.0, pos=array([0., 0.]), size=array([0.05, 0.05]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+9.7622 	EXP 	Sound sound_1 set volume 1.000
+9.9954 	EXP 	window1: mouseVisible = True
