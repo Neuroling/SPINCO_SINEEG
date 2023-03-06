@@ -128,9 +128,9 @@ srat2=Srate/2;
 
 % --- design low-pass envelope 10Hz filter for Ghitza Control----------
 [Ghitzablo,Ghitzaalo]=butter(3, 10/srat2);
+
 % --- design window for Ghitza Bursts----------
-WindowDuration=0.1;
-Window=hanning(Srate*WindowDuration);
+Window=hanning(Srate*BurstDuration);
 MaxAllowedRate=8;
 MaxAudioVal=0.9;%0;
 %design bandstop filter for Theta removal
