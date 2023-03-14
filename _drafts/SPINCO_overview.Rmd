@@ -98,16 +98,16 @@ All scripts regularly backed up to a private repo in Github
 [user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]
 [PC] -- [<database> SMB-share ]
  
-[<database> SMB-share] <-> private [<client>gfraga | scripts]
+[<database> SMB-share | G_PSYNEULIN_DATA$ (\\idnas12.d.uzh.ch)] <-> private [<client>gfraga | scripts]
   [gfraga | scripts]-:> push2web [<state>github repo]
 
 [<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]
 
 [Linux] -- [<database> NFS-share | heavy processing]
-[Linux] -- [<database> SMB-share]
+[Linux] -- [<database> SMB-share] 
 [<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]
 [<database> NFS-share] <-> private [mnt/gfraga-data]
-[<database> NFS-share] <--> shared [spinco_data]
+
 ```
 
 <!-- ## Stimuli {.tabset} -->
