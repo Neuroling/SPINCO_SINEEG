@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.1),
-    on March 02, 2023, at 11:52
+    on March 08, 2023, at 16:01
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -14,7 +14,7 @@ If you publish work using this script the most relevant publication is:
 # --- Import packages ---
 from psychopy import locale_setup
 from psychopy import prefs
-from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout
+from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout, parallel
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
 
@@ -28,6 +28,9 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
+# Run 'Before Experiment' code from preparations
+import psychtoolbox as ptb
+from psychopy import sound
 
 
 # Ensure that relative paths start from the same directory as this script
@@ -68,7 +71,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # --- Setup the Window ---
 win = visual.Window(
-    size=[1440, 2560], fullscr=True, screen=1, 
+    size=[2560, 1440], fullscr=True, screen=1, 
     winType='pyglet', allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -102,7 +105,7 @@ instrTrainText = visual.TextStim(win=win, name='instrTrainText',
     pos=(0, 0), height=0.04, wrapWidth=1.5, ori=0, 
     color='white', colorSpace='rgb', opacity=1, 
     languageStyle='LTR',
-    depth=0.0);
+    depth=-1.0);
 key_resp_2 = keyboard.Keyboard()
 # Run 'Begin Experiment' code from getOrder
 firstHalf = "flow/orders/order%sA.csv" % expInfo['order']
@@ -117,7 +120,7 @@ fixation = visual.ShapeStim(
     size=(0.05, 0.05),
     ori=0.0, pos=(0, 0), anchor='center',
     lineWidth=0.5,     colorSpace='rgb',  lineColor='white', fillColor='white',
-    opacity=0.75, depth=-1.0, interpolate=True)
+    opacity=0.75, depth=-2.0, interpolate=True)
 screenAfterAudio = visual.ImageStim(
     win=win,
     name='screenAfterAudio', 
@@ -125,7 +128,15 @@ screenAfterAudio = visual.ImageStim(
     ori=0.0, pos=(0, 0), size=(0.5, 0.5),
     color=[1,1,1], colorSpace='rgb', opacity=None,
     flipHoriz=False, flipVert=False,
-    texRes=128.0, interpolate=True, depth=-2.0)
+    texRes=128.0, interpolate=True, depth=-3.0)
+pp_t1_start = parallel.ParallelPort(address='0x0378')
+pp_t1_end = parallel.ParallelPort(address='0x0378')
+pp_t2_start = parallel.ParallelPort(address='0x0378')
+pp_t2_end = parallel.ParallelPort(address='0x0378')
+pp_t3_start = parallel.ParallelPort(address='0x0378')
+pp_t3_end = parallel.ParallelPort(address='0x0378')
+pp_start = parallel.ParallelPort(address='0x0378')
+pp_end = parallel.ParallelPort(address='0x0378')
 
 # --- Initialize components for Routine "trial" ---
 # Run 'Begin Experiment' code from mapStimuliLabels
@@ -134,7 +145,7 @@ mapCallSign = {
   "call1": "Ad",
   "call2": "Dr",
   "call3": "Ti",
-  "call4": "Un"
+  "call4": "Kr"
   }
   
 mapColour = {
@@ -185,7 +196,7 @@ call3 = visual.ImageStim(
 call4 = visual.ImageStim(
     win=win,
     name='call4', 
-    image='images/unke.png', mask=None, anchor='center',
+    image='images/kroete.png', mask=None, anchor='center',
     ori=0, pos=(-0.4, -0.3125), size=(0.18, 0.18),
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
@@ -260,6 +271,7 @@ mouseClickOnCall.mouseClock = core.Clock()
 mouseClickOnColour = event.Mouse(win=win)
 x, y = [None, None]
 mouseClickOnColour.mouseClock = core.Clock()
+pp_click1 = parallel.ParallelPort(address='0x0378')
 mouseClickOnNumber = event.Mouse(win=win)
 x, y = [None, None]
 mouseClickOnNumber.mouseClock = core.Clock()
@@ -270,7 +282,7 @@ blankScreenAfterResponse = visual.ImageStim(
     ori=0, pos=(0, 0), size=[1920, 1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=-25.0)
+    texRes=128, interpolate=True, depth=-26.0)
 
 # --- Initialize components for Routine "instrExperiment" ---
 instrExpText = visual.TextStim(win=win, name='instrExpText',
@@ -389,7 +401,7 @@ routineTimer.reset()
 # set up handler to look after randomisation of conditions etc
 training = data.TrialHandler(nReps=1, method='sequential', 
     extraInfo=expInfo, originPath=-1,
-    trialList=[None],
+    trialList=data.importConditions('tempStimList.csv'),
     seed=None, name='training')
 thisExp.addLoop(training)  # add the loop to the experiment
 thisTraining = training.trialList[0]  # so we can initialise stimuli with some values
@@ -410,8 +422,36 @@ for thisTraining in training:
     # update component parameters for each repeat
     sound_1.setSound(audiofile, hamming=True)
     sound_1.setVolume(1.0, log=False)
+    # Run 'Begin Routine' code from code
+    # Trigger 
+    pp_start_code = 100
+    pp_end_code = 101
+    
+    pp_t1_start_code = 10
+    pp_t1_end_code = 11
+    
+    pp_t2_start_code = 20
+    pp_t2_end_code = 21
+    
+    pp_t3_start_code = 30
+    pp_t3_end_code = 31
+    
+    # Trigger times 
+    pp_start_time = ptb.GetSecs()
+    pp_end_time = ptb.GetSecs()
+    
+    pp_t1_start_time = ptb.GetSecs()+token_1_tmin 
+    pp_t1_end_time = ptb.GetSecs()+token_1_tmax 
+    
+    pp_t2_start_time = ptb.GetSecs()+token_2_tmin 
+    pp_t2_end_time = ptb.GetSecs()+token_2_tmax 
+    
+    pp_t3_start_time = ptb.GetSecs()+token_3_tmin 
+    pp_t3_end_time = ptb.GetSecs()+token_3_tmax 
+    
+    # 
     # keep track of which components have finished
-    audioTrialComponents = [sound_1, fixation, screenAfterAudio]
+    audioTrialComponents = [sound_1, fixation, screenAfterAudio, pp_t1_start, pp_t1_end, pp_t2_start, pp_t2_end, pp_t3_start, pp_t3_end, pp_start, pp_end]
     for thisComponent in audioTrialComponents:
         thisComponent.tStart = None
         thisComponent.tStop = None
@@ -480,6 +520,174 @@ for thisTraining in training:
                 # add timestamp to datafile
                 thisExp.timestampOnFlip(win, 'screenAfterAudio.stopped')
                 screenAfterAudio.setAutoDraw(False)
+        # *pp_t1_start* updates
+        if pp_t1_start.status == NOT_STARTED and pp_t1_start_time:
+            # keep track of start time/frame for later
+            pp_t1_start.frameNStart = frameN  # exact frame index
+            pp_t1_start.tStart = t  # local t and not account for scr refresh
+            pp_t1_start.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_t1_start, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_t1_start.started', t)
+            pp_t1_start.status = STARTED
+            win.callOnFlip(pp_t1_start.setData, int(pp_t1_start_code))
+        if pp_t1_start.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_t1_start.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_t1_start.tStop = t  # not accounting for scr refresh
+                pp_t1_start.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_t1_start.stopped', t)
+                pp_t1_start.status = FINISHED
+                win.callOnFlip(pp_t1_start.setData, int(0))
+        # *pp_t1_end* updates
+        if pp_t1_end.status == NOT_STARTED and pp_t1_end_time:
+            # keep track of start time/frame for later
+            pp_t1_end.frameNStart = frameN  # exact frame index
+            pp_t1_end.tStart = t  # local t and not account for scr refresh
+            pp_t1_end.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_t1_end, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_t1_end.started', t)
+            pp_t1_end.status = STARTED
+            win.callOnFlip(pp_t1_end.setData, int(pp_t1_end_code))
+        if pp_t1_end.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_t1_end.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_t1_end.tStop = t  # not accounting for scr refresh
+                pp_t1_end.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_t1_end.stopped', t)
+                pp_t1_end.status = FINISHED
+                win.callOnFlip(pp_t1_end.setData, int(0))
+        # *pp_t2_start* updates
+        if pp_t2_start.status == NOT_STARTED and pp_t2_start_time:
+            # keep track of start time/frame for later
+            pp_t2_start.frameNStart = frameN  # exact frame index
+            pp_t2_start.tStart = t  # local t and not account for scr refresh
+            pp_t2_start.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_t2_start, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_t2_start.started', t)
+            pp_t2_start.status = STARTED
+            win.callOnFlip(pp_t2_start.setData, int(pp_t2_start_code))
+        if pp_t2_start.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_t2_start.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_t2_start.tStop = t  # not accounting for scr refresh
+                pp_t2_start.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_t2_start.stopped', t)
+                pp_t2_start.status = FINISHED
+                win.callOnFlip(pp_t2_start.setData, int(0))
+        # *pp_t2_end* updates
+        if pp_t2_end.status == NOT_STARTED and pp_t2_end_time:
+            # keep track of start time/frame for later
+            pp_t2_end.frameNStart = frameN  # exact frame index
+            pp_t2_end.tStart = t  # local t and not account for scr refresh
+            pp_t2_end.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_t2_end, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_t2_end.started', t)
+            pp_t2_end.status = STARTED
+            win.callOnFlip(pp_t2_end.setData, int(pp_t2_end_code))
+        if pp_t2_end.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_t2_end.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_t2_end.tStop = t  # not accounting for scr refresh
+                pp_t2_end.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_t2_end.stopped', t)
+                pp_t2_end.status = FINISHED
+                win.callOnFlip(pp_t2_end.setData, int(0))
+        # *pp_t3_start* updates
+        if pp_t3_start.status == NOT_STARTED and pp_t3_start_time:
+            # keep track of start time/frame for later
+            pp_t3_start.frameNStart = frameN  # exact frame index
+            pp_t3_start.tStart = t  # local t and not account for scr refresh
+            pp_t3_start.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_t3_start, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_t3_start.started', t)
+            pp_t3_start.status = STARTED
+            win.callOnFlip(pp_t3_start.setData, int(pp_t3_start_code))
+        if pp_t3_start.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_t3_start.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_t3_start.tStop = t  # not accounting for scr refresh
+                pp_t3_start.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_t3_start.stopped', t)
+                pp_t3_start.status = FINISHED
+                win.callOnFlip(pp_t3_start.setData, int(0))
+        # *pp_t3_end* updates
+        if pp_t3_end.status == NOT_STARTED and pp_t3_end_time:
+            # keep track of start time/frame for later
+            pp_t3_end.frameNStart = frameN  # exact frame index
+            pp_t3_end.tStart = t  # local t and not account for scr refresh
+            pp_t3_end.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_t3_end, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_t3_end.started', t)
+            pp_t3_end.status = STARTED
+            win.callOnFlip(pp_t3_end.setData, int(pp_t3_end_code))
+        if pp_t3_end.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_t3_end.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_t3_end.tStop = t  # not accounting for scr refresh
+                pp_t3_end.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_t3_end.stopped', t)
+                pp_t3_end.status = FINISHED
+                win.callOnFlip(pp_t3_end.setData, int(0))
+        # *pp_start* updates
+        if pp_start.status == NOT_STARTED and pp_start_time:
+            # keep track of start time/frame for later
+            pp_start.frameNStart = frameN  # exact frame index
+            pp_start.tStart = t  # local t and not account for scr refresh
+            pp_start.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_start, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_start.started', t)
+            pp_start.status = STARTED
+            win.callOnFlip(pp_start.setData, int(pp_start_code))
+        if pp_start.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_start.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_start.tStop = t  # not accounting for scr refresh
+                pp_start.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_start.stopped', t)
+                pp_start.status = FINISHED
+                win.callOnFlip(pp_start.setData, int(0))
+        # *pp_end* updates
+        if pp_end.status == NOT_STARTED and pp_end_time:
+            # keep track of start time/frame for later
+            pp_end.frameNStart = frameN  # exact frame index
+            pp_end.tStart = t  # local t and not account for scr refresh
+            pp_end.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_end, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_end.started', t)
+            pp_end.status = STARTED
+            win.callOnFlip(pp_end.setData, int(pp_end_code))
+        if pp_end.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_end.tStartRefresh + 0.01-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_end.tStop = t  # not accounting for scr refresh
+                pp_end.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_end.stopped', t)
+                pp_end.status = FINISHED
+                win.callOnFlip(pp_end.setData, int(0))
         
         # check for quit (typically the Esc key)
         if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -503,6 +711,22 @@ for thisTraining in training:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
     sound_1.stop()  # ensure sound has stopped at end of routine
+    if pp_t1_start.status == STARTED:
+        win.callOnFlip(pp_t1_start.setData, int(0))
+    if pp_t1_end.status == STARTED:
+        win.callOnFlip(pp_t1_end.setData, int(0))
+    if pp_t2_start.status == STARTED:
+        win.callOnFlip(pp_t2_start.setData, int(0))
+    if pp_t2_end.status == STARTED:
+        win.callOnFlip(pp_t2_end.setData, int(0))
+    if pp_t3_start.status == STARTED:
+        win.callOnFlip(pp_t3_start.setData, int(0))
+    if pp_t3_end.status == STARTED:
+        win.callOnFlip(pp_t3_end.setData, int(0))
+    if pp_start.status == STARTED:
+        win.callOnFlip(pp_start.setData, int(0))
+    if pp_end.status == STARTED:
+        win.callOnFlip(pp_end.setData, int(0))
     # the Routine "audioTrial" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
     
@@ -562,7 +786,7 @@ for thisTraining in training:
     gotValidClick = False  # until a click is received
     mouseClickOnNumber.mouseClock.reset()
     # keep track of which components have finished
-    trialComponents = [blankScreen, call1, call2, call3, call4, colour1, colour2, colour3, colour4, number1, number2, number3, number4, mouseClickOnCall, mouseClickOnColour, mouseClickOnNumber, blankScreenAfterResponse]
+    trialComponents = [blankScreen, call1, call2, call3, call4, colour1, colour2, colour3, colour4, number1, number2, number3, number4, mouseClickOnCall, mouseClickOnColour, pp_click1, mouseClickOnNumber, blankScreenAfterResponse]
     for thisComponent in trialComponents:
         thisComponent.tStart = None
         thisComponent.tStop = None
@@ -593,7 +817,7 @@ for thisTraining in training:
         if participantResponseTime == None:
             participantResponseTime = trialClock.getTime()
         
-        #switch to the next trial when the video is ended and response time (10 seconds) is over 
+        #switch to the next trial when audio ended and response time (10 seconds) is over 
         if participantResponseTime and trialClock.getTime() - participantResponseTime > 10 and not blankScreenAfterResponse.status == STARTED:
             continueRoutine = False
         
@@ -890,7 +1114,7 @@ for thisTraining in training:
                         if call4.name != mouseClickOnCall.clicked_name[-1]: call4.opacity = 0.2
                         continueRoutine = True
         # *mouseClickOnColour* updates
-        if mouseClickOnColour.status == NOT_STARTED and mouseClickOnCall.status==FINISHED:
+        if mouseClickOnColour.status == NOT_STARTED and mouseClickOnCall.getPressed()[0]:
             # keep track of start time/frame for later
             mouseClickOnColour.frameNStart = frameN  # exact frame index
             mouseClickOnColour.tStart = t  # local t and not account for scr refresh
@@ -934,6 +1158,27 @@ for thisTraining in training:
                         if colour3.name != mouseClickOnColour.clicked_name[-1]: colour3.opacity = 0.2
                         if colour4.name != mouseClickOnColour.clicked_name[-1]: colour4.opacity = 0.2
                         continueRoutine = True
+        # *pp_click1* updates
+        if pp_click1.status == NOT_STARTED and t >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            pp_click1.frameNStart = frameN  # exact frame index
+            pp_click1.tStart = t  # local t and not account for scr refresh
+            pp_click1.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(pp_click1, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('pp_click1.started', t)
+            pp_click1.status = STARTED
+            win.callOnFlip(pp_click1.setData, int(1))
+        if pp_click1.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > pp_click1.tStartRefresh + 1.0-frameTolerance:
+                # keep track of stop time/frame for later
+                pp_click1.tStop = t  # not accounting for scr refresh
+                pp_click1.frameNStop = frameN  # exact frame index
+                # add timestamp to datafile
+                thisExp.addData('pp_click1.stopped', t)
+                pp_click1.status = FINISHED
+                win.callOnFlip(pp_click1.setData, int(0))
         # *mouseClickOnNumber* updates
         if mouseClickOnNumber.status == NOT_STARTED and mouseClickOnColour.status ==FINISHED:
             # keep track of start time/frame for later
@@ -1037,6 +1282,8 @@ for thisTraining in training:
     training.addData('mouseClickOnColour.rightButton', mouseClickOnColour.rightButton)
     training.addData('mouseClickOnColour.time', mouseClickOnColour.time)
     training.addData('mouseClickOnColour.clicked_name', mouseClickOnColour.clicked_name)
+    if pp_click1.status == STARTED:
+        win.callOnFlip(pp_click1.setData, int(0))
     # store data for training (TrialHandler)
     training.addData('mouseClickOnNumber.x', mouseClickOnNumber.x)
     training.addData('mouseClickOnNumber.y', mouseClickOnNumber.y)
@@ -1079,6 +1326,9 @@ else:
     params = training.trialList[0].keys()
 # save data for this loop
 training.saveAsExcel(filename + '.xlsx', sheetName='training',
+    stimOut=params,
+    dataOut=['n','all_mean','all_std', 'all_raw'])
+training.saveAsText(filename + 'training.csv', delim=',',
     stimOut=params,
     dataOut=['n','all_mean','all_std', 'all_raw'])
 
@@ -1199,6 +1449,9 @@ else:
     params = blockA.trialList[0].keys()
 # save data for this loop
 blockA.saveAsExcel(filename + '.xlsx', sheetName='blockA',
+    stimOut=params,
+    dataOut=['n','all_mean','all_std', 'all_raw'])
+blockA.saveAsText(filename + 'blockA.csv', delim=',',
     stimOut=params,
     dataOut=['n','all_mean','all_std', 'all_raw'])
 

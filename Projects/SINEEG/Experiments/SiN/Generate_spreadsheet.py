@@ -21,17 +21,17 @@ dirs2search = [basedir + 'spinco_data/AudioGens/tts-golang-selected-NV' ,
 
 diroutput = basedir + 'spinco_data/AudioGens/'
 
-tab2save= pd.DataFrame() 
+fullTab= pd.DataFrame() 
 for dirinput in dirs2search:   
     
-    praatSummaryFile = basedir + 'spinco_data/AudioGens/tts-golang-selected_wordTimes.csv'
+    praatSummaryFile = basedir + 'spinco_data/AudioGens/word_times/Rahel_tts-golang-selected_wordTimes.csv'
     
     os.chdir(dirinput)
     os.getcwd()
     # Find files 
     files = glob.glob('*.wav')
     praatTimes = pd.read_csv(praatSummaryFile) 
-    praatTimes = praatTimes.iloc[:, 1:] # delete fist column (row labels)
+    
     
     # Create dict summarizing files, add times from praat 
     fileDict = {'audiofile':[],'duration':[],'noise':[],'voice':[],'words':[],'callSign':[],'colour':[],'number':[],'levels':[]}
@@ -71,9 +71,16 @@ for dirinput in dirs2search:
         print('O_o. Could not find times for all files. Revise your praat summary!')
 
     #merge to main dataframe 
-    tab2save = tab2save.append(tab)
+    fullTab = fullTab.append(tab)
  
+# %%
+fullTab['block']  = 0    
+fullTab.block.iloc[np.where(fullTab['noise'] == 'NV')] = 1
+fullTab.block.iloc[np.where(fullTab['noise'] == 'SiSSN')] = 3
+
+         
+         
 # %% save to file
 with open(diroutput + 'tts-golang-selected_stimList.csv','w', newline='') as csvfile:
-    tab2save.to_csv(csvfile,index=False)
+    fullTab.to_csv(csvfile,index=False)
 
