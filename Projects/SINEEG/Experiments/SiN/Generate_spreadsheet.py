@@ -22,7 +22,7 @@ dirs2search = [basedir + 'spinco_data/AudioGens/tts-golang-selected-NV' ,
 diroutput = basedir + 'spinco_data/AudioGens/'
 
 fullTab= pd.DataFrame() 
-for dirinput in dirs2search:   
+for countdir, dirinput in enumerate(dirs2search):   
     
     praatSummaryFile = basedir + 'spinco_data/AudioGens/word_times/Rahel_tts-golang-selected_wordTimes.csv'
     
@@ -58,6 +58,7 @@ for dirinput in dirs2search:
         fileDict['duration'].append(length)
         
         #get praat info
+        praatTimes.file = praatTimes.file.str.replace('-man.','.')
         names2match = praatTimes['file'].str.split('.TextGrid').str[0]
         rowidx= np.where('_'.join(fileinput.split('_')[1:4])==names2match)[0]
         times = times.append(praatTimes.iloc[rowidx],ignore_index=True)
@@ -68,19 +69,46 @@ for dirinput in dirs2search:
     if len(files) == len(times):
         tab = tab.join(times)
     else:
-        print('O_o. Could not find times for all files. Revise your praat summary!')
+        print('~~~~~~~~~~~~ d[O_o]b. Could not find times for all files. Revise your praat summary!')
 
     #merge to main dataframe 
     fullTab = fullTab.append(tab)
- 
-# %%
-fullTab['block']  = 0    
-fullTab.block.iloc[np.where(fullTab['noise'] == 'NV')] = 1
-fullTab.block.iloc[np.where(fullTab['noise'] == 'SiSSN')] = 3
-
-         
-         
+    
+    print(countdir)
+    print(dirinput)
+    # %% Add block info 
+    # Shuffle
+    
+    vals = ['0.6p','0.75p','0.8p','-7.5db','-5db','0db']
+    fullTab = fullTab[fullTab['levels'].isin(vals)]
+    
+    # 
+    fullTab2save = fullTab.groupby(['noise','voice','levels']).sample(frac=1)
+    fullTab2save['newidx'] = fullTab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
+    
+    # assign blocks
+    fullTab2save['block'] = 0
+    fullTab2save.block[(fullTab2save['noise']=='SiSSN') & (fullTab2save['newidx'] < 32)] = 'SSN1' 
+    fullTab2save.block[(fullTab2save['noise']=='SiSSN') & (fullTab2save['newidx'] >= 32)] = 'SSN2'
+    fullTab2save.block[(fullTab2save['noise']=='NV') & (fullTab2save['newidx'] < 32)] = 'NV1'
+    fullTab2save.block[(fullTab2save['noise']=='NV') & (fullTab2save['newidx'] >= 32)] = 'NV2'
+    fullTab2save = fullTab2save.groupby('block').sample(frac=1)
+    
+    print(fullTab2save.groupby(['noise','block','voice','levels'])['block'].count())
+    overview = fullTab2save.groupby(['noise','block','voice','levels'])['words'].count().reset_index()
+    
 # %% save to file
-with open(diroutput + 'tts-golang-selected_stimList.csv','w', newline='') as csvfile:
-    fullTab.to_csv(csvfile,index=False)
+with open(diroutput + 'tts-golang-selected_PsyPySEQ.csv','w', newline='') as csvfile:
+    fullTab2save.to_csv(csvfile,index=False)
+    
+# %% save per block    
+for block_value in fullTab2save['block'].unique():    
+    block_df = fullTab2save[fullTab2save['block'] == block_value]    
+    block_df.to_csv(diroutput + 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv', index=False)
+
+    
+
+#%%
+with open(diroutput + 'tts-golang-selected_seqOverview.csv','w', newline='') as csvfile:
+        overview.to_csv(csvfile,index=False)
 
