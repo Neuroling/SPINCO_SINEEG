@@ -14,10 +14,10 @@ import os
 
 diroutput = 'V:/spinco_data/AudioGens'
 # File names to provide 
-NV1 = 'flow\tts-golang-selected_PsyPySEQ_NV1.csv'
-NV2 = 'flow\tts-golang-selected_PsyPySEQ_NV2.csv'
-SS1 = 'flow\tts-golang-selected_PsyPySEQ_SSN1.csv'
-SS2 = 'flow\tts-golang-selected_PsyPySEQ_SSN2.csv'
+NV1 = 'flow\\tts-golang-selected_PsyPySEQ_NV1.csv'
+NV2 = 'flow\\tts-golang-selected_PsyPySEQ_NV2.csv'
+SS1 = 'flow\\tts-golang-selected_PsyPySEQ_SSN1.csv'
+SS2 = 'flow\\tts-golang-selected_PsyPySEQ_SSN2.csv'
 
 # Orders 
 

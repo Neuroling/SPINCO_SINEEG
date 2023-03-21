@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.1),
-    on March 21, 2023, at 12:06
+    on March 21, 2023, at 15:07
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -119,6 +119,16 @@ key_resp_2 = keyboard.Keyboard()
 # Run 'Begin Experiment' code from getOrder
 orderFile = "order" + expInfo['order']+ ".csv"
 print(orderFile)
+
+# --- Initialize components for Routine "startBlock" ---
+blockStart = visual.TextStim(win=win, name='blockStart',
+    text='Begin  block ',
+    font='Arial',
+    pos=(0, 0), height=0.04, wrapWidth=None, ori=0, 
+    color='white', colorSpace='rgb', opacity=1, 
+    languageStyle='LTR',
+    depth=0.0);
+key_resp = keyboard.Keyboard()
 
 # --- Initialize components for Routine "audioTrial" ---
 sound_1 = sound.Sound('A', secs=-1, stereo=True, hamming=True,
@@ -275,7 +285,6 @@ mouseClickOnCall.mouseClock = core.Clock()
 mouseClickOnColour = event.Mouse(win=win)
 x, y = [None, None]
 mouseClickOnColour.mouseClock = core.Clock()
-pp_click1 = parallel.ParallelPort(address='0x0378')
 mouseClickOnNumber = event.Mouse(win=win)
 x, y = [None, None]
 mouseClickOnNumber.mouseClock = core.Clock()
@@ -286,7 +295,7 @@ blankScreenAfterResponse = visual.ImageStim(
     ori=0, pos=(0, 0), size=[1920, 1080],
     color=[1,1,1], colorSpace='rgb', opacity=1,
     flipHoriz=False, flipVert=False,
-    texRes=128, interpolate=True, depth=-26.0)
+    texRes=128, interpolate=True, depth=-25.0)
 
 # --- Initialize components for Routine "thanks" ---
 thanksText = visual.TextStim(win=win, name='thanksText',
@@ -411,8 +420,96 @@ for thisBlock in blocks:
         for paramName in thisBlock:
             exec('{} = thisBlock[paramName]'.format(paramName))
     
+    # --- Prepare to start Routine "startBlock" ---
+    continueRoutine = True
+    # update component parameters for each repeat
+    key_resp.keys = []
+    key_resp.rt = []
+    _key_resp_allKeys = []
+    # keep track of which components have finished
+    startBlockComponents = [blockStart, key_resp]
+    for thisComponent in startBlockComponents:
+        thisComponent.tStart = None
+        thisComponent.tStop = None
+        thisComponent.tStartRefresh = None
+        thisComponent.tStopRefresh = None
+        if hasattr(thisComponent, 'status'):
+            thisComponent.status = NOT_STARTED
+    # reset timers
+    t = 0
+    _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+    frameN = -1
+    
+    # --- Run Routine "startBlock" ---
+    while continueRoutine:
+        # get current time
+        t = routineTimer.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
+        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+        # update/draw components on each frame
+        
+        # *blockStart* updates
+        if blockStart.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            blockStart.frameNStart = frameN  # exact frame index
+            blockStart.tStart = t  # local t and not account for scr refresh
+            blockStart.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(blockStart, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'blockStart.started')
+            blockStart.setAutoDraw(True)
+        
+        # *key_resp* updates
+        waitOnFlip = False
+        if key_resp.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            key_resp.frameNStart = frameN  # exact frame index
+            key_resp.tStart = t  # local t and not account for scr refresh
+            key_resp.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(key_resp, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'key_resp.started')
+            key_resp.status = STARTED
+            # keyboard checking is just starting
+            waitOnFlip = True
+            win.callOnFlip(key_resp.clock.reset)  # t=0 on next screen flip
+            win.callOnFlip(key_resp.clearEvents, eventType='keyboard')  # clear events on next screen flip
+        if key_resp.status == STARTED and not waitOnFlip:
+            theseKeys = key_resp.getKeys(keyList=['space'], waitRelease=False)
+            _key_resp_allKeys.extend(theseKeys)
+            if len(_key_resp_allKeys):
+                key_resp.keys = _key_resp_allKeys[-1].name  # just the last key pressed
+                key_resp.rt = _key_resp_allKeys[-1].rt
+                # a response ends the routine
+                continueRoutine = False
+        
+        # check for quit (typically the Esc key)
+        if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
+            core.quit()
+        
+        # check if all components have finished
+        if not continueRoutine:  # a component has requested a forced-end of Routine
+            break
+        continueRoutine = False  # will revert to True if at least one component still running
+        for thisComponent in startBlockComponents:
+            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                continueRoutine = True
+                break  # at least one component has not yet finished
+        
+        # refresh the screen
+        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+            win.flip()
+    
+    # --- Ending Routine "startBlock" ---
+    for thisComponent in startBlockComponents:
+        if hasattr(thisComponent, "setAutoDraw"):
+            thisComponent.setAutoDraw(False)
+    # the Routine "startBlock" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset()
+    
     # set up handler to look after randomisation of conditions etc
-    trials = data.TrialHandler(nReps=1, method='sequential', 
+    trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
         trialList=data.importConditions(condsFile),
         seed=None, name='trials')
@@ -686,7 +783,7 @@ for thisBlock in blocks:
         gotValidClick = False  # until a click is received
         mouseClickOnNumber.mouseClock.reset()
         # keep track of which components have finished
-        trialComponents = [blankScreen, call1, call2, call3, call4, colour1, colour2, colour3, colour4, number1, number2, number3, number4, mouseClickOnCall, mouseClickOnColour, pp_click1, mouseClickOnNumber, blankScreenAfterResponse]
+        trialComponents = [blankScreen, call1, call2, call3, call4, colour1, colour2, colour3, colour4, number1, number2, number3, number4, mouseClickOnCall, mouseClickOnColour, mouseClickOnNumber, blankScreenAfterResponse]
         for thisComponent in trialComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -1006,13 +1103,13 @@ for thisBlock in blocks:
                         if gotValidClick:
                             continueRoutine = False  # abort routine on response
             # Run 'Each Frame' code from disableCallButtons
-            if gotValidClick:
-                mouseClickOnCall.status = FINISHED
-                if call1.name != mouseClickOnCall.clicked_name[-1]: call1.opacity = 0.2
-                if call2.name != mouseClickOnCall.clicked_name[-1]: call2.opacity = 0.2
-                if call3.name != mouseClickOnCall.clicked_name[-1]: call3.opacity = 0.2
-                if call4.name != mouseClickOnCall.clicked_name[-1]: call4.opacity = 0.2
-                continueRoutine = True
+                        if gotValidClick:
+                            mouseClickOnCall.status = FINISHED
+                            if call1.name != mouseClickOnCall.clicked_name[-1]: call1.opacity = 0.2
+                            if call2.name != mouseClickOnCall.clicked_name[-1]: call2.opacity = 0.2
+                            if call3.name != mouseClickOnCall.clicked_name[-1]: call3.opacity = 0.2
+                            if call4.name != mouseClickOnCall.clicked_name[-1]: call4.opacity = 0.2
+                            continueRoutine = True
             # *mouseClickOnColour* updates
             if mouseClickOnColour.status == NOT_STARTED and mouseClickOnCall.getPressed()[0]:
                 # keep track of start time/frame for later
@@ -1051,34 +1148,13 @@ for thisBlock in blocks:
                         if gotValidClick:
                             continueRoutine = False  # abort routine on response
             # Run 'Each Frame' code from disableColourButtons
-            if gotValidClick:
-                mouseClickOnColour.status = FINISHED
-                if colour1.name != mouseClickOnColour.clicked_name[-1]: colour1.opacity = 0.2
-                if colour2.name != mouseClickOnColour.clicked_name[-1]: colour2.opacity = 0.2
-                if colour3.name != mouseClickOnColour.clicked_name[-1]: colour3.opacity = 0.2
-                if colour4.name != mouseClickOnColour.clicked_name[-1]: colour4.opacity = 0.2
-                continueRoutine = True
-            # *pp_click1* updates
-            if pp_click1.status == NOT_STARTED and t >= 0.0-frameTolerance:
-                # keep track of start time/frame for later
-                pp_click1.frameNStart = frameN  # exact frame index
-                pp_click1.tStart = t  # local t and not account for scr refresh
-                pp_click1.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_click1, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.addData('pp_click1.started', t)
-                pp_click1.status = STARTED
-                win.callOnFlip(pp_click1.setData, int(1))
-            if pp_click1.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_click1.tStartRefresh + 1.0-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_click1.tStop = t  # not accounting for scr refresh
-                    pp_click1.frameNStop = frameN  # exact frame index
-                    # add timestamp to datafile
-                    thisExp.addData('pp_click1.stopped', t)
-                    pp_click1.status = FINISHED
-                    win.callOnFlip(pp_click1.setData, int(0))
+                        if gotValidClick:
+                            mouseClickOnColour.status = FINISHED
+                            if colour1.name != mouseClickOnColour.clicked_name[-1]: colour1.opacity = 0.2
+                            if colour2.name != mouseClickOnColour.clicked_name[-1]: colour2.opacity = 0.2
+                            if colour3.name != mouseClickOnColour.clicked_name[-1]: colour3.opacity = 0.2
+                            if colour4.name != mouseClickOnColour.clicked_name[-1]: colour4.opacity = 0.2
+                            continueRoutine = True
             # *mouseClickOnNumber* updates
             if mouseClickOnNumber.status == NOT_STARTED and mouseClickOnColour.status ==FINISHED:
                 # keep track of start time/frame for later
@@ -1123,7 +1199,7 @@ for thisBlock in blocks:
                             if number2.name != mouseClickOnNumber.clicked_name[-1]: number2.opacity = 0.2
                             if number3.name != mouseClickOnNumber.clicked_name[-1]: number3.opacity = 0.2
                             if number4.name != mouseClickOnNumber.clicked_name[-1]: number4.opacity = 0.2
-                            #continueRoutine = True
+                          #  continueRoutine = True
             
             # *blankScreenAfterResponse* updates
             if blankScreenAfterResponse.status == NOT_STARTED and mouseClickOnNumber.status==FINISHED:
@@ -1182,8 +1258,6 @@ for thisBlock in blocks:
         trials.addData('mouseClickOnColour.rightButton', mouseClickOnColour.rightButton)
         trials.addData('mouseClickOnColour.time', mouseClickOnColour.time)
         trials.addData('mouseClickOnColour.clicked_name', mouseClickOnColour.clicked_name)
-        if pp_click1.status == STARTED:
-            win.callOnFlip(pp_click1.setData, int(0))
         # store data for trials (TrialHandler)
         trials.addData('mouseClickOnNumber.x', mouseClickOnNumber.x)
         trials.addData('mouseClickOnNumber.y', mouseClickOnNumber.y)
