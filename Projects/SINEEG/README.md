@@ -43,10 +43,10 @@ Example *s01_sin_eeg.json*
 	"InstitutionName": "...",
 	"InstitutionAddress": "...",
 	"EEGChannelCount": 64,
-  "EEGReference": "xxxx",
-  "EOGChannelCount": 4,  
-  "EMGChannelCount": 0,
-  "ECGChannelCount": 0	
+	"EEGReference": "xxxx",
+	"EOGChannelCount": 4,  
+	"EMGChannelCount": 0,
+	"ECGChannelCount": 0	
 	"MiscChannelCount": 73,
 	"TriggerChannelCount": 1,
 	"PowerLineFrequency": 50,
