@@ -13,6 +13,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 - 3rd digit indicates word in sorted alphabetically or ordinally when numbers: 1 (adler | gelb | eins) , 2 (drossel | gruen | zwei) , 3 (kroete | rot | drei), 4 (tiger | weiss | vier) 
 - 3rd digit = 0 indicates the offset of the target
 - Clicks and block intial screens are also coded. See table below
+- 
 
 
 | code	| Description
@@ -39,7 +40,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 112 	| NV onset 1:Drossel		| 
 | 122 	| NV onset 2:gruen		| 
 | 132 	| NV onset 3:zwei		| 
-| 212 	| SiSSN onset 1:Drossel	| 
+| 212 	| SiSSN onset 1:Drossel		| 
 | 222 	| SiSSN onset 2:gruen		| 
 | 232 	| SiSSN onset 3:zwei		|
 |	|				| 

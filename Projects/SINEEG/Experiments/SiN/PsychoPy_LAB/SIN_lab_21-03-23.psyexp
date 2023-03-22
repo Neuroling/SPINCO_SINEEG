@@ -66,8 +66,8 @@
   <Routines>
     <Routine name="instrTraining">
       <CodeComponent name="preparations">
-        <Param val="import psychtoolbox as ptb&amp;#10;from psychopy import sound" valType="extendedCode" updates="constant" name="Before Experiment"/>
-        <Param val="import * as ptb from 'psychtoolbox';&amp;#10;import {sound} from 'psychopy';&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="import psychtoolbox as ptb&amp;#10;from psychopy import sound&amp;#10;import psychopy.visual&amp;#10;import psychopy.event&amp;#10;import psychopy.core&amp;#10;&amp;#10;clock = psychopy.core.Clock()&amp;#10;print('TIME O_o')&amp;#10;print(clock.getTime())" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="import * as ptb from 'psychtoolbox';&amp;#10;import {sound} from 'psychopy';&amp;#10;import * as psychopy.visual from 'psychopy/visual';&amp;#10;import * as psychopy.event from 'psychopy/event';&amp;#10;import * as psychopy.core from 'psychopy/core';&amp;#10;var clock;&amp;#10;clock = new psychopy.core.Clock();&amp;#10;console.log(&quot;TIME O_o&quot;);&amp;#10;console.log(clock.getTime());&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="#if (SubjectNumber % 2 == 0):&amp;#10;#    Order=ABCD&amp;#10;#else:&amp;#10;#    Order=CDBA&amp;#10;    &amp;#10;&amp;#10;        " valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="/* Syntax Error: Fix Python code */" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
@@ -145,8 +145,8 @@
       <CodeComponent name="getOrder">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="orderFile = &quot;order&quot; + expInfo['order']+ &quot;.csv&quot;&amp;#10;print(orderFile)" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="orderFile = ((&quot;order&quot; + expInfo[&quot;order&quot;]) + &quot;.csv&quot;);&amp;#10;console.log(orderFile);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="orderFile = &quot;order&quot; + expInfo['order']+ &quot;.csv&quot;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="orderFile = ((&quot;order&quot; + expInfo[&quot;order&quot;]) + &quot;.csv&quot;);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
@@ -525,8 +525,8 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="pp_start_code = 100;&amp;#10;pp_end_code = 101;&amp;#10;pp_t1_start_code = 10;&amp;#10;pp_t1_end_code = 11;&amp;#10;pp_t2_start_code = 20;&amp;#10;pp_t2_end_code = 21;&amp;#10;pp_t3_start_code = 30;&amp;#10;pp_t3_end_code = 31;&amp;#10;pp_start_time = new ptb.GetSecs();&amp;#10;pp_end_time = (pp_start_time + token_3_tmax);&amp;#10;pp_t1_start_time = (new ptb.GetSecs() + token_1_tmin);&amp;#10;pp_t1_end_time = (new ptb.GetSecs() + token_1_tmax);&amp;#10;pp_t2_start_time = (new ptb.GetSecs() + token_2_tmin);&amp;#10;pp_t2_end_time = (new ptb.GetSecs() + token_2_tmax);&amp;#10;pp_t3_start_time = (new ptb.GetSecs() + token_3_tmin);&amp;#10;pp_t3_end_time = (new ptb.GetSecs() + token_3_tmax);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="# Trigger &amp;#10;pp_start_code = 100&amp;#10;pp_end_code = 101&amp;#10;&amp;#10;pp_t1_start_code = 10&amp;#10;pp_t1_end_code = 11&amp;#10;&amp;#10;pp_t2_start_code = 20&amp;#10;pp_t2_end_code = 21&amp;#10;&amp;#10;pp_t3_start_code = 30&amp;#10;pp_t3_end_code = 31&amp;#10;&amp;#10;# Trigger times &amp;#10;pp_start_time = ptb.GetSecs()&amp;#10;pp_end_time = pp_start_time + token_3_tmax&amp;#10;&amp;#10;pp_t1_start_time = ptb.GetSecs()+token_1_tmin &amp;#10;pp_t1_end_time = ptb.GetSecs()+token_1_tmax &amp;#10;&amp;#10;pp_t2_start_time = ptb.GetSecs()+token_2_tmin &amp;#10;pp_t2_end_time = ptb.GetSecs()+token_2_tmax &amp;#10;&amp;#10;pp_t3_start_time = ptb.GetSecs()+token_3_tmin &amp;#10;pp_t3_end_time = ptb.GetSecs()+token_3_tmax &amp;#10;&amp;#10;# " valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="pp_start_code = 100;&amp;#10;pp_start_time = new ptb.GetSecs();&amp;#10;pp_end_time = (pp_start_time + token_3_tmax);&amp;#10;pp_t1_start_time = (new ptb.GetSecs() + token_1_tmin);&amp;#10;pp_t1_end_time = (new ptb.GetSecs() + token_1_tmax);&amp;#10;pp_t2_start_time = (new ptb.GetSecs() + token_2_tmin);&amp;#10;pp_t2_end_time = (new ptb.GetSecs() + token_2_tmax);&amp;#10;pp_t3_start_time = (new ptb.GetSecs() + token_3_tmin);&amp;#10;pp_t3_end_time = (new ptb.GetSecs() + token_3_tmax);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# Trigger &amp;#10;pp_start_code = 100&amp;#10;&amp;#10;# Trigger times &amp;#10;pp_start_time = ptb.GetSecs()&amp;#10;pp_end_time = pp_start_time + token_3_tmax&amp;#10;&amp;#10;pp_t1_start_time = ptb.GetSecs()+token_1_tmin &amp;#10;pp_t1_end_time = ptb.GetSecs()+token_1_tmax &amp;#10;&amp;#10;pp_t2_start_time = ptb.GetSecs()+token_2_tmin &amp;#10;pp_t2_end_time = ptb.GetSecs()+token_2_tmax &amp;#10;&amp;#10;pp_t3_start_time = ptb.GetSecs()+token_3_tmin &amp;#10;pp_t3_end_time = ptb.GetSecs()+token_3_tmax &amp;#10;&amp;#10;# " valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
@@ -569,15 +569,15 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="psychoJS.window.mouseVisible = false;&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="win.mouseVisible = False " valType="extendedCode" updates="constant" name="Begin Routine"/>
-        <Param val="Py" valType="str" updates="None" name="Code Type"/>
+        <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="console.log(&quot;~~~~~~trigger codes d[-_-]b&quot;);&amp;#10;console.log(trigger_call);&amp;#10;console.log(trigger_col);&amp;#10;console.log(trigger_num);&amp;#10;console.log(&quot;~~~~~~~trigger times [-_-]&quot;);&amp;#10;console.log(pp_start_time);&amp;#10;console.log(pp_t1_start_time);&amp;#10;console.log((pp_t1_start_time + 80));&amp;#10;console.log(pp_t1_end_time);&amp;#10;" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="&amp;#10;&amp;#10;print('~~~~~~trigger codes d[-_-]b')&amp;#10;print(trigger_call)&amp;#10;print(trigger_col)&amp;#10;print(trigger_num)&amp;#10;print('~~~~~~~trigger times [-_-]')&amp;#10;print(pp_start_time)&amp;#10;print (pp_t1_start_time)&amp;#10;print (pp_t1_start_time + 80)&amp;#10;print (pp_t1_end_time)&amp;#10;# &amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="hideMouse_2" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -608,6 +608,23 @@
         <Param val="128" valType="num" updates="constant" name="texture resolution"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
       </ImageComponent>
+      <ParallelOutComponent name="pp_start">
+        <Param val="0x3FE8" valType="str" updates="None" name="address"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="pp_start" valType="code" updates="None" name="name"/>
+        <Param val="EIO" valType="str" updates="None" name="register"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="trigger_start" valType="code" updates="None" name="startData"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="condition" valType="str" updates="None" name="startType"/>
+        <Param val="$pp_start_time + 80" valType="code" updates="None" name="startVal"/>
+        <Param val="0" valType="code" updates="None" name="stopData"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="0.03" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+      </ParallelOutComponent>
       <ParallelOutComponent name="pp_t1_start">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
@@ -615,15 +632,15 @@
         <Param val="pp_t1_start" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_t1_start_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_call" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t1_start_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_t1_start_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
+        <Param val="0.03" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
       <ParallelOutComponent name="pp_t1_end">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
@@ -632,15 +649,15 @@
         <Param val="pp_t1_end" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_t1_end_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_call + 4" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t1_end_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_t1_end_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
       <ParallelOutComponent name="pp_t2_start">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
@@ -649,15 +666,15 @@
         <Param val="pp_t2_start" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_t2_start_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_col" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t2_start_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_t2_start_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
       <ParallelOutComponent name="pp_t2_end">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
@@ -666,15 +683,15 @@
         <Param val="pp_t2_end" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_t2_end_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_col + 4" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t2_end_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_t2_end_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
       <ParallelOutComponent name="pp_t3_start">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
@@ -683,15 +700,15 @@
         <Param val="pp_t3_start" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_t3_start_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_num" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t3_start_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_t3_start_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
       <ParallelOutComponent name="pp_t3_end">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
@@ -700,32 +717,15 @@
         <Param val="pp_t3_end" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_t3_end_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_num + 4" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t3_end_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_t3_end_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
-      </ParallelOutComponent>
-      <ParallelOutComponent name="pp_start">
-        <Param val="0x3FE8" valType="str" updates="None" name="address"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="pp_start" valType="code" updates="None" name="name"/>
-        <Param val="EIO" valType="str" updates="None" name="register"/>
-        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_start_code" valType="code" updates="None" name="startData"/>
-        <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_start_time" valType="code" updates="None" name="startVal"/>
-        <Param val="0" valType="code" updates="None" name="stopData"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
-        <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
       <ParallelOutComponent name="pp_end">
         <Param val="0x3FE8" valType="str" updates="None" name="address"/>
@@ -734,15 +734,15 @@
         <Param val="pp_end" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="$pp_end_code" valType="code" updates="None" name="startData"/>
+        <Param val="trigger_end" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_end_time" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_end_time + 80" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.01" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="constant" name="syncScreen"/>
-        <Param val="False" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
       </ParallelOutComponent>
     </Routine>
     <Routine name="trial">
