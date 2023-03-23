@@ -63,7 +63,7 @@ Example *s01_sin_eeg.json*
 ````
 
 Metadata (JSON)
-BIDS dataset_description.json
+Example from BIDS dataset_description.json (https://bids-specification.readthedocs.io/en/stable/03-modality-agnostic-files.html)
 ````
 {
   "Name": "The mother of all experiments",
