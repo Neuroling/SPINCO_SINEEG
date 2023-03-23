@@ -19,19 +19,19 @@ Folders
 ````
 ./spinco_data
     ├──SINEEG
-    ├── README.md
-    ├──SIN/    
-    |   ├── README.md
-    │   ├──raw/
-    │   │   ├── README.md
-    │   │   ├── s01
-    │   │   │   ├── s01_rest_eeg.bdf
-    │   │   │   ├── s01_sin_eeg.bdf
-    │   │   │   ├── s01_rest_eeg.json        
-    │   │   │   ├── s01_sin_eeg.json
-    │   │   │   ├── s01_electrodes.tsv
-    │   │   │   └── s01_sin_exp-data.csv
-    └── └── └── ...
+    |	├── README.md
+    |	├──SIN/    
+    |	|   ├── README.md
+    |	│   ├──raw/
+    |	│   │   ├── README.md
+    |	│   │   ├── s01
+    |	│   │   │   ├── s01_rest_eeg.bdf 
+    |	│   │   │   ├── s01_sin_eeg.bdf
+    |	│   │   │   ├── s01_rest_eeg.json        
+    |	│   │   │   ├── s01_sin_eeg.json
+    |	│   │   │   ├── s01_electrodes.tsv
+    |	│   │   │   └── s01_sin_exp-data.csv
+    └──	└── └── └── ...
 ````
 
 Metadata (JSON)
