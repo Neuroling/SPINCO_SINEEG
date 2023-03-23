@@ -21,7 +21,6 @@ Folders
     ├──SINEEG
     |	├── README.md
     |	├──SIN/    
-    |	|   ├── README.md
     |	│   ├──raw/
     |	│   │   ├── README.md
     |	│   │   ├── s01
@@ -51,13 +50,12 @@ Example *s01_sin_eeg.json*
 	"TriggerChannelCount": 1,
 	"PowerLineFrequency": 50,
 	"EEGPlacementScheme": "xxx",
-	"Manufacturer": "BioSemi",
+	"Manufacturer": "BioSemi- AMP MODEL?",
 	"ManufacturersModelName": "ActiveTwo",
 	"HardwareFilters": "n/a",
 	"SoftwareFilters": "n/a",
 	"SoftwareVersions": "xxx",
 	"CapManufacturer": "xxxx",
-	"CapManufacturersModelName": "xxxxx",
 	"RecordingType": "continuous",
 	"RecordingDuration": xxxx,
 	"SamplingFrequency": xxx,	
