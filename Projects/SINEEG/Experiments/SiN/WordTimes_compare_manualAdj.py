@@ -21,9 +21,9 @@ os.chdir(diroutput)
 # gather files with times 
 files = glob.glob(dirtimes + '/*Times.csv',recursive = True)
 
-# Concatenate frames 
+#%% Concatenate frames 
 df=[]
-df = pd.concat([pd.read_csv(fileinput) for fileinput in files])
+df = pd.concat([pd.read_csv(fileinput) for fileinput in files],ignore_index= True)
 # some correction in the 'file' columns for consistency
 df.file = df.file.str.replace('-manual','')
 df.file = df.file.str.replace('-man','')
@@ -35,9 +35,9 @@ dfmean = df.groupby('file').mean().reset_index()
 dfmean['rater']= 'mean'
 
 #save average 
-dfmean.to_csv(diroutput + '/MEAN_tts-golang-selected_wordTimes.csv' )
+dfmean.to_csv(diroutput + '/MEAN_tts-golang-selected_wordTimes.csv',index=False)
 # merge
-df = pd.concat([df,dfmean],keys='rater')
+df = pd.concat([df,dfmean],keys='rater',ignore_index=True)
     
 # %% plots 
 # LINEPLOTS. FILES IN X AXIS.

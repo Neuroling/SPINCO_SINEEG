@@ -118,22 +118,29 @@ for countdir, dirinput in enumerate(dirs2search):
     # Select only levels of interest
     vals = ['0.6p','0.7p','0.8p','-7db','-6db','-5db']
     fullTab = fullTab[fullTab['levels'].isin(vals)]
-    
+    # %%    
     # Add index by noise , voice and Level (to use for block assignment)
-    fullTab2save = fullTab.groupby(['noise','voice','levels']).sample(frac=1)
+    #fullTab2save = fullTab.groupby(['noise','voice','levels']).sample(frac=1)
+    fullTab2save = fullTab.groupby(['noise','voice','levels'])
+    #fullTab2save['newidx'] = fullTab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
     fullTab2save['newidx'] = fullTab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
     
-    # assign blocks
+    # assign blocks: only 16 trials per Level are taken 
     fullTab2save['block'] = 0
-    fullTab2save.block[(fullTab2save['noise']=='SiSSN') & (fullTab2save['newidx'] < 32)] = 'SSN1' 
-    fullTab2save.block[(fullTab2save['noise']=='SiSSN') & (fullTab2save['newidx'] >= 32)] = 'SSN2'
-    fullTab2save.block[(fullTab2save['noise']=='NV') & (fullTab2save['newidx'] < 32)] = 'NV1'
-    fullTab2save.block[(fullTab2save['noise']=='NV') & (fullTab2save['newidx'] >= 32)] = 'NV2'
+    fullTab2save.block[(fullTab2save['noise']=='SiSSN') & (fullTab2save['newidx'].between(0, 15, inclusive=True))] = 'SSN1' 
+    fullTab2save.block[(fullTab2save['noise']=='SiSSN') & (fullTab2save['newidx'].between(16, 31, inclusive=True))] = 'SSN2'
+    fullTab2save.block[(fullTab2save['noise']=='NV') & (fullTab2save['newidx'].between(0, 15, inclusive=True))] = 'NV1'
+    fullTab2save.block[(fullTab2save['noise']=='NV') & (fullTab2save['newidx'].between(16, 31, inclusive=True))] = 'NV2'
     fullTab2save = fullTab2save.groupby('block').sample(frac=1)
+    
+    # Discard excess trials
+    fullTab2save = fullTab2save[fullTab2save['block']!= 0];
+    
+    #overview 
     
     print(fullTab2save.groupby(['noise','block','voice','levels'])['block'].count())
     overview = fullTab2save.groupby(['noise','block','voice','levels'])['words'].count().reset_index()
-    
+
 # %% save to file
 with open(diroutput + 'tts-golang-selected_PsyPySEQ.csv','w', newline='') as csvfile:
     fullTab2save.to_csv(csvfile,index=False)
