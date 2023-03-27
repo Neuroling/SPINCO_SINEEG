@@ -525,8 +525,8 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="pp_start_code = 100;&amp;#10;pp_start_time = new ptb.GetSecs();&amp;#10;pp_end_time = (pp_start_time + token_3_tmax);&amp;#10;pp_t1_start_time = (new ptb.GetSecs() + token_1_tmin);&amp;#10;pp_t1_end_time = (new ptb.GetSecs() + token_1_tmax);&amp;#10;pp_t2_start_time = (new ptb.GetSecs() + token_2_tmin);&amp;#10;pp_t2_end_time = (new ptb.GetSecs() + token_2_tmax);&amp;#10;pp_t3_start_time = (new ptb.GetSecs() + token_3_tmin);&amp;#10;pp_t3_end_time = (new ptb.GetSecs() + token_3_tmax);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="# Trigger &amp;#10;pp_start_code = 100&amp;#10;&amp;#10;# Trigger times &amp;#10;pp_start_time = ptb.GetSecs()&amp;#10;pp_end_time = pp_start_time + token_3_tmax&amp;#10;&amp;#10;pp_t1_start_time = ptb.GetSecs()+token_1_tmin &amp;#10;pp_t1_end_time = ptb.GetSecs()+token_1_tmax &amp;#10;&amp;#10;pp_t2_start_time = ptb.GetSecs()+token_2_tmin &amp;#10;pp_t2_end_time = ptb.GetSecs()+token_2_tmax &amp;#10;&amp;#10;pp_t3_start_time = ptb.GetSecs()+token_3_tmin &amp;#10;pp_t3_end_time = ptb.GetSecs()+token_3_tmax &amp;#10;&amp;#10;# " valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="myClock = new core.Clock();&amp;#10;now = myClock.getTime();&amp;#10;pp_start_time = ((now + new ptb.GetSecs()) + 0.08);&amp;#10;pp_end_time = (pp_start_time + (token_3_tmax / 1000));&amp;#10;pp_t1_start_time = (pp_start_time + (token_1_tmin / 1000));&amp;#10;pp_t2_start_time = (pp_start_time + (token_2_tmin / 1000));&amp;#10;pp_t3_start_time = (pp_start_time + (token_3_tmin / 1000));&amp;#10;console.log(&quot;&lt;&lt;&lt;&lt; now&quot;);&amp;#10;console.log(now);&amp;#10;console.log(&quot;~~~~~~~trigger times d[*_*]b&quot;);&amp;#10;console.log(pp_start_time);&amp;#10;console.log(pp_t1_start_time);&amp;#10;console.log(&quot;~~~~~~trigger codes d[-_-]b&quot;);&amp;#10;console.log(trigger_call);&amp;#10;console.log(trigger_col);&amp;#10;console.log(trigger_num);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="# Trigger &amp;#10;myClock = core.Clock()&amp;#10;now = myClock.getTime()&amp;#10;&amp;#10;# Trigger times &amp;#10;pp_start_time = now + ptb.GetSecs() + 0.080&amp;#10;pp_end_time = pp_start_time + token_3_tmax/1000&amp;#10;pp_t1_start_time = pp_start_time + token_1_tmin/1000 &amp;#10;pp_t2_start_time = pp_start_time + token_2_tmin/1000 &amp;#10;pp_t3_start_time = pp_start_time + token_3_tmin/1000&amp;#10;&amp;#10;# Some runner prints for testing&amp;#10;print('&lt;&lt;&lt;&lt; now')&amp;#10;print(now)&amp;#10;&amp;#10;print('~~~~~~~trigger times d[*_*]b')&amp;#10;print(pp_start_time)&amp;#10;print (pp_t1_start_time)&amp;#10;&amp;#10;print('~~~~~~trigger codes d[-_-]b')&amp;#10;print(trigger_call)&amp;#10;print(trigger_col)&amp;#10;print(trigger_num)&amp;#10;&amp;#10; # &amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
@@ -570,14 +570,14 @@
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="psychoJS.window.mouseVisible = false;&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="win.mouseVisible = False " valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="win.mouseVisible = False &amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
-        <Param val="console.log(&quot;~~~~~~trigger codes d[-_-]b&quot;);&amp;#10;console.log(trigger_call);&amp;#10;console.log(trigger_col);&amp;#10;console.log(trigger_num);&amp;#10;console.log(&quot;~~~~~~~trigger times [-_-]&quot;);&amp;#10;console.log(pp_start_time);&amp;#10;console.log(pp_t1_start_time);&amp;#10;console.log((pp_t1_start_time + 80));&amp;#10;console.log(pp_t1_end_time);&amp;#10;" valType="extendedCode" updates="constant" name="End JS Routine"/>
-        <Param val="&amp;#10;&amp;#10;print('~~~~~~trigger codes d[-_-]b')&amp;#10;print(trigger_call)&amp;#10;print(trigger_col)&amp;#10;print(trigger_num)&amp;#10;print('~~~~~~~trigger times [-_-]')&amp;#10;print(pp_start_time)&amp;#10;print (pp_t1_start_time)&amp;#10;print (pp_t1_start_time + 80)&amp;#10;print (pp_t1_end_time)&amp;#10;# &amp;#10;" valType="extendedCode" updates="constant" name="End Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
+        <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="hideMouse_2" valType="code" updates="None" name="name"/>
       </CodeComponent>
@@ -615,10 +615,10 @@
         <Param val="pp_start" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="trigger_start" valType="code" updates="None" name="startData"/>
+        <Param val="100" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_start_time + 80" valType="code" updates="None" name="startVal"/>
+        <Param val="$pp_start_time  " valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.03" valType="code" updates="constant" name="stopVal"/>
@@ -632,10 +632,10 @@
         <Param val="pp_t1_start" valType="code" updates="None" name="name"/>
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="trigger_call" valType="code" updates="None" name="startData"/>
+        <Param val="3" valType="code" updates="None" name="startData"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$pp_t1_start_time + 80" valType="code" updates="None" name="startVal"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="$pp_t1_start_time / 1000 +0.08" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
         <Param val="0.03" valType="code" updates="constant" name="stopVal"/>

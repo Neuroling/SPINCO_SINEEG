@@ -116,7 +116,7 @@ for countdir, dirinput in enumerate(dirs2search):
     
     # % Add block info 
     # Select only levels of interest
-    vals = ['0.6p','0.75p','0.8p','-7.5db','-5db','0db']
+    vals = ['0.6p','0.7p','0.8p','-7db','-6db','-5db']
     fullTab = fullTab[fullTab['levels'].isin(vals)]
     
     # Add index by noise , voice and Level (to use for block assignment)
@@ -142,8 +142,6 @@ with open(diroutput + 'tts-golang-selected_PsyPySEQ.csv','w', newline='') as csv
 for block_value in fullTab2save['block'].unique():    
     block_df = fullTab2save[fullTab2save['block'] == block_value]    
     block_df.to_csv(diroutput + 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv', index=False)
-
-    
 
 #%%
 with open(diroutput + 'tts-golang-selected_seqOverview.csv','w', newline='') as csvfile:

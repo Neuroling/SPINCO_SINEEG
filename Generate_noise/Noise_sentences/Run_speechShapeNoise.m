@@ -42,7 +42,8 @@ nfft =          1000;
 noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which the bandwidth of the smoothing window is a constant percentage of the center frequency).
 
 % SNR levels
- target_dB_snr = [-10,-7.5,-5,-2.5,0];%15 for a clean condition
+ target_dB_snr = [-8,-7,-6,-5];%15 for a clean condition
+ target_dB_snr = [-4,-3,-2];%15 for a clean condition
  
 %% Generate noise from concatenated data
 % read signals
@@ -59,6 +60,7 @@ sigs_filt = cellfun(@(x) filtfilt(filt_b,filt_a,x), signals,'UniformOutput',0);
 sigs_filt_concat = vertcat(sigs_filt{:});
 
 %% speech-shape noise 
+rng(3) % set up random seed
 ssn = speechshapednoise(sigs_filt_concat,nfft,noctaves,srate);
 disp('...generated speech-shaped noise from file '); 
 audiowrite([diroutput,'_ssn.wav'],ssn,srate,'BitsPerSample',16,'comment','speech-shaped noise with length of all files in folder concatenated');        

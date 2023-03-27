@@ -32,6 +32,7 @@ MinFreq =       70;
 MaxFreq =        5000;
 % Degradation levels
 target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
+target_proportions = [0.5];
  
  
 %% Call vocoder function (save in structure array)
