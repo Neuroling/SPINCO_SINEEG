@@ -18,11 +18,12 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 
 | code	| Description
 |-------|-------------------------------|
-| 1 	| Click to first onset		|
-| 2 	| Click to second onset		|
-| 3 	| Click to third onset		|
-| 5	| Start of block screen		|
+| 1 	| Click to first target		|
+| 2 	| Click to second target		|
+| 3 	| Click to third target		|
+| 5	| Instruction screen		|
 | 6	| Start of block screen		|
+| 7	| Start of response grid	|
 |	|				|
 | 100 	| NV starts			| 
 | 101 	| NV ends			| 
@@ -30,14 +31,14 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 201 	| SiSSN ends			| 
 |onsets	|				|
 | 111 	| NV onset 1:Adler 		| 
-| 121 	| NV onset 2:drossel		| 
+| 121 	| NV onset 2:gelb	| 
 | 131 	| NV onset 3:eins		| 
 |	|				|
 | 211 	| SiSSN onset 1:Adler 		| 
-| 221 	| SiSSN onset 2:drossel		| 
+| 221 	| SiSSN onset 2:gelb		| 
 | 231 	| SiSSN onset 3:eins		| 
 |	|				|
-| 112 	| NV onset 1:Drossel		| 
+| 112 	| NV onset 1: Drossel		| 
 | 122 	| NV onset 2:gruen		| 
 | 132 	| NV onset 3:zwei		| 
 | 212 	| SiSSN onset 1:Drossel		| 
