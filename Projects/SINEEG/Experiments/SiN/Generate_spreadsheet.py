@@ -120,8 +120,8 @@ for countdir, dirinput in enumerate(dirs2search):
     fullTab = fullTab[fullTab['levels'].isin(vals)]
     # %%    
     # Add index by noise , voice and Level (to use for block assignment)
-    #fullTab2save = fullTab.groupby(['noise','voice','levels']).sample(frac=1)
-    fullTab2save = fullTab.groupby(['noise','voice','levels'])
+    fullTab2save = fullTab.groupby(['noise','voice','levels']).sample(frac=1)
+    #fullTab2save = fullTab.groupby(['noise','voice','levels'])
     #fullTab2save['newidx'] = fullTab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
     fullTab2save['newidx'] = fullTab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
     
@@ -137,9 +137,13 @@ for countdir, dirinput in enumerate(dirs2search):
     fullTab2save = fullTab2save[fullTab2save['block']!= 0];
     
     #overview 
-    
     print(fullTab2save.groupby(['noise','block','voice','levels'])['block'].count())
     overview = fullTab2save.groupby(['noise','block','voice','levels'])['words'].count().reset_index()
+    
+    stimOverview = pd.concat([fullTab2save.groupby(['noise','block','voice','levels'])['words'].count().reset_index(),\
+                              fullTab2save.groupby(['noise','block','voice','levels'])['callSign'].count().reset_index(),\
+                                  fullTab2save.groupby(['noise','block','voice','levels'])['colour'].count().reset_index(),\
+                                      fullTab2save.groupby(['noise','block','voice','levels'])['number'].count().reset_index()])
 
 # %% save to file
 with open(diroutput + 'tts-golang-selected_PsyPySEQ.csv','w', newline='') as csvfile:
@@ -153,4 +157,11 @@ for block_value in fullTab2save['block'].unique():
 #%%
 with open(diroutput + 'tts-golang-selected_seqOverview.csv','w', newline='') as csvfile:
         overview.to_csv(csvfile,index=False)
+
+#%%
+
+with open(diroutput + 'tts-golang-selected_stimOverview.csv','w', newline='') as csvfile:
+        stimOverview.to_csv(csvfile,index=False)
+                
+  
 
