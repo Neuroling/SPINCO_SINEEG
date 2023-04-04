@@ -22,8 +22,8 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 %% Inputs 
 
 % paths and files 
-dirinput =      'V:\spinco_data\AudioGens\tts-golang-selected' ;
-diroutput =     'V:\spinco_data\AudioGens\tts-golang-selected-SiSSN\'  ;
+dirinput =      'V:\spinco_data\AudioGens\tts-golang-48000hz' ;
+diroutput =     'V:\spinco_data\AudioGens\tts-golang-48000hz-SiSSN\'  ;
 mkdir(diroutput)
 cd (dirinput)
 audiofiles =      dir(['*.wav']); % must be more than one 
@@ -43,7 +43,7 @@ noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which th
 
 % SNR levels
  target_dB_snr = [-8,-7,-6,-5];%15 for a clean condition
- target_dB_snr = [-4,-3,-2];%15 for a clean condition
+ target_dB_snr = [-8,-7,-6,-5,-4,-3,-2];%15 for a clean condition
  
 %% Generate noise from concatenated data
 % read signals

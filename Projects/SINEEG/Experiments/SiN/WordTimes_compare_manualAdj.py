@@ -13,9 +13,9 @@ from scipy.io import wavfile
 import numpy as np    
 
 # directories
-diraudio = 'V:/spinco_data/AudioGens/tts-golang-selected'
-dirtimes = 'V:/spinco_data/AudioGens/word_times'
-diroutput = 'V:/spinco_data/AudioGens/word_times'
+diraudio = 'V:/spinco_data/AudioGens/tts-golang-48000hz'
+dirtimes = 'V:/spinco_data/AudioGens/tts-golang-48000hz-word_times'
+diroutput = 'V:/spinco_data/AudioGens/tts-golang-48000hz-word_times'
 os.chdir(diroutput)
 
 # gather files with times 

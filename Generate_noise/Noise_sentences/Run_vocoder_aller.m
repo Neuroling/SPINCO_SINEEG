@@ -16,8 +16,8 @@ addpath('C:\Users\gfraga\Documents\MATLAB\')
 %% Inputs 
 makeplots = 0;
 % paths and files 
-dirinput =      'V:\spinco_data\AudioGens\tts-golang-selected';
-diroutput =     'V:\spinco_data\AudioGens\tts-golang-selected-NV';
+dirinput =      'V:\spinco_data\AudioGens\tts-golang-48000hz';
+diroutput =     'V:\spinco_data\AudioGens\tts-golang-48000hz-NV';
 cd (dirinput)
 audiofiles =      dir([dirinput, '\*.wav']);
 audiofiles =      fullfile(dirinput, {audiofiles.name});
