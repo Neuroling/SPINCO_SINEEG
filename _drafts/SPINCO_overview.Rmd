@@ -111,6 +111,44 @@ All scripts regularly backed up to a private repo in Github
 ```
 
 <!-- ## Stimuli {.tabset} -->
+### Proposed data storage
+
+Main directories highlighted in pink: (1) Documents, presentations and publications (2) scripts (3) data, results, statistics.
+
+All scripts regularly backed up to a private repo in Github
+
+```{nomnoml, echo = FALSE, out.height=400,out.width=850}
+# https://cran.r-project.org/web/packages/nomnoml/readme/README.html
+#fontSize: 6
+#arrowSize: .5
+#stroke: black
+#.box: dashed center
+#.comment: fill=Wheat empty bold
+#.client: fill=LavenderBlush empty bold
+#background: FloralWhite
+#lineWidth: 1
+#direction: right
+#leading: .75
+#lineWidth: .75
+#padding: 5
+#spacing: 0
+#zoom: 2
+[<state>user]-> local[<comment> PC |]
+[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]
+[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]
+[PC] -- [<database> SMB-share ]
+ 
+
+  [gfraga | scripts]-:> push2web [<state>github repo]
+
+[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]
+[<client>spinco_data |raw, final outputs, long-term ] <->  [<client>gfraga | scripts]
+
+[Linux] -- [<database> NFS-share | heavy processing]
+[Linux] -- [<database> SMB-share] 
+[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]
+[<database> NFS-share] <-> private [mnt/gfraga-data]
+```
 
 ## Stimuli {.tabset} 
 

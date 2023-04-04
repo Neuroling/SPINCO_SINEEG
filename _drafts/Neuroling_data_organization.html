@@ -9,11 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="G.Fraga Gonzalez" />
 
-<meta name="date" content="2023-03-30" />
+<meta name="date" content="2023-04-03" />
 
-<title>Speech-in-noise comprehension (SPINCO)</title>
+<title>Neuroling data organization</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -15320,16 +15319,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-  p.abstract{
-    text-align: center;
-    font-weight: bold;
-  }
-  div.abstract{
-    margin: auto;
-    width: 90%;
-  }
-</style>
 
 
 
@@ -15532,120 +15521,26 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Speech-in-noise comprehension (SPINCO)</h1>
-<h4 class="author">G.Fraga Gonzalez</h4>
-<h4 class="date">2023-03-30</h4>
-<div class="abstract">
-<p class="abstract">Abstract</p>
-Overview of ongoing projects at Neurolinguistics group (University of
-Zurich)
-</div>
+<h1 class="title toc-ignore">Neuroling data organization</h1>
+<h4 class="date">2023-04-03</h4>
 
 </div>
 
 
 <!-- To unfold code in specific chunks use Chunk options: class.source = 'fold-show' -->
 <!-- ## Projects {.tabset} -->
-<div id="projects" class="section level2 tabset">
-<h2 class="tabset">Projects</h2>
-<div id="overview" class="section level3">
-<h3>Overview</h3>
-<div id="htmlwidget-2a92e6bd56c82f0f023f" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-2a92e6bd56c82f0f023f">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 3\n  \n[<database>SPINCO]-> EEG[<comment>SINEEG]\n[<database>SPINCO]-> online[<comment>SINON]\n  \n  [SINON]-->Rmd [database | words | pseudowords] \n  [database]--> Matlab[Manipulations | noise-vocoded | in speech-shaped noise]\n  [Manipulations] --> .m[SNR | x 5 Lvls] \n  [SNR | x 5 Levls] -> Gorilla[Tasks | LD | 2FC | pict match]\n  \n  [<comment>SINEEG]-->Openvibe[Real-time EEG]\n  [<comment>SINEEG]-->Matlab[ Manipulation | noise-vocoded]\n  [Manipulation] --> .m[SNR. | 3 x Lvls]\n  [Real-time EEG] --> [brain-states | alpha | beta-connect?]\n  [brain-states] --> [stim trigger]\n  [SNR.] -->  [stim trigger]\n  [stim trigger] -> psyexp [Task | Lexical Decision]\n  \n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
+<div id="storage" class="section level2">
+<h2>Storage</h2>
+<p>xx</p>
+<div id="htmlwidget-2bce9eaad09d1fc18a59" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2bce9eaad09d1fc18a59">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 10\n#arrowSize: .8\n#stroke: black\n#.box: dashed center\n#.abstract: fill=lightskyblue empty bold\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: White\n#lineWidth: 1\n#direction: right\n#leading: .85\n#lineWidth: .75\n#padding: 9\n#spacing: 0\n#zoom: 4\n  \n\n[<comment>PC] --> cloud [<state>LAB OneDrive] \n  [LAB OneDrive] --> all full permissions [<abstract>Lab docs]\n      [Lab docs] --> [<client>Ethics | Project A/subproject A1]\n      [Lab docs] --> [<client> Materials | literature | manuals]  \n\n[PC] --> cloud [<state>user OneDrive] \n    [<state>user OneDrive]  -:> [<client> Private Docs | Admin | Presentations | Manuscripts | Teaching | Misc]\n\n\n[PC] -- [SMB-share]\n[<database> SMB-share | G_PSYNEULIN_DATA$(\\\\idnas12.d.uzh.ch)] --> Lab [<abstract> Projects | all members read access |  PI full permissions]\n  [Projects] -- [Project A | user full permissions]\n      [Project A ] -> [<client>data | raw | preprocessing]\n      [Project A ] -> [<client>stimuli]      \n      [Project A ] -> [<client>results]\n      [Project A ] -> [<client>scripts]\n        [<client> scripts]-:> public or private [<state>github repo]\n\n\n[<comment>Linux] -- [NFS-share | processing]\n[Linux] -- [<database> SMB-share] \n[NFS-share] --> local [mnt/projectA/subprojectA1 |intermediate derivatives]\n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="data-storage" class="section level3">
-<h3>Data storage</h3>
-<p>Main directories highlighted in pink: (1) Documents, presentations
-and publications (2) scripts (3) data, results, statistics.</p>
+<div id="data-storage" class="section level2 tabset">
+<h2 class="tabset">Data storage</h2>
+<p>Lab-level folders in blue</p>
 <p>All scripts regularly backed up to a private repo in Github</p>
-<div id="htmlwidget-b473047f08b308303399" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-b473047f08b308303399">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: .75\n#lineWidth: .75\n#padding: 5\n#spacing: 0\n#zoom: 2\n  \n[<state>user]-> local[<comment> PC |]\n[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]\n[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n[PC] -- [<database> SMB-share ]\n \n[<database> SMB-share | G_PSYNEULIN_DATA$ (\\\\idnas12.d.uzh.ch)] <-> private [<client>gfraga | scripts]\n  [gfraga | scripts]-:> push2web [<state>github repo]\n\n[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]\n\n[Linux] -- [<database> NFS-share | heavy processing]\n[Linux] -- [<database> SMB-share] \n[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]\n[<database> NFS-share] <-> private [mnt/gfraga-data]\n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-<!-- ## Stimuli {.tabset} -->
-</div>
-<div id="proposed-data-storage" class="section level3">
-<h3>Proposed data storage</h3>
-<p>Main directories highlighted in pink: (1) Documents, presentations
-and publications (2) scripts (3) data, results, statistics.</p>
-<p>All scripts regularly backed up to a private repo in Github</p>
-<div id="htmlwidget-fc6cdf066b2ef21084c6" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-fc6cdf066b2ef21084c6">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: .75\n#lineWidth: .75\n#padding: 5\n#spacing: 0\n#zoom: 2\n[<state>user]-> local[<comment> PC |]\n[PC] --> cloud [<client>OneDrive/Sharepoint | spinco_documentation]\n[user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n[PC] -- [<database> SMB-share ]\n \n\n  [gfraga | scripts]-:> push2web [<state>github repo]\n\n[<database> SMB-share] <->  [<client>spinco_data |raw, final outputs, long-term ]\n[<client>spinco_data |raw, final outputs, long-term ] <->  [<client>gfraga | scripts]\n\n[Linux] -- [<database> NFS-share | heavy processing]\n[Linux] -- [<database> SMB-share] \n[<database> NFS-share] <-> shared [mnt/spinco |intermediate and final outputs]\n[<database> NFS-share] <-> private [mnt/gfraga-data]","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-<div id="stimuli" class="section level2 tabset">
-<h2 class="tabset">Stimuli</h2>
-<div id="recordings" class="section level3">
-<h3>Recordings</h3>
-<p>Words and pseudowords were recorded in shuffled order in a single
-session by dr. D. Friedrichs (at LIRI, UZH). The session recorded video
-and .wav files at 44100 Hz; 24 bits per sample.</p>
-<div id="htmlwidget-8b794d9a177f75bc3761" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8b794d9a177f75bc3761">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# From  https://nomnoml.com/\n#arrowSize: 1\n#bendSize: 0.3\n#direction:  right \n#gutter: 15\n#edgeMargin: 0\n#gravity: 1\n#edges: hard | rounded\n#background: transparent\n#fill: #eee8d5; #fdf6e3\n#fillArrows: false\n#font: Calibri\n#fontSize: 12\n#leading: 1.25\n#lineWidth: 1.5\n#padding: 8\n#spacing: 45\n#stroke: #33322E\n#title: filename\n#zoom: 1\n#acyclicer: greedy\n#ranker: network-simplex | tight-tree | longest-path\n#.box: fill=#8f8 dashed\n#.blob: visual=ellipse title=bold\n\n[<usecase>raw | versions] ->  [<table> Separate files (prorrec) | words | pseudowords]\n[<table> Separate files (prorrec)] -->  [<state>inspect | +trim]\n\n[inspect ] --> [<actor>audiocheck|plots]\n\n[<actor>audiocheck] --> if OK  [<abstract>Audacity macro | trunc silence | fade ends | add silence | normalize loudness]\n  [<abstract>Audacity macro] --> [Experiment]\n    [<abstract>Experiment]  -->  [<state>clear]\n    [<abstract>Experiment] --> [<state>in SSN]\n    [<abstract>Experiment] --> [<state>vocoder]\n      [<state>vocoder] -- Lvls[<start>st.]\n      [<state>in SSN] -- SNRs[<start>st]\n[<actor>audiocheck] <--> not OK?[<abstract>audioLabeler app | or discard]\n      ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-<div id="audio-labeler-optional-recommended-to-use-audacity-instead" class="section level4">
-<h4><strong>Audio labeler</strong> (optional: recommended to use
-Audacity instead)</h4>
-<p>Matlab app to apply speech detection in one or more wav files and to
-manually adjust the output as a label.</p>
-<ol style="list-style-type: decimal">
-<li><p>Type: <strong>AudioLabeler</strong> in command line to initialize
-the app</p></li>
-<li><p>Go to Label and <strong>load</strong> one or several audio
-files</p></li>
-<li><p><strong>Select all</strong> files and click on Speech detector.
-This will open a new tab with the option to run speech detector. Run it
-in all files</p></li>
-<li><p>Now a new <strong>label SpeechDetected</strong> has been created
-in the ROI labels panel.</p></li>
-<li><p>To <strong>adjust</strong> the label click in one audio file and
-then in the yellow segment marked by the speech detector . If it is not
-adjust the edges of the highlight and then click away in the panel
-below. Make sure the label doesn’t reset to the original size!</p></li>
-<li><p>If you find a ‘<strong>click</strong>’ add a new label called
-‘click’ and select a short segment around it. Mark it as ‘true’ so it is
-saved.</p></li>
-<li><p><strong>Saving</strong> the output. One option is to select all
-files and then click Labels/Export to workspace. This will create a new
-variable: labeledSet_hhmmss (time stamped)</p></li>
-<li><p>Run <strong>script to use the label info</strong> , transform the
-click segment (if any ) to zero and trim the file.</p></li>
-</ol>
-</div>
-</div>
-</div>
-<div id="sinon" class="section level2 tabset">
-<h2 class="tabset">SINON</h2>
-<div id="noise-generation" class="section level3">
-<h3>Noise generation</h3>
-<div id="htmlwidget-c613d7993c5d126fe9c4" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c613d7993c5d126fe9c4">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 6\n#arrowSize: .5\n#stroke: black\n#.box: dashed center\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: FloralWhite\n#lineWidth: 1\n#direction: right\n#leading: 1.25\n#lineWidth: .75\n#padding: 8\n#spacing: 40\n#zoom: 3\n[<database>audio |files  normalized to X db | head + tail silence] --> each [filtered]\n  [filtered] --> all [<comment>concatenate]\n    [<comment>concatenate] --> [<comment>long SSN]\n      [long SSN] --> file loop [<client>SSN | file cuts + head | match file rms]\n        \n  [<database>SSN] --> [<choice> SNR lev | adjust db lv]\n    [SNR lev ]-> [SiSSN]\n    [filtered ] -> [SiSSN | signal*(0.99/max(abs(signal)))]\n      [SiSSN]-> audacity [<usecase> SiSSN. | norm perceived loudness]\n\n[<database>audio |files  normalized to X db | head + tail silence] --> each [SNR ctrl | n channels]\n [<client>SNR ctrl | n channels] --> [<choice>filter bank | greenwood spacing]  \n  [filter bank | Greenwood spacing]--> [<client>vocoder]\n        [vocoder]--> [NV speech]\n        [NV speech]--> audacity[<usecase>NV speech.| norm perceived loudness]\n   ","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-</div>
-<div id="trial-sequences" class="section level3">
-<h3>Trial sequences</h3>
-<div id="htmlwidget-067ca452762597d28a8a" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
-<script type="application/json" data-for="htmlwidget-067ca452762597d28a8a">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# From  https://nomnoml.com/\n#arrowSize: 1\n#bendSize: 0.3\n#direction:  right \n#gutter: 15\n#edgeMargin: 0\n#gravity: 1\n#edges: hard | rounded\n#background: transparent\n#fill: #eee8d5; #fdf6e3\n#fillArrows: false\n#font: Calibri\n#fontSize: 12\n#leading: 1.25\n#lineWidth: 1.5\n#padding: 8\n#spacing: 45\n#stroke: #33322E\n#title: filename\n#zoom: 1\n#acyclicer: greedy\n#ranker: network-simplex | tight-tree | longest-path\n#.box: fill=#8f8 dashed\n#.blob: visual=ellipse title=bold\n\n[<usecase>MATCH | subsets] -> R[<table>SINON_spreadsheets_LD | distribute words/pseudo; distribute snr; list file names]\n[<state>SINON_spreadsheets_LD]-->R[<table>SINON_spreadsheets_LD_Gorilla | added formatting]\n[<state>SINON_spreadsheets_LD_Gorilla | added formatting] --> R[<table> SINON_spreadsheets_LD_Gorila_cbxxx | copies with counterbalanced block order]\n\n[<state>SINON_spreadsheets_LD]-->R[<state>copy audiofiles | copy mp3s of trials to folder]\n\n[<state>SINON_spreadsheets_LD_Gorilla]-->.m[<state>table audiofiles | summary rms and duration]\n[<state>copy audiofiles]-->[<state>table audiofiles | summary rms and duration]\n[<state>table audiofiles]-->R[<state>summary plots]\n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
-<!-- ### Design -->
-<!-- ```{nomnoml, echo = FALSE, out.height=400,out.width=850} -->
-<!-- # https://cran.r-project.org/web/packages/nomnoml/readme/README.html -->
-<!-- #fontSize: 6 -->
-<!-- #arrowSize: .5 -->
-<!-- #stroke: black -->
-<!-- #.box: dashed center -->
-<!-- #.comment: fill=lightyellow empty bold -->
-<!-- #lineWidth: 1 -->
-<!-- #direction: right -->
-<!-- #leading: 1.25 -->
-<!-- #lineWidth: .75 -->
-<!-- #padding: 8 -->
-<!-- #spacing: 40 -->
-<!-- #zoom: 2 -->
-<!-- #direction: down -->
-<!-- [<database>SINON| manipulations]-> [Within ss] -->
-<!--   [Within ss] -  [Item type | word | pseudo] -->
-<!--   [Within ss]   ['Noise' type | vocoding | speech-shaped noise] -->
-<!--   [Within ss]  [SNR | 1 | 2| 3| 4| 5] -->
-<!-- [<database>SINON| manipulations]-> [Between ss] -->
-<!--   [Between ss]   [Task | Lexical decision | 2FC | Pict match] -->
-<!-- ``` -->
-</div>
+<div id="htmlwidget-ae2b7401f9f5f4f4db62" style="width:850px;height:400px;" class="nomnoml html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ae2b7401f9f5f4f4db62">{"x":{"code":"\n#fill: #FEFEFF\n#lineWidth: 1\n#zoom: 4\n#direction: right\n\n# https://cran.r-project.org/web/packages/nomnoml/readme/README.html\n#fontSize: 10\n#arrowSize: .8\n#stroke: black\n#.box: dashed center\n#.database: fill=greenyellow empty bold\n#.abstract: fill=lightskyblue empty bold\n#.comment: fill=Wheat empty bold\n#.client: fill=LavenderBlush empty bold\n#background: White\n#lineWidth: 1\n#direction: right\n#leading: .85\n#lineWidth: .75\n#padding: 9\n#spacing: 0\n#zoom: 4\n  \n[<state>user]-> local[<comment> PC |]\n  [PC] --> private [<client> Documentation | Admin | Presentations | Manuscripts | Teaching | Misc]\n  [Documentation] -:> cloud [<state>OneDrive/Sharepoint]\n  \n  [user]-> remote[<comment>Linux | 130.60.236.20 |130.60.238.20]\n  [PC] -- [<database> SMB-share ]\n   \n[<database> SMB-share] <-> Lab [<abstract> Projects | all members read access |  PI full permissions]\n  [Projects] -- [Project X | user full permissions]\n    [Project X] --> [<client>subproject]\n      [subproject] -> [<client>data | raw | preprocessing]\n      [subproject] -> [<client>results]\n      [subproject] -> [<client>publications]    \n  \n    [Project X] --> [<client>scripts]\n      [<client> scripts]-:> public or private [<state>github repo]\n\n[<database> SMB-share] <-> Lab [<abstract> Lab docs| all members full permissions]\n    [Lab docs] --> [<client>Ethics | Project | Subproject]\n      [Ethics] -:> private [<state>lab github repo]\n    [Lab docs] --> [<client>Materials | books | articles | tutorials | manuals]\n\n[Linux] -- [NFS-share | processing]\n[Linux] -- [<database> SMB-share] \n[NFS-share] --> local [mnt/Project X |intermediate derivatives]\n","svg":false,"png":null},"evals":[],"jsHooks":[]}</script>
 </div>
 
 
