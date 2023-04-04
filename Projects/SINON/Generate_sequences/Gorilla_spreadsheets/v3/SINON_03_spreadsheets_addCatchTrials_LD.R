@@ -35,17 +35,26 @@ for (i in 1:4){
                               replicate(n=5,paste0('NV_',pseudos,'_norm_32ch_1p.wav')))))
   colnames(catches[[i]]) <- colnames(dat)
 }
+
+catches <-  do.call(rbind,catches)
+# alternatig NV, SiSSN order
+order1 = which(catches$block==1 | catches$block==3)
+catches[order1,grepl('list.*',colnames(catches))] <-  cbind(replicate(n=5,paste0('SiSSN_',catches$item[order1],'_norm15db.wav')),replicate(n=5,paste0('NV_',catches$item[order1],'_norm_32ch_1p.wav')))
+
+order2 = which(catches$block==2 | catches$block==4)
+catches[order2,grepl('list.*',colnames(catches))] <-  cbind(replicate(n=5,paste0('NV_',catches$item[order2],'_norm_32ch_1p.wav')),replicate(n=5,paste0('SiSSN_',catches$item[order2],'_norm15db.wav')))
+
+
+# 
 idx1 <- which(dat$block==1)[1]
 idx2 <- which(dat$block==2)[1]
 idx3 <- which(dat$block==3)[1]
 idx4 <- which(dat$block==4)[1]
 # Insert
-newdat <- 
-rbind(dat[1:(idx1-1),],catches[[1]],dat[idx1:(idx2-1),],
-      catches[[2]],dat[idx2:(idx3-1),],
-      catches[[3]],dat[idx3:(idx4-1),],
-      catches[[4]],dat[idx4:nrow(dat),])
-
+newdat <- rbind(dat[1:(idx1-1),],catches[which(catches$block==1),],dat[idx1:(idx2-1),],
+      catches[which(catches$block==2),],dat[idx2:(idx3-1),],
+      catches[which(catches$block==3),],dat[idx3:(idx4-1),],
+      catches[which(catches$block==4),],dat[idx4:nrow(dat),])
 # save 
 setwd(dirinput)
 openxlsx::write.xlsx(x = newdat,paste0(basefilename,'C.xlsx'))

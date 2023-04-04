@@ -10,7 +10,7 @@ rm(list=ls())
 ### LEXICAL DECISION TASK 
 dirinput <- 'V:/spinco_data/SINON/Spreadsheets/PM/'
 basefilename <- 'Spreadsheets_PM_Gorilla'
-matchedSets <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v4/PM_20items/'
+matchedSets <- 'V:/spinco_data/LIRI_database/SINON_MATCH_v3/PM_20items/'
 databasefile <-'V:/spinco_data/LIRI_database/LIRI_database_stimuli.xlsx'
 
 setwd(dirinput)
@@ -50,16 +50,27 @@ for (i in 1:4){
 
   
 }
+
+catches <-  do.call(rbind,catches)
+# Alternating NV/ SISSN order
+order1 = which(catches$block==1 | catches$block==3)
+catches[order1,grepl('list.*',colnames(catches))] <-  cbind(replicate(n=5,paste0('SiSSN_',catches$item[order1],'_norm15db.wav')),replicate(n=5,paste0('NV_',catches$item[order1],'_norm_32ch_1p.wav')))
+
+order2 = which(catches$block==2 | catches$block==4)
+catches[order2,grepl('list.*',colnames(catches))] <-  cbind(replicate(n=5,paste0('NV_',catches$item[order2],'_norm_32ch_1p.wav')),replicate(n=5,paste0('SiSSN_',catches$item[order2],'_norm15db.wav')))
+
+
+
 idx1 <- which(dat$block==1)[1]
 idx2 <- which(dat$block==2)[1]
 idx3 <- which(dat$block==3)[1]
 idx4 <- which(dat$block==4)[1]
 # Insert
 newdat <- 
-rbind(dat[1:(idx1-1),],catches[[1]],dat[idx1:(idx2-1),],
-      catches[[2]],dat[idx2:(idx3-1),],
-      catches[[3]],dat[idx3:(idx4-1),],
-      catches[[4]],dat[idx4:nrow(dat),])
+  rbind(dat[1:(idx1-1),],catches[which(catches$block==1),],dat[idx1:(idx2-1),],
+        catches[which(catches$block==2),],dat[idx2:(idx3-1),],
+        catches[which(catches$block==3),],dat[idx3:(idx4-1),],
+        catches[which(catches$block==4),],dat[idx4:nrow(dat),])
 
 # save 
 setwd(dirinput)

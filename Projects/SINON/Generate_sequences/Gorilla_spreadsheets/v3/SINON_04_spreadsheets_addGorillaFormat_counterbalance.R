@@ -1,5 +1,17 @@
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2FC/'
-basefilename <- 'Spreadsheets_2FC_GorillaC'
+## Add block counterbalancing to sequences for Gorilla-Experiment
+#===========================================================================
+# - Create variations with different block order
+# - All variations should have alternating sound manipulation blocks (NV,SiSSN)
+
+
+
+
+
+
+#------------------------------------------------------------------------
+
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/PM/'
+basefilename <- 'Spreadsheets_PM_GorillaC'
 setwd(dirinput)
 
 

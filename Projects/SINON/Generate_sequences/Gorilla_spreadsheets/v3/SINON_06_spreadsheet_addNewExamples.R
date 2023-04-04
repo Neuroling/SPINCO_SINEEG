@@ -9,7 +9,7 @@ rm(list=ls())
 
 # ----------------------------------------------
 ### Read files
-dirinput <- 'V:/spinco_data/SINON/Spreadsheets/2FC/'
+dirinput <- 'V:/spinco_data/SINON/Spreadsheets/PM/'
 diroutput <- dirinput 
 
 files <- dir(dirinput,pattern= '*GorillaC_.*.xlsx')

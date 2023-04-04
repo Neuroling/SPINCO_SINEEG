@@ -16,8 +16,8 @@ setwd(dirinput)
 dat <- openxlsx::read.xlsx(paste0(basefilename,'.xlsx'))
 database <- openxlsx::read.xlsx(databasefile,sheet = 'Merged')
 
+# Select  stimuli from one block to be presented in the other blocks as catches
 nreps = 12
-# Select 13 stimuli from one block to be presented in the other blocks as catches
 catches <-  rbind(dat[which(dat$block==1),][1:nreps,],
               dat[which(dat$block==2),][1:nreps,],
               dat[which(dat$block==3),][1:nreps,],
