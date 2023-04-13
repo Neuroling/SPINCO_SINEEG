@@ -1,0 +1,500 @@
+8.1291 	EXP 	Created window1 = Window(allowGUI=False, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x0000023FFF09EAC0>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x0000023FFF2DB730>, multiSample=False, name='window1', numSamples=2, pos=(0, 0), screen=0, size=array([1280, 1024]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+8.1293 	EXP 	window1: mouseVisible = True
+8.1293 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+8.1293 	EXP 	window1: recordFrameIntervals = False
+8.2951 	EXP 	window1: recordFrameIntervals = True
+8.4783 	EXP 	Screen (0) actual frame rate measured at 60.12Hz
+8.4783 	EXP 	window1: recordFrameIntervals = False
+9.9857 	EXP 	Created instrTrainText = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='instrTrainText', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='Quick and dirty timing test', units='height', win=Window(...), wrapWidth=1)
+9.9893 	EXP 	Created blockStart = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='blockStart', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='Begin  block ', units='height', win=Window(...), wrapWidth=1)
+10.0580 	EXP 	Sound sound_1 set volume 1.000
+10.0612 	EXP 	Created fixation = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, anchor=('center', 'center'), autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=-2.0, fillColor=array([1, 1, 1]), fillColorSpace='rgb', fillRGB=array([1, 1, 1]), interpolate=True, lineColor=array([1., 1., 1.]), lineColorSpace='rgb', lineRGB=array([1, 1, 1]), lineWidth=0.5, name='fixation', opacity=0.75, ori=0.0, pos=array([0., 0.]), size=array([0.05, 0.05]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+10.0817 	EXP 	Created screenAfterAudio = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image='images/grayScreen.png', interpolate=True, mask=None, maskParams=None, name='screenAfterAudio', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([0.5, 0.5]), texRes=128.0, units='height', win=Window(...))
+10.0819 	EXP 	window1: mouseVisible = False
+10.0938 	EXP 	instrTrainText: autoDraw = True
+11.3622 	DATA 	Keypress: space
+11.3771 	EXP 	instrTrainText: autoDraw = False
+11.3771 	EXP 	blockStart: autoDraw = True
+11.7654 	EXP 	Imported Sequence.xlsx as conditions, 200 conditions, 1 params
+11.7671 	EXP 	Created sequence: random, trialTypes=200, nReps=1, seed=None
+11.7673 	EXP 	New trial (rep=0, index=0): {'audiofile': 'audio/click_beep.wav'}
+11.7877 	EXP 	window1: mouseVisible = False
+11.7934 	EXP 	Sound sound_1 started
+11.7896 	DATA 	Keypress: space
+11.7933 	EXP 	blockStart: autoDraw = False
+11.7933 	EXP 	fixation: autoDraw = True
+12.8059 	EXP 	Sound sound_1 reached end of file
+12.8431 	EXP 	fixation: autoDraw = False
+12.8431 	EXP 	screenAfterAudio: autoDraw = True
+13.7771 	EXP 	New trial (rep=0, index=1): {'audiofile': 'audio/click_beep.wav'}
+13.7829 	EXP 	window1: mouseVisible = False
+13.7926 	EXP 	Sound sound_1 started
+13.7927 	EXP 	screenAfterAudio: autoDraw = False
+13.7927 	EXP 	fixation: autoDraw = False
+13.7927 	EXP 	screenAfterAudio: autoDraw = False
+13.7927 	EXP 	fixation: autoDraw = True
+14.8093 	EXP 	Sound sound_1 reached end of file
+14.8260 	EXP 	fixation: autoDraw = False
+14.8260 	EXP 	screenAfterAudio: autoDraw = True
+15.7597 	EXP 	New trial (rep=0, index=2): {'audiofile': 'audio/click_beep.wav'}
+15.7654 	EXP 	window1: mouseVisible = False
+15.7755 	EXP 	Sound sound_1 started
+15.7757 	EXP 	screenAfterAudio: autoDraw = False
+15.7757 	EXP 	fixation: autoDraw = False
+15.7757 	EXP 	screenAfterAudio: autoDraw = False
+15.7757 	EXP 	fixation: autoDraw = True
+16.7846 	EXP 	Sound sound_1 reached end of file
+16.7920 	EXP 	fixation: autoDraw = False
+16.7920 	EXP 	screenAfterAudio: autoDraw = True
+17.7426 	EXP 	New trial (rep=0, index=3): {'audiofile': 'audio/click_beep.wav'}
+17.7481 	EXP 	window1: mouseVisible = False
+17.7584 	EXP 	Sound sound_1 started
+17.7583 	EXP 	screenAfterAudio: autoDraw = False
+17.7583 	EXP 	fixation: autoDraw = False
+17.7583 	EXP 	screenAfterAudio: autoDraw = False
+17.7583 	EXP 	fixation: autoDraw = True
+18.7632 	EXP 	Sound sound_1 reached end of file
+18.7744 	EXP 	fixation: autoDraw = False
+18.7744 	EXP 	screenAfterAudio: autoDraw = True
+19.7250 	EXP 	New trial (rep=0, index=4): {'audiofile': 'audio/click_beep.wav'}
+19.7316 	EXP 	window1: mouseVisible = False
+19.7409 	EXP 	Sound sound_1 started
+19.7411 	EXP 	screenAfterAudio: autoDraw = False
+19.7411 	EXP 	fixation: autoDraw = False
+19.7411 	EXP 	screenAfterAudio: autoDraw = False
+19.7411 	EXP 	fixation: autoDraw = True
+20.7420 	EXP 	Sound sound_1 reached end of file
+20.7574 	EXP 	fixation: autoDraw = False
+20.7574 	EXP 	screenAfterAudio: autoDraw = True
+21.7077 	EXP 	New trial (rep=0, index=5): {'audiofile': 'audio/click_beep.wav'}
+21.7137 	EXP 	window1: mouseVisible = False
+21.7235 	EXP 	Sound sound_1 started
+21.7238 	EXP 	screenAfterAudio: autoDraw = False
+21.7238 	EXP 	fixation: autoDraw = False
+21.7238 	EXP 	screenAfterAudio: autoDraw = False
+21.7238 	EXP 	fixation: autoDraw = True
+22.7401 	EXP 	Sound sound_1 reached end of file
+22.7568 	EXP 	fixation: autoDraw = False
+22.7568 	EXP 	screenAfterAudio: autoDraw = True
+23.6906 	EXP 	New trial (rep=0, index=6): {'audiofile': 'audio/click_beep.wav'}
+23.6969 	EXP 	window1: mouseVisible = False
+23.7063 	EXP 	Sound sound_1 started
+23.7066 	EXP 	screenAfterAudio: autoDraw = False
+23.7066 	EXP 	fixation: autoDraw = False
+23.7066 	EXP 	screenAfterAudio: autoDraw = False
+23.7066 	EXP 	fixation: autoDraw = True
+24.7152 	EXP 	Sound sound_1 reached end of file
+24.7227 	EXP 	fixation: autoDraw = False
+24.7227 	EXP 	screenAfterAudio: autoDraw = True
+25.6735 	EXP 	New trial (rep=0, index=7): {'audiofile': 'audio/click_beep.wav'}
+25.6789 	EXP 	window1: mouseVisible = False
+25.6890 	EXP 	Sound sound_1 started
+25.6890 	EXP 	screenAfterAudio: autoDraw = False
+25.6890 	EXP 	fixation: autoDraw = False
+25.6890 	EXP 	screenAfterAudio: autoDraw = False
+25.6890 	EXP 	fixation: autoDraw = True
+26.6940 	EXP 	Sound sound_1 reached end of file
+26.7054 	EXP 	fixation: autoDraw = False
+26.7054 	EXP 	screenAfterAudio: autoDraw = True
+27.6558 	EXP 	New trial (rep=0, index=8): {'audiofile': 'audio/click_beep.wav'}
+27.6615 	EXP 	window1: mouseVisible = False
+27.6716 	EXP 	Sound sound_1 started
+27.6716 	EXP 	screenAfterAudio: autoDraw = False
+27.6716 	EXP 	fixation: autoDraw = False
+27.6716 	EXP 	screenAfterAudio: autoDraw = False
+27.6716 	EXP 	fixation: autoDraw = True
+28.6726 	EXP 	Sound sound_1 reached end of file
+28.6881 	EXP 	fixation: autoDraw = False
+28.6881 	EXP 	screenAfterAudio: autoDraw = True
+29.6389 	EXP 	New trial (rep=0, index=9): {'audiofile': 'audio/click_beep.wav'}
+29.6449 	EXP 	window1: mouseVisible = False
+29.6543 	EXP 	Sound sound_1 started
+29.6544 	EXP 	screenAfterAudio: autoDraw = False
+29.6544 	EXP 	fixation: autoDraw = False
+29.6544 	EXP 	screenAfterAudio: autoDraw = False
+29.6544 	EXP 	fixation: autoDraw = True
+30.6619 	EXP 	Sound sound_1 reached end of file
+30.6705 	EXP 	fixation: autoDraw = False
+30.6705 	EXP 	screenAfterAudio: autoDraw = True
+31.6212 	EXP 	New trial (rep=0, index=10): {'audiofile': 'audio/click_beep.wav'}
+31.6268 	EXP 	window1: mouseVisible = False
+31.6370 	EXP 	Sound sound_1 started
+31.6370 	EXP 	screenAfterAudio: autoDraw = False
+31.6370 	EXP 	fixation: autoDraw = False
+31.6370 	EXP 	screenAfterAudio: autoDraw = False
+31.6370 	EXP 	fixation: autoDraw = True
+32.6457 	EXP 	Sound sound_1 reached end of file
+32.6533 	EXP 	fixation: autoDraw = False
+32.6533 	EXP 	screenAfterAudio: autoDraw = True
+33.6037 	EXP 	New trial (rep=0, index=11): {'audiofile': 'audio/click_beep.wav'}
+33.6102 	EXP 	window1: mouseVisible = False
+33.6196 	EXP 	Sound sound_1 started
+33.6197 	EXP 	screenAfterAudio: autoDraw = False
+33.6197 	EXP 	fixation: autoDraw = False
+33.6197 	EXP 	screenAfterAudio: autoDraw = False
+33.6197 	EXP 	fixation: autoDraw = True
+34.6364 	EXP 	Sound sound_1 reached end of file
+34.6529 	EXP 	fixation: autoDraw = False
+34.6529 	EXP 	screenAfterAudio: autoDraw = True
+35.5868 	EXP 	New trial (rep=0, index=12): {'audiofile': 'audio/click_beep.wav'}
+35.5933 	EXP 	window1: mouseVisible = False
+35.6024 	EXP 	Sound sound_1 started
+35.6025 	EXP 	screenAfterAudio: autoDraw = False
+35.6025 	EXP 	fixation: autoDraw = False
+35.6025 	EXP 	screenAfterAudio: autoDraw = False
+35.6025 	EXP 	fixation: autoDraw = True
+36.6031 	EXP 	Sound sound_1 reached end of file
+36.6188 	EXP 	fixation: autoDraw = False
+36.6188 	EXP 	screenAfterAudio: autoDraw = True
+37.5694 	EXP 	New trial (rep=0, index=13): {'audiofile': 'audio/click_beep.wav'}
+37.5747 	EXP 	window1: mouseVisible = False
+37.5851 	EXP 	Sound sound_1 started
+37.5852 	EXP 	screenAfterAudio: autoDraw = False
+37.5852 	EXP 	fixation: autoDraw = False
+37.5852 	EXP 	screenAfterAudio: autoDraw = False
+37.5852 	EXP 	fixation: autoDraw = True
+38.5926 	EXP 	Sound sound_1 reached end of file
+38.6015 	EXP 	fixation: autoDraw = False
+38.6015 	EXP 	screenAfterAudio: autoDraw = True
+39.5517 	EXP 	New trial (rep=0, index=14): {'audiofile': 'audio/click_beep.wav'}
+39.5572 	EXP 	window1: mouseVisible = False
+39.5675 	EXP 	Sound sound_1 started
+39.5679 	EXP 	screenAfterAudio: autoDraw = False
+39.5679 	EXP 	fixation: autoDraw = False
+39.5679 	EXP 	screenAfterAudio: autoDraw = False
+39.5679 	EXP 	fixation: autoDraw = True
+40.5763 	EXP 	Sound sound_1 reached end of file
+40.5842 	EXP 	fixation: autoDraw = False
+40.5842 	EXP 	screenAfterAudio: autoDraw = True
+41.5345 	EXP 	New trial (rep=0, index=15): {'audiofile': 'audio/click_beep.wav'}
+41.5399 	EXP 	window1: mouseVisible = False
+41.5503 	EXP 	Sound sound_1 started
+41.5507 	EXP 	screenAfterAudio: autoDraw = False
+41.5507 	EXP 	fixation: autoDraw = False
+41.5507 	EXP 	screenAfterAudio: autoDraw = False
+41.5507 	EXP 	fixation: autoDraw = True
+42.5551 	EXP 	Sound sound_1 reached end of file
+42.5668 	EXP 	fixation: autoDraw = False
+42.5668 	EXP 	screenAfterAudio: autoDraw = True
+43.5175 	EXP 	New trial (rep=0, index=16): {'audiofile': 'audio/click_beep.wav'}
+43.5226 	EXP 	window1: mouseVisible = False
+43.5333 	EXP 	Sound sound_1 started
+43.5334 	EXP 	screenAfterAudio: autoDraw = False
+43.5334 	EXP 	fixation: autoDraw = False
+43.5334 	EXP 	screenAfterAudio: autoDraw = False
+43.5334 	EXP 	fixation: autoDraw = True
+44.5338 	EXP 	Sound sound_1 reached end of file
+44.5494 	EXP 	fixation: autoDraw = False
+44.5494 	EXP 	screenAfterAudio: autoDraw = True
+45.5003 	EXP 	New trial (rep=0, index=17): {'audiofile': 'audio/click_beep.wav'}
+45.5064 	EXP 	window1: mouseVisible = False
+45.5157 	EXP 	Sound sound_1 started
+45.5157 	EXP 	screenAfterAudio: autoDraw = False
+45.5157 	EXP 	fixation: autoDraw = False
+45.5157 	EXP 	screenAfterAudio: autoDraw = False
+45.5157 	EXP 	fixation: autoDraw = True
+46.5230 	EXP 	Sound sound_1 reached end of file
+46.5325 	EXP 	fixation: autoDraw = False
+46.5325 	EXP 	screenAfterAudio: autoDraw = True
+47.4826 	EXP 	New trial (rep=0, index=18): {'audiofile': 'audio/click_beep.wav'}
+47.4890 	EXP 	window1: mouseVisible = False
+47.4983 	EXP 	Sound sound_1 started
+47.4988 	EXP 	screenAfterAudio: autoDraw = False
+47.4988 	EXP 	fixation: autoDraw = False
+47.4988 	EXP 	screenAfterAudio: autoDraw = False
+47.4988 	EXP 	fixation: autoDraw = True
+48.5016 	EXP 	Sound sound_1 reached end of file
+48.5152 	EXP 	fixation: autoDraw = False
+48.5152 	EXP 	screenAfterAudio: autoDraw = True
+49.4654 	EXP 	New trial (rep=0, index=19): {'audiofile': 'audio/click_beep.wav'}
+49.4714 	EXP 	window1: mouseVisible = False
+49.4811 	EXP 	Sound sound_1 started
+49.4810 	EXP 	screenAfterAudio: autoDraw = False
+49.4810 	EXP 	fixation: autoDraw = False
+49.4810 	EXP 	screenAfterAudio: autoDraw = False
+49.4810 	EXP 	fixation: autoDraw = True
+50.4978 	EXP 	Sound sound_1 reached end of file
+50.5143 	EXP 	fixation: autoDraw = False
+50.5143 	EXP 	screenAfterAudio: autoDraw = True
+51.4483 	EXP 	New trial (rep=0, index=20): {'audiofile': 'audio/click_beep.wav'}
+51.4535 	EXP 	window1: mouseVisible = False
+51.4637 	EXP 	Sound sound_1 started
+51.4640 	EXP 	screenAfterAudio: autoDraw = False
+51.4640 	EXP 	fixation: autoDraw = False
+51.4640 	EXP 	screenAfterAudio: autoDraw = False
+51.4640 	EXP 	fixation: autoDraw = True
+52.4750 	EXP 	Sound sound_1 reached end of file
+52.4799 	EXP 	fixation: autoDraw = False
+52.4799 	EXP 	screenAfterAudio: autoDraw = True
+53.4306 	EXP 	New trial (rep=0, index=21): {'audiofile': 'audio/click_beep.wav'}
+53.4357 	EXP 	window1: mouseVisible = False
+53.4464 	EXP 	Sound sound_1 started
+53.4468 	EXP 	screenAfterAudio: autoDraw = False
+53.4468 	EXP 	fixation: autoDraw = False
+53.4468 	EXP 	screenAfterAudio: autoDraw = False
+53.4468 	EXP 	fixation: autoDraw = True
+54.4536 	EXP 	Sound sound_1 reached end of file
+54.4630 	EXP 	fixation: autoDraw = False
+54.4630 	EXP 	screenAfterAudio: autoDraw = True
+55.4134 	EXP 	New trial (rep=0, index=22): {'audiofile': 'audio/click_beep.wav'}
+55.4193 	EXP 	window1: mouseVisible = False
+55.4292 	EXP 	Sound sound_1 started
+55.4294 	EXP 	screenAfterAudio: autoDraw = False
+55.4294 	EXP 	fixation: autoDraw = False
+55.4294 	EXP 	screenAfterAudio: autoDraw = False
+55.4294 	EXP 	fixation: autoDraw = True
+56.4323 	EXP 	Sound sound_1 reached end of file
+56.4456 	EXP 	fixation: autoDraw = False
+56.4456 	EXP 	screenAfterAudio: autoDraw = True
+57.3960 	EXP 	New trial (rep=0, index=23): {'audiofile': 'audio/click_beep.wav'}
+57.4023 	EXP 	window1: mouseVisible = False
+57.4118 	EXP 	Sound sound_1 started
+57.4118 	EXP 	screenAfterAudio: autoDraw = False
+57.4118 	EXP 	fixation: autoDraw = False
+57.4118 	EXP 	screenAfterAudio: autoDraw = False
+57.4118 	EXP 	fixation: autoDraw = True
+58.4216 	EXP 	Sound sound_1 reached end of file
+58.4282 	EXP 	fixation: autoDraw = False
+58.4282 	EXP 	screenAfterAudio: autoDraw = True
+59.3788 	EXP 	New trial (rep=0, index=24): {'audiofile': 'audio/click_beep.wav'}
+59.3860 	EXP 	window1: mouseVisible = False
+59.3946 	EXP 	Sound sound_1 started
+59.3943 	EXP 	screenAfterAudio: autoDraw = False
+59.3943 	EXP 	fixation: autoDraw = False
+59.3943 	EXP 	screenAfterAudio: autoDraw = False
+59.3943 	EXP 	fixation: autoDraw = True
+60.4056 	EXP 	Sound sound_1 reached end of file
+60.4103 	EXP 	fixation: autoDraw = False
+60.4103 	EXP 	screenAfterAudio: autoDraw = True
+61.3617 	EXP 	New trial (rep=0, index=25): {'audiofile': 'audio/click_beep.wav'}
+61.3672 	EXP 	window1: mouseVisible = False
+61.3775 	EXP 	Sound sound_1 started
+61.3775 	EXP 	screenAfterAudio: autoDraw = False
+61.3775 	EXP 	fixation: autoDraw = False
+61.3775 	EXP 	screenAfterAudio: autoDraw = False
+61.3775 	EXP 	fixation: autoDraw = True
+62.3843 	EXP 	Sound sound_1 reached end of file
+62.3937 	EXP 	fixation: autoDraw = False
+62.3937 	EXP 	screenAfterAudio: autoDraw = True
+63.3443 	EXP 	New trial (rep=0, index=26): {'audiofile': 'audio/click_beep.wav'}
+63.3493 	EXP 	window1: mouseVisible = False
+63.3601 	EXP 	Sound sound_1 started
+63.3602 	EXP 	screenAfterAudio: autoDraw = False
+63.3602 	EXP 	fixation: autoDraw = False
+63.3602 	EXP 	screenAfterAudio: autoDraw = False
+63.3602 	EXP 	fixation: autoDraw = True
+64.3630 	EXP 	Sound sound_1 reached end of file
+64.3764 	EXP 	fixation: autoDraw = False
+64.3764 	EXP 	screenAfterAudio: autoDraw = True
+65.3268 	EXP 	New trial (rep=0, index=27): {'audiofile': 'audio/click_beep.wav'}
+65.3321 	EXP 	window1: mouseVisible = False
+65.3425 	EXP 	Sound sound_1 started
+65.3430 	EXP 	screenAfterAudio: autoDraw = False
+65.3430 	EXP 	fixation: autoDraw = False
+65.3430 	EXP 	screenAfterAudio: autoDraw = False
+65.3430 	EXP 	fixation: autoDraw = True
+66.3425 	EXP 	Sound sound_1 reached end of file
+66.3589 	EXP 	fixation: autoDraw = False
+66.3589 	EXP 	screenAfterAudio: autoDraw = True
+67.3098 	EXP 	New trial (rep=0, index=28): {'audiofile': 'audio/click_beep.wav'}
+67.3157 	EXP 	window1: mouseVisible = False
+67.3254 	EXP 	Sound sound_1 started
+67.3254 	EXP 	screenAfterAudio: autoDraw = False
+67.3254 	EXP 	fixation: autoDraw = False
+67.3254 	EXP 	screenAfterAudio: autoDraw = False
+67.3254 	EXP 	fixation: autoDraw = True
+68.3362 	EXP 	Sound sound_1 reached end of file
+68.3414 	EXP 	fixation: autoDraw = False
+68.3414 	EXP 	screenAfterAudio: autoDraw = True
+69.2922 	EXP 	New trial (rep=0, index=29): {'audiofile': 'audio/click_beep.wav'}
+69.2987 	EXP 	window1: mouseVisible = False
+69.3079 	EXP 	Sound sound_1 started
+69.3079 	EXP 	screenAfterAudio: autoDraw = False
+69.3079 	EXP 	fixation: autoDraw = False
+69.3079 	EXP 	screenAfterAudio: autoDraw = False
+69.3079 	EXP 	fixation: autoDraw = True
+70.3149 	EXP 	Sound sound_1 reached end of file
+70.3244 	EXP 	fixation: autoDraw = False
+70.3244 	EXP 	screenAfterAudio: autoDraw = True
+71.2752 	EXP 	New trial (rep=0, index=30): {'audiofile': 'audio/click_beep.wav'}
+71.2813 	EXP 	window1: mouseVisible = False
+71.2907 	EXP 	Sound sound_1 started
+71.2909 	EXP 	screenAfterAudio: autoDraw = False
+71.2909 	EXP 	fixation: autoDraw = False
+71.2909 	EXP 	screenAfterAudio: autoDraw = False
+71.2909 	EXP 	fixation: autoDraw = True
+72.2935 	EXP 	Sound sound_1 reached end of file
+72.3067 	EXP 	fixation: autoDraw = False
+72.3067 	EXP 	screenAfterAudio: autoDraw = True
+73.2577 	EXP 	New trial (rep=0, index=31): {'audiofile': 'audio/click_beep.wav'}
+73.2633 	EXP 	window1: mouseVisible = False
+73.2735 	EXP 	Sound sound_1 started
+73.2735 	EXP 	screenAfterAudio: autoDraw = False
+73.2735 	EXP 	fixation: autoDraw = False
+73.2735 	EXP 	screenAfterAudio: autoDraw = False
+73.2735 	EXP 	fixation: autoDraw = True
+74.2828 	EXP 	Sound sound_1 reached end of file
+74.2896 	EXP 	fixation: autoDraw = False
+74.2896 	EXP 	screenAfterAudio: autoDraw = True
+75.2402 	EXP 	New trial (rep=0, index=32): {'audiofile': 'audio/click_beep.wav'}
+75.2456 	EXP 	window1: mouseVisible = False
+75.2560 	EXP 	Sound sound_1 started
+75.2562 	EXP 	screenAfterAudio: autoDraw = False
+75.2562 	EXP 	fixation: autoDraw = False
+75.2562 	EXP 	screenAfterAudio: autoDraw = False
+75.2562 	EXP 	fixation: autoDraw = True
+76.2614 	EXP 	Sound sound_1 reached end of file
+76.2726 	EXP 	fixation: autoDraw = False
+76.2726 	EXP 	screenAfterAudio: autoDraw = True
+77.2226 	EXP 	New trial (rep=0, index=33): {'audiofile': 'audio/click_beep.wav'}
+77.2282 	EXP 	window1: mouseVisible = False
+77.2385 	EXP 	Sound sound_1 started
+77.2387 	EXP 	screenAfterAudio: autoDraw = False
+77.2387 	EXP 	fixation: autoDraw = False
+77.2387 	EXP 	screenAfterAudio: autoDraw = False
+77.2387 	EXP 	fixation: autoDraw = True
+78.2455 	EXP 	Sound sound_1 reached end of file
+78.2552 	EXP 	fixation: autoDraw = False
+78.2552 	EXP 	screenAfterAudio: autoDraw = True
+79.2054 	EXP 	New trial (rep=0, index=34): {'audiofile': 'audio/click_beep.wav'}
+79.2110 	EXP 	window1: mouseVisible = False
+79.2212 	EXP 	Sound sound_1 started
+79.2219 	EXP 	screenAfterAudio: autoDraw = False
+79.2219 	EXP 	fixation: autoDraw = False
+79.2219 	EXP 	screenAfterAudio: autoDraw = False
+79.2219 	EXP 	fixation: autoDraw = True
+80.2379 	EXP 	Sound sound_1 reached end of file
+80.2544 	EXP 	fixation: autoDraw = False
+80.2544 	EXP 	screenAfterAudio: autoDraw = True
+81.1885 	EXP 	New trial (rep=0, index=35): {'audiofile': 'audio/click_beep.wav'}
+81.1950 	EXP 	window1: mouseVisible = False
+81.2042 	EXP 	Sound sound_1 started
+81.2039 	EXP 	screenAfterAudio: autoDraw = False
+81.2039 	EXP 	fixation: autoDraw = False
+81.2039 	EXP 	screenAfterAudio: autoDraw = False
+81.2039 	EXP 	fixation: autoDraw = True
+82.2135 	EXP 	Sound sound_1 reached end of file
+82.2204 	EXP 	fixation: autoDraw = False
+82.2204 	EXP 	screenAfterAudio: autoDraw = True
+83.1713 	EXP 	New trial (rep=0, index=36): {'audiofile': 'audio/click_beep.wav'}
+83.1779 	EXP 	window1: mouseVisible = False
+83.1870 	EXP 	Sound sound_1 started
+83.1870 	EXP 	screenAfterAudio: autoDraw = False
+83.1870 	EXP 	fixation: autoDraw = False
+83.1870 	EXP 	screenAfterAudio: autoDraw = False
+83.1870 	EXP 	fixation: autoDraw = True
+84.1921 	EXP 	Sound sound_1 reached end of file
+84.2029 	EXP 	fixation: autoDraw = False
+84.2029 	EXP 	screenAfterAudio: autoDraw = True
+85.1538 	EXP 	New trial (rep=0, index=37): {'audiofile': 'audio/click_beep.wav'}
+85.1596 	EXP 	window1: mouseVisible = False
+85.1693 	EXP 	Sound sound_1 started
+85.1693 	EXP 	screenAfterAudio: autoDraw = False
+85.1693 	EXP 	fixation: autoDraw = False
+85.1693 	EXP 	screenAfterAudio: autoDraw = False
+85.1693 	EXP 	fixation: autoDraw = True
+86.1762 	EXP 	Sound sound_1 reached end of file
+86.1858 	EXP 	fixation: autoDraw = False
+86.1858 	EXP 	screenAfterAudio: autoDraw = True
+87.1364 	EXP 	New trial (rep=0, index=38): {'audiofile': 'audio/click_beep.wav'}
+87.1417 	EXP 	window1: mouseVisible = False
+87.1523 	EXP 	Sound sound_1 started
+87.1525 	EXP 	screenAfterAudio: autoDraw = False
+87.1525 	EXP 	fixation: autoDraw = False
+87.1525 	EXP 	screenAfterAudio: autoDraw = False
+87.1525 	EXP 	fixation: autoDraw = True
+88.1685 	EXP 	Sound sound_1 reached end of file
+88.1850 	EXP 	fixation: autoDraw = False
+88.1850 	EXP 	screenAfterAudio: autoDraw = True
+89.1190 	EXP 	New trial (rep=0, index=39): {'audiofile': 'audio/click_beep.wav'}
+89.1245 	EXP 	window1: mouseVisible = False
+89.1348 	EXP 	Sound sound_1 started
+89.1348 	EXP 	screenAfterAudio: autoDraw = False
+89.1348 	EXP 	fixation: autoDraw = False
+89.1348 	EXP 	screenAfterAudio: autoDraw = False
+89.1348 	EXP 	fixation: autoDraw = True
+90.1439 	EXP 	Sound sound_1 reached end of file
+90.1511 	EXP 	fixation: autoDraw = False
+90.1511 	EXP 	screenAfterAudio: autoDraw = True
+91.1019 	EXP 	New trial (rep=0, index=40): {'audiofile': 'audio/click_beep.wav'}
+91.1064 	EXP 	window1: mouseVisible = False
+91.1177 	EXP 	Sound sound_1 started
+91.1178 	EXP 	screenAfterAudio: autoDraw = False
+91.1178 	EXP 	fixation: autoDraw = False
+91.1178 	EXP 	screenAfterAudio: autoDraw = False
+91.1178 	EXP 	fixation: autoDraw = True
+92.1228 	EXP 	Sound sound_1 reached end of file
+92.1338 	EXP 	fixation: autoDraw = False
+92.1338 	EXP 	screenAfterAudio: autoDraw = True
+93.0842 	EXP 	New trial (rep=0, index=41): {'audiofile': 'audio/click_beep.wav'}
+93.0901 	EXP 	window1: mouseVisible = False
+93.1000 	EXP 	Sound sound_1 started
+93.1000 	EXP 	screenAfterAudio: autoDraw = False
+93.1000 	EXP 	fixation: autoDraw = False
+93.1000 	EXP 	screenAfterAudio: autoDraw = False
+93.1000 	EXP 	fixation: autoDraw = True
+94.1014 	EXP 	Sound sound_1 reached end of file
+94.1168 	EXP 	fixation: autoDraw = False
+94.1168 	EXP 	screenAfterAudio: autoDraw = True
+95.0670 	EXP 	New trial (rep=0, index=42): {'audiofile': 'audio/click_beep.wav'}
+95.0737 	EXP 	window1: mouseVisible = False
+95.0828 	EXP 	Sound sound_1 started
+95.0831 	EXP 	screenAfterAudio: autoDraw = False
+95.0831 	EXP 	fixation: autoDraw = False
+95.0831 	EXP 	screenAfterAudio: autoDraw = False
+95.0831 	EXP 	fixation: autoDraw = True
+96.0995 	EXP 	Sound sound_1 reached end of file
+96.1161 	EXP 	fixation: autoDraw = False
+96.1161 	EXP 	screenAfterAudio: autoDraw = True
+97.0497 	EXP 	New trial (rep=0, index=43): {'audiofile': 'audio/click_beep.wav'}
+97.0549 	EXP 	window1: mouseVisible = False
+97.0655 	EXP 	Sound sound_1 started
+97.0654 	EXP 	screenAfterAudio: autoDraw = False
+97.0654 	EXP 	fixation: autoDraw = False
+97.0654 	EXP 	screenAfterAudio: autoDraw = False
+97.0654 	EXP 	fixation: autoDraw = True
+98.0747 	EXP 	Sound sound_1 reached end of file
+98.0820 	EXP 	fixation: autoDraw = False
+98.0820 	EXP 	screenAfterAudio: autoDraw = True
+99.0326 	EXP 	New trial (rep=0, index=44): {'audiofile': 'audio/click_beep.wav'}
+99.0374 	EXP 	window1: mouseVisible = False
+99.0484 	EXP 	Sound sound_1 started
+99.0483 	EXP 	screenAfterAudio: autoDraw = False
+99.0483 	EXP 	fixation: autoDraw = False
+99.0483 	EXP 	screenAfterAudio: autoDraw = False
+99.0483 	EXP 	fixation: autoDraw = True
+100.0534 	EXP 	Sound sound_1 reached end of file
+100.0644 	EXP 	fixation: autoDraw = False
+100.0644 	EXP 	screenAfterAudio: autoDraw = True
+101.0151 	EXP 	New trial (rep=0, index=45): {'audiofile': 'audio/click_beep.wav'}
+101.0209 	EXP 	window1: mouseVisible = False
+101.0307 	EXP 	Sound sound_1 started
+101.0310 	EXP 	screenAfterAudio: autoDraw = False
+101.0310 	EXP 	fixation: autoDraw = False
+101.0310 	EXP 	screenAfterAudio: autoDraw = False
+101.0310 	EXP 	fixation: autoDraw = True
+102.0320 	EXP 	Sound sound_1 reached end of file
+102.0473 	EXP 	fixation: autoDraw = False
+102.0473 	EXP 	screenAfterAudio: autoDraw = True
+102.9979 	EXP 	New trial (rep=0, index=46): {'audiofile': 'audio/click_beep.wav'}
+103.0034 	EXP 	window1: mouseVisible = False
+103.0137 	EXP 	Sound sound_1 started
+103.0136 	EXP 	screenAfterAudio: autoDraw = False
+103.0136 	EXP 	fixation: autoDraw = False
+103.0136 	EXP 	screenAfterAudio: autoDraw = False
+103.0136 	EXP 	fixation: autoDraw = True
+104.0213 	EXP 	Sound sound_1 reached end of file
+104.0300 	EXP 	fixation: autoDraw = False
+104.0300 	EXP 	screenAfterAudio: autoDraw = True
+104.9806 	EXP 	New trial (rep=0, index=47): {'audiofile': 'audio/click_beep.wav'}
+104.9868 	EXP 	window1: mouseVisible = False
+104.9963 	EXP 	Sound sound_1 started
+104.9964 	EXP 	screenAfterAudio: autoDraw = False
+104.9964 	EXP 	fixation: autoDraw = False
+104.9964 	EXP 	screenAfterAudio: autoDraw = False
+104.9964 	EXP 	fixation: autoDraw = True
+106.0053 	EXP 	Sound sound_1 reached end of file
+106.0128 	EXP 	fixation: autoDraw = False
+106.0128 	EXP 	screenAfterAudio: autoDraw = True
+106.8469 	DATA 	Keypress: escape
+107.7161 	EXP 	window1: mouseVisible = True

@@ -2,9 +2,9 @@ clear all
 close all 
 %% 
 [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
-EEG = pop_biosig('V:\spinco_data\SINEEG\SiN\Test_triggers.bdf', 'ref',73);
+EEG = pop_biosig('V:\spinco_data\SINEEG\TimingTest_SiN\TimingTest.bdf', 'ref',73);
 [ALLEEG EEG CURRENTSET] = pop_newset(ALLEEG, EEG, 0,'gui','off'); 
-
+%%
 EEG.data = EEG.data(1,:,:)/10000
 
 %pop_eegplot( EEG, 1, 1, 1);

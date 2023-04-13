@@ -1,0 +1,31 @@
+7.7330 	EXP 	Created window1 = Window(allowGUI=False, allowStencil=False, autoLog=True, backendConf=UNKNOWN, bitsMode=UNKNOWN, blendMode='avg', bpc=(8, 8, 8), color=array([0, 0, 0]), colorSpace='rgb', depthBits=8, fullscr=<method-wrapper '__getattribute__' of attributeSetter object at 0x000001AEF32D88E0>, gamma=None, gammaErrorPolicy='raise', lms=UNKNOWN, monitor=<psychopy.monitors.calibTools.Monitor object at 0x000001AEF4D4C910>, multiSample=False, name='window1', numSamples=2, pos=(0, 0), screen=0, size=array([1280, 1024]), stencilBits=0, stereo=False, units='height', useFBO=True, useRetina=False, viewOri=0.0, viewPos=None, viewScale=None, waitBlanking=True, winType='pyglet')
+7.7332 	EXP 	window1: mouseVisible = True
+7.7332 	EXP 	window1: Attempting to measure frame rate of screen (0) ...
+7.7333 	EXP 	window1: recordFrameIntervals = False
+7.8991 	EXP 	window1: recordFrameIntervals = True
+8.0827 	EXP 	Screen (0) actual frame rate measured at 59.95Hz
+8.0827 	EXP 	window1: recordFrameIntervals = False
+9.5908 	EXP 	Created instrTrainText = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-1.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='instrTrainText', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='Quick and dirty timing test', units='height', win=Window(...), wrapWidth=1)
+9.5946 	EXP 	Created blockStart = TextStim(__class__=<class 'psychopy.visual.text.TextStim'>, alignHoriz=method-wrapper(...), alignText='center', alignVert=method-wrapper(...), anchorHoriz='center', anchorVert='center', antialias=True, autoLog=True, bold=False, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=0.0, flipHoriz=False, flipVert=False, font='Arial', fontFiles=[], height=0.04, italic=False, languageStyle='LTR', name='blockStart', opacity=1.0, ori=0, pos=array([0., 0.]), rgb=UNKNOWN, text='Begin  block ', units='height', win=Window(...), wrapWidth=1)
+9.6794 	EXP 	Sound sound_1 set volume 1.000
+9.6824 	EXP 	Created fixation = ShapeStim(__class__=<class 'psychopy.visual.shape.ShapeStim'>, anchor=('center', 'center'), autoDraw=False, autoLog=True, closeShape=True, color=method-wrapper(...), colorSpace='rgb', contrast=None, depth=-2.0, fillColor=array([1, 1, 1]), fillColorSpace='rgb', fillRGB=array([1, 1, 1]), interpolate=True, lineColor=array([1., 1., 1.]), lineColorSpace='rgb', lineRGB=array([1, 1, 1]), lineWidth=0.5, name='fixation', opacity=0.75, ori=0.0, pos=array([0., 0.]), size=array([0.05, 0.05]), units='height', vertices=ndarray(...), win=Window(...), windingRule=None)
+9.7029 	EXP 	Created screenAfterAudio = ImageStim(__class__=<class 'psychopy.visual.image.ImageStim'>, anchor=('center', 'center'), autoLog=True, color=array([1., 1., 1.]), colorSpace='rgb', contrast=1.0, depth=-4.0, flipHoriz=False, flipVert=False, image='images/grayScreen.png', interpolate=True, mask=None, maskParams=None, name='screenAfterAudio', opacity=1.0, ori=0.0, pos=array([0., 0.]), size=array([0.5, 0.5]), texRes=128.0, units='height', win=Window(...))
+9.7031 	EXP 	window1: mouseVisible = False
+9.7148 	EXP 	instrTrainText: autoDraw = True
+10.6173 	DATA 	Keypress: space
+10.6313 	EXP 	instrTrainText: autoDraw = False
+10.6313 	EXP 	blockStart: autoDraw = True
+10.7875 	EXP 	Imported Sequence.xlsx as conditions, 200 conditions, 1 params
+10.7891 	EXP 	Created sequence: random, trialTypes=200, nReps=1, seed=None
+10.7892 	EXP 	New trial (rep=0, index=0): {'audiofile': 'audio/click_beep.wav'}
+10.8075 	EXP 	window1: mouseVisible = False
+10.8150 	EXP 	Sound sound_1 started
+10.8095 	DATA 	Keypress: space
+10.8145 	EXP 	blockStart: autoDraw = False
+10.8145 	EXP 	fixation: autoDraw = True
+11.8250 	EXP 	Sound sound_1 reached end of file
+11.8321 	EXP 	fixation: autoDraw = False
+11.8321 	EXP 	screenAfterAudio: autoDraw = True
+12.8138 	EXP 	screenAfterAudio: autoDraw = False
+29.7597 	DATA 	Keypress: escape
+30.2312 	EXP 	window1: mouseVisible = True

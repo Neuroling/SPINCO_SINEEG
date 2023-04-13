@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" ?>
-<PsychoPy2experiment encoding="utf-8" version="2022.1.3">
+<PsychoPy2experiment encoding="utf-8" version="2022.2.1">
   <Settings>
     <Param val="use prefs" valType="str" updates="None" name="Audio latency priority"/>
-    <Param val="ptb" valType="str" updates="None" name="Audio lib"/>
+    <Param val="pyo" valType="str" updates="None" name="Audio lib"/>
     <Param val="" valType="str" updates="None" name="Completed URL"/>
     <Param val="auto" valType="str" updates="None" name="Data file delimiter"/>
     <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
@@ -26,7 +26,7 @@
     <Param val="False" valType="bool" updates="None" name="Show mouse"/>
     <Param val="height" valType="str" updates="None" name="Units"/>
     <Param val="" valType="str" updates="None" name="Use version"/>
-    <Param val="[1280, 1024]" valType="code" updates="None" name="Window size (pixels)"/>
+    <Param val="[2560, 1440]" valType="code" updates="None" name="Window size (pixels)"/>
     <Param val="avg" valType="str" updates="None" name="blendMode"/>
     <Param val="$[0,0,0]" valType="str" updates="None" name="color"/>
     <Param val="rgb" valType="str" updates="None" name="colorSpace"/>
@@ -66,8 +66,8 @@
   <Routines>
     <Routine name="instrTraining">
       <CodeComponent name="preparations">
-        <Param val="#import psychtoolbox as ptb&amp;#10;from psychopy import sound&amp;#10;import psychopy.visual&amp;#10;import psychopy.event&amp;#10;import psychopy.core&amp;#10;prefs.hardware['audioLib'] = 'pyo'&amp;#10;&amp;#10;clock = psychopy.core.Clock()&amp;#10;print('TIME O_o')&amp;#10;print(clock.getTime())" valType="extendedCode" updates="constant" name="Before Experiment"/>
-        <Param val="import {sound} from 'psychopy';&amp;#10;import * as psychopy.visual from 'psychopy/visual';&amp;#10;import * as psychopy.event from 'psychopy/event';&amp;#10;import * as psychopy.core from 'psychopy/core';&amp;#10;var clock;&amp;#10;prefs.hardware[&quot;audioLib&quot;] = &quot;pyo&quot;;&amp;#10;clock = new psychopy.core.Clock();&amp;#10;console.log(&quot;TIME O_o&quot;);&amp;#10;console.log(clock.getTime());&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="#import psychtoolbox as ptb&amp;#10;from psychopy import sound&amp;#10;import psychopy.visual&amp;#10;import psychopy.event&amp;#10;import psychopy.core&amp;#10;&amp;#10;clock = psychopy.core.Clock()&amp;#10;print('TIME O_o')&amp;#10;print(clock.getTime())" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="import {sound} from 'psychopy';&amp;#10;import * as psychopy.visual from 'psychopy/visual';&amp;#10;import * as psychopy.event from 'psychopy/event';&amp;#10;import * as psychopy.core from 'psychopy/core';&amp;#10;var clock;&amp;#10;clock = new psychopy.core.Clock();&amp;#10;console.log(&quot;TIME O_o&quot;);&amp;#10;console.log(clock.getTime());&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="#if (SubjectNumber % 2 == 0):&amp;#10;#    Order=ABCD&amp;#10;#else:&amp;#10;#    Order=CDBA&amp;#10;    &amp;#10;&amp;#10;        " valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="/* Syntax Error: Fix Python code */" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
@@ -145,8 +145,8 @@
       <CodeComponent name="getOrder">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="orderFile = &quot;order&quot; + expInfo['order']+ &quot;.csv&quot;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="orderFile = ((&quot;order&quot; + expInfo[&quot;order&quot;]) + &quot;.csv&quot;);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="orderFile = &quot;order&quot; + expInfo['order']+ &quot;.csv&quot;&amp;#10;prefs.hardware['audioLib'] = 'pyo'" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="orderFile = ((&quot;order&quot; + expInfo[&quot;order&quot;]) + &quot;.csv&quot;);&amp;#10;prefs.hardware[&quot;audioLib&quot;] = &quot;pyo&quot;;&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
