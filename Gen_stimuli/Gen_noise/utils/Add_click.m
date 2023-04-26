@@ -1,5 +1,6 @@
-dirinput = 'V:\Projects\Spinco\SINEEG\Scripts\Experiments\SiN\PsychoPy_LAB\audio' ;
-diroutput = 'V:\Projects\Spinco\SINEEG\Scripts\Experiments\SiN\PsychoPy_LAB\audio_click' ;
+clear all 
+dirinput = 'V:\Projects\Spinco\SINEEG\Scripts\Experiments\SiN\PsychoPy_LAB\audio_noclick' ;
+diroutput = 'V:\Projects\Spinco\SINEEG\Scripts\Experiments\SiN\PsychoPy_LAB\audio' ;
 mkdir(diroutput)
 
 %% 
@@ -15,7 +16,7 @@ for f= 1:length(files);
     sig2 = sig;
     clickdur = 0.1;  % dur in sec of the click signal
     clicklength = fs*clickdur; % dur in sec of the click signal
-    sig2(1:clicklengh) = ones(1, clicklengh);
+    sig2(1:clicklength) = ones(1, clicklength);
     
     %% 
     cd (diroutput)
