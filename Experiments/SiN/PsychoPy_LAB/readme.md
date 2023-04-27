@@ -3,6 +3,7 @@
 The 'flow' folder contains the files for each block of trials (2 NV and 2 SiSSN) the block presentation order is defined by the files order1.csv, order2.csv....order8.csv. 
 The blocks always alternate types of noise (NV or SISSN). The 'order' files with odd number suffix specify sequences starting with NV blocks, 'order' files with even number specify sequence starting with SiSSN blocks. 
 
+Check 'docs' folders for papers in which this task is based on
 
 ## Triggers codes
 

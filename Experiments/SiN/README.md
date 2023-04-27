@@ -15,13 +15,9 @@ Analysis aims
 ## Design
 ### Stimuli 
 - Description: Simple sentences with a defined structured of which the last word is to be filled in with 1 out of 4 possible words 
-- Source: (paper ref or extend description here 
+- Source: 
 - n_sentences, n_ words, etc (...) 
 
-### TO DO
-#### EEG triggers
-- Audio timing: take direct line of the audio and record it into an Aux chan on the EEG to ensure we have exact stimulus onsets
-- Extract times of the key words in the sentences for EEG analysis
 
 ### Manipulations
 

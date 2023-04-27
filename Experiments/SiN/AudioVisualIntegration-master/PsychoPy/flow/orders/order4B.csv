@@ -1,6 +1,0 @@
-seq,id,block
-0,2,flow/blocks/NVocInAudio_NoVideo_B.csv
-1,1,flow/blocks/NVocInAudio_GlobalThetaInVideo_A.csv
-2,4,flow/blocks/NoThetaInAudio_NoVideo_B.csv
-3,5,flow/blocks/GlobalTheta_NoVideo_A.csv
-4,3,flow/blocks/NoThetaInAudio_GlobalThetaInVideo_B.csv
