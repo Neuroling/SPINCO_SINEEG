@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.2.1),
-    on April 19, 2023, at 14:01
+    on April 26, 2023, at 14:43
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -65,7 +65,7 @@ filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expNa
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
-    originPath='V:\\gfraga\\scripts_neulin\\Projects\\SINEEG\\Experiments\\SiN\\PsychoPy_LAB\\SIN_lab_28-03-23_lastrun.py',
+    originPath='V:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\PsychoPy_LAB\\SIN_lab_28-03-23_lastrun.py',
     savePickle=True, saveWideText=True,
     dataFileName=filename)
 # save a log file for detail verbose info
@@ -79,7 +79,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # --- Setup the Window ---
 win = visual.Window(
-    size=[2560, 1440], fullscr=True, screen=0, 
+    size=[1280, 1024], fullscr=True, screen=0, 
     winType='pyglet', allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 

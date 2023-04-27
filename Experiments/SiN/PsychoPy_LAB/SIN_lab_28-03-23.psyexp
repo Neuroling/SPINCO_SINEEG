@@ -494,7 +494,7 @@
       <CodeComponent name="mapStimuliLabels">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="# Mappings for stimuli properties&amp;#10;mapCallSign = {&amp;#10;  &quot;call1&quot;: &quot;Ad&quot;,&amp;#10;  &quot;call2&quot;: &quot;Dr&quot;,&amp;#10;  &quot;call3&quot;: &quot;Ti&quot;,&amp;#10;  &quot;call4&quot;: &quot;Kr&quot;&amp;#10;  }&amp;#10;  &amp;#10;mapColour = {&amp;#10;  &quot;colour1&quot;: &quot;Ge&quot;,&amp;#10;  &quot;colour2&quot;: &quot;Gr&quot;,&amp;#10;  &quot;colour3&quot;: &quot;Ro&quot;,&amp;#10;  &quot;colour4&quot;: &quot;We&quot;&amp;#10;  }&amp;#10;  &amp;#10;mapNumber = {&amp;#10;  &quot;number1&quot;: 1,&amp;#10;  &quot;number2&quot;: 2,&amp;#10;  &quot;number3&quot;: 3,&amp;#10;  &quot;number4&quot;: 4&amp;#10;  }" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="# Mappings for stimuli properties&amp;#10;mapCallSign = {&amp;#10;  &quot;call1&quot;: &quot;Ad&quot;,&amp;#10;  &quot;call2&quot;: &quot;Dr&quot;,&amp;#10;  &quot;call3&quot;: &quot;Kr&quot;,&amp;#10;  &quot;call4&quot;: &quot;Ti&quot;&amp;#10;  }&amp;#10;  &amp;#10;mapColour = {&amp;#10;  &quot;colour1&quot;: &quot;Ge&quot;,&amp;#10;  &quot;colour2&quot;: &quot;Gr&quot;,&amp;#10;  &quot;colour3&quot;: &quot;Ro&quot;,&amp;#10;  &quot;colour4&quot;: &quot;We&quot;&amp;#10;  }&amp;#10;  &amp;#10;mapNumber = {&amp;#10;  &quot;number1&quot;: 1,&amp;#10;  &quot;number2&quot;: 2,&amp;#10;  &quot;number3&quot;: 3,&amp;#10;  &quot;number4&quot;: 4&amp;#10;  }" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Routine"/>
@@ -615,7 +615,7 @@
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="False" valType="bool" updates="constant" name="flipHoriz"/>
         <Param val="False" valType="bool" updates="constant" name="flipVert"/>
-        <Param val="images/tiger.png" valType="str" updates="constant" name="image"/>
+        <Param val="images/kroete.png" valType="str" updates="constant" name="image"/>
         <Param val="linear" valType="str" updates="constant" name="interpolate"/>
         <Param val="None" valType="str" updates="constant" name="mask"/>
         <Param val="call3" valType="code" updates="None" name="name"/>
@@ -642,7 +642,7 @@
         <Param val="" valType="code" updates="None" name="durationEstim"/>
         <Param val="False" valType="bool" updates="constant" name="flipHoriz"/>
         <Param val="False" valType="bool" updates="constant" name="flipVert"/>
-        <Param val="images/kroete.png" valType="str" updates="constant" name="image"/>
+        <Param val="images/tiger.png" valType="str" updates="constant" name="image"/>
         <Param val="linear" valType="str" updates="constant" name="interpolate"/>
         <Param val="None" valType="str" updates="constant" name="mask"/>
         <Param val="call4" valType="code" updates="None" name="name"/>
