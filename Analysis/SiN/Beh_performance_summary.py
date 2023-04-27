@@ -34,52 +34,31 @@ files = os.listdir(rawdir)
 for file in files:
     if file.endswith(".csv") and file[-5].isdigit():
         filepath = os.path.join(diroutput, file)
+ 
         # %% read data frame 
-        df = pd.read_csv(filepath, usecols= )
+        df = pd.read_csv(filepath)
+        df = df.iloc[:, :-1] # SEEMS to read an additional blank column [!!!revise if in all files]
         
-        #df.iloc[:, -1]
-
+        # % Assess accuracy         
+        map_call = {'Ad':'call1','Dr':'call2','Kr':'call3','Ti':'call4'}
+        map_col = {'ge':'colour1','gr':'colour2','ro':'colour3','we':'colour4'}
+        map_num = {'Ei':'number1','Zw':'number2','Dr':'number3','Vi':'number4'}
+        
+        # Fix formatting issues, subject response values are coded as "['call1']"
+        df['mouseClickOnCall.clicked_name'] = df['mouseClickOnCall.clicked_name'].apply(lambda x: x.replace('[\'', '').replace('\']', ''))
+        df['mouseClickOnColour.clicked_name'] = df['mouseClickOnColour.clicked_name'].apply(lambda x: x.replace('[\'', '').replace('\']', ''))
+        df['mouseClickOnNumber.clicked_name'] = df['mouseClickOnNumber.clicked_name'].apply(lambda x: x.replace('[\'', '').replace('\']', ''))       
+        
+        # compare response with presented stimuli
+        sum(df['mouseClickOnCall.clicked_name'] == df.callSign.replace(map_call))
+        sum(df['mouseClickOnColour.clicked_name'] == df.colour.replace(map_col))
+        sum(df['mouseClickOnNumber.clicked_name'] == df.number.replace(map_num))
 
 # %% 
 
 
-  
-    nblocks = 2 
-    nreps = len(df.trial.unique()) / (nblocks*len(df.LV.unique()) * len(df.TYPE.unique()))   #  number of trials per degradation level in a block (changes across tasks)
-    
-    # %% 
-    counts = df['TYPE'].value_counts()
-    for level, count in counts.iteritems():
-        
-        print(df[df['TYPE']=='NV'].LV.value_counts())
-        print(df[df['TYPE']=='SiSSN'].LV.value_counts())
-
-    # %% # Stats per block, type and level (averaging trials)          
-    names = ['SubjectID','task', 'block', 'TYPE', 'LV','Accuracy']
-    
-    # accuracy summary 
-    
-    accu = df.groupby(names)['trial'].agg(['count']).reset_index()
-    accu['propTrials'] = round(accu['count']/nreps,ndigits=2)
-    
-    #Fix header (join by '-')
-    rts = df.groupby(names)[['RT']].agg(['mean', 'std']).reset_index()
-    rts.columns  =  ['_'.join(i) if len(i[1]) else ''.join(i) for i in rts.columns.tolist() ]
-    
-    grouped = pd.merge(accu, rts, on=names)
-
-    # % Expand with all combinations of the variables 
-    unique_categories = [grouped[col].unique() for col in names]    
-    multiindex = pd.MultiIndex.from_product(unique_categories, names=names)
-    
-    # reindexing
-    grouped = (grouped
-                 .set_index(names) 
-                 .reindex(multiindex,fill_value= '')
-                 .reset_index())
     
 
-    grouped['SubjectID'] = grouped['SubjectID'].astype('object')
-    grouped['block'] = grouped['block'].astype('object')
 
-    return grouped
+
+# %% 
