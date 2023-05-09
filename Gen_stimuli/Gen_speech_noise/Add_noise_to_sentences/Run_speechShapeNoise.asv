@@ -45,7 +45,7 @@ noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which th
 
 % SNR levels
  target_dB_snr = [-8,-7,-6,-5];%15db used for 'clean condition catch trials
- target_dB_snr = [-11];
+ target_dB_snr = [-15,-14,-13,-12,-11,-9];
 
 %% Generate noise from concatenated data
 % read signals

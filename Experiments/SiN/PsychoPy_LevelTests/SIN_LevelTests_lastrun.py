@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2022.1.4),
-    on May 02, 2023, at 10:42
+    on May 03, 2023, at 10:02
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -14,7 +14,7 @@ If you publish work using this script the most relevant publication is:
 from psychopy import locale_setup
 from psychopy import prefs
 prefs.hardware['audioLib'] = 'pyo'
-from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout, parallel
+from psychopy import sound, gui, visual, core, data, event, logging, clock, colors, layout
 from psychopy.constants import (NOT_STARTED, STARTED, PLAYING, PAUSED,
                                 STOPPED, FINISHED, PRESSED, RELEASED, FOREVER)
 
@@ -62,7 +62,7 @@ filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expNa
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
-    originPath='Z:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\PsychoPy_LAB\\SIN_lab_28-03-23_lastrun.py',
+    originPath='Z:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\PsychoPy_LevelTests\\SIN_LevelTests_lastrun.py',
     savePickle=True, saveWideText=True,
     dataFileName=filename)
 # save a log file for detail verbose info
@@ -76,7 +76,7 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # Setup the Window
 win = visual.Window(
-    size=[2560, 1440], fullscr=True, screen=0, 
+    size=[1280, 720], fullscr=True, screen=0, 
     winType='pyglet', allowGUI=False, allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
@@ -143,7 +143,7 @@ fixation = visual.ShapeStim(
     size=(0.05, 0.05),
     ori=0.0, pos=(0, 0), anchor='center',
     lineWidth=0.5,     colorSpace='rgb',  lineColor='white', fillColor='white',
-    opacity=0.75, depth=-2.0, interpolate=True)
+    opacity=0.75, depth=-1.0, interpolate=True)
 screenAfterAudio = visual.ImageStim(
     win=win,
     name='screenAfterAudio', 
@@ -151,13 +151,7 @@ screenAfterAudio = visual.ImageStim(
     ori=0.0, pos=(0, 0), size=(0.5, 0.5),
     color=[1,1,1], colorSpace='rgb', opacity=None,
     flipHoriz=False, flipVert=False,
-    texRes=128.0, interpolate=True, depth=-4.0)
-pp_start = parallel.ParallelPort(address='0x3FE8')
-pp_t0_start = parallel.ParallelPort(address='0x3FE8')
-pp_t1_start = parallel.ParallelPort(address='0x3FE8')
-pp_t2_start = parallel.ParallelPort(address='0x3FE8')
-pp_t3_start = parallel.ParallelPort(address='0x3FE8')
-pp_end = parallel.ParallelPort(address='0x3FE8')
+    texRes=128.0, interpolate=True, depth=-3.0)
 
 # Initialize components for Routine "trial"
 trialClock = core.Clock()
@@ -537,23 +531,10 @@ for thisBlock in blocks:
         # update component parameters for each repeat
         sound_1.setSound(audiofile, hamming=True)
         sound_1.setVolume(1.0, log=False)
-        # Trigger 
-        myClock = core.Clock()
-        now = myClock.getTime()
-        
-        # Trigger times 
-        pp_start_time = now # + ptb.GetSecs()
-        
-        # Some runner prints for testing
-        print('<<<< now')
-        print(now)
-        
-         # 
-        
         win.mouseVisible = False 
         
         # keep track of which components have finished
-        audioTrialComponents = [sound_1, fixation, screenAfterAudio, pp_start, pp_t0_start, pp_t1_start, pp_t2_start, pp_t3_start, pp_end]
+        audioTrialComponents = [sound_1, fixation, screenAfterAudio]
         for thisComponent in audioTrialComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -615,114 +596,6 @@ for thisBlock in blocks:
                     screenAfterAudio.frameNStop = frameN  # exact frame index
                     win.timeOnFlip(screenAfterAudio, 'tStopRefresh')  # time at next scr refresh
                     screenAfterAudio.setAutoDraw(False)
-            # *pp_start* updates
-            if pp_start.status == NOT_STARTED and pp_start_time + 0.08:
-                # keep track of start time/frame for later
-                pp_start.frameNStart = frameN  # exact frame index
-                pp_start.tStart = t  # local t and not account for scr refresh
-                pp_start.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_start, 'tStartRefresh')  # time at next scr refresh
-                pp_start.status = STARTED
-                win.callOnFlip(pp_start.setData, int(1))
-            if pp_start.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_start.tStartRefresh + 0.01-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_start.tStop = t  # not accounting for scr refresh
-                    pp_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_start, 'tStopRefresh')  # time at next scr refresh
-                    pp_start.status = FINISHED
-                    win.callOnFlip(pp_start.setData, int(0))
-            # *pp_t0_start* updates
-            if pp_t0_start.status == NOT_STARTED and tThisFlip >= firstSound_tmin-frameTolerance:
-                # keep track of start time/frame for later
-                pp_t0_start.frameNStart = frameN  # exact frame index
-                pp_t0_start.tStart = t  # local t and not account for scr refresh
-                pp_t0_start.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_t0_start, 'tStartRefresh')  # time at next scr refresh
-                pp_t0_start.status = STARTED
-                win.callOnFlip(pp_t0_start.setData, int(101))
-            if pp_t0_start.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_t0_start.tStartRefresh + 0.01-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_t0_start.tStop = t  # not accounting for scr refresh
-                    pp_t0_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t0_start, 'tStopRefresh')  # time at next scr refresh
-                    pp_t0_start.status = FINISHED
-                    win.callOnFlip(pp_t0_start.setData, int(0))
-            # *pp_t1_start* updates
-            if pp_t1_start.status == NOT_STARTED and tThisFlip >= token_1_tmin-frameTolerance:
-                # keep track of start time/frame for later
-                pp_t1_start.frameNStart = frameN  # exact frame index
-                pp_t1_start.tStart = t  # local t and not account for scr refresh
-                pp_t1_start.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_t1_start, 'tStartRefresh')  # time at next scr refresh
-                pp_t1_start.status = STARTED
-                win.callOnFlip(pp_t1_start.setData, int(trigger_call))
-            if pp_t1_start.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_t1_start.tStartRefresh + 0.01-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_t1_start.tStop = t  # not accounting for scr refresh
-                    pp_t1_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t1_start, 'tStopRefresh')  # time at next scr refresh
-                    pp_t1_start.status = FINISHED
-                    win.callOnFlip(pp_t1_start.setData, int(0))
-            # *pp_t2_start* updates
-            if pp_t2_start.status == NOT_STARTED and tThisFlip >= token_2_tmin-frameTolerance:
-                # keep track of start time/frame for later
-                pp_t2_start.frameNStart = frameN  # exact frame index
-                pp_t2_start.tStart = t  # local t and not account for scr refresh
-                pp_t2_start.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_t2_start, 'tStartRefresh')  # time at next scr refresh
-                pp_t2_start.status = STARTED
-                win.callOnFlip(pp_t2_start.setData, int(trigger_col))
-            if pp_t2_start.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_t2_start.tStartRefresh + 0.01-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_t2_start.tStop = t  # not accounting for scr refresh
-                    pp_t2_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t2_start, 'tStopRefresh')  # time at next scr refresh
-                    pp_t2_start.status = FINISHED
-                    win.callOnFlip(pp_t2_start.setData, int(0))
-            # *pp_t3_start* updates
-            if pp_t3_start.status == NOT_STARTED and tThisFlip >= token_3_tmin-frameTolerance:
-                # keep track of start time/frame for later
-                pp_t3_start.frameNStart = frameN  # exact frame index
-                pp_t3_start.tStart = t  # local t and not account for scr refresh
-                pp_t3_start.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_t3_start, 'tStartRefresh')  # time at next scr refresh
-                pp_t3_start.status = STARTED
-                win.callOnFlip(pp_t3_start.setData, int(trigger_num))
-            if pp_t3_start.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_t3_start.tStartRefresh + 0.01-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_t3_start.tStop = t  # not accounting for scr refresh
-                    pp_t3_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t3_start, 'tStopRefresh')  # time at next scr refresh
-                    pp_t3_start.status = FINISHED
-                    win.callOnFlip(pp_t3_start.setData, int(0))
-            # *pp_end* updates
-            if pp_end.status == NOT_STARTED and tThisFlip >= lastSound_tmax-frameTolerance:
-                # keep track of start time/frame for later
-                pp_end.frameNStart = frameN  # exact frame index
-                pp_end.tStart = t  # local t and not account for scr refresh
-                pp_end.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(pp_end, 'tStartRefresh')  # time at next scr refresh
-                pp_end.status = STARTED
-                win.callOnFlip(pp_end.setData, int(trigger_end))
-            if pp_end.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > pp_end.tStartRefresh + 0.01-frameTolerance:
-                    # keep track of stop time/frame for later
-                    pp_end.tStop = t  # not accounting for scr refresh
-                    pp_end.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_end, 'tStopRefresh')  # time at next scr refresh
-                    pp_end.status = FINISHED
-                    win.callOnFlip(pp_end.setData, int(0))
             
             # check for quit (typically the Esc key)
             if endExpNow or defaultKeyboard.getKeys(keyList=["escape"]):
@@ -752,30 +625,6 @@ for thisBlock in blocks:
         trials.addData('fixation.stopped', fixation.tStopRefresh)
         trials.addData('screenAfterAudio.started', screenAfterAudio.tStartRefresh)
         trials.addData('screenAfterAudio.stopped', screenAfterAudio.tStopRefresh)
-        if pp_start.status == STARTED:
-            win.callOnFlip(pp_start.setData, int(0))
-        trials.addData('pp_start.started', pp_start.tStartRefresh)
-        trials.addData('pp_start.stopped', pp_start.tStopRefresh)
-        if pp_t0_start.status == STARTED:
-            win.callOnFlip(pp_t0_start.setData, int(0))
-        trials.addData('pp_t0_start.started', pp_t0_start.tStartRefresh)
-        trials.addData('pp_t0_start.stopped', pp_t0_start.tStopRefresh)
-        if pp_t1_start.status == STARTED:
-            win.callOnFlip(pp_t1_start.setData, int(0))
-        trials.addData('pp_t1_start.started', pp_t1_start.tStartRefresh)
-        trials.addData('pp_t1_start.stopped', pp_t1_start.tStopRefresh)
-        if pp_t2_start.status == STARTED:
-            win.callOnFlip(pp_t2_start.setData, int(0))
-        trials.addData('pp_t2_start.started', pp_t2_start.tStartRefresh)
-        trials.addData('pp_t2_start.stopped', pp_t2_start.tStopRefresh)
-        if pp_t3_start.status == STARTED:
-            win.callOnFlip(pp_t3_start.setData, int(0))
-        trials.addData('pp_t3_start.started', pp_t3_start.tStartRefresh)
-        trials.addData('pp_t3_start.stopped', pp_t3_start.tStopRefresh)
-        if pp_end.status == STARTED:
-            win.callOnFlip(pp_end.setData, int(0))
-        trials.addData('pp_end.started', pp_end.tStartRefresh)
-        trials.addData('pp_end.stopped', pp_end.tStopRefresh)
         # the Routine "audioTrial" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         
