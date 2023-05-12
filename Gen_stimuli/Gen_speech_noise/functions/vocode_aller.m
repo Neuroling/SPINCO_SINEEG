@@ -14,9 +14,9 @@ function [wave]=vocode_aller(nCh,morph,smooth,InputSignal,Srate,MinFreq,MaxFreq)
 
 nSmp=length(InputSignal);
 srat2=Srate/2;
-
+FilterOrder = 3; %remember filtfilt doubles the order
 %broadband filter:
-[BfilterB,BfilterA]=butter(4,[MinFreq MaxFreq]/srat2,"bandpass");
+[BfilterB,BfilterA]=butter(FilterOrder,[MinFreq MaxFreq]/srat2,"bandpass");
 
 filters='greenwood'; % could also do log, but stick with this for the moment
 
@@ -24,7 +24,7 @@ filters='greenwood'; % could also do log, but stick with this for the moment
 [filterB,filterA,center]=estfilt(nCh,filters,Srate,MinFreq,MaxFreq);
 
 % --- design low-pass envelope filter ----------
-[blo,alo]=butter(4, smooth/srat2);
+[blo,alo]=butter(FilterOrder, smooth/srat2);
 
 % create buffers for the necessary waveforms
 % 'y' contains a single output waveform,
@@ -72,8 +72,10 @@ for i=1:nCh
 
   % mix channel envelope (y) and 1-channel envelope (envelope) in different proportions 
   % according to morph percentage
-  y = (y .* (morph)) + (broadband_envelope.* (1 - (morph)));
-  
+%y = (y .* (morph)) + (broadband_envelope.* (1 - (morph)));
+  %Modified to ensure matching of RMS of evnelopes so that 0 really means 0
+  BBenv_RMSeq = BBenv.*(sqrt(mean(y.^2))/sqrt(mean(broadband_envelope.^2)));   
+    y = (y * (morph)) + (BBenv_RMSeq * (1 - (morph)));
 
     % here we multiply y - the envelope, by some noise
     % -- excite with noise -- 
