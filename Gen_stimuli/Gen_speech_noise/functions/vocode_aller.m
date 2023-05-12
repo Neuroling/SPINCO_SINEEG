@@ -74,7 +74,7 @@ for i=1:nCh
   % according to morph percentage
 %y = (y .* (morph)) + (broadband_envelope.* (1 - (morph)));
   %Modified to ensure matching of RMS of evnelopes so that 0 really means 0
-  BBenv_RMSeq = BBenv.*(sqrt(mean(y.^2))/sqrt(mean(broadband_envelope.^2)));   
+  BBenv_RMSeq = broadband_envelope.*(sqrt(mean(y.^2))/sqrt(mean(broadband_envelope.^2)));   
     y = (y * (morph)) + (BBenv_RMSeq * (1 - (morph)));
 
     % here we multiply y - the envelope, by some noise
