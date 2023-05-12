@@ -1,4 +1,5 @@
 # Sentence-in-noise 
+
 ## Flow 
 The 'flow' folder contains the files for each block of trials (2 NV and 2 SiSSN) the block presentation order is defined by the files order1.csv, order2.csv....order8.csv. 
 The blocks always alternate types of noise (NV or SISSN). The 'order' files with odd number suffix specify sequences starting with NV blocks, 'order' files with even number specify sequence starting with SiSSN blocks. 
@@ -19,8 +20,10 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 
 | code	| Description
 |-------|-------------------------------|
-| 1 	| Click to first target		|
-| 2 	| Click to second target		|
+| 8	| Start resting state PRE task	|
+| 9 	| Start resting state POST task	|
+| 1 	| Click to first target         |
+| 2 	| Click to second target	|
 | 3 	| Click to third target		|
 | 5	| Instruction screen		|
 | 6	| Start of block screen		|
@@ -32,7 +35,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 201 	| SiSSN ends			| 
 |onsets	|				|
 | 111 	| NV onset 1:Adler 		| 
-| 121 	| NV onset 2:gelb	| 
+| 121 	| NV onset 2:gelb	 	| 
 | 131 	| NV onset 3:eins		| 
 |	|				|
 | 211 	| SiSSN onset 1:Adler 		| 
