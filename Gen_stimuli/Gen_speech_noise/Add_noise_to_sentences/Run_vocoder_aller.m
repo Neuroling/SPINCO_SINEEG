@@ -11,18 +11,24 @@ clear all ;
 % Find the index of the "script" folder
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 scriptPathIdx = find(strcmp(folders, 'Scripts'), 1);
-baseDir = ['/',fullfile(folders{1:(scriptPathIdx-1)})];
+baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep];
  % add paths of associated functions and toolbox TSM required by function 
-addpath([baseDir, '/Scripts/Gen_stimuli/Gen_speech_noise/functions'])
+addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise','functions')])
 %addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')
 %addpath('C:\Users\gfraga\Documents\MATLAB\')
 %% Inputs 
 makeplots = 0;
  % paths and files 
-dirinput =      [baseDir,'/Stimuli/AudioGens/tts-golang-44100hz/tts-golang-selected'] ;
-diroutput =      [baseDir,'/Stimuli/AudioGens/tts-golang-44100hz/tts-golang-selected-NV/']  ;
+dirinput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected')] ;
+diroutput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected-NV_v2-1')];
+mkdir(diroutput)
+
+% save a 'last run' copy of script 
+[filepath,name,ext] = fileparts(matlab.desktop.editor.getActiveFilename);
+copyfile(matlab.desktop.editor.getActiveFilename,[diroutput,filesep,name,'_',datestr(now,'yymmdd-HHMMSS'),'.txt'])
+
 cd (dirinput)
-audiofiles =      dir([dirinput, '/*.wav']);
+audiofiles =      dir([dirinput, filesep,'*.wav']);
 audiofiles =      fullfile(dirinput, {audiofiles.name});
 mkdir(diroutput)
 
@@ -30,12 +36,13 @@ mkdir(diroutput)
 exc =           'noise' ; 
 mapping=        'n'; 
 smooth=          30 ; 
-nCh =           16; 
+nCh =            1 %originally 16
 MinFreq =       70;
 MaxFreq =        5000;
 % Degradation levels
 target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
 target_proportions = [0.1];
+target_proportions = [1];
  
  
 %% Call vocoder function (save in structure array)
@@ -56,7 +63,7 @@ for i = 1:length(signals)
     
     
    for ii = 1:length(target_proportions)       
-       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'\NV_',name,'_',num2str(target_proportions(ii)),'p',ext],'\\','\');
+       nvStimuli(i).vocoded(ii).filename= strrep([diroutput,'\NV_',name,'_',num2str(target_proportions(ii)),'p_',num2str(nCh),'ch',ext],'\\','\');
        nvStimuli(i).vocoded(ii).proportions = target_proportions(ii);
        
        %call function >>>>>>>>>>>>>>
@@ -98,7 +105,7 @@ if makeplots==1
     for i = 1:length(nvStimuli)
        for ii = 1:length(nvStimuli(i).vocoded)       
                    %%% Save summary plot 
-                   footnote = ['Vocoder_2022 run for ', nvStimuli(i).filename,' (srate: ',num2str(nvStimuli(i).srate),' Hz) with arguments: exc (', exc, '), mapping (',mapping, '), filters(',...
+                   footnote = ['Vocoder run for ', nvStimuli(i).filename,' (srate: ',num2str(nvStimuli(i).srate),' Hz) with arguments: exc (', exc, '), mapping (',mapping, '), filters(',...
                        '), min-max freqs(',num2str(MinFreq),'-',num2str(MaxFreq),'), proportions (',num2str(target_proportions(ii)),'), smooth (',num2str(smooth),')'];
 
                    signal_nv2plot = nvStimuli(i).vocoded(ii).nvsignal;

@@ -16,19 +16,25 @@ clear all ;
  % Find the index of the "script" folder
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 scriptPathIdx = find(strcmp(folders, 'Scripts'), 1);
-baseDir = ['/',fullfile(folders{1:(scriptPathIdx-1)})];
+baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep];
  % add paths of associated functions and toolbox TSM required by function 
-addpath([baseDir, '/Scripts/Gen_stimuli/Gen_speech_noise/functions'])
-%addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')
-%addpath('C:\Users\gfraga\Documents\MATLAB\')
+addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise','functions')])
 
-%% Inputs 
+
+% Inputs 
  % paths and files 
-dirinput =      [baseDir,'/Stimuli/AudioGens/tts-golang-44100hz/tts-golang-selected'] ;
-diroutput =      [baseDir,'/Stimuli/AudioGens/tts-golang-44100hz/tts-golang-selected-SiSSN/']  ;
+dirinput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected')] ;
+diroutput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected-SiSSN_v2')];
 %mkdir(diroutput)
+
+% save a 'last run' copy of script 
+[filepath,name,ext] = fileparts(matlab.desktop.editor.getActiveFilename);
+copyfile(matlab.desktop.editor.getActiveFilename,[diroutput,filesep,name,'_lastRun.txt'])
+
+
+% find files
 cd (dirinput)
-audiofiles =      dir([dirinput,'/*.wav']); % must be more than one 
+audiofiles =      dir([dirinput,filesep,'*.wav']); % must be more than one 
 audiofiles =      fullfile(dirinput, {audiofiles.name}); 
  
 %% Filter settings (butterworth filter lower and upper cut freqs in Hz)
@@ -93,7 +99,7 @@ for L=1:length(target_dB_snr)
         seed = randperm(length(ssn)-noise2use_points) ;%find a random data point(prevent out of bounds)
         noise2use = ssn(seed(1):seed(1)+noise2use_points-1); % take that noise segment
       
-        % normalize noise to current signal rms         
+        % normalize noise to current unadjusted signal rms         
         noise2use_norm = noise2use.*(rms(sigs_filt{i})/rms(noise2use));       
  
         %Speech in Speech-shaped noise:
