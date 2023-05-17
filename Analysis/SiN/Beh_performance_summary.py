@@ -37,14 +37,15 @@ files = os.listdir(diroutput)
 
 # Loop through the files to find the CSV file
 for file in files:
-    if file.endswith(".csv") and file[-5].isdigit():
+    if file.endswith(".csv") and file[-5].isdigit():  #to prevent taking the one ending in *trials.csv 
         filepath = os.path.join(diroutput, file)
  
         # % read data frame 
         df = pd.read_csv(filepath)
-        #df = df.iloc[:, :-1] # SEEMS to read an additional blank column [!!!revise  ]
+        #df = df.iloc[:, :-1] # SEEMS to read an additional blank column [!!!revise  ] 
         df = df.iloc[:-1, :-1]
-        # % Assess accuracy         
+        #-Checking accuracy will change as future log files will have 3 boolean columns for each target item -------------------------------------------------   
+        # % Assess accuracy     
         map_call = {'Ad':'call1','Dr':'call2','Kr':'call3','Ti':'call4'}
         map_col = {'ge':'colour1','gr':'colour2','ro':'colour3','we':'colour4'}
         map_num = {'Ei':'number1','Zw':'number2','Dr':'number3','Vi':'number4'}
@@ -58,11 +59,17 @@ for file in files:
         df.insert(0, 'accu_call', (df['mouseClickOnCall.clicked_name'] == df.callSign.replace(map_call)).astype(int))
         df.insert(0, 'accu_col', (df['mouseClickOnColour.clicked_name'] == df.colour.replace(map_col)).astype(int))
         df.insert(0, 'accu_num', (df['mouseClickOnNumber.clicked_name'] == df.number.replace(map_num)).astype(int))
-
+        # ----------------------------------------------------------------------------------------   
 # %        
         ## Summarize accuracy
-        res=  (df.groupby(['noise', 'block', 'levels'])[[ 'accu_call', 'accu_col','accu_num',]].sum())*100/32
+    # call or callSign  = is the animal ; col = color and num = number 
+    # 32 = is the number of target items per level, noise type and block (replace 
+    uniqueTrials = 32 
+     res=  (df.groupby(['noise', 'block', 'levels'])[[ 'accu_call', 'accu_col','accu_num',]].sum())*100/uniqueTrials
         
+        # Save excel 
+        
+       # Performance plot
 # %% 
 
 
