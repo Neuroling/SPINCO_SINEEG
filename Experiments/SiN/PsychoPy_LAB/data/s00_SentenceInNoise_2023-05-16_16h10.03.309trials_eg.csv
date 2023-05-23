@@ -1,0 +1,11 @@
+﻿audiofile,callSign,colour,number,n,callSignCorrect_mean,callSignCorrect_raw,colourCorrect_mean,colourCorrect_raw,mouseClickOnCall_2.clicked_name_raw,mouseClickOnCall_2.leftButton_raw,mouseClickOnCall_2.midButton_raw,mouseClickOnCall_2.rightButton_raw,mouseClickOnCall_2.time_raw,mouseClickOnCall_2.x_raw,mouseClickOnCall_2.y_raw,mouseClickOnColour_2.clicked_name_raw,mouseClickOnColour_2.leftButton_raw,mouseClickOnColour_2.midButton_raw,mouseClickOnColour_2.rightButton_raw,mouseClickOnColour_2.time_raw,mouseClickOnColour_2.x_raw,mouseClickOnColour_2.y_raw,mouseClickOnNumber_2.clicked_name_raw,mouseClickOnNumber_2.leftButton_raw,mouseClickOnNumber_2.midButton_raw,mouseClickOnNumber_2.rightButton_raw,mouseClickOnNumber_2.time_raw,mouseClickOnNumber_2.x_raw,mouseClickOnNumber_2.y_raw,numberCorrect_mean,numberCorrect_raw,order
+audio/NV_DE_Neural2-D_Dr-we-Ei_0.9p.wav,Dr,we,Ei,1.0,1.0,True,0.0,False,call2_2,1,1,0,0,0,0,1.9273533000377938,2.561131300055422,-0.09513888888888888,-0.4013888888888889,0.09375,0.15486111111111112,colour2_2,1,0,0,2.924357599928044,0.044444444444444446,0.18819444444444444,number2_2,1,0,0,3.5913081999169663,0.3798611111111111,0.08680555555555555,0.0,False,0.0
+audio/NV_DE_Neural2-D_Dr-we-Ei_0.3p.wav,Dr,we,Ei,1.0,0.0,False,0.0,False,call3_2,1,0,0,1.6427749000722542,-0.4048611111111111,-0.07083333333333333,colour3_2,1,1,0,0,0,0,1.9925650999648497,2.2593183000572026,-0.14166666666666666,-0.02638888888888889,-0.11319444444444444,-0.13055555555555556,number3_2,1,0,0,2.8262799000367522,0.4027777777777778,-0.08611111111111111,0.0,False,1.0
+
+extraInfo
+participant,s00
+order,1
+date,2023-05-16_16h10.03.309
+expName,SentenceInNoise
+psychopyVersion,2022.2.1
+frameRate,59.9941206012546

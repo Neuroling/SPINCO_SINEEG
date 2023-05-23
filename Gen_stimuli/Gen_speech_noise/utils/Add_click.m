@@ -1,6 +1,6 @@
 clear all 
-dirinput = 'V:\Projects\Spinco\SINEEG\Scripts\Experiments\SiN\PsychoPy_LAB\audio_noclick' ;
-diroutput = 'V:\Projects\Spinco\SINEEG\Scripts\Experiments\SiN\PsychoPy_LAB\audio' ;
+dirinput = 'V:\Projects\Spinco\SINEEG\Stimuli\AudioGens\selected_audio_psychoPy' ;
+diroutput = 'V:\Projects\Spinco\SINEEG\Stimuli\AudioGens\selected_audio_psychoPy_click' ;
 mkdir(diroutput)
 
 %% 

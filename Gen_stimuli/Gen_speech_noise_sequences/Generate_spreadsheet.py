@@ -22,15 +22,16 @@ import pandas as pd
 import numpy as np
 import wave
 
+# %% paths 
+thisScriptDir = os.path.dirname(os.path.abspath(__file__))
+scripts_index = thisScriptDir.find('scripts')
 
-if sys.platform=='linux':  basedir  = '/home/d.uzh.ch/gfraga/smbmount/'
-else:  basedir ='V:/'
+dirs2search = [os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','tts-golang-selected-SiSSN'),
+               os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','tts-golang-selected-NV_v1')]
 
+diroutput = os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','flow')
 
-dirs2search = [basedir + 'spinco_data/AudioGens/tts-golang-selected-NV' ,
-               basedir + 'spinco_data/AudioGens/tts-golang-selected-SiSSN']
-
-diroutput = basedir + 'spinco_data/AudioGens/flow/'
+praatSummaryFile = os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','word_times','MEAN_tts-golang-selected_wordTimes.csv')
 
 # Dictionaries with trigger codes: 1st digit = noise, 2nd digit=position (1-call,2-col,3-num), 3rd digit = item (see below)
 triggerDict_noise = {'NV':1,'SiSSN':2}
@@ -38,14 +39,10 @@ triggerDict_call = {'Ad':1,'Dr':2,'Kr':3,'Ti':4}
 triggerDict_col = {'ge':1,'gr':2,'ro':3,'we':4}
 triggerDict_num = {'Ei':1,'Zw':2,'Dr':3,'Vi':4}
 
-
-
 # gather info in file 
 fullTab= pd.DataFrame() 
 #Loop thru directories for each noise (NV, SiSSN files separate folders)
-for countdir, dirinput in enumerate(dirs2search):   
-    
-    praatSummaryFile = basedir + 'spinco_data/AudioGens/word_times/MEAN_tts-golang-selected_wordTimes.csv'
+for countdir, dirinput in enumerate(dirs2search):     
     
     os.chdir(dirinput)
     os.getcwd()
@@ -116,7 +113,7 @@ for countdir, dirinput in enumerate(dirs2search):
     
     # % Add block info 
     # Select only levels of interest
-    vals = ['0.6p','0.7p','0.8p','-7db','-6db','-5db']
+    vals = ['0.2p','0.4p','0.6p','-7db','-9db','-11db']
     fullTab = fullTab[fullTab['levels'].isin(vals)]
     # %%    
     # Add index by noise , voice and Level (to use for block assignment)
@@ -146,21 +143,21 @@ for countdir, dirinput in enumerate(dirs2search):
                                       fullTab2save.groupby(['noise','block','voice','levels'])['number'].count().reset_index()])
 
 # %% save to file
-with open(diroutput + 'tts-golang-selected_PsyPySEQ.csv','w', newline='') as csvfile:
+with open(os.path.join(diroutput,'tts-golang-selected_PsyPySEQ.csv'),'w', newline='') as csvfile:
     fullTab2save.to_csv(csvfile,index=False)
     
 # %% save per block    
 for block_value in fullTab2save['block'].unique():    
     block_df = fullTab2save[fullTab2save['block'] == block_value]    
-    block_df.to_csv(diroutput + 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv', index=False)
+    block_df.to_csv(os.path.join(diroutput, 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv'), index=False)
 
 #%%
-with open(diroutput + 'tts-golang-selected_seqOverview.csv','w', newline='') as csvfile:
+with open(os.path.join(diroutput, 'tts-golang-selected_seqOverview.csv'),'w', newline='') as csvfile:
         overview.to_csv(csvfile,index=False)
 
 #%%
 
-with open(diroutput + 'tts-golang-selected_stimOverview.csv','w', newline='') as csvfile:
+with open(os.path.join(diroutput , 'tts-golang-selected_stimOverview.csv'),'w', newline='') as csvfile:
         stimOverview.to_csv(csvfile,index=False)
                 
   

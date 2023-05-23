@@ -1,0 +1,13 @@
+﻿audiofile,callSign,colour,number,n,callSignCorrect_mean,callSignCorrect_raw,colourCorrect_mean,colourCorrect_raw,mouseClickOnCall_2.clicked_name_raw,mouseClickOnCall_2.leftButton_raw,mouseClickOnCall_2.midButton_raw,mouseClickOnCall_2.rightButton_raw,mouseClickOnCall_2.time_raw,mouseClickOnCall_2.x_raw,mouseClickOnCall_2.y_raw,mouseClickOnColour_2.clicked_name_raw,mouseClickOnColour_2.leftButton_raw,mouseClickOnColour_2.midButton_raw,mouseClickOnColour_2.rightButton_raw,mouseClickOnColour_2.time_raw,mouseClickOnColour_2.x_raw,mouseClickOnColour_2.y_raw,mouseClickOnNumber_2.clicked_name_raw,mouseClickOnNumber_2.leftButton_raw,mouseClickOnNumber_2.midButton_raw,mouseClickOnNumber_2.rightButton_raw,mouseClickOnNumber_2.time_raw,mouseClickOnNumber_2.x_raw,mouseClickOnNumber_2.y_raw,numberCorrect_mean,numberCorrect_raw,order
+audio/NV_DE_Neural2-D_Dr-we-Ei_0.9p.wav,Dr,we,Ei,1.0,0.0,False,0.0,False,call4_2,1,0,0,1.703283799928613,-0.3972222222222222,-0.24444444444444444,colour3_2,1,0,0,2.070519599947147,-0.06319444444444444,-0.11944444444444445,number4_2,1,0,0,2.5537112000165507,0.40208333333333335,-0.2881944444444444,0.0,False,0.0
+audio/NV_DE_Neural2-D_Dr-we-Ei_0.3p.wav,Dr,we,Ei,1.0,0.0,False,0.0,False,call3_2,1,0,0,1.5892090999986976,-0.38263888888888886,-0.06388888888888888,colour2_2,1,0,0,2.0093494000611827,0.08611111111111111,0.07291666666666667,number3_2,1,0,0,2.6901284999912605,0.4131944444444444,-0.07430555555555556,0.0,False,1.0
+audio/SiSSN_DE_Neural2-D_Kr-we-Dr_-2.5db.wav,Kr,we,Dr,1.0,1.0,True,0.0,False,call3_2,1,0,0,1.421051700017415,-0.42777777777777776,-0.09652777777777778,colour3_2,1,0,0,1.771289800060913,0.025,-0.10902777777777778,number3_2,1,0,0,2.1716874999692664,0.3402777777777778,-0.13472222222222222,0.0,False,2.0
+audio/SiSSN_DE_Neural2-D_Kr-we-Dr_-13db.wav,Kr,we,Dr,1.0,0.0,False,0.0,False,call4_2,1,0,0,1.5899426001124084,-0.4708333333333333,-0.2965277777777778,colour4_2,1,0,0,2.00740170001518,-0.05,-0.26805555555555555,number4_2,1,0,0,2.525026799994521,0.3951388888888889,-0.2902777777777778,0.0,False,3.0
+
+extraInfo
+participant,s00
+order,1
+date,2023-05-16_16h03.22.920
+expName,SentenceInNoise
+psychopyVersion,2022.2.1
+frameRate,59.84214837729566

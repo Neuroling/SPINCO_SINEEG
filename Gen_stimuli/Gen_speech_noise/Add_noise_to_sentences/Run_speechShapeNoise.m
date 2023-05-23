@@ -19,12 +19,12 @@ scriptPathIdx = find(strcmp(folders, 'Scripts'), 1);
 baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep];
  % add paths of associated functions and toolbox TSM required by function 
 addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise','functions')])
-
+addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise')])
 
 % Inputs 
  % paths and files 
 dirinput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected')] ;
-diroutput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected-SiSSN_v2')];
+diroutput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected-SiSSN')];
 %mkdir(diroutput)
 
 % save a 'last run' copy of script 
@@ -51,7 +51,7 @@ noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which th
 
 % SNR levels
  target_dB_snr = [-8,-7,-6,-5];%15db used for 'clean condition catch trials
- target_dB_snr = [-11];
+ target_dB_snr = [-12,-13];
 
 %% Generate noise from concatenated data
 % read signals
@@ -71,7 +71,7 @@ sigs_filt_concat = vertcat(sigs_filt{:});
 rng(3) % set up random seed
 ssn = speechshapednoise(sigs_filt_concat,nfft,noctaves,srate);
 disp('...generated speech-shaped noise from file '); 
-audiowrite([diroutput,'_ssn.wav'],ssn,srate,'BitsPerSample',16,'comment','speech-shaped noise with length of all files in folder concatenated');        
+audiowrite([diroutput,'/noise/_ssn.wav'],ssn,srate,'BitsPerSample',16,'comment','speech-shaped noise with length of all files in folder concatenated');        
 
 %% Loop thru SNR values and embed  the speech in SSN  
 for L=1:length(target_dB_snr)
