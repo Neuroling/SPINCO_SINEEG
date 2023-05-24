@@ -37,31 +37,26 @@ Folders
 ````
 
 Metadata (JSON)
-Example *s01_sin_eeg.json*
+Example of EEG data from https://openneuro.org/datasets/ds001787/versions/1.1.0/file-display/sub-015:ses-01:eeg:sub-015_ses-01_task-meditation_eeg.json: 
 ````
 {
-	"TaskName": "SentenceInNoise",
-	"TaskDescription": ".describe task here..",
-	"InstitutionName": "...",
-	"InstitutionAddress": "...",
-	"EEGChannelCount": 64,
-	"EEGReference": "xxxx",
-	"EOGChannelCount": 4,  
-	"EMGChannelCount": 0,
-	"ECGChannelCount": 0	
-	"MiscChannelCount": 73,
-	"TriggerChannelCount": 1,
-	"PowerLineFrequency": 50,
-	"EEGPlacementScheme": "xxx",
-	"Manufacturer": "BioSemi- AMP MODEL?",
-	"ManufacturersModelName": "ActiveTwo",
-	"HardwareFilters": "n/a",
-	"SoftwareFilters": "n/a",
-	"SoftwareVersions": "xxx",
-	"CapManufacturer": "xxxx",
-	"RecordingType": "continuous",
-	"RecordingDuration": xxxx,
-	"SamplingFrequency": xxx,	
+  "InstitutionAddress": "Centre de Recherche Cerveau et Cognition, Place du Docteur Baylac, Pavillon Baudot, 31059 Toulouse, France",
+  "InstitutionName": "Paul Sabatier University",
+  "InstitutionalDepartmentName": "Centre de Recherche Cerveau et Cognition",
+  "PowerLineFrequency": 50,
+  "ManufacturersModelName": "ActiveTwo",
+  "TaskName": "meditation",
+  "EEGReference": "CMS/DRL",
+  "Manufacturer": "BIOSEMI",
+  "EEGChannelCount": 64,
+  "MiscChannelCount": 15,
+  "RecordingType": "continuous",
+  "RecordingDuration": 2718,
+  "SamplingFrequency": 256,
+  "EOGChannelCount": 0,
+  "ECGChannelCount": 0,
+  "EMGChannelCount": 0,
+  "SoftwareFilters": "n/a"
 }
 ````
 
