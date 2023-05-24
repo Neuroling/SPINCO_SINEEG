@@ -15,7 +15,7 @@ Folders
 - Misc: miscelanea, including _fromRobertBecker: collection of scripts shared by R.B 
 
 
-# Data organization
+# BIDS data organization
 (BIDS) Dataset will be made available in a public data repo *tbd*
 
 Folders
@@ -31,9 +31,12 @@ Folders
     |	│   │   │   ├── s01_sin_eeg.bdf
     |	│   │   │   ├── s01_rest_eeg.json        
     |	│   │   │   ├── s01_sin_eeg.json
-    |	│   │   │   ├── s01_electrodes.tsv
+    |	│   │   │   ├── s01_electrodes.tsv*
+    |	│   │   │   ├── s01_coordsystem.json*
     |	│   │   │   └── s01_sin_exp-data.csv
     └──	└── └── └── ...
+    
+* if the optional 'electrodes.tsv' file is provided, with the electrode locations, then the coordsystem.json file should be provided specifying units and position system used. 
 ````
 
 Metadata (JSON)
