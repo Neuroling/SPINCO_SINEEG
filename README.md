@@ -18,7 +18,7 @@ Folders
 # BIDS data organization
 (BIDS) Dataset will be made available in a public data repo *tbd*
 
-Folders
+## Folders
 ````
 ./spinco_data
     ├──SINEEG
@@ -39,7 +39,8 @@ Folders
 * if the optional 'electrodes.tsv' file is provided, with the electrode locations, then the coordsystem.json file should be provided specifying units and position system used. 
 ````
 
-Metadata (JSON)
+## EEG data set Metadata (JSON)
+Put one of of this at the subject and task level 
 Example of EEG data from https://openneuro.org/datasets/ds001787/versions/1.1.0/file-display/sub-015:ses-01:eeg:sub-015_ses-01_task-meditation_eeg.json: 
 ````
 {
@@ -63,8 +64,15 @@ Example of EEG data from https://openneuro.org/datasets/ds001787/versions/1.1.0/
 }
 ````
 
-Metadata (JSON)
-Example from BIDS dataset_description.json
+## EEG events (JSON)
+Put one of of this at the subject and task level. 
+Example of EEG data from https://openneuro.org/datasets/ds001787/versions/1.1.0/file-display/sub-015:ses-01:eeg:sub-015_ses-01_task-meditation_eeg.json 
+ 
+
+
+
+## More general dataset metadata 
+This is done at the parent folder, common to all subjects. Example from BIDS dataset_description.json
 Only the fields 'Name' and 'BIDSVersion' are marked as required in the documentation:
 https://bids-specification.readthedocs.io/en/stable/03-modality-agnostic-files.html
 ````
