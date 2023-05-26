@@ -28,7 +28,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 5	| Instruction screen		|
 | 6	| Start of block screen		|
 | 7	| Start of response grid	|
-| 8	| End of a block |
+| 60	| End of a block |
 |	|				|
 | 100 	| NV starts			| 
 | 101 	| NV ends			| 
