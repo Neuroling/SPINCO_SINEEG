@@ -1,5 +1,6 @@
 # LIRI Lab notes
 - Fireface audiodevice 9+10 RME for sending to headphones
+- system audio 1 and 2 rme for it to go to erg1.  in rme TotalMix interface use phones 2 to control sound to participant
 -	In-ear headphones : connect to fireface  input cable in participants cabin
 -	In-ear disposable tips:  ER ½ 14 A (? Check size and fitting)
 -	Make sure Audio device box is turned on before oepning Psychopy
