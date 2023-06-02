@@ -2,7 +2,8 @@
 Sentence-in-noise EEG experiment 
 
 Folders: 
-- **PsychoPy** folders contain the actual experiment 
+- **PsychoPy_LAB** folders contain the actual experiment 
+- **PsychoPy_LAB_Practise**:some practice trials to show to the participants offline (e.g., before electrode placement) 
 
 ## Goal
 
