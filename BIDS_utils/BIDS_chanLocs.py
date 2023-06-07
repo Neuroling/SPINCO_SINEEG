@@ -15,42 +15,63 @@ import os
 import pandas as pd
 import json
 import mne
-# find base directory 
-baseDir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# %% Read electrode locations 
+# paths 
+baseDir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 chanLocsFile =  os.path.join(baseDir,'Data','Electrode_locations','Biosemi_73ch_EEGlab_xyx.tsv')
-locs = pd.read_csv(chanLocsFile, delimiter = '\t', header = None)
-locs = locs.rename(columns={0:'Electrode',1:'x',2:'y',3:'z'})
+
+# User inputs  
+subjPattern = 'p002'
+save_event_file = False 
+
 
 # %% Subject loop 
 # find subject Raw eeg files
 
 subjectDir = os.path.join(baseDir,'Data','SiN','raw')
-files = [files for files in glob.glob(os.path.join(subjectDir,'**','*.bdf'), recursive = True) if re.search('p0.*', files)]
+files = [files for files in glob.glob(os.path.join(subjectDir,'**','*.bdf'), recursive = True) if re.search(subjPattern + '.*', files)]
    
 # %% 
-for fi in files: 
+for fileinput in files: 
+    
     # Get folder, subject ID and task ID from fullfilename parts 
-    diroutput = os.path.dirname(fi)
-    subjID = os.path.basename(fi).replace('.bdf','').split('_')[0]
-    taskID = os.path.basename(fi).replace('.bdf','').split('_')[1]
-        
+    subjID = os.path.basename(fileinput).replace('.bdf','').split('_')[0]
+    taskID = os.path.basename(fileinput).replace('.bdf','').split('_')[1]
+    diroutput = os.path.dirname(fileinput)
+           
     # Read raw eeg data 
-    raw = mne.io.read_raw_bdf(fi, preload=True,  infer_types=True)
+    raw = mne.io.read_raw_bdf(fileinput, preload=True,  infer_types=True)
     fileDuration = raw.n_times/ raw.info['sfreq']  
     fileSamplingRate = raw.info['sfreq']  
         
-   # %% Get events for event .tsv file
-    events = mne.find_events(raw)   
-    events[:,0] = events[:,0] +1
-    df_events = pd.DataFrame(events)
-    df_events=    df_events.rename(columns= {0:"SAMPLES", 1:"TRIAL_TYPE", 2:"VALUE"})
-    df_events['ONSET'] = df_events['SAMPLES'] /  raw.info['sfreq']
-    df_events['DURATION'] = 'n/a'
-    df_events['RESPONSE'] = 'n/a'
+    # % Get events for event .tsv file
+    # ------------------------------------------------------------------
+    if save_event_file:      
+        # find events 
+        events = mne.find_events(raw,min_duration=0.002)
+        events[:,0] = events[:,0] +1
+        df_events = pd.DataFrame(events)
+        df_events = df_events.rename(columns= {0:"SAMPLES", 1:"TRIAL_TYPE", 2:"VALUE"})
+        df_events['ONSET'] = df_events['SAMPLES'] /  raw.info['sfreq']
+        df_events['DURATION'] = 'n/a'
+        df_events['RESPONSE'] = 'n/a'
+                
+        tsv_file_path = os.path.join(diroutput,subjID +  '_' + taskID + '_events.tsv')
+        if not os.path.exists(tsv_file_path):
+            df_events.to_csv(tsv_file_path, sep='\t', index=False)    
+            print('---> added tsv file of events')        
+        else:
+            print("File already exists. Skipping saving the event .")            
+         
+        
     
-    # %% add copy of electrode coords in .tsv ( one per subject)
+    # %% Add copy of electrode coords in .tsv ( one per subject)
+    # -----------------------------------------------------------------------------
+    # % Read electrode locations 
+    locs = pd.read_csv(chanLocsFile, delimiter = '\t', header = None)
+    locs = locs.rename(columns={0:'Electrode',1:'x',2:'y',3:'z'})
+       
+    
     tsv_file_path = os.path.join(diroutput,subjID + '_electrodes.tsv')
     if not os.path.exists(tsv_file_path):
         locs.to_csv(tsv_file_path, sep='\t', index=False)    
@@ -58,7 +79,7 @@ for fi in files:
     else:
         print("File already exists. Skipping saving the electrode locations .")            
     
-    # %% Make electrode coordinates  json file  
+    # add json file to describe coordinate system
     chanCoords = {
         "EEG_coordinate_System": "EEGlab",
         "EEGCoordinateUnits": "mm",
@@ -68,15 +89,27 @@ for fi in files:
     
     with open(os.path.join(diroutput,subjID + '_coordsystem.json'), 'w') as ff:
         json.dump(chanCoords, ff, indent=1)
-        print('---> saved EEG json')
+        print('---> saved coord system json')
 
-
+    # %% Task information 
+    # -----------------------------------------------------------------------------
+      
+    if "task_sin" in taskID:     
+        task_descript = "A version of a speech intelligibility task using a coordinate response measure, based on Brungart et al.2001, DOI: 10.1121/1.1357812. German sentences are aurally presented either vocoded or with background noise, with 3 levels of difficulty. Each sentence has a fixed structure and 3 target items, which the subject must identify from 4 possible alternatives after each trial. Targets can be a call sign (Adler, Droessel, Kroete, Tiger), a color (gelb, gruen, rot, weiss) or a number (eins, zwei, drei, vier). A 3x4 grid is presented with images after each trial for the subject to click. The 64 possible combinations are presented in naturalistic synthesized speech with male and female voices." 
+        task_instructions =  "Listen well and click on the images representing the words you heard after each trial (...)"
+    
+    elif 'task-rest'  in taskID:
+        task_descript = "4 minutes eyes-closed resting state. A beep is used to indicate beginning and end of the four minutes."      
+        task_instructions =  "Close your eyes and try to remain still as possible. After hearing the second beep you can open them again"
+        
+    
+    
     # %% Make EEG json file at subject and task level with EEG recording details    
     metaData = {
             "ProjectName": "Speech in noise EEG", 
-            "TaskName": "Sentence in noise - SIN",  # conditional, depending on label in filename. e.g., s001_task-SIN.bdf
-            "TaskDescription": "A version of a speech intelligibility task using a coordinate response measure, based on Brungart et al.2001, DOI: 10.1121/1.1357812. German sentences are aurally presented either vocoded or with background noise, with 3 levels of difficulty. Each sentence has a fixed structure and 3 target items, which the subject must identify from 4 possible alternatives after each trial. Targets can be a call sign (Adler, Droessel, Kroete, Tiger), a color (gelb, gruen, rot, weiss) or a number (eins, zwei, drei, vier). A 3x4 grid is presented with images after each trial for the subject to click. The 64 possible combinations are presented in naturalistic synthesized speech with male and female voices.", 
-            "Instructions":"Listen well and click on the images representing the words you heard after each trial (...)", 
+            "TaskName": taskID,  # extract from label in filename. e.g., s001_task-SIN.bdf
+            "TaskDescription": task_descript,
+            "Instructions": task_instructions, 
             "InstitutionAddress": "LiRI Linguistic Research Infrastructure, University of Zurich, Andreasstrasse 15, 8050 Zurich, Switzerland", 
             "InstitutionName": "LiRI Linguistic Research Infrastructure, University of Zurich",
             "PowerLineFrequencyHz": 50, 
