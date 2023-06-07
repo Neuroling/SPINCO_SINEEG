@@ -1,8 +1,8 @@
 ﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-This experiment was created using PsychoPy3 Experiment Builder (v2022.1.3),
-    on June 02, 2023, at 10:55
+This experiment was created using PsychoPy3 Experiment Builder (v2022.2.1),
+    on June 07, 2023, at 14:07
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -11,6 +11,7 @@ If you publish work using this script the most relevant publication is:
 
 """
 
+# --- Import packages ---
 from psychopy import locale_setup
 from psychopy import prefs
 prefs.hardware['audioLib'] = 'pyo'
@@ -28,6 +29,7 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
+# Run 'Before Experiment' code from prep_instrRest_pre
 #import psychtoolbox as ptb
 from psychopy import sound
 import psychopy.visual
@@ -43,9 +45,13 @@ print(clock.getTime())
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(_thisDir)
 # Store info about the experiment session
-psychopyVersion = '2022.1.3'
+psychopyVersion = '2022.2.1'
 expName = 'SentenceInNoise'  # from the Builder filename that created this script
-expInfo = {'participant': 's00', 'order': '1'}
+expInfo = {
+    'participant': 's00',
+    'order': '1',
+}
+# --- Show participant info dialog --
 dlg = gui.DlgFromDict(dictionary=expInfo, sortKeys=False, title=expName)
 if dlg.OK == False:
     core.quit()  # user pressed cancel
@@ -59,7 +65,7 @@ filename = _thisDir + os.sep + u'data/%s_%s_%s' % (expInfo['participant'], expNa
 # An ExperimentHandler isn't essential but helps with data saving
 thisExp = data.ExperimentHandler(name=expName, version='',
     extraInfo=expInfo, runtimeInfo=None,
-    originPath='Z:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\PsychoPy_LAB\\SIN_lab_01-06-23_lastrun.py',
+    originPath='V:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\PsychoPy_LAB\\SIN_lab_01-06-23_lastrun.py',
     savePickle=True, saveWideText=True,
     dataFileName=filename)
 # save a log file for detail verbose info
@@ -71,20 +77,21 @@ frameTolerance = 0.001  # how close to onset before 'same' frame
 
 # Start Code - component code to be run after the window creation
 
-# Setup the Window
+# --- Setup the Window ---
 win = visual.Window(
-    size=[1280, 1024], fullscr=True, screen=1, 
-    winType='pyglet', allowGUI=False, allowStencil=False,
+    size=[2560, 1440], fullscr=True, screen=1, 
+    winType='pyglet', allowStencil=False,
     monitor='testMonitor', color=[0,0,0], colorSpace='rgb',
     blendMode='avg', useFBO=True, 
     units='height')
+win.mouseVisible = False
 # store frame rate of monitor if we can measure it
 expInfo['frameRate'] = win.getActualFrameRate()
 if expInfo['frameRate'] != None:
     frameDur = 1.0 / round(expInfo['frameRate'])
 else:
     frameDur = 1.0 / 60.0  # could not measure, so guess
-# Setup ioHub
+# --- Setup input devices ---
 ioConfig = {}
 
 # Setup iohub keyboard
@@ -99,8 +106,7 @@ eyetracker = None
 # create a default keyboard (e.g. to check for escape)
 defaultKeyboard = keyboard.Keyboard(backend='iohub')
 
-# Initialize components for Routine "instrStart"
-instrStartClock = core.Clock()
+# --- Initialize components for Routine "instrStart" ---
 instr_start = visual.TextStim(win=win, name='instr_start',
     text='WILKOMMEN!  \n-------------------------------------------------------------------------------\nDieses Experiment besteht aus 3 Teilen:\n\n1. Eine kurze Sequenz in Ruhe mit geschlossenen Augen.\n\n3. Der Hauptteil besteht aus 4 Blöcken mit Pausen dazwischen. \n\n3. Nochmals eine kurze Sequenz in Ruhe mit geschlossenen Augen.\n\n\n\n<Klicken Sie auf die Abstandstaste/spacebar um fortzufahren >\n',
     font='Arial',
@@ -110,8 +116,8 @@ instr_start = visual.TextStim(win=win, name='instr_start',
     depth=0.0);
 key_resp_inst_2 = keyboard.Keyboard()
 
-# Initialize components for Routine "instrRest_PRE"
-instrRest_PREClock = core.Clock()
+# --- Initialize components for Routine "instrRest_PRE" ---
+# Run 'Begin Experiment' code from prep_instrRest_pre
 #if (SubjectNumber % 2 == 0):
 #    Order=ABCD
 #else:
@@ -129,8 +135,7 @@ instrRest_pre = visual.TextStim(win=win, name='instrRest_pre',
 key_resp_instRest_pre = keyboard.Keyboard()
 pp_instrRest_PRE = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "restTrial_pre"
-restTrial_preClock = core.Clock()
+# --- Initialize components for Routine "restTrial_pre" ---
 beep_rest_pre_start = sound.Sound('A', secs=-1, stereo=True, hamming=True,
     name='beep_rest_pre_start')
 beep_rest_pre_start.setVolume(1.0)
@@ -153,8 +158,7 @@ beep_rest_pre_end = sound.Sound('A', secs=-1, stereo=True, hamming=True,
 beep_rest_pre_end.setVolume(1.0)
 pp_rest_pre_start = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "instrMain_1"
-instrMain_1Clock = core.Clock()
+# --- Initialize components for Routine "instrMain_1" ---
 instr_start_1 = visual.TextStim(win=win, name='instr_start_1',
     text='Sehr gut! Nun fahren wir mit dem Hauptteil fort. \n-------------------------------------------------------------------------------\n\nFolgend werden Sie verschiedene strukturierte Sätze mit jeweils drei wechselnden Wörtern hören: \n\nVorsicht *__*, geh sofort zum *__* Feld von der Spalte *__*.\n\n\nFür den der freien Felder gibt es vier mögliche Worte, zum Beispiel:  \n\nVorsicht *Adler/Drossel/Kröter/Tiger*, geh sofort zum *gelben/grünen/roten/weissen* Feld von der Spalte *eins/zwei/drei/vier*.\n\n\n\n\n<Klicken Sie auf die Abstandstaste/spacebar um fortzufahren >',
     font='Arial',
@@ -164,8 +168,7 @@ instr_start_1 = visual.TextStim(win=win, name='instr_start_1',
     depth=0.0);
 key_resp_inst_4 = keyboard.Keyboard()
 
-# Initialize components for Routine "instrMain_2"
-instrMain_2Clock = core.Clock()
+# --- Initialize components for Routine "instrMain_2" ---
 instr_start_2 = visual.TextStim(win=win, name='instr_start_2',
     text=' Hören Sie bitte gut zu. \n\nIhre Aufgab ist es, nach jedem Satz die zu den drei Wörtern passenden Bilder der Reihenfolge nach mit der Maus auf dem Bildschirm anzuklicken. \n\nEinige der Sätze werden relativ einfach sein, andere etwas anspruchsvoller und gewisse scheinen gänzlich unverständlich. \n\nVersuchen Sie bitte, unabhängig von der Bedingung so gut als möglich hinzuhören und eine Antwort zu geben, Sie dürfen raten. \n\n\n<Klicken Sie auf die Abstandstaste/spacebar um 4 Beispielsätze zu machen>\n\n',
     font='Arial',
@@ -176,8 +179,7 @@ instr_start_2 = visual.TextStim(win=win, name='instr_start_2',
 key_resp_inst_3 = keyboard.Keyboard()
 pp_instr_start_2 = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "audioTrial_eg"
-audioTrial_egClock = core.Clock()
+# --- Initialize components for Routine "audioTrial_eg" ---
 sound_examples = sound.Sound('A', secs=-1, stereo=True, hamming=True,
     name='sound_examples')
 sound_examples.setVolume(1.0)
@@ -196,8 +198,8 @@ screenAfterAudio_2 = visual.ImageStim(
     flipHoriz=False, flipVert=False,
     texRes=128.0, interpolate=True, depth=-3.0)
 
-# Initialize components for Routine "trial_eg"
-trial_egClock = core.Clock()
+# --- Initialize components for Routine "trial_eg" ---
+# Run 'Begin Experiment' code from mapStimuliLabels_2
 # Mappings for stimuli properties
 mapCallSign_2 = {
   "call1_2": "Ad",
@@ -341,8 +343,7 @@ blankScreenAfterResponse_2 = visual.ImageStim(
     flipHoriz=False, flipVert=False,
     texRes=128, interpolate=True, depth=-25.0)
 
-# Initialize components for Routine "instrTask"
-instrTaskClock = core.Clock()
+# --- Initialize components for Routine "instrTask" ---
 instrTaskText = visual.TextStim(win=win, name='instrTaskText',
     text='Sehr gut!\n\nSind Sie bereit, mit der Aufgabe zu beginnen? Sollten Sie noch Fragen haben, wenden Sie sich bitte an den Versuchsleiter.\n\nVersuchen Sie sich während der gesamten Aufgabe so wenig wie möglich zu bewegen. \u2028\n\n<Klicken Sie auf die Abstandstaste/spacebar um fortzufahren >\n',
     font='Arial',
@@ -351,13 +352,13 @@ instrTaskText = visual.TextStim(win=win, name='instrTaskText',
     languageStyle='LTR',
     depth=0.0);
 key_resp_inst = keyboard.Keyboard()
+# Run 'Begin Experiment' code from getOrder
 orderFile = "order" + expInfo['order']+ ".csv"
 print('^^^^^----^-^')
 print(orderFile)
 pp_instrTask = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "startBlock"
-startBlockClock = core.Clock()
+# --- Initialize components for Routine "startBlock" ---
 blockStart = visual.TextStim(win=win, name='blockStart',
     text='Anfang des nächsten Blocks\n\n<Klicken Sie auf die Abstandstaste/spacebar um fortzufahren >\n ',
     font='Arial',
@@ -367,11 +368,11 @@ blockStart = visual.TextStim(win=win, name='blockStart',
     depth=0.0);
 key_resp = keyboard.Keyboard()
 pp_blockstart = parallel.ParallelPort(address='0x3FE8')
+# Run 'Begin Experiment' code from getOrder_2
 orderFile = "order" + expInfo['order']+ ".csv"
 print(orderFile)
 
-# Initialize components for Routine "audioTrial"
-audioTrialClock = core.Clock()
+# --- Initialize components for Routine "audioTrial" ---
 sound_1 = sound.Sound('A', secs=-1, stereo=True, hamming=True,
     name='sound_1')
 sound_1.setVolume(1.0)
@@ -396,8 +397,8 @@ pp_t2_start = parallel.ParallelPort(address='0x3FE8')
 pp_t3_start = parallel.ParallelPort(address='0x3FE8')
 pp_end = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "trial"
-trialClock = core.Clock()
+# --- Initialize components for Routine "trial" ---
+# Run 'Begin Experiment' code from mapStimuliLabels
 # Mappings for stimuli properties
 mapCallSign = {
   "call1": "Ad",
@@ -542,8 +543,7 @@ blankScreenAfterResponse = visual.ImageStim(
     texRes=128, interpolate=True, depth=-25.0)
 pp_respGrid = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "endBlock"
-endBlockClock = core.Clock()
+# --- Initialize components for Routine "endBlock" ---
 blockEnds = visual.TextStim(win=win, name='blockEnds',
     text='Blockende',
     font='Arial',
@@ -553,8 +553,7 @@ blockEnds = visual.TextStim(win=win, name='blockEnds',
     depth=0.0);
 pp_blockends = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "instrRest_POST"
-instrRest_POSTClock = core.Clock()
+# --- Initialize components for Routine "instrRest_POST" ---
 instrRest_post = visual.TextStim(win=win, name='instrRest_post',
     text='Sehr gut!\n-------------------------------------------------------------------------------\n\nUm die Aufnahme zu beenden, bitten wir Sie, nochmals 4 Minuten so still wie möglich zu sitzen und die Augen geschlossen zu halten. \n\nEin ‘beep’ wird den Anfang und das Ende der Aufnahme angeben. Bitte sitzen Sie so still wie möglich und halten Sie die Augen geschlossen bis der zweite Ton erklingt.\n\n\n<Klicken Sie auf die Abstandstaste/spacebar um fortzufahren > \n',
     font='Arial',
@@ -565,8 +564,7 @@ instrRest_post = visual.TextStim(win=win, name='instrRest_post',
 key_resp_instRest_post = keyboard.Keyboard()
 pp_rest_post = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "restTrial_post"
-restTrial_postClock = core.Clock()
+# --- Initialize components for Routine "restTrial_post" ---
 beep_rest_post_start = sound.Sound('A', secs=-1, stereo=True, hamming=True,
     name='beep_rest_post_start')
 beep_rest_post_start.setVolume(1.0)
@@ -589,8 +587,7 @@ beep_rest_post_end = sound.Sound('A', secs=-1, stereo=True, hamming=True,
 beep_rest_post_end.setVolume(1.0)
 pp_rest_pre_start_2 = parallel.ParallelPort(address='0x3FE8')
 
-# Initialize components for Routine "thanks_end"
-thanks_endClock = core.Clock()
+# --- Initialize components for Routine "thanks_end" ---
 thanksText_end = visual.TextStim(win=win, name='thanksText_end',
     text='Sehr gut!   :  )  \n\nVIELEN DANK für Ihre Kollaboration und Zeit.\n',
     font='Arial',
@@ -602,14 +599,15 @@ key_resp_6 = keyboard.Keyboard()
 
 # Create some handy timers
 globalClock = core.Clock()  # to track the time since experiment started
-routineTimer = core.CountdownTimer()  # to track time remaining of each (non-slip) routine 
+routineTimer = core.Clock()  # to track time remaining of each (possibly non-slip) routine 
 
-# ------Prepare to start Routine "instrStart"-------
+# --- Prepare to start Routine "instrStart" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_inst_2.keys = []
 key_resp_inst_2.rt = []
 _key_resp_inst_2_allKeys = []
+# Run 'Begin Routine' code from hideMouse_5
 win.mouseVisible = False 
 # keep track of which components have finished
 instrStartComponents = [instr_start, key_resp_inst_2]
@@ -623,14 +621,13 @@ for thisComponent in instrStartComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-instrStartClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "instrStart"-------
+# --- Run Routine "instrStart" ---
 while continueRoutine:
     # get current time
-    t = instrStartClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=instrStartClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -642,6 +639,8 @@ while continueRoutine:
         instr_start.tStart = t  # local t and not account for scr refresh
         instr_start.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(instr_start, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'instr_start.started')
         instr_start.setAutoDraw(True)
     
     # *key_resp_inst_2* updates
@@ -652,6 +651,8 @@ while continueRoutine:
         key_resp_inst_2.tStart = t  # local t and not account for scr refresh
         key_resp_inst_2.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_inst_2, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_inst_2.started')
         key_resp_inst_2.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -683,21 +684,20 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "instrStart"-------
+# --- Ending Routine "instrStart" ---
 for thisComponent in instrStartComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('instr_start.started', instr_start.tStartRefresh)
-thisExp.addData('instr_start.stopped', instr_start.tStopRefresh)
 # the Routine "instrStart" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
-# ------Prepare to start Routine "instrRest_PRE"-------
+# --- Prepare to start Routine "instrRest_PRE" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_instRest_pre.keys = []
 key_resp_instRest_pre.rt = []
 _key_resp_instRest_pre_allKeys = []
+# Run 'Begin Routine' code from hideMouse_3
 win.mouseVisible = False 
 # keep track of which components have finished
 instrRest_PREComponents = [instrRest_pre, key_resp_instRest_pre, pp_instrRest_PRE]
@@ -711,14 +711,13 @@ for thisComponent in instrRest_PREComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-instrRest_PREClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "instrRest_PRE"-------
+# --- Run Routine "instrRest_PRE" ---
 while continueRoutine:
     # get current time
-    t = instrRest_PREClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=instrRest_PREClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -730,6 +729,8 @@ while continueRoutine:
         instrRest_pre.tStart = t  # local t and not account for scr refresh
         instrRest_pre.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(instrRest_pre, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'instrRest_pre.started')
         instrRest_pre.setAutoDraw(True)
     
     # *key_resp_instRest_pre* updates
@@ -740,6 +741,8 @@ while continueRoutine:
         key_resp_instRest_pre.tStart = t  # local t and not account for scr refresh
         key_resp_instRest_pre.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_instRest_pre, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_instRest_pre.started')
         key_resp_instRest_pre.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -760,6 +763,8 @@ while continueRoutine:
         pp_instrRest_PRE.tStart = t  # local t and not account for scr refresh
         pp_instrRest_PRE.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(pp_instrRest_PRE, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'pp_instrRest_PRE.started')
         pp_instrRest_PRE.status = STARTED
         win.callOnFlip(pp_instrRest_PRE.setData, int(5))
     if pp_instrRest_PRE.status == STARTED:
@@ -768,7 +773,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             pp_instrRest_PRE.tStop = t  # not accounting for scr refresh
             pp_instrRest_PRE.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(pp_instrRest_PRE, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_instrRest_PRE.stopped')
             pp_instrRest_PRE.status = FINISHED
             win.callOnFlip(pp_instrRest_PRE.setData, int(0))
     
@@ -789,24 +795,21 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "instrRest_PRE"-------
+# --- Ending Routine "instrRest_PRE" ---
 for thisComponent in instrRest_PREComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('instrRest_pre.started', instrRest_pre.tStartRefresh)
-thisExp.addData('instrRest_pre.stopped', instrRest_pre.tStopRefresh)
 if pp_instrRest_PRE.status == STARTED:
     win.callOnFlip(pp_instrRest_PRE.setData, int(0))
-thisExp.addData('pp_instrRest_PRE.started', pp_instrRest_PRE.tStartRefresh)
-thisExp.addData('pp_instrRest_PRE.stopped', pp_instrRest_PRE.tStopRefresh)
 # the Routine "instrRest_PRE" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
-# ------Prepare to start Routine "restTrial_pre"-------
+# --- Prepare to start Routine "restTrial_pre" ---
 continueRoutine = True
 # update component parameters for each repeat
 beep_rest_pre_start.setSound('click_beep.wav', hamming=True)
 beep_rest_pre_start.setVolume(1.0, log=False)
+# Run 'Begin Routine' code from hideMouse_8
 win.mouseVisible = False 
 
 beep_rest_pre_end.setSound('click_beep.wav', hamming=True)
@@ -823,14 +826,13 @@ for thisComponent in restTrial_preComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-restTrial_preClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "restTrial_pre"-------
+# --- Run Routine "restTrial_pre" ---
 while continueRoutine:
     # get current time
-    t = restTrial_preClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=restTrial_preClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -849,6 +851,8 @@ while continueRoutine:
         fixation_1.tStart = t  # local t and not account for scr refresh
         fixation_1.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(fixation_1, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'fixation_1.started')
         fixation_1.setAutoDraw(True)
     if fixation_1.status == STARTED:
         # is it time to stop? (based on global clock, using actual start)
@@ -856,7 +860,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             fixation_1.tStop = t  # not accounting for scr refresh
             fixation_1.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(fixation_1, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'fixation_1.stopped')
             fixation_1.setAutoDraw(False)
     
     # *screenAfterAudio_3* updates
@@ -866,6 +871,8 @@ while continueRoutine:
         screenAfterAudio_3.tStart = t  # local t and not account for scr refresh
         screenAfterAudio_3.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(screenAfterAudio_3, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'screenAfterAudio_3.started')
         screenAfterAudio_3.setAutoDraw(True)
     if screenAfterAudio_3.status == STARTED:
         # is it time to stop? (based on local clock)
@@ -873,7 +880,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             screenAfterAudio_3.tStop = t  # not accounting for scr refresh
             screenAfterAudio_3.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(screenAfterAudio_3, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'screenAfterAudio_3.stopped')
             screenAfterAudio_3.setAutoDraw(False)
     # start/stop beep_rest_pre_end
     if beep_rest_pre_end.status == NOT_STARTED and fixation_1.status == FINISHED:
@@ -881,6 +889,8 @@ while continueRoutine:
         beep_rest_pre_end.frameNStart = frameN  # exact frame index
         beep_rest_pre_end.tStart = t  # local t and not account for scr refresh
         beep_rest_pre_end.tStartRefresh = tThisFlipGlobal  # on global time
+        # add timestamp to datafile
+        thisExp.addData('beep_rest_pre_end.started', tThisFlipGlobal)
         beep_rest_pre_end.play(when=win)  # sync with win flip
     # *pp_rest_pre_start* updates
     if pp_rest_pre_start.status == NOT_STARTED and beep_rest_pre_start.status==STARTED:
@@ -889,6 +899,8 @@ while continueRoutine:
         pp_rest_pre_start.tStart = t  # local t and not account for scr refresh
         pp_rest_pre_start.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(pp_rest_pre_start, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'pp_rest_pre_start.started')
         pp_rest_pre_start.status = STARTED
         win.callOnFlip(pp_rest_pre_start.setData, int(8))
     if pp_rest_pre_start.status == STARTED:
@@ -897,7 +909,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             pp_rest_pre_start.tStop = t  # not accounting for scr refresh
             pp_rest_pre_start.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(pp_rest_pre_start, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_rest_pre_start.stopped')
             pp_rest_pre_start.status = FINISHED
             win.callOnFlip(pp_rest_pre_start.setData, int(0))
     
@@ -918,31 +931,24 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "restTrial_pre"-------
+# --- Ending Routine "restTrial_pre" ---
 for thisComponent in restTrial_preComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 beep_rest_pre_start.stop()  # ensure sound has stopped at end of routine
-thisExp.addData('fixation_1.started', fixation_1.tStartRefresh)
-thisExp.addData('fixation_1.stopped', fixation_1.tStopRefresh)
-thisExp.addData('screenAfterAudio_3.started', screenAfterAudio_3.tStartRefresh)
-thisExp.addData('screenAfterAudio_3.stopped', screenAfterAudio_3.tStopRefresh)
 beep_rest_pre_end.stop()  # ensure sound has stopped at end of routine
-thisExp.addData('beep_rest_pre_end.started', beep_rest_pre_end.tStartRefresh)
-thisExp.addData('beep_rest_pre_end.stopped', beep_rest_pre_end.tStopRefresh)
 if pp_rest_pre_start.status == STARTED:
     win.callOnFlip(pp_rest_pre_start.setData, int(0))
-thisExp.addData('pp_rest_pre_start.started', pp_rest_pre_start.tStartRefresh)
-thisExp.addData('pp_rest_pre_start.stopped', pp_rest_pre_start.tStopRefresh)
 # the Routine "restTrial_pre" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
-# ------Prepare to start Routine "instrMain_1"-------
+# --- Prepare to start Routine "instrMain_1" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_inst_4.keys = []
 key_resp_inst_4.rt = []
 _key_resp_inst_4_allKeys = []
+# Run 'Begin Routine' code from hideMouse_12
 win.mouseVisible = False 
 # keep track of which components have finished
 instrMain_1Components = [instr_start_1, key_resp_inst_4]
@@ -956,14 +962,13 @@ for thisComponent in instrMain_1Components:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-instrMain_1Clock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "instrMain_1"-------
+# --- Run Routine "instrMain_1" ---
 while continueRoutine:
     # get current time
-    t = instrMain_1Clock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=instrMain_1Clock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -975,6 +980,8 @@ while continueRoutine:
         instr_start_1.tStart = t  # local t and not account for scr refresh
         instr_start_1.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(instr_start_1, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'instr_start_1.started')
         instr_start_1.setAutoDraw(True)
     
     # *key_resp_inst_4* updates
@@ -985,6 +992,8 @@ while continueRoutine:
         key_resp_inst_4.tStart = t  # local t and not account for scr refresh
         key_resp_inst_4.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_inst_4, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_inst_4.started')
         key_resp_inst_4.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -1016,21 +1025,20 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "instrMain_1"-------
+# --- Ending Routine "instrMain_1" ---
 for thisComponent in instrMain_1Components:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('instr_start_1.started', instr_start_1.tStartRefresh)
-thisExp.addData('instr_start_1.stopped', instr_start_1.tStopRefresh)
 # the Routine "instrMain_1" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
-# ------Prepare to start Routine "instrMain_2"-------
+# --- Prepare to start Routine "instrMain_2" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_inst_3.keys = []
 key_resp_inst_3.rt = []
 _key_resp_inst_3_allKeys = []
+# Run 'Begin Routine' code from hideMouse_7
 win.mouseVisible = False 
 # keep track of which components have finished
 instrMain_2Components = [instr_start_2, key_resp_inst_3, pp_instr_start_2]
@@ -1044,14 +1052,13 @@ for thisComponent in instrMain_2Components:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-instrMain_2Clock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "instrMain_2"-------
+# --- Run Routine "instrMain_2" ---
 while continueRoutine:
     # get current time
-    t = instrMain_2Clock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=instrMain_2Clock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -1063,6 +1070,8 @@ while continueRoutine:
         instr_start_2.tStart = t  # local t and not account for scr refresh
         instr_start_2.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(instr_start_2, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'instr_start_2.started')
         instr_start_2.setAutoDraw(True)
     
     # *key_resp_inst_3* updates
@@ -1073,6 +1082,8 @@ while continueRoutine:
         key_resp_inst_3.tStart = t  # local t and not account for scr refresh
         key_resp_inst_3.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_inst_3, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_inst_3.started')
         key_resp_inst_3.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -1093,6 +1104,8 @@ while continueRoutine:
         pp_instr_start_2.tStart = t  # local t and not account for scr refresh
         pp_instr_start_2.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(pp_instr_start_2, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'pp_instr_start_2.started')
         pp_instr_start_2.status = STARTED
         win.callOnFlip(pp_instr_start_2.setData, int(5))
     if pp_instr_start_2.status == STARTED:
@@ -1101,7 +1114,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             pp_instr_start_2.tStop = t  # not accounting for scr refresh
             pp_instr_start_2.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(pp_instr_start_2, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_instr_start_2.stopped')
             pp_instr_start_2.status = FINISHED
             win.callOnFlip(pp_instr_start_2.setData, int(0))
     
@@ -1122,16 +1136,12 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "instrMain_2"-------
+# --- Ending Routine "instrMain_2" ---
 for thisComponent in instrMain_2Components:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('instr_start_2.started', instr_start_2.tStartRefresh)
-thisExp.addData('instr_start_2.stopped', instr_start_2.tStopRefresh)
 if pp_instr_start_2.status == STARTED:
     win.callOnFlip(pp_instr_start_2.setData, int(0))
-thisExp.addData('pp_instr_start_2.started', pp_instr_start_2.tStartRefresh)
-thisExp.addData('pp_instr_start_2.stopped', pp_instr_start_2.tStopRefresh)
 # the Routine "instrMain_2" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
@@ -1154,11 +1164,12 @@ for thisTrials_eg in trials_eg:
         for paramName in thisTrials_eg:
             exec('{} = thisTrials_eg[paramName]'.format(paramName))
     
-    # ------Prepare to start Routine "audioTrial_eg"-------
+    # --- Prepare to start Routine "audioTrial_eg" ---
     continueRoutine = True
     # update component parameters for each repeat
     sound_examples.setSound(audiofile, hamming=True)
     sound_examples.setVolume(1.0, log=False)
+    # Run 'Begin Routine' code from hideMouse_6
     win.mouseVisible = False 
     
     # keep track of which components have finished
@@ -1173,14 +1184,13 @@ for thisTrials_eg in trials_eg:
     # reset timers
     t = 0
     _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    audioTrial_egClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
     frameN = -1
     
-    # -------Run Routine "audioTrial_eg"-------
+    # --- Run Routine "audioTrial_eg" ---
     while continueRoutine:
         # get current time
-        t = audioTrial_egClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=audioTrial_egClock)
+        t = routineTimer.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
@@ -1190,6 +1200,8 @@ for thisTrials_eg in trials_eg:
             sound_examples.frameNStart = frameN  # exact frame index
             sound_examples.tStart = t  # local t and not account for scr refresh
             sound_examples.tStartRefresh = tThisFlipGlobal  # on global time
+            # add timestamp to datafile
+            thisExp.addData('sound_examples.started', tThisFlipGlobal)
             sound_examples.play(when=win)  # sync with win flip
         
         # *fixation_2* updates
@@ -1199,13 +1211,16 @@ for thisTrials_eg in trials_eg:
             fixation_2.tStart = t  # local t and not account for scr refresh
             fixation_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(fixation_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'fixation_2.started')
             fixation_2.setAutoDraw(True)
         if fixation_2.status == STARTED:
             if bool(sound_examples.status==FINISHED):
                 # keep track of stop time/frame for later
                 fixation_2.tStop = t  # not accounting for scr refresh
                 fixation_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(fixation_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'fixation_2.stopped')
                 fixation_2.setAutoDraw(False)
         
         # *screenAfterAudio_2* updates
@@ -1215,6 +1230,8 @@ for thisTrials_eg in trials_eg:
             screenAfterAudio_2.tStart = t  # local t and not account for scr refresh
             screenAfterAudio_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(screenAfterAudio_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'screenAfterAudio_2.started')
             screenAfterAudio_2.setAutoDraw(True)
         if screenAfterAudio_2.status == STARTED:
             # is it time to stop? (based on local clock)
@@ -1222,7 +1239,8 @@ for thisTrials_eg in trials_eg:
                 # keep track of stop time/frame for later
                 screenAfterAudio_2.tStop = t  # not accounting for scr refresh
                 screenAfterAudio_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(screenAfterAudio_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'screenAfterAudio_2.stopped')
                 screenAfterAudio_2.setAutoDraw(False)
         
         # check for quit (typically the Esc key)
@@ -1242,23 +1260,18 @@ for thisTrials_eg in trials_eg:
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
     
-    # -------Ending Routine "audioTrial_eg"-------
+    # --- Ending Routine "audioTrial_eg" ---
     for thisComponent in audioTrial_egComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
     sound_examples.stop()  # ensure sound has stopped at end of routine
-    trials_eg.addData('sound_examples.started', sound_examples.tStartRefresh)
-    trials_eg.addData('sound_examples.stopped', sound_examples.tStopRefresh)
-    trials_eg.addData('fixation_2.started', fixation_2.tStartRefresh)
-    trials_eg.addData('fixation_2.stopped', fixation_2.tStopRefresh)
-    trials_eg.addData('screenAfterAudio_2.started', screenAfterAudio_2.tStartRefresh)
-    trials_eg.addData('screenAfterAudio_2.stopped', screenAfterAudio_2.tStopRefresh)
     # the Routine "audioTrial_eg" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
     
-    # ------Prepare to start Routine "trial_eg"-------
+    # --- Prepare to start Routine "trial_eg" ---
     continueRoutine = True
     # update component parameters for each repeat
+    # Run 'Begin Routine' code from setOpacityAndHideMouse_2
     #set opacity of response buttons to 1 (fully visible)
     call1_2.opacity = 1
     call2_2.opacity = 1
@@ -1275,8 +1288,10 @@ for thisTrials_eg in trials_eg:
     number3_2.opacity = 1
     number4_2.opacity = 1
     
+    # Run 'Begin Routine' code from switchToNextTrialAfterResponseTimeOver_2
     participantResponseTime = None
     trialClock = core.Clock()
+    # Run 'Begin Routine' code from printoutCorrectAnswersForDebugging_2
     print("%s, %s, %s" % (callSign,colour,number))
     # setup some python lists for storing info about the mouseClickOnCall_2
     mouseClickOnCall_2.x = []
@@ -1320,22 +1335,23 @@ for thisTrials_eg in trials_eg:
     # reset timers
     t = 0
     _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    trial_egClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
     frameN = -1
     
-    # -------Run Routine "trial_eg"-------
+    # --- Run Routine "trial_eg" ---
     while continueRoutine:
         # get current time
-        t = trial_egClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=trial_egClock)
+        t = routineTimer.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
+        # Run 'Each Frame' code from setOpacityAndHideMouse_2
         #show mouse cursor only at the response screen
         win.mouseVisible = False 
         if call1_2.status == STARTED:
             win.mouseVisible = True
         
+        # Run 'Each Frame' code from switchToNextTrialAfterResponseTimeOver_2
         if participantResponseTime == None:
             participantResponseTime = trialClock.getTime()
         
@@ -1350,6 +1366,8 @@ for thisTrials_eg in trials_eg:
             blankScreen_2.tStart = t  # local t and not account for scr refresh
             blankScreen_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(blankScreen_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'blankScreen_2.started')
             blankScreen_2.setAutoDraw(True)
         if blankScreen_2.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
@@ -1357,7 +1375,8 @@ for thisTrials_eg in trials_eg:
                 # keep track of stop time/frame for later
                 blankScreen_2.tStop = t  # not accounting for scr refresh
                 blankScreen_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(blankScreen_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'blankScreen_2.stopped')
                 blankScreen_2.setAutoDraw(False)
         
         # *call1_2* updates
@@ -1367,13 +1386,16 @@ for thisTrials_eg in trials_eg:
             call1_2.tStart = t  # local t and not account for scr refresh
             call1_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(call1_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'call1_2.started')
             call1_2.setAutoDraw(True)
         if call1_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 call1_2.tStop = t  # not accounting for scr refresh
                 call1_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(call1_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call1_2.stopped')
                 call1_2.setAutoDraw(False)
         
         # *call2_2* updates
@@ -1383,13 +1405,16 @@ for thisTrials_eg in trials_eg:
             call2_2.tStart = t  # local t and not account for scr refresh
             call2_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(call2_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'call2_2.started')
             call2_2.setAutoDraw(True)
         if call2_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 call2_2.tStop = t  # not accounting for scr refresh
                 call2_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(call2_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call2_2.stopped')
                 call2_2.setAutoDraw(False)
         
         # *call3_2* updates
@@ -1399,13 +1424,16 @@ for thisTrials_eg in trials_eg:
             call3_2.tStart = t  # local t and not account for scr refresh
             call3_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(call3_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'call3_2.started')
             call3_2.setAutoDraw(True)
         if call3_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 call3_2.tStop = t  # not accounting for scr refresh
                 call3_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(call3_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call3_2.stopped')
                 call3_2.setAutoDraw(False)
         
         # *call4_2* updates
@@ -1415,13 +1443,16 @@ for thisTrials_eg in trials_eg:
             call4_2.tStart = t  # local t and not account for scr refresh
             call4_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(call4_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'call4_2.started')
             call4_2.setAutoDraw(True)
         if call4_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 call4_2.tStop = t  # not accounting for scr refresh
                 call4_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(call4_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call4_2.stopped')
                 call4_2.setAutoDraw(False)
         
         # *colour1_2* updates
@@ -1431,13 +1462,16 @@ for thisTrials_eg in trials_eg:
             colour1_2.tStart = t  # local t and not account for scr refresh
             colour1_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(colour1_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'colour1_2.started')
             colour1_2.setAutoDraw(True)
         if colour1_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 colour1_2.tStop = t  # not accounting for scr refresh
                 colour1_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(colour1_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour1_2.stopped')
                 colour1_2.setAutoDraw(False)
         
         # *colour2_2* updates
@@ -1447,13 +1481,16 @@ for thisTrials_eg in trials_eg:
             colour2_2.tStart = t  # local t and not account for scr refresh
             colour2_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(colour2_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'colour2_2.started')
             colour2_2.setAutoDraw(True)
         if colour2_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 colour2_2.tStop = t  # not accounting for scr refresh
                 colour2_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(colour2_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour2_2.stopped')
                 colour2_2.setAutoDraw(False)
         
         # *colour3_2* updates
@@ -1463,13 +1500,16 @@ for thisTrials_eg in trials_eg:
             colour3_2.tStart = t  # local t and not account for scr refresh
             colour3_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(colour3_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'colour3_2.started')
             colour3_2.setAutoDraw(True)
         if colour3_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 colour3_2.tStop = t  # not accounting for scr refresh
                 colour3_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(colour3_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour3_2.stopped')
                 colour3_2.setAutoDraw(False)
         
         # *colour4_2* updates
@@ -1479,13 +1519,16 @@ for thisTrials_eg in trials_eg:
             colour4_2.tStart = t  # local t and not account for scr refresh
             colour4_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(colour4_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'colour4_2.started')
             colour4_2.setAutoDraw(True)
         if colour4_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 colour4_2.tStop = t  # not accounting for scr refresh
                 colour4_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(colour4_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour4_2.stopped')
                 colour4_2.setAutoDraw(False)
         
         # *number1_2* updates
@@ -1495,13 +1538,16 @@ for thisTrials_eg in trials_eg:
             number1_2.tStart = t  # local t and not account for scr refresh
             number1_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(number1_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'number1_2.started')
             number1_2.setAutoDraw(True)
         if number1_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 number1_2.tStop = t  # not accounting for scr refresh
                 number1_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(number1_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number1_2.stopped')
                 number1_2.setAutoDraw(False)
         
         # *number2_2* updates
@@ -1511,13 +1557,16 @@ for thisTrials_eg in trials_eg:
             number2_2.tStart = t  # local t and not account for scr refresh
             number2_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(number2_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'number2_2.started')
             number2_2.setAutoDraw(True)
         if number2_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 number2_2.tStop = t  # not accounting for scr refresh
                 number2_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(number2_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number2_2.stopped')
                 number2_2.setAutoDraw(False)
         
         # *number3_2* updates
@@ -1527,13 +1576,16 @@ for thisTrials_eg in trials_eg:
             number3_2.tStart = t  # local t and not account for scr refresh
             number3_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(number3_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'number3_2.started')
             number3_2.setAutoDraw(True)
         if number3_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 number3_2.tStop = t  # not accounting for scr refresh
                 number3_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(number3_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number3_2.stopped')
                 number3_2.setAutoDraw(False)
         
         # *number4_2* updates
@@ -1543,13 +1595,16 @@ for thisTrials_eg in trials_eg:
             number4_2.tStart = t  # local t and not account for scr refresh
             number4_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(number4_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'number4_2.started')
             number4_2.setAutoDraw(True)
         if number4_2.status == STARTED:
             if bool(blankScreenAfterResponse_2.status == STARTED):
                 # keep track of stop time/frame for later
                 number4_2.tStop = t  # not accounting for scr refresh
                 number4_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(number4_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number4_2.stopped')
                 number4_2.setAutoDraw(False)
         # *mouseClickOnCall_2* updates
         if mouseClickOnCall_2.status == NOT_STARTED and blankScreen_2.status ==FINISHED:
@@ -1558,6 +1613,8 @@ for thisTrials_eg in trials_eg:
             mouseClickOnCall_2.tStart = t  # local t and not account for scr refresh
             mouseClickOnCall_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(mouseClickOnCall_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('mouseClickOnCall_2.started', t)
             mouseClickOnCall_2.status = STARTED
             prevButtonState = mouseClickOnCall_2.getPressed()  # if button is down already this ISN'T a new click
         if mouseClickOnCall_2.status == STARTED:  # only update if started and not finished!
@@ -1586,6 +1643,7 @@ for thisTrials_eg in trials_eg:
                     mouseClickOnCall_2.time.append(mouseClickOnCall_2.mouseClock.getTime())
                     if gotValidClick:
                         continueRoutine = False  # abort routine on response
+        # Run 'Each Frame' code from disableCallButtons_2
                     if gotValidClick:
                         mouseClickOnCall_2.status = FINISHED
                         if call1_2.name != mouseClickOnCall_2.clicked_name[-1]: call1_2.opacity = 0.2
@@ -1600,6 +1658,8 @@ for thisTrials_eg in trials_eg:
             mouseClickOnColour_2.tStart = t  # local t and not account for scr refresh
             mouseClickOnColour_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(mouseClickOnColour_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('mouseClickOnColour_2.started', t)
             mouseClickOnColour_2.status = STARTED
             prevButtonState = mouseClickOnColour_2.getPressed()  # if button is down already this ISN'T a new click
         if mouseClickOnColour_2.status == STARTED:  # only update if started and not finished!
@@ -1628,6 +1688,7 @@ for thisTrials_eg in trials_eg:
                     mouseClickOnColour_2.time.append(mouseClickOnColour_2.mouseClock.getTime())
                     if gotValidClick:
                         continueRoutine = False  # abort routine on response
+        # Run 'Each Frame' code from disableColourButtons_2
                     if gotValidClick:
                         mouseClickOnColour_2.status = FINISHED
                         if colour1_2.name != mouseClickOnColour_2.clicked_name[-1]: colour1_2.opacity = 0.2
@@ -1642,6 +1703,8 @@ for thisTrials_eg in trials_eg:
             mouseClickOnNumber_2.tStart = t  # local t and not account for scr refresh
             mouseClickOnNumber_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(mouseClickOnNumber_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.addData('mouseClickOnNumber_2.started', t)
             mouseClickOnNumber_2.status = STARTED
             prevButtonState = mouseClickOnNumber_2.getPressed()  # if button is down already this ISN'T a new click
         if mouseClickOnNumber_2.status == STARTED:  # only update if started and not finished!
@@ -1670,6 +1733,7 @@ for thisTrials_eg in trials_eg:
                     mouseClickOnNumber_2.time.append(mouseClickOnNumber_2.mouseClock.getTime())
                     if gotValidClick:
                         continueRoutine = False  # abort routine on response
+        # Run 'Each Frame' code from disableNumberButtons_2
                     if gotValidClick:
                         mouseClickOnNumber_2.status = FINISHED
                         if number1_2.name != mouseClickOnNumber_2.clicked_name[-1]: number1_2.opacity = 0.2
@@ -1685,6 +1749,8 @@ for thisTrials_eg in trials_eg:
             blankScreenAfterResponse_2.tStart = t  # local t and not account for scr refresh
             blankScreenAfterResponse_2.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(blankScreenAfterResponse_2, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'blankScreenAfterResponse_2.started')
             blankScreenAfterResponse_2.setAutoDraw(True)
         if blankScreenAfterResponse_2.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
@@ -1692,7 +1758,8 @@ for thisTrials_eg in trials_eg:
                 # keep track of stop time/frame for later
                 blankScreenAfterResponse_2.tStop = t  # not accounting for scr refresh
                 blankScreenAfterResponse_2.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(blankScreenAfterResponse_2, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'blankScreenAfterResponse_2.stopped')
                 blankScreenAfterResponse_2.setAutoDraw(False)
         
         # check for quit (typically the Esc key)
@@ -1712,36 +1779,10 @@ for thisTrials_eg in trials_eg:
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
     
-    # -------Ending Routine "trial_eg"-------
+    # --- Ending Routine "trial_eg" ---
     for thisComponent in trial_egComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    trials_eg.addData('blankScreen_2.started', blankScreen_2.tStartRefresh)
-    trials_eg.addData('blankScreen_2.stopped', blankScreen_2.tStopRefresh)
-    trials_eg.addData('call1_2.started', call1_2.tStartRefresh)
-    trials_eg.addData('call1_2.stopped', call1_2.tStopRefresh)
-    trials_eg.addData('call2_2.started', call2_2.tStartRefresh)
-    trials_eg.addData('call2_2.stopped', call2_2.tStopRefresh)
-    trials_eg.addData('call3_2.started', call3_2.tStartRefresh)
-    trials_eg.addData('call3_2.stopped', call3_2.tStopRefresh)
-    trials_eg.addData('call4_2.started', call4_2.tStartRefresh)
-    trials_eg.addData('call4_2.stopped', call4_2.tStopRefresh)
-    trials_eg.addData('colour1_2.started', colour1_2.tStartRefresh)
-    trials_eg.addData('colour1_2.stopped', colour1_2.tStopRefresh)
-    trials_eg.addData('colour2_2.started', colour2_2.tStartRefresh)
-    trials_eg.addData('colour2_2.stopped', colour2_2.tStopRefresh)
-    trials_eg.addData('colour3_2.started', colour3_2.tStartRefresh)
-    trials_eg.addData('colour3_2.stopped', colour3_2.tStopRefresh)
-    trials_eg.addData('colour4_2.started', colour4_2.tStartRefresh)
-    trials_eg.addData('colour4_2.stopped', colour4_2.tStopRefresh)
-    trials_eg.addData('number1_2.started', number1_2.tStartRefresh)
-    trials_eg.addData('number1_2.stopped', number1_2.tStopRefresh)
-    trials_eg.addData('number2_2.started', number2_2.tStartRefresh)
-    trials_eg.addData('number2_2.stopped', number2_2.tStopRefresh)
-    trials_eg.addData('number3_2.started', number3_2.tStartRefresh)
-    trials_eg.addData('number3_2.stopped', number3_2.tStopRefresh)
-    trials_eg.addData('number4_2.started', number4_2.tStartRefresh)
-    trials_eg.addData('number4_2.stopped', number4_2.tStopRefresh)
     # store data for trials_eg (TrialHandler)
     trials_eg.addData('mouseClickOnCall_2.x', mouseClickOnCall_2.x)
     trials_eg.addData('mouseClickOnCall_2.y', mouseClickOnCall_2.y)
@@ -1750,8 +1791,6 @@ for thisTrials_eg in trials_eg:
     trials_eg.addData('mouseClickOnCall_2.rightButton', mouseClickOnCall_2.rightButton)
     trials_eg.addData('mouseClickOnCall_2.time', mouseClickOnCall_2.time)
     trials_eg.addData('mouseClickOnCall_2.clicked_name', mouseClickOnCall_2.clicked_name)
-    trials_eg.addData('mouseClickOnCall_2.started', mouseClickOnCall_2.tStart)
-    trials_eg.addData('mouseClickOnCall_2.stopped', mouseClickOnCall_2.tStop)
     # store data for trials_eg (TrialHandler)
     trials_eg.addData('mouseClickOnColour_2.x', mouseClickOnColour_2.x)
     trials_eg.addData('mouseClickOnColour_2.y', mouseClickOnColour_2.y)
@@ -1760,8 +1799,6 @@ for thisTrials_eg in trials_eg:
     trials_eg.addData('mouseClickOnColour_2.rightButton', mouseClickOnColour_2.rightButton)
     trials_eg.addData('mouseClickOnColour_2.time', mouseClickOnColour_2.time)
     trials_eg.addData('mouseClickOnColour_2.clicked_name', mouseClickOnColour_2.clicked_name)
-    trials_eg.addData('mouseClickOnColour_2.started', mouseClickOnColour_2.tStart)
-    trials_eg.addData('mouseClickOnColour_2.stopped', mouseClickOnColour_2.tStop)
     # store data for trials_eg (TrialHandler)
     trials_eg.addData('mouseClickOnNumber_2.x', mouseClickOnNumber_2.x)
     trials_eg.addData('mouseClickOnNumber_2.y', mouseClickOnNumber_2.y)
@@ -1770,8 +1807,7 @@ for thisTrials_eg in trials_eg:
     trials_eg.addData('mouseClickOnNumber_2.rightButton', mouseClickOnNumber_2.rightButton)
     trials_eg.addData('mouseClickOnNumber_2.time', mouseClickOnNumber_2.time)
     trials_eg.addData('mouseClickOnNumber_2.clicked_name', mouseClickOnNumber_2.clicked_name)
-    trials_eg.addData('mouseClickOnNumber_2.started', mouseClickOnNumber_2.tStart)
-    trials_eg.addData('mouseClickOnNumber_2.stopped', mouseClickOnNumber_2.tStop)
+    # Run 'End Routine' code from evaluateResponses_2
     #evaluate correctness of response and write into a new column TRUE, FALSE, or NO_ANSW  
     if len(mouseClickOnCall_2.clicked_name) > 0:
         currentLoop.addData('callSignCorrect', mapCallSign_2[mouseClickOnCall_2.clicked_name[0]] == callSign) 
@@ -1788,11 +1824,10 @@ for thisTrials_eg in trials_eg:
         print(mapNumber_2[mouseClickOnNumber_2.clicked_name[0]])
     else:
         currentLoop.addData('numberCorrect', "NO_ANSW") 
+    # Run 'End Routine' code from saveAfterEachTrial_2
     #sicherIstSicher
     #thisExp.saveAsWideText(filename+'.csv')
     #logging.flush()
-    trials_eg.addData('blankScreenAfterResponse_2.started', blankScreenAfterResponse_2.tStartRefresh)
-    trials_eg.addData('blankScreenAfterResponse_2.stopped', blankScreenAfterResponse_2.tStopRefresh)
     # the Routine "trial_eg" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
     thisExp.nextEntry()
@@ -1812,12 +1847,13 @@ trials_eg.saveAsText(filename + 'trials_eg.csv', delim=',',
     stimOut=params,
     dataOut=['n','all_mean','all_std', 'all_raw'])
 
-# ------Prepare to start Routine "instrTask"-------
+# --- Prepare to start Routine "instrTask" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_inst.keys = []
 key_resp_inst.rt = []
 _key_resp_inst_allKeys = []
+# Run 'Begin Routine' code from hideMouse
 win.mouseVisible = False 
 # keep track of which components have finished
 instrTaskComponents = [instrTaskText, key_resp_inst, pp_instrTask]
@@ -1831,14 +1867,13 @@ for thisComponent in instrTaskComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-instrTaskClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "instrTask"-------
+# --- Run Routine "instrTask" ---
 while continueRoutine:
     # get current time
-    t = instrTaskClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=instrTaskClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -1850,6 +1885,8 @@ while continueRoutine:
         instrTaskText.tStart = t  # local t and not account for scr refresh
         instrTaskText.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(instrTaskText, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'instrTaskText.started')
         instrTaskText.setAutoDraw(True)
     
     # *key_resp_inst* updates
@@ -1860,6 +1897,8 @@ while continueRoutine:
         key_resp_inst.tStart = t  # local t and not account for scr refresh
         key_resp_inst.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_inst, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_inst.started')
         key_resp_inst.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -1880,6 +1919,8 @@ while continueRoutine:
         pp_instrTask.tStart = t  # local t and not account for scr refresh
         pp_instrTask.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(pp_instrTask, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'pp_instrTask.started')
         pp_instrTask.status = STARTED
         win.callOnFlip(pp_instrTask.setData, int(5))
     if pp_instrTask.status == STARTED:
@@ -1888,7 +1929,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             pp_instrTask.tStop = t  # not accounting for scr refresh
             pp_instrTask.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(pp_instrTask, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_instrTask.stopped')
             pp_instrTask.status = FINISHED
             win.callOnFlip(pp_instrTask.setData, int(0))
     
@@ -1909,16 +1951,12 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "instrTask"-------
+# --- Ending Routine "instrTask" ---
 for thisComponent in instrTaskComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('instrTaskText.started', instrTaskText.tStartRefresh)
-thisExp.addData('instrTaskText.stopped', instrTaskText.tStopRefresh)
 if pp_instrTask.status == STARTED:
     win.callOnFlip(pp_instrTask.setData, int(0))
-thisExp.addData('pp_instrTask.started', pp_instrTask.tStartRefresh)
-thisExp.addData('pp_instrTask.stopped', pp_instrTask.tStopRefresh)
 # the Routine "instrTask" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
@@ -1941,7 +1979,7 @@ for thisBlock in blocks:
         for paramName in thisBlock:
             exec('{} = thisBlock[paramName]'.format(paramName))
     
-    # ------Prepare to start Routine "startBlock"-------
+    # --- Prepare to start Routine "startBlock" ---
     continueRoutine = True
     # update component parameters for each repeat
     key_resp.keys = []
@@ -1959,14 +1997,13 @@ for thisBlock in blocks:
     # reset timers
     t = 0
     _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    startBlockClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
     frameN = -1
     
-    # -------Run Routine "startBlock"-------
+    # --- Run Routine "startBlock" ---
     while continueRoutine:
         # get current time
-        t = startBlockClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=startBlockClock)
+        t = routineTimer.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
@@ -1978,6 +2015,8 @@ for thisBlock in blocks:
             blockStart.tStart = t  # local t and not account for scr refresh
             blockStart.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(blockStart, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'blockStart.started')
             blockStart.setAutoDraw(True)
         
         # *key_resp* updates
@@ -1988,6 +2027,8 @@ for thisBlock in blocks:
             key_resp.tStart = t  # local t and not account for scr refresh
             key_resp.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(key_resp, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'key_resp.started')
             key_resp.status = STARTED
             # keyboard checking is just starting
             waitOnFlip = True
@@ -2008,6 +2049,8 @@ for thisBlock in blocks:
             pp_blockstart.tStart = t  # local t and not account for scr refresh
             pp_blockstart.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(pp_blockstart, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_blockstart.started')
             pp_blockstart.status = STARTED
             win.callOnFlip(pp_blockstart.setData, int(6))
         if pp_blockstart.status == STARTED:
@@ -2016,7 +2059,8 @@ for thisBlock in blocks:
                 # keep track of stop time/frame for later
                 pp_blockstart.tStop = t  # not accounting for scr refresh
                 pp_blockstart.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(pp_blockstart, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_blockstart.stopped')
                 pp_blockstart.status = FINISHED
                 win.callOnFlip(pp_blockstart.setData, int(0))
         
@@ -2037,16 +2081,12 @@ for thisBlock in blocks:
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
     
-    # -------Ending Routine "startBlock"-------
+    # --- Ending Routine "startBlock" ---
     for thisComponent in startBlockComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    blocks.addData('blockStart.started', blockStart.tStartRefresh)
-    blocks.addData('blockStart.stopped', blockStart.tStopRefresh)
     if pp_blockstart.status == STARTED:
         win.callOnFlip(pp_blockstart.setData, int(0))
-    blocks.addData('pp_blockstart.started', pp_blockstart.tStartRefresh)
-    blocks.addData('pp_blockstart.stopped', pp_blockstart.tStopRefresh)
     # the Routine "startBlock" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
     
@@ -2069,11 +2109,12 @@ for thisBlock in blocks:
             for paramName in thisTrial:
                 exec('{} = thisTrial[paramName]'.format(paramName))
         
-        # ------Prepare to start Routine "audioTrial"-------
+        # --- Prepare to start Routine "audioTrial" ---
         continueRoutine = True
         # update component parameters for each repeat
         sound_1.setSound(audiofile, hamming=True)
         sound_1.setVolume(1.0, log=False)
+        # Run 'Begin Routine' code from code
         # Trigger 
         myClock = core.Clock()
         now = myClock.getTime()
@@ -2087,6 +2128,7 @@ for thisBlock in blocks:
         
          # 
         
+        # Run 'Begin Routine' code from hideMouse_2
         win.mouseVisible = False 
         
         # keep track of which components have finished
@@ -2101,14 +2143,13 @@ for thisBlock in blocks:
         # reset timers
         t = 0
         _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        audioTrialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
         
-        # -------Run Routine "audioTrial"-------
+        # --- Run Routine "audioTrial" ---
         while continueRoutine:
             # get current time
-            t = audioTrialClock.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=audioTrialClock)
+            t = routineTimer.getTime()
+            tThisFlip = win.getFutureFlipTime(clock=routineTimer)
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
@@ -2118,6 +2159,8 @@ for thisBlock in blocks:
                 sound_1.frameNStart = frameN  # exact frame index
                 sound_1.tStart = t  # local t and not account for scr refresh
                 sound_1.tStartRefresh = tThisFlipGlobal  # on global time
+                # add timestamp to datafile
+                thisExp.addData('sound_1.started', tThisFlipGlobal)
                 sound_1.play(when=win)  # sync with win flip
             
             # *fixation* updates
@@ -2127,13 +2170,16 @@ for thisBlock in blocks:
                 fixation.tStart = t  # local t and not account for scr refresh
                 fixation.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(fixation, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'fixation.started')
                 fixation.setAutoDraw(True)
             if fixation.status == STARTED:
                 if bool(sound_1.status==FINISHED):
                     # keep track of stop time/frame for later
                     fixation.tStop = t  # not accounting for scr refresh
                     fixation.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(fixation, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'fixation.stopped')
                     fixation.setAutoDraw(False)
             
             # *screenAfterAudio* updates
@@ -2143,6 +2189,8 @@ for thisBlock in blocks:
                 screenAfterAudio.tStart = t  # local t and not account for scr refresh
                 screenAfterAudio.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(screenAfterAudio, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'screenAfterAudio.started')
                 screenAfterAudio.setAutoDraw(True)
             if screenAfterAudio.status == STARTED:
                 # is it time to stop? (based on local clock)
@@ -2150,7 +2198,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     screenAfterAudio.tStop = t  # not accounting for scr refresh
                     screenAfterAudio.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(screenAfterAudio, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'screenAfterAudio.stopped')
                     screenAfterAudio.setAutoDraw(False)
             # *pp_start* updates
             if pp_start.status == NOT_STARTED and pp_start_time + 0.08:
@@ -2159,6 +2208,8 @@ for thisBlock in blocks:
                 pp_start.tStart = t  # local t and not account for scr refresh
                 pp_start.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_start, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_start.started')
                 pp_start.status = STARTED
                 win.callOnFlip(pp_start.setData, int(1))
             if pp_start.status == STARTED:
@@ -2167,7 +2218,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_start.tStop = t  # not accounting for scr refresh
                     pp_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_start, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_start.stopped')
                     pp_start.status = FINISHED
                     win.callOnFlip(pp_start.setData, int(0))
             # *pp_t0_start* updates
@@ -2177,6 +2229,8 @@ for thisBlock in blocks:
                 pp_t0_start.tStart = t  # local t and not account for scr refresh
                 pp_t0_start.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_t0_start, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_t0_start.started')
                 pp_t0_start.status = STARTED
                 win.callOnFlip(pp_t0_start.setData, int(101))
             if pp_t0_start.status == STARTED:
@@ -2185,7 +2239,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_t0_start.tStop = t  # not accounting for scr refresh
                     pp_t0_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t0_start, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_t0_start.stopped')
                     pp_t0_start.status = FINISHED
                     win.callOnFlip(pp_t0_start.setData, int(0))
             # *pp_t1_start* updates
@@ -2195,6 +2250,8 @@ for thisBlock in blocks:
                 pp_t1_start.tStart = t  # local t and not account for scr refresh
                 pp_t1_start.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_t1_start, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_t1_start.started')
                 pp_t1_start.status = STARTED
                 win.callOnFlip(pp_t1_start.setData, int(trigger_call))
             if pp_t1_start.status == STARTED:
@@ -2203,7 +2260,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_t1_start.tStop = t  # not accounting for scr refresh
                     pp_t1_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t1_start, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_t1_start.stopped')
                     pp_t1_start.status = FINISHED
                     win.callOnFlip(pp_t1_start.setData, int(0))
             # *pp_t2_start* updates
@@ -2213,6 +2271,8 @@ for thisBlock in blocks:
                 pp_t2_start.tStart = t  # local t and not account for scr refresh
                 pp_t2_start.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_t2_start, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_t2_start.started')
                 pp_t2_start.status = STARTED
                 win.callOnFlip(pp_t2_start.setData, int(trigger_col))
             if pp_t2_start.status == STARTED:
@@ -2221,7 +2281,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_t2_start.tStop = t  # not accounting for scr refresh
                     pp_t2_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t2_start, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_t2_start.stopped')
                     pp_t2_start.status = FINISHED
                     win.callOnFlip(pp_t2_start.setData, int(0))
             # *pp_t3_start* updates
@@ -2231,6 +2292,8 @@ for thisBlock in blocks:
                 pp_t3_start.tStart = t  # local t and not account for scr refresh
                 pp_t3_start.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_t3_start, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_t3_start.started')
                 pp_t3_start.status = STARTED
                 win.callOnFlip(pp_t3_start.setData, int(trigger_num))
             if pp_t3_start.status == STARTED:
@@ -2239,7 +2302,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_t3_start.tStop = t  # not accounting for scr refresh
                     pp_t3_start.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_t3_start, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_t3_start.stopped')
                     pp_t3_start.status = FINISHED
                     win.callOnFlip(pp_t3_start.setData, int(0))
             # *pp_end* updates
@@ -2249,6 +2313,8 @@ for thisBlock in blocks:
                 pp_end.tStart = t  # local t and not account for scr refresh
                 pp_end.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_end, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_end.started')
                 pp_end.status = STARTED
                 win.callOnFlip(pp_end.setData, int(trigger_end))
             if pp_end.status == STARTED:
@@ -2257,7 +2323,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_end.tStop = t  # not accounting for scr refresh
                     pp_end.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_end, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_end.stopped')
                     pp_end.status = FINISHED
                     win.callOnFlip(pp_end.setData, int(0))
             
@@ -2278,47 +2345,30 @@ for thisBlock in blocks:
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
         
-        # -------Ending Routine "audioTrial"-------
+        # --- Ending Routine "audioTrial" ---
         for thisComponent in audioTrialComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
         sound_1.stop()  # ensure sound has stopped at end of routine
-        trials.addData('sound_1.started', sound_1.tStartRefresh)
-        trials.addData('sound_1.stopped', sound_1.tStopRefresh)
-        trials.addData('fixation.started', fixation.tStartRefresh)
-        trials.addData('fixation.stopped', fixation.tStopRefresh)
-        trials.addData('screenAfterAudio.started', screenAfterAudio.tStartRefresh)
-        trials.addData('screenAfterAudio.stopped', screenAfterAudio.tStopRefresh)
         if pp_start.status == STARTED:
             win.callOnFlip(pp_start.setData, int(0))
-        trials.addData('pp_start.started', pp_start.tStartRefresh)
-        trials.addData('pp_start.stopped', pp_start.tStopRefresh)
         if pp_t0_start.status == STARTED:
             win.callOnFlip(pp_t0_start.setData, int(0))
-        trials.addData('pp_t0_start.started', pp_t0_start.tStartRefresh)
-        trials.addData('pp_t0_start.stopped', pp_t0_start.tStopRefresh)
         if pp_t1_start.status == STARTED:
             win.callOnFlip(pp_t1_start.setData, int(0))
-        trials.addData('pp_t1_start.started', pp_t1_start.tStartRefresh)
-        trials.addData('pp_t1_start.stopped', pp_t1_start.tStopRefresh)
         if pp_t2_start.status == STARTED:
             win.callOnFlip(pp_t2_start.setData, int(0))
-        trials.addData('pp_t2_start.started', pp_t2_start.tStartRefresh)
-        trials.addData('pp_t2_start.stopped', pp_t2_start.tStopRefresh)
         if pp_t3_start.status == STARTED:
             win.callOnFlip(pp_t3_start.setData, int(0))
-        trials.addData('pp_t3_start.started', pp_t3_start.tStartRefresh)
-        trials.addData('pp_t3_start.stopped', pp_t3_start.tStopRefresh)
         if pp_end.status == STARTED:
             win.callOnFlip(pp_end.setData, int(0))
-        trials.addData('pp_end.started', pp_end.tStartRefresh)
-        trials.addData('pp_end.stopped', pp_end.tStopRefresh)
         # the Routine "audioTrial" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         
-        # ------Prepare to start Routine "trial"-------
+        # --- Prepare to start Routine "trial" ---
         continueRoutine = True
         # update component parameters for each repeat
+        # Run 'Begin Routine' code from setOpacityAndHideMouse
         #set opacity of response buttons to 1 (fully visible)
         call1.opacity = 1
         call2.opacity = 1
@@ -2335,8 +2385,10 @@ for thisBlock in blocks:
         number3.opacity = 1
         number4.opacity = 1
         
+        # Run 'Begin Routine' code from switchToNextTrialAfterResponseTimeOver
         participantResponseTime = None
         trialClock = core.Clock()
+        # Run 'Begin Routine' code from printoutCorrectAnswersForDebugging
         print("%s, %s, %s" % (callSign,colour,number))
         # setup some python lists for storing info about the mouseClickOnCall
         mouseClickOnCall.x = []
@@ -2380,22 +2432,23 @@ for thisBlock in blocks:
         # reset timers
         t = 0
         _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-        trialClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
         frameN = -1
         
-        # -------Run Routine "trial"-------
+        # --- Run Routine "trial" ---
         while continueRoutine:
             # get current time
-            t = trialClock.getTime()
-            tThisFlip = win.getFutureFlipTime(clock=trialClock)
+            t = routineTimer.getTime()
+            tThisFlip = win.getFutureFlipTime(clock=routineTimer)
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
+            # Run 'Each Frame' code from setOpacityAndHideMouse
             #show mouse cursor only at the response screen
             win.mouseVisible = False 
             if call1.status == STARTED:
                 win.mouseVisible = True
             
+            # Run 'Each Frame' code from switchToNextTrialAfterResponseTimeOver
             if participantResponseTime == None:
                 participantResponseTime = trialClock.getTime()
             
@@ -2410,6 +2463,8 @@ for thisBlock in blocks:
                 blankScreen.tStart = t  # local t and not account for scr refresh
                 blankScreen.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(blankScreen, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'blankScreen.started')
                 blankScreen.setAutoDraw(True)
             if blankScreen.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -2417,7 +2472,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     blankScreen.tStop = t  # not accounting for scr refresh
                     blankScreen.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(blankScreen, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'blankScreen.stopped')
                     blankScreen.setAutoDraw(False)
             
             # *call1* updates
@@ -2427,13 +2483,16 @@ for thisBlock in blocks:
                 call1.tStart = t  # local t and not account for scr refresh
                 call1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(call1, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call1.started')
                 call1.setAutoDraw(True)
             if call1.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     call1.tStop = t  # not accounting for scr refresh
                     call1.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(call1, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'call1.stopped')
                     call1.setAutoDraw(False)
             
             # *call2* updates
@@ -2443,13 +2502,16 @@ for thisBlock in blocks:
                 call2.tStart = t  # local t and not account for scr refresh
                 call2.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(call2, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call2.started')
                 call2.setAutoDraw(True)
             if call2.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     call2.tStop = t  # not accounting for scr refresh
                     call2.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(call2, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'call2.stopped')
                     call2.setAutoDraw(False)
             
             # *call3* updates
@@ -2459,13 +2521,16 @@ for thisBlock in blocks:
                 call3.tStart = t  # local t and not account for scr refresh
                 call3.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(call3, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call3.started')
                 call3.setAutoDraw(True)
             if call3.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     call3.tStop = t  # not accounting for scr refresh
                     call3.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(call3, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'call3.stopped')
                     call3.setAutoDraw(False)
             
             # *call4* updates
@@ -2475,13 +2540,16 @@ for thisBlock in blocks:
                 call4.tStart = t  # local t and not account for scr refresh
                 call4.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(call4, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'call4.started')
                 call4.setAutoDraw(True)
             if call4.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     call4.tStop = t  # not accounting for scr refresh
                     call4.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(call4, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'call4.stopped')
                     call4.setAutoDraw(False)
             
             # *colour1* updates
@@ -2491,13 +2559,16 @@ for thisBlock in blocks:
                 colour1.tStart = t  # local t and not account for scr refresh
                 colour1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(colour1, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour1.started')
                 colour1.setAutoDraw(True)
             if colour1.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     colour1.tStop = t  # not accounting for scr refresh
                     colour1.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(colour1, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'colour1.stopped')
                     colour1.setAutoDraw(False)
             
             # *colour2* updates
@@ -2507,13 +2578,16 @@ for thisBlock in blocks:
                 colour2.tStart = t  # local t and not account for scr refresh
                 colour2.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(colour2, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour2.started')
                 colour2.setAutoDraw(True)
             if colour2.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     colour2.tStop = t  # not accounting for scr refresh
                     colour2.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(colour2, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'colour2.stopped')
                     colour2.setAutoDraw(False)
             
             # *colour3* updates
@@ -2523,13 +2597,16 @@ for thisBlock in blocks:
                 colour3.tStart = t  # local t and not account for scr refresh
                 colour3.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(colour3, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour3.started')
                 colour3.setAutoDraw(True)
             if colour3.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     colour3.tStop = t  # not accounting for scr refresh
                     colour3.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(colour3, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'colour3.stopped')
                     colour3.setAutoDraw(False)
             
             # *colour4* updates
@@ -2539,13 +2616,16 @@ for thisBlock in blocks:
                 colour4.tStart = t  # local t and not account for scr refresh
                 colour4.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(colour4, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'colour4.started')
                 colour4.setAutoDraw(True)
             if colour4.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     colour4.tStop = t  # not accounting for scr refresh
                     colour4.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(colour4, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'colour4.stopped')
                     colour4.setAutoDraw(False)
             
             # *number1* updates
@@ -2555,13 +2635,16 @@ for thisBlock in blocks:
                 number1.tStart = t  # local t and not account for scr refresh
                 number1.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(number1, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number1.started')
                 number1.setAutoDraw(True)
             if number1.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     number1.tStop = t  # not accounting for scr refresh
                     number1.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(number1, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'number1.stopped')
                     number1.setAutoDraw(False)
             
             # *number2* updates
@@ -2571,13 +2654,16 @@ for thisBlock in blocks:
                 number2.tStart = t  # local t and not account for scr refresh
                 number2.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(number2, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number2.started')
                 number2.setAutoDraw(True)
             if number2.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     number2.tStop = t  # not accounting for scr refresh
                     number2.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(number2, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'number2.stopped')
                     number2.setAutoDraw(False)
             
             # *number3* updates
@@ -2587,13 +2673,16 @@ for thisBlock in blocks:
                 number3.tStart = t  # local t and not account for scr refresh
                 number3.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(number3, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number3.started')
                 number3.setAutoDraw(True)
             if number3.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     number3.tStop = t  # not accounting for scr refresh
                     number3.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(number3, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'number3.stopped')
                     number3.setAutoDraw(False)
             
             # *number4* updates
@@ -2603,13 +2692,16 @@ for thisBlock in blocks:
                 number4.tStart = t  # local t and not account for scr refresh
                 number4.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(number4, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'number4.started')
                 number4.setAutoDraw(True)
             if number4.status == STARTED:
                 if bool(blankScreenAfterResponse.status == STARTED):
                     # keep track of stop time/frame for later
                     number4.tStop = t  # not accounting for scr refresh
                     number4.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(number4, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'number4.stopped')
                     number4.setAutoDraw(False)
             # *mouseClickOnCall* updates
             if mouseClickOnCall.status == NOT_STARTED and blankScreen.status ==FINISHED:
@@ -2618,6 +2710,8 @@ for thisBlock in blocks:
                 mouseClickOnCall.tStart = t  # local t and not account for scr refresh
                 mouseClickOnCall.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(mouseClickOnCall, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.addData('mouseClickOnCall.started', t)
                 mouseClickOnCall.status = STARTED
                 prevButtonState = mouseClickOnCall.getPressed()  # if button is down already this ISN'T a new click
             if mouseClickOnCall.status == STARTED:  # only update if started and not finished!
@@ -2646,6 +2740,7 @@ for thisBlock in blocks:
                         mouseClickOnCall.time.append(mouseClickOnCall.mouseClock.getTime())
                         if gotValidClick:
                             continueRoutine = False  # abort routine on response
+            # Run 'Each Frame' code from disableCallButtons
                         if gotValidClick:
                             mouseClickOnCall.status = FINISHED
                             if call1.name != mouseClickOnCall.clicked_name[-1]: call1.opacity = 0.2
@@ -2660,6 +2755,8 @@ for thisBlock in blocks:
                 mouseClickOnColour.tStart = t  # local t and not account for scr refresh
                 mouseClickOnColour.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(mouseClickOnColour, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.addData('mouseClickOnColour.started', t)
                 mouseClickOnColour.status = STARTED
                 prevButtonState = mouseClickOnColour.getPressed()  # if button is down already this ISN'T a new click
             if mouseClickOnColour.status == STARTED:  # only update if started and not finished!
@@ -2688,6 +2785,7 @@ for thisBlock in blocks:
                         mouseClickOnColour.time.append(mouseClickOnColour.mouseClock.getTime())
                         if gotValidClick:
                             continueRoutine = False  # abort routine on response
+            # Run 'Each Frame' code from disableColourButtons
                         if gotValidClick:
                             mouseClickOnColour.status = FINISHED
                             if colour1.name != mouseClickOnColour.clicked_name[-1]: colour1.opacity = 0.2
@@ -2702,6 +2800,8 @@ for thisBlock in blocks:
                 mouseClickOnNumber.tStart = t  # local t and not account for scr refresh
                 mouseClickOnNumber.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(mouseClickOnNumber, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.addData('mouseClickOnNumber.started', t)
                 mouseClickOnNumber.status = STARTED
                 prevButtonState = mouseClickOnNumber.getPressed()  # if button is down already this ISN'T a new click
             if mouseClickOnNumber.status == STARTED:  # only update if started and not finished!
@@ -2730,6 +2830,7 @@ for thisBlock in blocks:
                         mouseClickOnNumber.time.append(mouseClickOnNumber.mouseClock.getTime())
                         if gotValidClick:
                             continueRoutine = False  # abort routine on response
+            # Run 'Each Frame' code from disableNumberButtons
                         if gotValidClick:
                             mouseClickOnNumber.status = FINISHED
                             if number1.name != mouseClickOnNumber.clicked_name[-1]: number1.opacity = 0.2
@@ -2745,6 +2846,8 @@ for thisBlock in blocks:
                 blankScreenAfterResponse.tStart = t  # local t and not account for scr refresh
                 blankScreenAfterResponse.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(blankScreenAfterResponse, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'blankScreenAfterResponse.started')
                 blankScreenAfterResponse.setAutoDraw(True)
             if blankScreenAfterResponse.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
@@ -2752,7 +2855,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     blankScreenAfterResponse.tStop = t  # not accounting for scr refresh
                     blankScreenAfterResponse.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(blankScreenAfterResponse, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'blankScreenAfterResponse.stopped')
                     blankScreenAfterResponse.setAutoDraw(False)
             # *pp_respGrid* updates
             if pp_respGrid.status == NOT_STARTED and blankScreen.status==FINISHED:
@@ -2761,6 +2865,8 @@ for thisBlock in blocks:
                 pp_respGrid.tStart = t  # local t and not account for scr refresh
                 pp_respGrid.tStartRefresh = tThisFlipGlobal  # on global time
                 win.timeOnFlip(pp_respGrid, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_respGrid.started')
                 pp_respGrid.status = STARTED
                 win.callOnFlip(pp_respGrid.setData, int(7))
             if pp_respGrid.status == STARTED:
@@ -2769,7 +2875,8 @@ for thisBlock in blocks:
                     # keep track of stop time/frame for later
                     pp_respGrid.tStop = t  # not accounting for scr refresh
                     pp_respGrid.frameNStop = frameN  # exact frame index
-                    win.timeOnFlip(pp_respGrid, 'tStopRefresh')  # time at next scr refresh
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'pp_respGrid.stopped')
                     pp_respGrid.status = FINISHED
                     win.callOnFlip(pp_respGrid.setData, int(0))
             
@@ -2790,36 +2897,10 @@ for thisBlock in blocks:
             if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
                 win.flip()
         
-        # -------Ending Routine "trial"-------
+        # --- Ending Routine "trial" ---
         for thisComponent in trialComponents:
             if hasattr(thisComponent, "setAutoDraw"):
                 thisComponent.setAutoDraw(False)
-        trials.addData('blankScreen.started', blankScreen.tStartRefresh)
-        trials.addData('blankScreen.stopped', blankScreen.tStopRefresh)
-        trials.addData('call1.started', call1.tStartRefresh)
-        trials.addData('call1.stopped', call1.tStopRefresh)
-        trials.addData('call2.started', call2.tStartRefresh)
-        trials.addData('call2.stopped', call2.tStopRefresh)
-        trials.addData('call3.started', call3.tStartRefresh)
-        trials.addData('call3.stopped', call3.tStopRefresh)
-        trials.addData('call4.started', call4.tStartRefresh)
-        trials.addData('call4.stopped', call4.tStopRefresh)
-        trials.addData('colour1.started', colour1.tStartRefresh)
-        trials.addData('colour1.stopped', colour1.tStopRefresh)
-        trials.addData('colour2.started', colour2.tStartRefresh)
-        trials.addData('colour2.stopped', colour2.tStopRefresh)
-        trials.addData('colour3.started', colour3.tStartRefresh)
-        trials.addData('colour3.stopped', colour3.tStopRefresh)
-        trials.addData('colour4.started', colour4.tStartRefresh)
-        trials.addData('colour4.stopped', colour4.tStopRefresh)
-        trials.addData('number1.started', number1.tStartRefresh)
-        trials.addData('number1.stopped', number1.tStopRefresh)
-        trials.addData('number2.started', number2.tStartRefresh)
-        trials.addData('number2.stopped', number2.tStopRefresh)
-        trials.addData('number3.started', number3.tStartRefresh)
-        trials.addData('number3.stopped', number3.tStopRefresh)
-        trials.addData('number4.started', number4.tStartRefresh)
-        trials.addData('number4.stopped', number4.tStopRefresh)
         # store data for trials (TrialHandler)
         trials.addData('mouseClickOnCall.x', mouseClickOnCall.x)
         trials.addData('mouseClickOnCall.y', mouseClickOnCall.y)
@@ -2828,8 +2909,6 @@ for thisBlock in blocks:
         trials.addData('mouseClickOnCall.rightButton', mouseClickOnCall.rightButton)
         trials.addData('mouseClickOnCall.time', mouseClickOnCall.time)
         trials.addData('mouseClickOnCall.clicked_name', mouseClickOnCall.clicked_name)
-        trials.addData('mouseClickOnCall.started', mouseClickOnCall.tStart)
-        trials.addData('mouseClickOnCall.stopped', mouseClickOnCall.tStop)
         # store data for trials (TrialHandler)
         trials.addData('mouseClickOnColour.x', mouseClickOnColour.x)
         trials.addData('mouseClickOnColour.y', mouseClickOnColour.y)
@@ -2838,8 +2917,6 @@ for thisBlock in blocks:
         trials.addData('mouseClickOnColour.rightButton', mouseClickOnColour.rightButton)
         trials.addData('mouseClickOnColour.time', mouseClickOnColour.time)
         trials.addData('mouseClickOnColour.clicked_name', mouseClickOnColour.clicked_name)
-        trials.addData('mouseClickOnColour.started', mouseClickOnColour.tStart)
-        trials.addData('mouseClickOnColour.stopped', mouseClickOnColour.tStop)
         # store data for trials (TrialHandler)
         trials.addData('mouseClickOnNumber.x', mouseClickOnNumber.x)
         trials.addData('mouseClickOnNumber.y', mouseClickOnNumber.y)
@@ -2848,8 +2925,7 @@ for thisBlock in blocks:
         trials.addData('mouseClickOnNumber.rightButton', mouseClickOnNumber.rightButton)
         trials.addData('mouseClickOnNumber.time', mouseClickOnNumber.time)
         trials.addData('mouseClickOnNumber.clicked_name', mouseClickOnNumber.clicked_name)
-        trials.addData('mouseClickOnNumber.started', mouseClickOnNumber.tStart)
-        trials.addData('mouseClickOnNumber.stopped', mouseClickOnNumber.tStop)
+        # Run 'End Routine' code from evaluateResponses
         #evaluate correctness of response and write into a new column TRUE, FALSE, or NO_ANSW  
         if len(mouseClickOnCall.clicked_name) > 0:
             currentLoop.addData('callSignCorrect', mapCallSign[mouseClickOnCall.clicked_name[0]] == callSign) 
@@ -2866,15 +2942,12 @@ for thisBlock in blocks:
             print(mapNumber[mouseClickOnNumber.clicked_name[0]])
         else:
             currentLoop.addData('numberCorrect', "NO_ANSW") 
+        # Run 'End Routine' code from saveAfterEachTrial
         #sicherIstSicher
         #thisExp.saveAsWideText(filename+'.csv')
         #logging.flush()
-        trials.addData('blankScreenAfterResponse.started', blankScreenAfterResponse.tStartRefresh)
-        trials.addData('blankScreenAfterResponse.stopped', blankScreenAfterResponse.tStopRefresh)
         if pp_respGrid.status == STARTED:
             win.callOnFlip(pp_respGrid.setData, int(0))
-        trials.addData('pp_respGrid.started', pp_respGrid.tStartRefresh)
-        trials.addData('pp_respGrid.stopped', pp_respGrid.tStopRefresh)
         # the Routine "trial" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()
@@ -2894,9 +2967,10 @@ for thisBlock in blocks:
         stimOut=params,
         dataOut=['n','all_mean','all_std', 'all_raw'])
     
-    # ------Prepare to start Routine "endBlock"-------
+    # --- Prepare to start Routine "endBlock" ---
     continueRoutine = True
     # update component parameters for each repeat
+    # Run 'Begin Routine' code from hideMouse_10
     win.mouseVisible = False 
     # keep track of which components have finished
     endBlockComponents = [blockEnds, pp_blockends]
@@ -2910,14 +2984,13 @@ for thisBlock in blocks:
     # reset timers
     t = 0
     _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-    endBlockClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
     frameN = -1
     
-    # -------Run Routine "endBlock"-------
+    # --- Run Routine "endBlock" ---
     while continueRoutine:
         # get current time
-        t = endBlockClock.getTime()
-        tThisFlip = win.getFutureFlipTime(clock=endBlockClock)
+        t = routineTimer.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
         tThisFlipGlobal = win.getFutureFlipTime(clock=None)
         frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
         # update/draw components on each frame
@@ -2929,6 +3002,8 @@ for thisBlock in blocks:
             blockEnds.tStart = t  # local t and not account for scr refresh
             blockEnds.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(blockEnds, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'blockEnds.started')
             blockEnds.setAutoDraw(True)
         if blockEnds.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
@@ -2936,7 +3011,8 @@ for thisBlock in blocks:
                 # keep track of stop time/frame for later
                 blockEnds.tStop = t  # not accounting for scr refresh
                 blockEnds.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(blockEnds, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'blockEnds.stopped')
                 blockEnds.setAutoDraw(False)
         # *pp_blockends* updates
         if pp_blockends.status == NOT_STARTED and blockEnds.status==FINISHED:
@@ -2945,6 +3021,8 @@ for thisBlock in blocks:
             pp_blockends.tStart = t  # local t and not account for scr refresh
             pp_blockends.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(pp_blockends, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_blockends.started')
             pp_blockends.status = STARTED
             win.callOnFlip(pp_blockends.setData, int(60))
         if pp_blockends.status == STARTED:
@@ -2953,7 +3031,8 @@ for thisBlock in blocks:
                 # keep track of stop time/frame for later
                 pp_blockends.tStop = t  # not accounting for scr refresh
                 pp_blockends.frameNStop = frameN  # exact frame index
-                win.timeOnFlip(pp_blockends, 'tStopRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'pp_blockends.stopped')
                 pp_blockends.status = FINISHED
                 win.callOnFlip(pp_blockends.setData, int(0))
         
@@ -2974,27 +3053,24 @@ for thisBlock in blocks:
         if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
             win.flip()
     
-    # -------Ending Routine "endBlock"-------
+    # --- Ending Routine "endBlock" ---
     for thisComponent in endBlockComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    blocks.addData('blockEnds.started', blockEnds.tStartRefresh)
-    blocks.addData('blockEnds.stopped', blockEnds.tStopRefresh)
     if pp_blockends.status == STARTED:
         win.callOnFlip(pp_blockends.setData, int(0))
-    blocks.addData('pp_blockends.started', pp_blockends.tStartRefresh)
-    blocks.addData('pp_blockends.stopped', pp_blockends.tStopRefresh)
     # the Routine "endBlock" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
 # completed 1.0 repeats of 'blocks'
 
 
-# ------Prepare to start Routine "instrRest_POST"-------
+# --- Prepare to start Routine "instrRest_POST" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_instRest_post.keys = []
 key_resp_instRest_post.rt = []
 _key_resp_instRest_post_allKeys = []
+# Run 'Begin Routine' code from hideMouse_4
 win.mouseVisible = False 
 # keep track of which components have finished
 instrRest_POSTComponents = [instrRest_post, key_resp_instRest_post, pp_rest_post]
@@ -3008,14 +3084,13 @@ for thisComponent in instrRest_POSTComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-instrRest_POSTClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "instrRest_POST"-------
+# --- Run Routine "instrRest_POST" ---
 while continueRoutine:
     # get current time
-    t = instrRest_POSTClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=instrRest_POSTClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -3027,6 +3102,8 @@ while continueRoutine:
         instrRest_post.tStart = t  # local t and not account for scr refresh
         instrRest_post.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(instrRest_post, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'instrRest_post.started')
         instrRest_post.setAutoDraw(True)
     
     # *key_resp_instRest_post* updates
@@ -3037,6 +3114,8 @@ while continueRoutine:
         key_resp_instRest_post.tStart = t  # local t and not account for scr refresh
         key_resp_instRest_post.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_instRest_post, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_instRest_post.started')
         key_resp_instRest_post.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -3057,6 +3136,8 @@ while continueRoutine:
         pp_rest_post.tStart = t  # local t and not account for scr refresh
         pp_rest_post.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(pp_rest_post, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'pp_rest_post.started')
         pp_rest_post.status = STARTED
         win.callOnFlip(pp_rest_post.setData, int(5))
     if pp_rest_post.status == STARTED:
@@ -3065,7 +3146,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             pp_rest_post.tStop = t  # not accounting for scr refresh
             pp_rest_post.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(pp_rest_post, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_rest_post.stopped')
             pp_rest_post.status = FINISHED
             win.callOnFlip(pp_rest_post.setData, int(0))
     
@@ -3086,24 +3168,21 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "instrRest_POST"-------
+# --- Ending Routine "instrRest_POST" ---
 for thisComponent in instrRest_POSTComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('instrRest_post.started', instrRest_post.tStartRefresh)
-thisExp.addData('instrRest_post.stopped', instrRest_post.tStopRefresh)
 if pp_rest_post.status == STARTED:
     win.callOnFlip(pp_rest_post.setData, int(0))
-thisExp.addData('pp_rest_post.started', pp_rest_post.tStartRefresh)
-thisExp.addData('pp_rest_post.stopped', pp_rest_post.tStopRefresh)
 # the Routine "instrRest_POST" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
-# ------Prepare to start Routine "restTrial_post"-------
+# --- Prepare to start Routine "restTrial_post" ---
 continueRoutine = True
 # update component parameters for each repeat
 beep_rest_post_start.setSound('click_beep.wav', hamming=True)
 beep_rest_post_start.setVolume(1.0, log=False)
+# Run 'Begin Routine' code from hideMouse_9
 win.mouseVisible = False 
 
 beep_rest_post_end.setSound('click_beep.wav', hamming=True)
@@ -3120,14 +3199,13 @@ for thisComponent in restTrial_postComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-restTrial_postClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "restTrial_post"-------
+# --- Run Routine "restTrial_post" ---
 while continueRoutine:
     # get current time
-    t = restTrial_postClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=restTrial_postClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -3146,6 +3224,8 @@ while continueRoutine:
         fixation_3.tStart = t  # local t and not account for scr refresh
         fixation_3.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(fixation_3, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'fixation_3.started')
         fixation_3.setAutoDraw(True)
     if fixation_3.status == STARTED:
         # is it time to stop? (based on global clock, using actual start)
@@ -3153,7 +3233,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             fixation_3.tStop = t  # not accounting for scr refresh
             fixation_3.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(fixation_3, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'fixation_3.stopped')
             fixation_3.setAutoDraw(False)
     
     # *screenAfterAudio_4* updates
@@ -3163,6 +3244,8 @@ while continueRoutine:
         screenAfterAudio_4.tStart = t  # local t and not account for scr refresh
         screenAfterAudio_4.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(screenAfterAudio_4, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'screenAfterAudio_4.started')
         screenAfterAudio_4.setAutoDraw(True)
     if screenAfterAudio_4.status == STARTED:
         # is it time to stop? (based on local clock)
@@ -3170,7 +3253,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             screenAfterAudio_4.tStop = t  # not accounting for scr refresh
             screenAfterAudio_4.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(screenAfterAudio_4, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'screenAfterAudio_4.stopped')
             screenAfterAudio_4.setAutoDraw(False)
     # start/stop beep_rest_post_end
     if beep_rest_post_end.status == NOT_STARTED and fixation_3.status == FINISHED:
@@ -3178,6 +3262,8 @@ while continueRoutine:
         beep_rest_post_end.frameNStart = frameN  # exact frame index
         beep_rest_post_end.tStart = t  # local t and not account for scr refresh
         beep_rest_post_end.tStartRefresh = tThisFlipGlobal  # on global time
+        # add timestamp to datafile
+        thisExp.addData('beep_rest_post_end.started', tThisFlipGlobal)
         beep_rest_post_end.play(when=win)  # sync with win flip
     # *pp_rest_pre_start_2* updates
     if pp_rest_pre_start_2.status == NOT_STARTED and beep_rest_post_start.status==STARTED:
@@ -3186,6 +3272,8 @@ while continueRoutine:
         pp_rest_pre_start_2.tStart = t  # local t and not account for scr refresh
         pp_rest_pre_start_2.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(pp_rest_pre_start_2, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'pp_rest_pre_start_2.started')
         pp_rest_pre_start_2.status = STARTED
         win.callOnFlip(pp_rest_pre_start_2.setData, int(9))
     if pp_rest_pre_start_2.status == STARTED:
@@ -3194,7 +3282,8 @@ while continueRoutine:
             # keep track of stop time/frame for later
             pp_rest_pre_start_2.tStop = t  # not accounting for scr refresh
             pp_rest_pre_start_2.frameNStop = frameN  # exact frame index
-            win.timeOnFlip(pp_rest_pre_start_2, 'tStopRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'pp_rest_pre_start_2.stopped')
             pp_rest_pre_start_2.status = FINISHED
             win.callOnFlip(pp_rest_pre_start_2.setData, int(0))
     
@@ -3215,31 +3304,24 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "restTrial_post"-------
+# --- Ending Routine "restTrial_post" ---
 for thisComponent in restTrial_postComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
 beep_rest_post_start.stop()  # ensure sound has stopped at end of routine
-thisExp.addData('fixation_3.started', fixation_3.tStartRefresh)
-thisExp.addData('fixation_3.stopped', fixation_3.tStopRefresh)
-thisExp.addData('screenAfterAudio_4.started', screenAfterAudio_4.tStartRefresh)
-thisExp.addData('screenAfterAudio_4.stopped', screenAfterAudio_4.tStopRefresh)
 beep_rest_post_end.stop()  # ensure sound has stopped at end of routine
-thisExp.addData('beep_rest_post_end.started', beep_rest_post_end.tStartRefresh)
-thisExp.addData('beep_rest_post_end.stopped', beep_rest_post_end.tStopRefresh)
 if pp_rest_pre_start_2.status == STARTED:
     win.callOnFlip(pp_rest_pre_start_2.setData, int(0))
-thisExp.addData('pp_rest_pre_start_2.started', pp_rest_pre_start_2.tStartRefresh)
-thisExp.addData('pp_rest_pre_start_2.stopped', pp_rest_pre_start_2.tStopRefresh)
 # the Routine "restTrial_post" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
-# ------Prepare to start Routine "thanks_end"-------
+# --- Prepare to start Routine "thanks_end" ---
 continueRoutine = True
 # update component parameters for each repeat
 key_resp_6.keys = []
 key_resp_6.rt = []
 _key_resp_6_allKeys = []
+# Run 'Begin Routine' code from hideMouse_11
 win.mouseVisible = False 
 # keep track of which components have finished
 thanks_endComponents = [thanksText_end, key_resp_6]
@@ -3253,14 +3335,13 @@ for thisComponent in thanks_endComponents:
 # reset timers
 t = 0
 _timeToFirstFrame = win.getFutureFlipTime(clock="now")
-thanks_endClock.reset(-_timeToFirstFrame)  # t0 is time of first possible flip
 frameN = -1
 
-# -------Run Routine "thanks_end"-------
+# --- Run Routine "thanks_end" ---
 while continueRoutine:
     # get current time
-    t = thanks_endClock.getTime()
-    tThisFlip = win.getFutureFlipTime(clock=thanks_endClock)
+    t = routineTimer.getTime()
+    tThisFlip = win.getFutureFlipTime(clock=routineTimer)
     tThisFlipGlobal = win.getFutureFlipTime(clock=None)
     frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
     # update/draw components on each frame
@@ -3272,6 +3353,8 @@ while continueRoutine:
         thanksText_end.tStart = t  # local t and not account for scr refresh
         thanksText_end.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(thanksText_end, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'thanksText_end.started')
         thanksText_end.setAutoDraw(True)
     
     # *key_resp_6* updates
@@ -3282,6 +3365,8 @@ while continueRoutine:
         key_resp_6.tStart = t  # local t and not account for scr refresh
         key_resp_6.tStartRefresh = tThisFlipGlobal  # on global time
         win.timeOnFlip(key_resp_6, 'tStartRefresh')  # time at next scr refresh
+        # add timestamp to datafile
+        thisExp.timestampOnFlip(win, 'key_resp_6.started')
         key_resp_6.status = STARTED
         # keyboard checking is just starting
         waitOnFlip = True
@@ -3313,15 +3398,14 @@ while continueRoutine:
     if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
         win.flip()
 
-# -------Ending Routine "thanks_end"-------
+# --- Ending Routine "thanks_end" ---
 for thisComponent in thanks_endComponents:
     if hasattr(thisComponent, "setAutoDraw"):
         thisComponent.setAutoDraw(False)
-thisExp.addData('thanksText_end.started', thanksText_end.tStartRefresh)
-thisExp.addData('thanksText_end.stopped', thanksText_end.tStopRefresh)
 # the Routine "thanks_end" was not non-slip safe, so reset the non-slip timer
 routineTimer.reset()
 
+# --- End experiment ---
 # Flip one final time so any remaining win.callOnFlip() 
 # and win.timeOnFlip() tasks get executed before quitting
 win.flip()
