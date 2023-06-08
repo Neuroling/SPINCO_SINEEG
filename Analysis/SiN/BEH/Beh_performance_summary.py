@@ -45,14 +45,19 @@ for file in files:
         filepath = os.path.join(diroutput, file)
  
         # %% read data frame 
-        df = pd.read_csv(filepath)                
+                 
         
         # %% Check accuracy 
-
+        df = pd.read_csv(filepath)       
             
 
+        df['callSignCorrect_raw'] = df['callSignCorrect_raw'].map({True: 1, False: 0, "NO_ANSW": ''})
+        df['colourCorrect_raw'] = df['colourCorrect_raw'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW": ''})
+        df['numberCorrect_raw'] = df['numberCorrect_raw'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW": ''})
+        
         df['callSignCorrect_raw']
-
+        df['colourCorrect_raw'] 
+        df['numberCorrect_raw']
 
 
 
@@ -80,11 +85,9 @@ for file in files:
     # 32 = is the number of target items per level, noise type and block (replace by infering this from data) 
     
     uniqueTrials = 32 
-    (df.groupby(['noise', 'block', 'levels'])[['callSignCorrect_raw']].sum())*100/uniqueTrials
-    (df.groupby(['noise', 'block', 'levels'])[['colorCorrect_raw']].sum())*100/uniqueTrials
-    #df.groupby(['noise', 'block', 'levels'])['colourCorrect_raw'].sum()
-    #df.groupby(['noise', 'block', 'levels'])[['numberCorrect_raw']].sum()
-    #res =  (df.groupby(['noise', 'block', 'levels'])[[ 'callSignCorrect_raw', 'colourCorrect_raw','numberCorrect_raw']].sum())*100/uniqueTrials
+    
+    (df.groupby(['noise', 'block', 'levels'])[['callSignCorrect_raw', 'colourCorrect_raw','numberCorrect_raw']].sum())*100/uniqueTrials
+     
        
     
     # Save excel 
