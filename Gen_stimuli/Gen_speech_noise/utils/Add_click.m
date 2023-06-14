@@ -15,7 +15,7 @@ for f= 1:length(files);
     %% Create a second channel with a click 
     sig2 = sig;
     % Keep intensity of audio wave low to avoid unwanted triggers
-    sig2 = sig2*(0.5/max(abs(sig2)));       
+    sig2 = sig2*(0.2/max(abs(sig2)));       
     clickdur = 0.1;  % dur in sec of the click signal (long enough to avoid undesired miss)
     clicklength = fs*clickdur; % dur in sec of the click signal
     sig2(1:clicklength) = ones(1, clicklength);        
