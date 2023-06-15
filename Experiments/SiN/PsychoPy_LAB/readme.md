@@ -15,20 +15,25 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 - 3rd digit indicates word in sorted alphabetically or ordinally when numbers: 1 (adler | gelb | eins) , 2 (drossel | gruen | zwei) , 3 (kroete | rot | drei), 4 (tiger | weiss | vier) 
 - 3rd digit = 0 indicates the offset of the target
 - Clicks and block intial screens are also coded. See table below
-- 
+- Trigger 256 is send by the Biosemi amp when the signal from Ergo1 reaches a threshold. Audiostimuli + a click at the beginning were sent to ergo1, soundwave was kept low intensity to avoid inicidential triggers, but initial click kept at louder intensity to cause trigger. This is use to correct trigger timing.  
 
 
 | code	| Description
 |-------|-------------------------------|
-| 8	| Start resting state PRE task	|
+| 256	  | Audio-trigger (send by biosemi triggered by audio erg1)	|
+|	|				|
+| 8	  | Start resting state PRE task	|
 | 9 	| Start resting state POST task	|
+|	|				|
 | 1 	| Click to first target         |
 | 2 	| Click to second target	|
 | 3 	| Click to third target		|
-| 5	| Instruction screen		|
+|	|				|
+| 55	| instruction screen before practice trials and resting state	|
+| 5	| instruction screen just before the main task	|
 | 6	| Start of block screen		|
-| 7	| Start of response grid	|
 | 60	| End of a block |
+| 7	| response grid at each trial of main task|
 |	|				|
 | 100 	| NV starts			| 
 | 101 	| NV ends			| 
