@@ -48,11 +48,31 @@ See this for a proper manual: https://docs.s3it.uzh.ch/cluster/overview/
 - **Schedule Jobs**. They are submitted with the `sbatch` command. `Slurm` is the system for automatic job allocations. 
 
 # User Example
-Set up Slurm parameter 
+We may be running multiple projects in the cluster. Let's say we want to run the *lizz* project:
+This section is based on: https://docs.s3it.uzh.ch/cluster/overview/ 
+
+
+## Project set up
+Set up Slurm parameter to sbatch in the **command line**:
+```
+--account=hervais-adelman.lizz.uzh
+```
+OR we add this line to the **slurm script**:
+```
+#SBATCH --account= hervais-adelman.lizz.uzh
+```
+Without the account setting, your job will be charged under your default project, which is not this one (the default project can be changed)
+
+## Connect to cluster 
+We use our UZH shortname. If we are unable to log in our email /collaboration password will need to be updated in the Identity manager: https://identity.uzh.ch/itim/ui/
+
 ```
 ssh shortusername@cluster.s3it.uzh.ch
+```
+## Data storage and access 
 
-``` 
+
+
 
 # Terminology
 Just some rough non-technical definitions to get oriented
