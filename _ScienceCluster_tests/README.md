@@ -81,7 +81,7 @@ module load mamba
 source activate renv
 # Print this sub-job's task ID
 echo "My SLURM_ARRAY_TASK_ID: " \$SLURM_ARRAY_TASK_ID
-srun Rscript --vanilla Hello.py \$SLURM_ARRAY_TASK_ID
+srun python Hello.py $SLURM_ARRAY_TASK_ID
 EOF
 
 ````
