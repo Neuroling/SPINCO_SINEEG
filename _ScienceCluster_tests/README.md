@@ -25,13 +25,13 @@ see proper manual in : https://docs.s3it.uzh.ch/cluster/cluster_training
 
 <img src="https://github.com/Neuroling/SPINCO_SINEEG/assets/13642762/bed0cdbb-9daa-4996-93fe-162b88a9ab11" width="650" height="350">
 
-ScienceCloud
+**ScienceCloud**
 - Offers Virtual Machines that are controlled by the user
 - Great for interactive use
 - The user has root (sudo) privileges and can customize system software
 - Multiple operating systems are available: Ubuntu Linux or another Linux distribution
 
-ScienceCluster
+**ScienceCluster**
 - A shared cluster environment with compute resources managed by SLURM
 - Great for large batches of jobs (up to thousands jobs submitted at a time)
 - A user can install software only in their user directories, and commonly-used software is maintained by Science IT
@@ -57,10 +57,16 @@ In the cluster, note there will be 3 user directories (home,data, scratch) and t
 ### ScienceApps
 Go here and log in: 
 https://apps.s3it.uzh.ch/
-
 ### From terminal
 Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will see message and a table showing your directories and their available space 
 
+## Creating a Python environment
+- Log in: ` ssh gfraga@cluster.s3it.uzh.ch `
+- Load mamba module:  ``module load mamba``
+- Create enviroment: For example to create an enviroment I name: *SINEEG-env*:  `conda create -n SINEEG-env spyder spyder-kernels numpy scipy pandas matplotlib sympy cython mne`
+- The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
+- Now we can activate the enviroment with `conda activate SINEEG-env`
+  
 ## Project set up
 Set up Slurm parameter to sbatch in the **command line**:
 ```
