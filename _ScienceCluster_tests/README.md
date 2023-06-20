@@ -23,7 +23,7 @@ The Automagic toolbox for standardized, automated preprocessing pipelines relies
 Don't know whether to use science Cloud or science Cluster? check  https://www.zi.uzh.ch/en/teaching-and-research/science-it/computing.html
 see proper manual in : https://docs.s3it.uzh.ch/cluster/cluster_training 
 
-![image](https://github.com/Neuroling/SPINCO_SINEEG/assets/13642762/bed0cdbb-9daa-4996-93fe-162b88a9ab11)
+![image](https://github.com/Neuroling/SPINCO_SINEEG/assets/13642762/bed0cdbb-9daa-4996-93fe-162b88a9ab11 = 250 x 250 )
 
 ScienceCloud
 - Offers Virtual Machines that are controlled by the user
