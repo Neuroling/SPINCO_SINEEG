@@ -51,6 +51,17 @@ See this for a proper manual: https://docs.s3it.uzh.ch/cluster/overview/
 We may be running multiple projects in the cluster. Let's say we want to run the *lizz* project:
 This section is based on: https://docs.s3it.uzh.ch/cluster/overview/ 
 
+## Login 
+### ScienceApps
+Go here and log in: 
+https://apps.s3it.uzh.ch/
+
+### From terminal
+Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will be welcomed to the cluster: 
+![image](https://github.com/Neuroling/SPINCO_SINEEG/assets/13642762/bdac04b3-6fa8-4c7a-88cc-3d6dfd553441)
+
+Note the 3 user directories (home,data, scratch) and the shared directory assigned to the specific project we are working on. 
+
 
 ## Project set up
 Set up Slurm parameter to sbatch in the **command line**:
