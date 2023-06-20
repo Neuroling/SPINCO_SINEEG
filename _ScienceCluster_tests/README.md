@@ -61,11 +61,20 @@ https://apps.s3it.uzh.ch/
 Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will see message and a table showing your directories and their available space 
 
 ## Creating a Python environment
-- Log in: ` ssh gfraga@cluster.s3it.uzh.ch `
-- Load mamba module:  ``module load mamba``
+- Log in:
+  ```
+  ssh gfraga@cluster.s3it.uzh.ch
+  ```
+- Load mamba module:
+  ```
+  module load mamba
+  ```
 - Create enviroment: For example to create an enviroment I name: *SINEEG-env*:  `conda create -n SINEEG-env spyder spyder-kernels numpy scipy pandas matplotlib sympy cython mne`
 - The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
-- Now we can activate the enviroment with `conda activate SINEEG-env`
+- Now we can activate the enviroment with
+ ```
+conda activate SINEEG-env
+```
   
 ## Project set up
 Set up Slurm parameter to sbatch in the **command line**:
