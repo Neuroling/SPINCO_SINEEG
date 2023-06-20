@@ -60,7 +60,7 @@ https://apps.s3it.uzh.ch/
 ### From terminal
 Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will see message and a table showing your directories and their available space 
 
-## Creating a Python environment
+## Creating a Python environment for mne toolbox 
 - Log in:
   ```
   ssh gfraga@cluster.s3it.uzh.ch
@@ -69,12 +69,14 @@ Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will 
   ```
   module load mamba
   ```
-- Create enviroment: For example to create an enviroment I name: *SINEEG-env*:
+- Create enviroment: For example to create an enviroment with mne and other toolboxes. I name it *SINEEG-env*:
   ```bash
-  conda create -n SINEEG-env spyder spyder-kernels numpy scipy pandas matplotlib sympy cython mne
+  conda create --strict-channel-priority --channel=conda-forge --name=SINEEG-env mne-base h5io h5py pymatreader mne-bids matplotlib scikit-learn
+  
   ```
 - The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
-- Now we can activate the enviroment with
+- Activate enviroment : ``` conda activate SINEEG-env ```, ``` conda deactivate ``` to get out of the environment
+- Deleting an environment: ``` conda remove --name SINEEG-env --all 
  ```
 conda activate SINEEG-env
 ```
