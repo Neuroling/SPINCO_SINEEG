@@ -96,9 +96,8 @@ Upload a file from ScienceCluster to the NAS device
 # Terminology
 Just some rough non-technical definitions to get oriented
 
-- **shell (sh)** . Shell is a computer program that exposes an operating system's services to a human user or other programs. It is named a shell because it is the outermost layer around the operating system.
--  **bash** . Bash is sh, but with more features and better syntax. Bash is “Bourne Again SHell”, and is an improvement of the sh (original Bourne shell). Shell scripting is scripting in any shell, whereas Bash scripting is scripting specifically for Bash. sh is a shell command-line interpreter of Unix/Unix-like operating systems. sh provides some built-in commands. bash is a superset of sh. Shell is a command-line interface to run commands and shell scripts. Shells come in a variety of flavors, much as operating systems come in a variety of flavors. So, Shell is an interface between the user and the operating system, which helps the user to interact with the device.
-- **SSH or Secure Shell**
- is a network communication protocol that enables two computers to communicate (c.f http or hypertext transfer protocol, which is the protocol used to transfer hypertext such as web pages) and share data. The stuff 
+- **shell (sh)** . Shell is a computer program that exposes an operating system's services to a human user or other programs. It is named a shell because it is the outermost layer around the operating system. See bash:
+-  **bash** . Bash is sh, but with more features and better syntax. Bash is “Bourne Again SHell”, and is an improvement of the sh (original Bourne shell). Shell scripting is scripting in any shell, whereas Bash scripting is scripting specifically for Bash. sh is a shell command-line interpreter of Unix/Unix-like operating systems. sh provides some built-in commands. bash is a superset of sh.
+- **SSH or Secure Shell** is a network communication protocol that enables two computers to communicate (c.f http or hypertext transfer protocol, which is the protocol used to transfer hypertext such as web pages) and share data. 
 - **Slurm** manages and schedules jobs in the  cluster. Stands for the Simple Linux Utility for Resource Management (Slurm Workload Manager)  
  
