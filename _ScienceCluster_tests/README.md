@@ -8,19 +8,18 @@ In the cluster we can:
 - *Data Transfer* we can transfer files with the `scp` command to, for instance, copy files from a server to the cluster
 - *Schedule Jobs*. They are submitted with the `sbatch` command. `Slurm` is the system for automatic job allocations. 
 
-# User Example
-We may be running multiple projects in the cluster. Let's say we want to run the *lizz* project:
-This section is based on: https://docs.s3it.uzh.ch/cluster/overview/ 
+# Example 1: using MNE-python toolbox
+We may be running multiple projects in the cluster. This section is based on: https://docs.s3it.uzh.ch/cluster/overview/ 
+## Login
+In our cluster space there will be 3 directories in our 'home': *data*, *scratch* and the *shares* directory assigned to the specific project. In 'shares' we can search for our project, e.g. *hervais-adelman.lizz.uzh*
 
-## Login 
-In the cluster, note there will be 3 user directories (home,data, scratch) and the shared directory assigned to the specific project we are working on. 
-### ScienceApps
+### Login from ScienceApps
 Go here and log in: 
 https://apps.s3it.uzh.ch/
-### From terminal
+### Login from terminal
 Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will see message and a table showing your directories and their available space 
 
-## Creating a Python environment for mne toolbox 
+## Creating a Python environment  
 - Log in:
   ```
   ssh gfraga@cluster.s3it.uzh.ch
@@ -34,20 +33,59 @@ Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will 
   conda create --strict-channel-priority --channel=conda-forge --name=SINEEG-env mne-base h5io h5py pymatreader mne-bids matplotlib scikit-learn
   
   ```
-- The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
+- The new enviroment will be saved in `/home/gfraga/data/conda/envs/` This is the default, recommended location (this could be modified by changing the .condarc file:  https://docs.s3it.uzh.ch/how-to_articles/how_to_use_conda/)
+  
 - Activate enviroment :
- ```
- conda activate SINEEG-env
-```
+  ```
+  conda activate SINEEG-env
+  ```
 - To get out of the environment: ``` conda deactivate ```
-- To delete an environment: ``` conda remove --name SINEEG-env --all 
+- To delete an environment: ```` conda remove --name SINEEG-env --all ````
  
 
+## Accessing data 
 
+### Link to your project 'shares' folder
+ Do this to create a link to your project (e.g,m *shares* 
+ ```
+ ln -s /shares/	hervais-adelman.lizz.uzh ~/shares
+```
+### Access to SMB NAS (mounted drives)
+In this case we have data and scripts in our **NAS** `\\idnas12.d.uzh.ch\G_PSYNEULIN_DATA$ `
+The script uses relative paths to access data, summing Scripts and Data are children of a parent "Project" directory: PROJECT/data and PROJECT/Scripts
 
+Here we will try 
+- Access SMB share from the Science Cluster
+  `smbclient --max-protocol SMB3 -W UZH -U username nasaddress` 
+  ```shell
+  smbclient --max-protocol SMB3 -W UZH -U gfraga //idnas12.d.uzh.ch/G_PSYNEULIN_DATA$
+  ```
+- Now the terminal prompt will change to `smb: \>` and if we type 'dir' we will see the content of our smb server.
+- 
 
+## Creating the job 
+````bash
+cat << EOF > arrayscript.sh
+#!/bin/bash
+#SBATCH --job-name=arrayJob
+#SBATCH --time=01:00:00
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=4GB
+#SBATCH --output=arrayJob_%A_%a.out
+#SBATCH --error=arrayJob_%A_%a.err
+#SBATCH --array=1-3
 
+module load mamba
+source activate renv
+# Print this sub-job's task ID
+echo "My SLURM_ARRAY_TASK_ID: " \$SLURM_ARRAY_TASK_ID
+srun Rscript --vanilla testarray.R \$SLURM_ARRAY_TASK_ID
+EOF
 
+````
+
+### 
 # EEG test in science cluster
 
 
