@@ -64,7 +64,7 @@ Here we will try
 - If we want out we can type `exit` and we will go back to the usual login prompt 'gfraga@...'
 
 ## Creating the job 
-We first create a file with some bash script
+We first create a file with some bash script (Here the first line creates the .sh file with the subsequent lines).
 ````bash
 cat << EOF > helloscript.sh
 #!/bin/bash
@@ -85,6 +85,7 @@ srun Rscript --vanilla Hello.py \$SLURM_ARRAY_TASK_ID
 EOF
 
 ````
+
 
 ### 
 # EEG test in science cluster
