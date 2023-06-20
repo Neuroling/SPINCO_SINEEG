@@ -48,7 +48,7 @@ Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will 
 ### Link to your project 'shares' folder
  Do this to create a link to your project (e.g,m *shares* 
  ```
- ln -s /shares/	hervais-adelman.lizz.uzh ~/shares
+ ln -s /shares/hervais-adelman.lizz.uzh ~/shares
 ```
 ### Access to SMB NAS (mounted drives)
 In this case we have data and scripts in our **NAS** `\\idnas12.d.uzh.ch\G_PSYNEULIN_DATA$ `
@@ -61,7 +61,7 @@ Here we will try
   smbclient --max-protocol SMB3 -W UZH -U gfraga //idnas12.d.uzh.ch/G_PSYNEULIN_DATA$
   ```
 - Now the terminal prompt will change to `smb: \>` and if we type 'dir' we will see the content of our smb server.
-- 
+- If we want out we can type `exit` and we will go back to the usual login prompt 'gfraga@...'
 
 ## Creating the job 
 ````bash
