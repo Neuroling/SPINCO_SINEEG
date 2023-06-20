@@ -1,6 +1,58 @@
-# EEG test in science cluster
-Here we just want to read raw EEG data with two different tools: matlab-based EEGlab and python-based MNE. Then, matlab-based AUTOMAGIC is used for standradized preprocessing pipeline (EEGlab-functions)
 
+# Quick tour on ScienceCluster 
+Documentation:  https://docs.s3it.uzh.ch/cluster/overview/
+
+In the cluster we can: 
+- *Connect* to the cluster via ssh with UZH shortname ssh shortusername@cluster.s3it.uzh.ch
+- *Data Storage* . Here there are 4 systems with different capacities BUT non of them has BACKUPS https://docs.s3it.uzh.ch/cluster/data/#scalable-storage 
+- *Data Transfer* we can transfer files with the `scp` command to, for instance, copy files from a server to the cluster
+- *Schedule Jobs*. They are submitted with the `sbatch` command. `Slurm` is the system for automatic job allocations. 
+
+# User Example
+We may be running multiple projects in the cluster. Let's say we want to run the *lizz* project:
+This section is based on: https://docs.s3it.uzh.ch/cluster/overview/ 
+
+## Login 
+In the cluster, note there will be 3 user directories (home,data, scratch) and the shared directory assigned to the specific project we are working on. 
+### ScienceApps
+Go here and log in: 
+https://apps.s3it.uzh.ch/
+### From terminal
+Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will see message and a table showing your directories and their available space 
+
+## Creating a Python environment for mne toolbox 
+- Log in:
+  ```
+  ssh gfraga@cluster.s3it.uzh.ch
+  ```
+- Load mamba module:
+  ```
+  module load mamba
+  ```
+- Create enviroment: For example to create an enviroment with mne and other toolboxes. I name it *SINEEG-env*:
+  ```bash
+  conda create --strict-channel-priority --channel=conda-forge --name=SINEEG-env mne-base h5io h5py pymatreader mne-bids matplotlib scikit-learn
+  
+  ```
+- The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
+- Activate enviroment :
+ ```
+ conda activate SINEEG-env
+```
+- To get out of the environment: ``` conda deactivate ```
+- To delete an environment: ``` conda remove --name SINEEG-env --all 
+ 
+
+
+
+
+
+
+# EEG test in science cluster
+
+
+
+Here we just want to read raw EEG data with two different tools: matlab-based EEGlab and python-based MNE. Then, matlab-based AUTOMAGIC is used for standradized preprocessing pipeline (EEGlab-functions)
 
 1. Python and MNE
 Organizes the data in BIDS format by creating .json metadatafiles . For reading things like file duration and sampling rate it uses MNE to import the raw data set and extract this info. 
@@ -38,48 +90,6 @@ see proper manual in : https://docs.s3it.uzh.ch/cluster/cluster_training
 - Only one operating System is available: Ubuntu Linux
 
 
-# Quick tour on ScienceCluster 
-See this for a proper manual: https://docs.s3it.uzh.ch/cluster/overview/
-- **Connect** to the cluster via ssh with UZH shortname ssh shortusername@cluster.s3it.uzh.ch
-> How does this work from WIndows terminal, need software? 
-
-- **Data Storage** . Here there are 4 systems with different capacities BUT non of them has BACKUPS https://docs.s3it.uzh.ch/cluster/data/#scalable-storage 
-- **Data Transfer** we can trasnfer files with the `scp` command to, for instance, copy files from a server to the cluster
-- **Schedule Jobs**. They are submitted with the `sbatch` command. `Slurm` is the system for automatic job allocations. 
-
-# User Example
-We may be running multiple projects in the cluster. Let's say we want to run the *lizz* project:
-This section is based on: https://docs.s3it.uzh.ch/cluster/overview/ 
-
-## Login 
-In the cluster, note there will be 3 user directories (home,data, scratch) and the shared directory assigned to the specific project we are working on. 
-
-### ScienceApps
-Go here and log in: 
-https://apps.s3it.uzh.ch/
-### From terminal
-Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will be asked for password. Then you will see message and a table showing your directories and their available space 
-
-## Creating a Python environment for mne toolbox 
-- Log in:
-  ```
-  ssh gfraga@cluster.s3it.uzh.ch
-  ```
-- Load mamba module:
-  ```
-  module load mamba
-  ```
-- Create enviroment: For example to create an enviroment with mne and other toolboxes. I name it *SINEEG-env*:
-  ```bash
-  conda create --strict-channel-priority --channel=conda-forge --name=SINEEG-env mne-base h5io h5py pymatreader mne-bids matplotlib scikit-learn
-  
-  ```
-- The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
-- Activate enviroment : ``` conda activate SINEEG-env ```, ``` conda deactivate ``` to get out of the environment
-- Deleting an environment: ``` conda remove --name SINEEG-env --all 
- ```
-conda activate SINEEG-env
-```
   
 ## Project set up
 Set up Slurm parameter to sbatch in the **command line**:
