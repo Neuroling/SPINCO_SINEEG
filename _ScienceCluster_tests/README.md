@@ -75,7 +75,7 @@ cat << EOF > helloscript.sh
 #SBATCH --mem-per-cpu=4GB
 #SBATCH --output=arrayJob_%A_%a.out
 #SBATCH --error=arrayJob_%A_%a.err
-#SBATCH --array=1-3
+#SBATCH --array=1 ## adjust arrays..
 
 module load mamba
 source activate renv
