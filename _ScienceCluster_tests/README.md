@@ -70,8 +70,27 @@ We use our UZH shortname. If we are unable to log in our email /collaboration pa
 ssh shortusername@cluster.s3it.uzh.ch
 ```
 ## Data storage and access 
+If we have data in a UZH mounted NAS (network attached storage): https://docs.s3it.uzh.ch/how-to_articles/how_to_access_uzh_nas_with_smbclient/
+We need this command:
+```
+smbclient --max-protocol SMB3 -W UZH -U uzhshortname //nasaddress
+```
+nassaddress is the address to our NAS: \\idnas12.d.uzh.ch\G_PSYNEULIN_DATA$ 
+If this works we will be prompted to enter our password 
+Here we have operations with commands like `ls`,`cd`,`get` (download),`put` (upload),`exit`,    
 
+Example of operation: 
+```
+smb: \> get test.txt new_test.txt
+```
+Copy test.txt to our ScienceCluster 
 
+or 
+
+```
+smb: \> put new\_test.txt augmented\_test.txt
+```
+Upload a file from ScienceCluster to the NAS device
 
 
 # Terminology
