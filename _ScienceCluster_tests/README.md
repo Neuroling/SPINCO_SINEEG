@@ -64,8 +64,9 @@ Here we will try
 - If we want out we can type `exit` and we will go back to the usual login prompt 'gfraga@...'
 
 ## Creating the job 
+We first create a file with some bash script
 ````bash
-cat << EOF > arrayscript.sh
+cat << EOF > helloscript.sh
 #!/bin/bash
 #SBATCH --job-name=arrayJob
 #SBATCH --time=01:00:00
@@ -80,7 +81,7 @@ module load mamba
 source activate renv
 # Print this sub-job's task ID
 echo "My SLURM_ARRAY_TASK_ID: " \$SLURM_ARRAY_TASK_ID
-srun Rscript --vanilla testarray.R \$SLURM_ARRAY_TASK_ID
+srun Rscript --vanilla Hello.py \$SLURM_ARRAY_TASK_ID
 EOF
 
 ````
