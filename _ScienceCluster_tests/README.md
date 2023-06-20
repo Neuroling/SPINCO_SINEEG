@@ -69,7 +69,10 @@ Type  ```ssh shortname@cluster.s3it.uzh.ch``` with your uzh shortname. You will 
   ```
   module load mamba
   ```
-- Create enviroment: For example to create an enviroment I name: *SINEEG-env*:  `conda create -n SINEEG-env spyder spyder-kernels numpy scipy pandas matplotlib sympy cython mne`
+- Create enviroment: For example to create an enviroment I name: *SINEEG-env*:
+  ```bash
+  conda create -n SINEEG-env spyder spyder-kernels numpy scipy pandas matplotlib sympy cython mne
+  ```
 - The new enviroment will be saved in `/home/gfraga/data/conda/envs/` 
 - Now we can activate the enviroment with
  ```
