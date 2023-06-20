@@ -19,7 +19,7 @@ The Automagic toolbox for standardized, automated preprocessing pipelines relies
 > - [ ] EEGlab pop ups (ICA 'interrupt' window)
 > - [ ] Automagic pops up main panel at the end 
 
-# Science IT 
+# Science IT Services
 Don't know whether to use science Cloud or science Cluster? check  https://www.zi.uzh.ch/en/teaching-and-research/science-it/computing.html
 see proper manual in : https://docs.s3it.uzh.ch/cluster/cluster_training 
 
@@ -38,7 +38,7 @@ ScienceCluster
 - Only one operating System is available: Ubuntu Linux
 
 
-## Quick tour on Cluster 
+# Quick tour on ScienceCluster 
 See this for a proper manual: https://docs.s3it.uzh.ch/cluster/overview/
 - **Connect** to the cluster via ssh with UZH shortname ssh shortusername@cluster.s3it.uzh.ch
 > How does this work from WIndows terminal, need software? 
@@ -47,13 +47,19 @@ See this for a proper manual: https://docs.s3it.uzh.ch/cluster/overview/
 - **Data Transfer** we can trasnfer files with the `scp` command to, for instance, copy files from a server to the cluster
 - **Schedule Jobs**. They are submitted with the `sbatch` command. `Slurm` is the system for automatic job allocations. 
 
+# User Example
+Set up Slurm parameter 
+```
+ssh shortusername@cluster.s3it.uzh.ch
+
+``` 
 
 # Terminology
-Just some rough non-technical definitions for orientation 
+Just some rough non-technical definitions to get oriented
 
 - **shell (sh)** . Shell is a computer program that exposes an operating system's services to a human user or other programs. It is named a shell because it is the outermost layer around the operating system.
 -  **bash** . Bash is sh, but with more features and better syntax. Bash is “Bourne Again SHell”, and is an improvement of the sh (original Bourne shell). Shell scripting is scripting in any shell, whereas Bash scripting is scripting specifically for Bash. sh is a shell command-line interpreter of Unix/Unix-like operating systems. sh provides some built-in commands. bash is a superset of sh. Shell is a command-line interface to run commands and shell scripts. Shells come in a variety of flavors, much as operating systems come in a variety of flavors. So, Shell is an interface between the user and the operating system, which helps the user to interact with the device.
 - **SSH or Secure Shell**
  is a network communication protocol that enables two computers to communicate (c.f http or hypertext transfer protocol, which is the protocol used to transfer hypertext such as web pages) and share data. The stuff 
-
+- **Slurm** manages and schedules jobs in the  cluster. Stands for the Simple Linux Utility for Resource Management (Slurm Workload Manager)  
  
