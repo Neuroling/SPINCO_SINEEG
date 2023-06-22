@@ -7,7 +7,7 @@ clear; close all ;
 % - Read raw .bdf files
 % - Create and save eeglab dataset 
 %% user inputs
-subjID = 'p002';
+subjID = 'p003';
 taskID = 'task-sin';
 
 % Paths and files (Use relative path to 'scripts' Folder to find data)
