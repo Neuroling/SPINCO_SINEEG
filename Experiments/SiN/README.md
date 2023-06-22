@@ -2,10 +2,11 @@
 Sentence-in-noise EEG experiment 
 
 Folders: 
-- **PsychoPy_LAB** folders contain the actual experiment 
-- **PsychoPy_LAB_Practise**:some practice trials to show to the participants offline (e.g., before electrode placement) 
+- **SiN_task** folders contain the actual experiment. Contains output participant performance data
+- **SiN_practice**: has some practice trials to show to the participants offline (e.g., before electrode placement). No output logs 
+- **PsychoPy_LevelTests**: some test run outside the eeg lab to test different noise manipulations 
 
-## Goal
+## Overal Goal
 
 Analysis aims
 | Data | Decoding-classes | Goal | 

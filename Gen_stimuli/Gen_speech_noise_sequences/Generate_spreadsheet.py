@@ -29,7 +29,7 @@ scripts_index = thisScriptDir.find('scripts')
 dirs2search = [os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','tts-golang-selected-SiSSN'),
                os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','tts-golang-selected-NV_v1')]
 
-diroutput = os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','flow')
+diroutput = os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','flowNew')
 
 praatSummaryFile = os.path.join(thisScriptDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','word_times','MEAN_tts-golang-selected_wordTimes.csv')
 
@@ -53,7 +53,9 @@ for countdir, dirinput in enumerate(dirs2search):
     # Create dict summarizing files, add times from praat 
     #Loop thru .wav files 
     fileDict = {'audiofile':[],'duration':[],'noise':[],'voice':[],'words':[],'callSign':[],'colour':[],'number':[],'levels':[],\
-                'trigger_start':[],'trigger_end':[],'trigger_call':[],'trigger_col':[],'trigger_num':[]}
+                'trigger_start':[],'trigger_end':[],'trigger_call':[],'trigger_col':[],'trigger_num':[],\
+                    'trigger_call_end': [],'trigger_col_end':[],'trigger_num_end':[]}
+        
     times=pd.DataFrame()
     for i,fileinput in enumerate(files):           
         # Extract file info
@@ -76,7 +78,7 @@ for countdir, dirinput in enumerate(dirs2search):
             
         fileDict['duration'].append(length)
         
-        # Add trigger codes 
+        # Add trigger codes, defined by parts in the filename 
         tmpcode  = [triggerDict_noise[fileinput.split('_')[0]], 0, 0]
         fileDict['trigger_start'].append(''.join(map(str,tmpcode)))
         
@@ -85,12 +87,15 @@ for countdir, dirinput in enumerate(dirs2search):
         
         tmpcode  = [triggerDict_noise[fileinput.split('_')[0]], 1, triggerDict_call[fileinput.split('_')[3].split('-')[0]]]
         fileDict['trigger_call'].append(''.join(map(str,tmpcode)))
+        fileDict['trigger_call_end'].append(''.join(map(str,tmpcode[0:2])) + '0')
         
         tmpcode  = [triggerDict_noise[fileinput.split('_')[0]], 2,triggerDict_col[fileinput.split('_')[3].split('-')[1]]]
         fileDict['trigger_col'].append(''.join(map(str,tmpcode)))
+        fileDict['trigger_col_end'].append(''.join(map(str,tmpcode[0:2])) + '0')
         
         tmpcode  = [triggerDict_noise[fileinput.split('_')[0]], 3, triggerDict_num[fileinput.split('_')[3].split('-')[2]]]
         fileDict['trigger_num'].append(''.join(map(str,tmpcode)))
+        fileDict['trigger_num_end'].append(''.join(map(str,tmpcode[0:2])) + '0')
         
         
         
