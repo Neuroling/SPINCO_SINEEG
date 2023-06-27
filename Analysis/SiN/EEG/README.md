@@ -1,6 +1,5 @@
 
-# Sentence-in-noise preprocessing and analysis
-
+# Sentence-in-noise preprocessing
 ## Raw data import 
 
 ### 0. Source data
