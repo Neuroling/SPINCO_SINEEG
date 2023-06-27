@@ -8,7 +8,7 @@
   
 See : https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#source-vs-raw-vs-derived-data
 
-STEPS
+**Steps**
 ### 0. Source data
 The Biosemi EEG data is recorded in a single **.bdf** file (24-bit) for the entire session, which consists on a main task and two resting state recordings (before and after task). 
 The file has an  'ergo1' channel with the audio output signal to help correcting for audio delay.
