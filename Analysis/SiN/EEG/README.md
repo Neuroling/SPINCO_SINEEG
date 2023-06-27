@@ -22,7 +22,6 @@ Click's in the *audio signal* are detected for each trial in the task. This is u
 #### Split and export as EDF 
 - The source bdf `s001.bdf` is splitted in three `EDF` files named `s001_task-rest-pre.edf`, `s001_task-rest-post.edf`,  `s001_task-sin.edf`. 
 - Audio channel is removed leaving scalp channels, EOG, mastoids [^1]
-- Channel locations are loaded
 
   
 [^1]: Previous issues when cropping the files and exporting as bdf or edf with EEGlab and MNE toolboxes (1) Export problems when all channels are loaded as they include Ergo1 with digital audio recorded. This is a problem when exporting bdf or edf from EEGlab (uses writeeg) and EDF with mne (https://mne.tools/stable/generated/mne.export.export_raw.html). (2) Biosemi recorded bdf files are 24-bits, edf are 16-bits. However the problem here is more serious (scrolling channels show sampling problems) 
