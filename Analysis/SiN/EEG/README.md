@@ -24,4 +24,5 @@ Click's in the audio signal are detected for each trial in the task. This is use
 ### 2. BIDs folder structure and meta-data
 A python script generates `.json` files with meta data and `.tsv ` channel locations and event files.
 Uses MNE to read file duration (included in json file) and events to create a .tsv event file. 
+Source to Raw conversion steps are logged in .json eeg file. 
 
