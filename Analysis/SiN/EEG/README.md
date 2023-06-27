@@ -17,7 +17,7 @@ One `Matlab` script performs:
 Click's in the audio signal are detected for each trial in the task. This is used to adjust the event triggers (target word onsets and start/end of the sentence) accounting for any audio output delay.
 
 #### 1.2 Split and export as EDF with voltage channels
-- The source bdf `s001_task.bdf` is splitted in three `EDF` files named `s001_task-rest-pre.edf`, `s001_task-rest-post.edf`,  `s001_task-sin.edf`. 
+- The source bdf `s001.bdf` is splitted in three `EDF` files named `s001_task-rest-pre.edf`, `s001_task-rest-post.edf`,  `s001_task-sin.edf`. 
 - Channel locations are loaded
 - Only voltage channels are exported
 
