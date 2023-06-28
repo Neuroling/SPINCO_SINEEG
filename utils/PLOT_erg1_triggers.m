@@ -14,11 +14,13 @@ for i = 1:length(idxs_1)
     thisTrialTriggers_idx  = currIdx : (currIdx + nextRespGridIdx); % all triggers for this trial (index relative to the all events array)
     markerTimes = EEG.times(cell2mat({EEG.event(thisTrialTriggers_idx).latency}))/1000 
     
+    
     % find which data points should be plotted 
     pnts2plot = EEG.event(thisTrialTriggers_idx(1)).latency:EEG.event(thisTrialTriggers_idx(end)).latency ; 
     times2plot = EEG.times(pnts2plot)/1000     
     
    %% Plot data    
+   
    % normalize ergo channel data 
     erg1_norm = EEG.data(end,pnts2plot,:)*(1/max(abs(EEG.data(end,pnts2plot,:))));
    %signal plot 
