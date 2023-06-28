@@ -16,6 +16,9 @@ subjID = 'p004';
 
 
 %% Paths and files
+addpath([fileparts(matlab.desktop.editor.getActiveFilename),filesep,'functions'])
+
+%% 
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
 

@@ -20,7 +20,7 @@ import mne
 
 # paths 
 baseDir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-chanLocsFile =  os.path.join(baseDir,'Data','Electrode_locations','Biosemi_73ch_EEGlab_xyx.tsv')
+chanLocsFile =  os.path.join(baseDir,'Data','_acquisition','_electrodes','Biosemi_73ch_EEGlab_xyx.tsv')
 
 # User inputs  
 subjPattern = 'p004'
@@ -30,7 +30,7 @@ save_event_file = False
 # %% Subject loop 
 # find subject Raw eeg files
 
-subjectDir = os.path.join(baseDir,'Data','SiN','raw')
+subjectDir = os.path.join(baseDir,'Data','SiN','rawdata')
 files = [files for files in glob.glob(os.path.join(subjectDir,'**','*.bdf'), recursive = True) if re.search(subjPattern + '.*', files)]
    
 # %% 
