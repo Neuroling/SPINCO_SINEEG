@@ -23,7 +23,7 @@ baseDir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file
 chanLocsFile =  os.path.join(baseDir,'Data','Electrode_locations','Biosemi_73ch_EEGlab_xyx.tsv')
 
 # User inputs  
-subjPattern = 'p002'
+subjPattern = 'p004'
 save_event_file = False 
 
 
