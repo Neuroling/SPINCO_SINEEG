@@ -18,7 +18,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 - 3rd digit indicates word in sorted alphabetically or ordinally when numbers: 1 (adler | gelb | eins) , 2 (drossel | gruen | zwei) , 3 (kroete | rot | drei), 4 (tiger | weiss | vier) 
 - 3rd digit = 0 indicates the offset of the target
 - Clicks and block intial screens are also coded. See table below
-- 
+ 
 
 
 | code	| Description
@@ -28,7 +28,10 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 1 	| Click to first target         |
 | 2 	| Click to second target	|
 | 3 	| Click to third target		|
-| 5	| Instruction screen		|
+|	|				|
+| 5	| Main task Instruction screen		|
+| 55	| Post-task resting-state Instruction screen		|
+|	|				|
 | 6	| Start of block screen		|
 | 7	| Start of response grid	|
 | 60	| End of a block |
@@ -37,7 +40,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 101 	| NV ends			| 
 | 200 	| SiSSN starts			| 
 | 201 	| SiSSN ends			| 
-|onsets	|				|
+|target onsets	|				|
 | 111 	| NV onset 1:Adler 		| 
 | 121 	| NV onset 2:gelb	 	| 
 | 131 	| NV onset 3:eins		| 
@@ -66,7 +69,7 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 214 	| SiSSN onset 1:Tiger		| 
 | 224 	| SiSSN onset 2:weiss		| 
 | 234 	| SiSSN onset 3:vier		|
-|offsets|				|
+|target offsets|				|
 | 110 	| NV offset 1			| 
 | 120 	| NV offset 2			| 
 | 130 	| NV offset 3			| 
