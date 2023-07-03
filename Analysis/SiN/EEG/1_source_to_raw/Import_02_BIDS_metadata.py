@@ -19,43 +19,47 @@ import json
 import mne
 
 # paths 
-baseDir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-chanLocsFile =  os.path.join(baseDir,'Data','_acquisition','_electrodes','Biosemi_73ch_EEGlab_xyx.tsv')
+baseDir =  os.path.abspath(__file__).split('scripts')[0]
+chanLocsFile =  os.path.join(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_73ch_EEGlab_xyz.tsv')
 
 # User inputs  
 subjPattern = 'p004'
-save_event_file = False 
+save_event_file = True 
 
 
 # %% Subject loop 
 # find subject Raw eeg files
 
 subjectDir = os.path.join(baseDir,'Data','SiN','rawdata')
-files = [files for files in glob.glob(os.path.join(subjectDir,'**','*.bdf'), recursive = True) if re.search(subjPattern + '.*', files)]
+files = [files for files in glob.glob(os.path.join(subjectDir,'**','*.set'), recursive = True) if re.search(subjPattern + '.*', files)]
    
 # %% 
 for fileinput in files: 
     
     # Get folder, subject ID and task ID from fullfilename parts 
-    subjID = os.path.basename(fileinput).replace('.bdf','').split('_')[0]
-    taskID = os.path.basename(fileinput).replace('.bdf','').split('_')[1]
+    subjID = os.path.basename(fileinput).replace('.set','').split('_')[0]
+    taskID = os.path.basename(fileinput).replace('.set','').split('_')[1]
     diroutput = os.path.dirname(fileinput)
            
-    # Read raw eeg data 
-    raw = mne.io.read_raw_bdf(fileinput, preload=True,  infer_types=True)
+    # %% Read raw eeg data 
+    #raw = mne.io.read_raw_bdf(fileinput, preload=True,  infer_types=True)
+    raw = mne.io.read_raw_eeglab(fileinput, preload=True) 
     fileDuration = raw.n_times/ raw.info['sfreq']  
     fileSamplingRate = raw.info['sfreq']  
-        
+    
+    #%%        
     # % Get events for event .tsv file
     # ------------------------------------------------------------------
     if save_event_file:      
         # find events 
-        events = mne.find_events(raw,min_duration=0.002)
-        events[:,0] = events[:,0] +1
-        df_events = pd.DataFrame(events)
-        df_events = df_events.rename(columns= {0:"SAMPLES", 1:"TRIAL_TYPE", 2:"VALUE"})
-        df_events['ONSET'] = df_events['SAMPLES'] /  raw.info['sfreq']
-        df_events['DURATION'] = 'n/a'
+        #events = mne.find_events(raw,min_duration=0.002) # use this if importing bdf
+        events = raw.annotations
+        
+        eventsTab = {'ONSET': [e['onset']/  raw.info['sfreq'] for e in events],
+                     'TRIAL_TYPE': [0] * len(events),
+                     'VALUE': [e['description'] for e in events]}
+        df_events=pd.DataFrame(eventsTab)
+        df_events['DURATION'] = [e['duration'] for e in events]
         df_events['RESPONSE'] = 'n/a'
                 
         tsv_file_path = os.path.join(diroutput,subjID +  '_' + taskID + '_events.tsv')
@@ -105,6 +109,7 @@ for fileinput in files:
         task_instructions =  "Close your eyes and try to remain still as possible. After hearing the second beep you can open them again"
         
     
+    task_comments = "Data set created from spliting the source .bdf file containing the entire session. EEGlab was used to import, load channel coordinates split and export in .set format."
     
     # %% Make EEG json file at subject and task level with EEG recording details    
     metaData = {
@@ -129,7 +134,8 @@ for fileinput in files:
             "ECGChannelCount": 0, 
             "EMGChannelCount": 0, 
             "SoftwareFilters": "n/a", 
-            "HardwareFilters": "n/a" 
+            "HardwareFilters": "n/a",
+            "Comments": task_comments
         }
     
     with open(os.path.join(diroutput, subjID + '_' + taskID + '_eeg.json'), 'w') as ff:
