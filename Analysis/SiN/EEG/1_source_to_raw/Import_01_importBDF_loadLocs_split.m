@@ -11,15 +11,15 @@
 
 %% user inputs
 clear all; close all ;
-subjID = 'p004';
+subjID = 'p005';
 
-% Paths and files
+%% Paths and files
 addpath([fileparts(matlab.desktop.editor.getActiveFilename),filesep,'functions'])
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
 %
-dirinput = [baseDir,filesep,fullfile('Data','SiN','sourcedata',subjID)];
-chanLocsFile = [baseDir,filesep,fullfile('Data','SiN','_acquisition','_electrodes','Biosemi_73ch_EEGlab_xyz.tsv')];
+dirinput = fullfile(baseDir,'Data','SiN','sourcedata',subjID);
+chanLocsFile = fullfile(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_71ch_EEGlab_xyz.tsv');
 
 % find source eeg
 file  = dir([dirinput,filesep,'*.bdf']);
@@ -29,8 +29,8 @@ expfile = dir([dirinput,filesep,'*.csv']);
 expfile = expfile(find(~cellfun(@isempty, regexp({expfile.name}, '\d+\.csv$', 'match')))); % find the one ending in digit + '.csv' 
 
 % Define current subject input and output dir
-fullFileInput = [file.folder,filesep,file.name];
-diroutput = strrep([file.folder],'sourcedata','rawdata'); % Assuming only one 'raw' folder is present in the full path
+fullFileInput = fullfile(file.folder,filesep,file.name);
+diroutput = strrep([file.folder],'sourcedata','rawdata'); % Assuming only one 'rawdata' folder is present in the full path
 mkdir(diroutput)
 
 %% EEGLAB ------------------------------------------------------
@@ -42,21 +42,33 @@ else
     eeglab nogui    
     EEG = pop_biosig(fullFileInput, 'importannot','off','ref', 48, 'refoptions',{ 'keepref' 'on' }, 'rmeventchan','off'); % Problems reading events when importing with pop_readbdf
     
+    % Remove external channels 69 70  (were not recorded)
+    EEG = pop_select (EEG, 'channel', [1:70,73]); 
+    
     % load channel locations
-    EEG = pop_chanedit(EEG,'load',chanLocsFile);
+    EEG = pop_chanedit(EEG,'load',chanLocsFile);   
+       
+    %% Pilot debug 
+    % Pilot edit for p004
+    if contains(subjID,'p004')
+        disp('added manually events 5 and 55') 
+        EEG = pop_editeventvals(EEG,'insert',{1,[],[],[]},'changefield',{1,'latency',295},'changefield',{1,'type',5});
+        EEG = pop_editeventvals(EEG,'insert',{1,[],[],[]},'changefield',{1,'latency',3650},'changefield',{1,'type',55});
+    end
+    if contains(subjID,'p005')
+        EEG.event(find(cell2mat({EEG.event(:).type})== 6)).type = 5;
+        EEG.event(find(cell2mat({EEG.event(:).type}) == 55)).type = 15; 
+        EEG.event(find(cell2mat({EEG.event(:).type}) == 60,1,'last')).type = 55; 
+     
+    end
     
-    % TEMPORARY EDIT FOR p004!
-    %EEG = pop_editeventvals(EEG,'insert',{1,[],[],[]},'changefield',{1,'latency',295},'changefield',{1,'type',5});
-    % EEG = pop_editeventvals(EEG,'insert',{1,[],[],[]},'changefield',{1,'latency',3650},'changefield',{1,'type',55});
-    
-    
-    %% Correct events
+    %% Realign target events to audio  
     [EEG, trial_delays] = alignTriggersToAudio(EEG);
     EEG.comments = pop_comments(EEG.comments,'','imported,loaded chan locations, realigned triggers',1);
     [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG);   % save as a new dataset in ALLEEG
     
-    %% split resting-state tasks and save
-    % Resting state parts
+    %% SPLIT FILES =========================================================
+    %  split: resting state ------------------------------
     splits = struct('segment_name', {'task-rest-pre','task-rest-post'},...
         'segment_duration', {240,240},...% duration in seconds
         'onset_trigger',{8, 9},...
@@ -95,9 +107,7 @@ else
     end % close splits loop
     
     
-    %% split Main task and save
-    
-    % Resting state parts
+    %% split: task part ------------------------------ 
     split = struct('segment_name', {'task-sin'},...
         'onset_trigger',{5},... % unique onset trigger
         'offset_trigger', {55},...% trigger to resting state after task instructions
@@ -109,8 +119,8 @@ else
     triggerIdx_offset = find(cell2mat({EEG.event(:).type})== split.offset_trigger);
     
     % Find data point to the relevant event +/- defined number of seconds before and after
-    segment_t0 = EEG.event(triggerIdx).latency - (split.head*EEG.srate) ;
-    segment_t1 = EEG.event(triggerIdx).latency + (split.tail*EEG.srate);
+    segment_t0 = EEG.event(triggerIdx_onset).latency - (split.head*EEG.srate);
+    segment_t1 = EEG.event(triggerIdx_offset).latency + (split.tail*EEG.srate);
 
     
     % select data
@@ -128,7 +138,7 @@ else
     % copy log file 
     newdiroutput = [diroutput,filesep,split.segment_name,filesep,'beh'];
     mkdir(newdiroutput)
-    copyfile([expfile.folder,filesep,expfile.name], newdiroutput)
+    copyfile(fullfile(expfile.folder,expfile.name), newdiroutput)
  
    
  end % close if length(files)

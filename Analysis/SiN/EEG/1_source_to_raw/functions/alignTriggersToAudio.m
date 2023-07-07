@@ -14,7 +14,6 @@
 % - EEG_mod: dataset with adjusted triggers
 % - trial_delays_set: array with delays in seconds for each trial 
 
-
 function [EEG_mod, trial_delays_sec] = alignTriggersToAudio(EEG)
     
     EEG_mod = EEG; 
@@ -31,16 +30,15 @@ function [EEG_mod, trial_delays_sec] = alignTriggersToAudio(EEG)
     else
         
         disp(['OK >>> '  num2str(length(idxs_1)), '  trial onset detected'])
-
-       % Trial loop 
+       %% Trial loop 
         trial_delays_sec = zeros(1,length(idxs_1));
         for i= 1:length(idxs_1)
-
-           currIdx = idxs_1(i); % current trial index in the array of all events
+           % current trial index in the array of all events
+           currIdx = idxs_1(i);
            disp(['--> Finding triggers in trial #', num2str(i)])
 
-           % Search in next events for trigger '7' indicating response grid ( search in 15 subsequent events)
-           currIdx_resp = find(cell2mat({EEG_mod.event(currIdx : currIdx+15).type})==7,1, 'first')-1;    
+           % Search in next events for trigger '7' indicating response grid ( search in 10 subsequent events)
+           currIdx_resp = find(cell2mat({EEG_mod.event(currIdx : currIdx+10).type})==7,1, 'first')-1;    
            currTrialEvents  = currIdx : (currIdx + currIdx_resp); % all triggers for this trial (global index in array for all events)
 
            %% find click in this trial(latencies in data points)
@@ -74,5 +72,5 @@ function [EEG_mod, trial_delays_sec] = alignTriggersToAudio(EEG)
                     disp(['[->] Added ' num2str(delay) ' data points ',num2str(delay/EEG_mod.srate),' (sec) to ' num2str(EEG_mod.event(targets_idx(ii)).type), ' latency'])
             end                
 
-        end % close if
-    end % close trial loop
+        end 
+    end % close if

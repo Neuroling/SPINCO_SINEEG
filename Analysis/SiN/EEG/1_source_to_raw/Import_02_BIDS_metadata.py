@@ -20,7 +20,7 @@ import mne
 
 # paths 
 baseDir =  os.path.abspath(__file__).split('scripts')[0]
-chanLocsFile =  os.path.join(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_73ch_EEGlab_xyz.tsv')
+chanLocsFile =  os.path.join(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_71ch_EEGlab_xyz.tsv')
 
 # User inputs  
 subjPattern = 'p004'
@@ -53,23 +53,27 @@ for fileinput in files:
     if save_event_file:      
         # find events 
         #events = mne.find_events(raw,min_duration=0.002) # use this if importing bdf
-        events = raw.annotations
-        
-        eventsTab = {'ONSET': [e['onset']/  raw.info['sfreq'] for e in events],
+        events = raw.annotations #this reads events with onset in seconds
+        (events_from_annot, event_dict) = mne.events_from_annotations(raw) #this provides the samples 
+
+        eventsTab = { 'SAMPLES': [samples[0]+1 for samples in mne.events_from_annotations(raw)[0]],
+                     'ONSET': [e['onset'] for e in events],
                      'TRIAL_TYPE': [0] * len(events),
                      'VALUE': [e['description'] for e in events]}
         df_events=pd.DataFrame(eventsTab)
         df_events['DURATION'] = [e['duration'] for e in events]
         df_events['RESPONSE'] = 'n/a'
+        
+        
                 
         tsv_file_path = os.path.join(diroutput,subjID +  '_' + taskID + '_events.tsv')
-        if not os.path.exists(tsv_file_path):
-            df_events.to_csv(tsv_file_path, sep='\t', index=False)    
+        df_events.to_csv(tsv_file_path, sep='\t', index=False) 
+        
+        if not os.path.exists(tsv_file_path):               
             print('---> added tsv file of events')        
         else:
-            print("File already exists. Skipping saving the event .")            
+            print("-.-.- overwritting existing file with events.")            
          
-        
     
     # %% Add copy of electrode coords in .tsv ( one per subject)
     # -----------------------------------------------------------------------------
@@ -80,7 +84,7 @@ for fileinput in files:
     
     tsv_file_path = os.path.join(diroutput,subjID + '_electrodes.tsv')
     if not os.path.exists(tsv_file_path):
-        locs.to_csv(tsv_file_path, sep='\t', index=False)    
+        locs.to_csv(tsv_file_path, sep ='\t', index = False, header = False)    
         print('---> added copy of electrode coords')        
     else:
         print("File already exists. Skipping saving the electrode locations .")            
@@ -96,11 +100,12 @@ for fileinput in files:
     with open(os.path.join(diroutput,subjID + '_coordsystem.json'), 'w') as ff:
         json.dump(chanCoords, ff, indent=1)
         print('---> saved coord system json')
+        
 
     # %% Task information 
     # -----------------------------------------------------------------------------
       
-    if "task_sin" in taskID:     
+    if "task-sin" in taskID:     
         task_descript = "A version of a speech intelligibility task using a coordinate response measure, based on Brungart et al.2001, DOI: 10.1121/1.1357812. German sentences are aurally presented either vocoded or with background noise, with 3 levels of difficulty. Each sentence has a fixed structure and 3 target items, which the subject must identify from 4 possible alternatives after each trial. Targets can be a call sign (Adler, Droessel, Kroete, Tiger), a color (gelb, gruen, rot, weiss) or a number (eins, zwei, drei, vier). A 3x4 grid is presented with images after each trial for the subject to click. The 64 possible combinations are presented in naturalistic synthesized speech with male and female voices." 
         task_instructions =  "Listen well and click on the images representing the words you heard after each trial (...)"
     

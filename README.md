@@ -19,22 +19,41 @@ Folders
 (BIDS) Dataset will be made available in a public data repo *tbd*
 
 ## Folders
+See : https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#source-vs-raw-vs-derived-data
+
+## sourcedata
+Single **.bdf** file (24-bit) file with unedited recording. Contains the entire session, which consists on a main task and two resting state recordings (before and after task). 
+The file has an  'ergo1' channel with the audio output signal to help correcting for audio delay.
+
+## rawdata 
+.set EEGlab datasets after minimal preprocessing of source data to: correct audio delay in triggers, load channel locations and split resting and task recordings from file)
+
+## Derivatives (preprocessed at multiple stages)
+    
+
 ````
 ./spinco_data
     ├──SINEEG
-    |	├── README.md
-    |	├──SIN/    
-    |	│   ├──raw/
-    |	│   │   ├── dataset_description.json
-    |	│   │   ├── s01
-    |	│   │   │   ├── s01_rest_eeg.bdf 
-    |	│   │   │   ├── s01_sin_eeg.bdf
-    |	│   │   │   ├── s01_rest_eeg.json        
-    |	│   │   │   ├── s01_sin_eeg.json
-    |	│   │   │   ├── s01_electrodes.tsv*
-    |	│   │   │   ├── s01_coordsystem.json*
-    |	│   │   │   └── s01_sin_exp-data.csv
-    └──	└── └── └── ...
+    │	├── README.md
+    │	├──SIN/    
+    │	│   ├──sourcedata/
+	│   │	│   ├── dataset_description.json
+    │	│   │   ├── s01
+    │	│   │   │	├── task-*
+    │	│   │   │   │ 	├── s001.bdf
+    │	│   │   │   │ 	├── s001_SentenceInNoise_2023-06-22_09h55.59.129.csv
+    │	│   │   └──	└── └── s001.json
+    │	│   ├──rawdata/
+	│   │	│   ├── s01
+	│	│   │   │	├── task-*
+	│	│	│   │   │	├── eeg
+	│	│	│   │   │   │   ├── s001_task-sin_eeg.json
+	│	│	│	│   │   │   ├── s001_task-sin.set
+    │	│	│	│   │   │   ├── s001_electrodes.tsv
+	│	│  	│	│   │   │   ├── s001_coordsystem.json
+	│	│	│	│   │   │   └── s001_task-sin_events.csv
+	│	│	│   │   │	├── beh
+    └──	└──	└──	└── └── └── └── s001_SentenceInNoise_2023-06-22_09h55.59.129.csv
     
 * if the optional 'electrodes.tsv' file is provided, with the electrode locations, then the coordsystem.json file should be provided specifying units and position system used. 
 ````
