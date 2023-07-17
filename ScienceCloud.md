@@ -1,4 +1,7 @@
-
+## QUERIES 
+- Exiting VM when in console (browser back botton? )
+- Windows "remote desktop" window size.
+  
 
 ## Access a WINDOWS VM from remote desktop
 https://docs.s3it.uzh.ch/how-to_articles/how_to_access_windows_vm_using_remote_desktop/
