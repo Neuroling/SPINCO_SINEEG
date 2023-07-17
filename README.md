@@ -37,23 +37,22 @@ The file has an  'ergo1' channel with the audio output signal to help correcting
     │	├── README.md
     │	├──SIN/    
     │	│   ├──sourcedata/
-	│   │	│   ├── dataset_description.json
-    │	│   │   ├── s01
-    │	│   │   │	├── task-*
-    │	│   │   │   │ 	├── s001.bdf
-    │	│   │   │   │ 	├── s001_SentenceInNoise_2023-06-22_09h55.59.129.csv
-    │	│   │   └──	└── └── s001.json
+    │	│   │	├── dataset_description.json
+    │	│   │	├── s01
+    │	│   │  		├── s001.bdf
+    │	│   │      	├── s001_SentenceInNoise_2023-06-22_09h55.59.129.csv
+    │	│   │   	└── s001.json
     │	│   ├──rawdata/
-	│   │	│   ├── s01
-	│	│   │   │	├── task-*
-	│	│	│   │   │	├── eeg
-	│	│	│   │   │   │   ├── s001_task-sin_eeg.json
-	│	│	│	│   │   │   ├── s001_task-sin.set
-    │	│	│	│   │   │   ├── s001_electrodes.tsv
-	│	│  	│	│   │   │   ├── s001_coordsystem.json
-	│	│	│	│   │   │   └── s001_task-sin_events.csv
-	│	│	│   │   │	├── beh
-    └──	└──	└──	└── └── └── └── s001_SentenceInNoise_2023-06-22_09h55.59.129.csv
+    │	│   │	├── s01
+			├── task-*  			
+				├── eeg
+				│	├── s001_task-sin_eeg.json
+				│	│── s001_task-sin.set
+    				│	├── s001_electrodes.tsv
+				│	├── s001_coordsystem.json
+				│	└── s001_task-sin_events.csv
+				├── beh
+					└── s001_SentenceInNoise_2023-06-22_09h55.59.129.csv
     
 * if the optional 'electrodes.tsv' file is provided, with the electrode locations, then the coordsystem.json file should be provided specifying units and position system used. 
 ````
