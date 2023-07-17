@@ -10,6 +10,7 @@ subjID = 'p004';
 pipelineID = 'pipeline_task-sin_01';
 taskID = 'task-sin';
 
+
 % Paths 
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});

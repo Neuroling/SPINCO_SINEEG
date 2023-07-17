@@ -15,8 +15,7 @@ eeglab nogui
 %%   preprocessing 
 addAutomagicPaths();
 load(file_proj) 
-self.preprocessAll();
-self.interpolateSelected();
+
 %EEG_in = EEG;
 %params = self.params(); 
 %[EEG_out, plots ] = preprocess(EEG_in, params);
