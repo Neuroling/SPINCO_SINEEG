@@ -1,6 +1,6 @@
 ## QUERIES 
-- Exiting VM when in console (browser back botton? )
-- Windows "remote desktop" window size.
+-   console and "remote desktop" window size. Can't go fullscreen ?
+ 
   
 
 ## Access a WINDOWS VM from remote desktop
@@ -25,9 +25,15 @@ If you start as a root after installation you need to create a user and password
 Login as the new user
 - `login <username>`
 
- ssh key generation
+#### ssh key generation
+Once logged in as user (in your local Ubuntu console):
+- Type this: `ssh-keygen -t rsa -b 4096`
+- You can press enter when asked about the files in which to save it, to choose default
+- It will ask to enter a passphrase or leave this empty
+- Now you can access `cat ~./.ssh/id_rsa.pub` to see the public key that should have been generated
 
-- Graphic user interface
+
+### Graphic user interface
 
 https://docs.s3it.uzh.ch/how-to_articles/how_to_set_up_a_linux_terminal_environment_on_windows_10_with_windows_subsystem_for_linux/
 
