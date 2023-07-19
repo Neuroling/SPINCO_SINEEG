@@ -5,6 +5,17 @@
 
 ## Access a WINDOWS VM from remote desktop
 See documentation: https://docs.s3it.uzh.ch/how-to_articles/how_to_access_windows_vm_using_remote_desktop/
+# Setup windows 
+- Monitor . Right click in desktop, display settings and then advanced display settings. Change resolution to find the right size
+- Mouse. Turn black. Right click in desktop then personalize / themes/ mouse pointer settings
+
+
+
+
+
+
+
+
 
 ## Access a LINUX VM from remote desktop
 Documentation: 
@@ -34,6 +45,5 @@ Once logged in as user (in your local Ubuntu console):
 
 
 ### Graphic user interface
-
 https://docs.s3it.uzh.ch/how-to_articles/how_to_set_up_a_linux_terminal_environment_on_windows_10_with_windows_subsystem_for_linux/
 
