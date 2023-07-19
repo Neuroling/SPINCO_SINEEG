@@ -1,6 +1,6 @@
 ## QUERIES  ! 
 - Windows matlab licensing
-- Windows as remote desktop. Recommended to create user profiles. ?
+- Windows as remote desktop. Recommended to create user profiles? Does this persists after closing the VM ?(in the snapshot) 
 - Transfer a VM (snapshot ) from one project to another 
  
 
@@ -13,7 +13,11 @@
 
 ## Access a WINDOWS VM from remote desktop
 See documentation: https://docs.s3it.uzh.ch/how-to_articles/how_to_access_windows_vm_using_remote_desktop/
-# Setup windows 
+# Windows setup 
+At the beginning (after creating the VM) we start as Admin 
+
+# Windows display settings
+
 - Monitor . Right click in desktop, display settings and then advanced display settings. Change resolution to find the right size
 - Mouse. Turn black. Right click in desktop then personalize / themes/ mouse pointer settings
 
