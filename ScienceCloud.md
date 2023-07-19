@@ -1,4 +1,4 @@
-## QUERIES  ! 
+# QUERIES  ! 
 - Linux graphic interface
 - can I make a Linux VM accessible from internet browser in any computer? 
 - Windows matlab licensing
@@ -11,27 +11,37 @@
 
 
 
-  
-
-## Access a WINDOWS VM from remote desktop
-See documentation: https://docs.s3it.uzh.ch/how-to_articles/how_to_access_windows_vm_using_remote_desktop/
-# Windows setup 
-At the beginning (after creating the VM) we start as Admin 
-
-# Windows display settings
-
-- Monitor . Right click in desktop, display settings and then advanced display settings. Change resolution to find the right size
-- Mouse. Turn black. Right click in desktop then personalize / themes/ mouse pointer settings
 
 
+# Access a Linux VM from Windows
+## Set up ssh key
+See the 'Getting access to my VM' of the training material
+https://docs.s3it.uzh.ch/cloud/training/training_handout/
+
+It is likely you need to install Openssh feature for Windows(https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell#install-openssh-for-windows)
+I had to install it copying the commands for powershell (up to the section connect to Open SSH server, excluding that) 
+
+Once done go to power shell. In short: 
+Go to windows `*powershell*`
+- You will `ssh-keygen -t rsa -b 4096` to generate a key. Go with the defaults and it will save some files in your home directory .ssh
+- From those files you will need to copy the public Key in the VM instance. So type  `cat ~/.ssh/id_rsa.pub` and copy the entire output. Go to the *Cloud dashboard* and paste it into the import KEY options of *Access and security*
+- Then do `ssh -i ~/.ssh/id_rsa ubuntu@<your-instance-ip-address>` to access it. Get the IP from the cloud dashboard
+- Next time you can just do `ssh ubuntu@<your-instance-ip-address>`
+ Now you are in 
+ 
+ ![image](https://github.com/Neuroling/SPINCO_SINEEG/assets/13642762/e3b59f2d-ac87-4f6d-a85c-a6a1bd7b073e)
+
+ 
+
+
+## Attaching NAS
+https://docs.s3it.uzh.ch/cloud/faq/#how-do-i-connect-to-an-smb-network-attached-storage-device-nas-from-a-sciencecloud-instance
 
 
 
 
-
-
-
-## Access a LINUX VM from remote desktop
+--------------------------------------------
+## Having Linux in Windows
 Documentation: 
 https://docs.s3it.uzh.ch/how-to_articles/how_to_set_up_a_linux_terminal_environment_on_windows_10_with_windows_subsystem_for_linux/
 
@@ -57,7 +67,22 @@ Once logged in as user (in your local Ubuntu console):
 - It will ask to enter a passphrase or leave this empty
 - Now you can access `cat ~./.ssh/id_rsa.pub` to see the public key that should have been generated
 
-
 ### Graphic user interface
 https://docs.s3it.uzh.ch/how-to_articles/how_to_set_up_a_linux_terminal_environment_on_windows_10_with_windows_subsystem_for_linux/
+
+
+
+
+
+  
+
+## Access a WINDOWS VM from remote desktop
+See documentation: https://docs.s3it.uzh.ch/how-to_articles/how_to_access_windows_vm_using_remote_desktop/
+# Windows setup 
+At the beginning (after creating the VM) we start as Admin 
+
+# Windows display settings
+
+- Monitor . Right click in desktop, display settings and then advanced display settings. Change resolution to find the right size
+- Mouse. Turn black. Right click in desktop then personalize / themes/ mouse pointer settings
 
