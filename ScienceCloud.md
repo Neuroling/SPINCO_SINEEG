@@ -1,6 +1,14 @@
-## QUERIES 
--   console and "remote desktop" window size. Can't go fullscreen ?
+## QUERIES  ! 
+- Windows matlab licensing
+- Windows as remote desktop. Recommended to create user profiles. ?
+- Transfer a VM (snapshot ) from one project to another 
  
+
+
+
+
+
+
   
 
 ## Access a WINDOWS VM from remote desktop
