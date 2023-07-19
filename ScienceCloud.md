@@ -1,4 +1,6 @@
 ## QUERIES  ! 
+- Linux graphic interface
+- can I make a Linux VM accessible from internet browser in any computer? 
 - Windows matlab licensing
 - Windows as remote desktop. Recommended to create user profiles? Does this persists after closing the VM ?(in the snapshot) 
 - Transfer a VM (snapshot ) from one project to another 
