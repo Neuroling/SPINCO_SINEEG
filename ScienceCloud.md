@@ -27,7 +27,7 @@ Go to windows `*powershell*`
 - From those files you will need to copy the public Key in the VM instance. So type  `cat ~/.ssh/id_rsa.pub` and copy the entire output. Go to the *Cloud dashboard* and paste it into the import KEY options of *Access and security*
 - Then do `ssh -i ~/.ssh/id_rsa ubuntu@<your-instance-ip-address>` to access it. Get the IP from the cloud dashboard
 - Next time you can just do `ssh ubuntu@<your-instance-ip-address>`
- Now you are in 
+Now you are in: 
  
  ![image](https://github.com/Neuroling/SPINCO_SINEEG/assets/13642762/e3b59f2d-ac87-4f6d-a85c-a6a1bd7b073e)
 
