@@ -5,12 +5,58 @@
 - Windows as remote desktop. Recommended to create user profiles? Does this persists after closing the VM ?(in the snapshot) 
 - Transfer a VM (snapshot ) from one project to another 
  
+# Linux VM with Graphical interface 
+This approach uses the interface provided in the browser by the Science cloud. It has potential safety vulnerabilities as involves creating a user with a password so access would be possible without ssh key
+
+## 1. Set up ssh key
+See the 'Getting access to my VM' of the training material: https://docs.s3it.uzh.ch/cloud/training/training_handout/
+It is likely you need to install Openssh feature for Windows(https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell#install-openssh-for-windows)
+I had to install it copying the commands for powershell (up to the section connect to Open SSH server, excluding that) 
+
+Once done go to power shell. In short: 
+Go to windows `*powershell*`
+- You will `ssh-keygen -t rsa -b 4096` to generate a key. Go with the defaults and it will save some files in your home directory .ssh
+- From those files you will need to copy the public Key in the VM instance. So type  `cat ~/.ssh/id_rsa.pub` and copy the entire output. Go to the *Cloud dashboard* and paste it into the import KEY options of *Access and security*
+- Then do `ssh -i ~/.ssh/id_rsa ubuntu@<your-instance-ip-address>` to access it. Get the IP from the cloud dashboard
+- Next time you can just do `ssh ubuntu@<your-instance-ip-address>`
+
+Now you are in the VM! 
+
+Note: You can add several ssh keys to a VM
+
+## 2. Updates and upgrades
+- `sudo apt update` 
+- `sudo apt upgrade`
+- Critical updates will be regular. This process will have to be done regularly when working on the VM. It needs maintainance  constant `sudo unattended-upgrade`
+
+## 3. Install Mate-minimal 
+- `sudo apt install tasksel`
+- `tasksel` and select Mate-minimal
+
+## 4. Create user 
+[!] 
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------
 
 
 # Access a Linux VM from Windows
