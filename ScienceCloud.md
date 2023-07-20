@@ -34,8 +34,15 @@ Note: You can add several ssh keys to a VM
 - `tasksel` and select Mate-minimal
 
 ## 4. Create user 
-[!] 
+ **Important safety note ! ** install `sudo apt install fail2ban` to block it when someone puts the password wrong 3 times. 
+ 
+- `sudo adduser <yourusername>`
+- Give a SECURE password! min 16 characters combination of letters, numbers and symbols...
+- Ignore other details if you wish (press Enter in the upcoming queries
 
+## 5. Access via your Cloud dashboard
+ 
+ - You should see now the graphic environment in the running VM console. You can use now the newly created username and password
 
 
 
