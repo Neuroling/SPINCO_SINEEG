@@ -37,16 +37,20 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - `sudo tasksel` and select Mate-minimal (use arrow keys and spacebar to select, press tab to go to the OK button)  
 
 ## 4. Create user 
- **Important safety note ! ** install `sudo apt install fail2ban` to block it when someone puts the password wrong 3 times. 
+ > **IMPORTANT SAFETY NOTE **
  
+- Install `sudo apt install fail2ban` to block it when someone puts the password wrong 3 times. 
 - `sudo adduser <yourusername>`
 - Give a SECURE password! min 16 characters combination of letters, numbers and symbols...
 - Ignore other details if you wish (press Enter in the upcoming queries
 
-## 5. Access via your Cloud dashboard
- 
-  - You should see now the graphic environment in the running VM console. You can use now the newly created username and password
-
+## 5. User Access to desktop environment
+### 5.1. via Science cloud website
+ - Simply click on the instance and in the *console* you will see the desktop environment window
+### 5.2. via remote desktop 
+ - In the VM linux console: `sudo apt install xrdp`
+ - In the **science cloud dashboard**: go to *Access & security* and then to create a new group and *Manage rules* there you can create a custom TCP rule with the port 3389. Direction = ingress. Create the rule and delete other rules in that group
+ - In the **science cloud dashboard**: go to your instance and *edit security groups* . Add the newly created group together wtih the default group into the VM groups
 
 
 
