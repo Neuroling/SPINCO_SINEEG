@@ -50,7 +50,7 @@ It is the responsability the user to keep the VM up to date! some of the regular
  - In the **science cloud dashboard**: go to *Access & security* and then to create a new group and *Manage rules* there you can create a custom TCP rule with the port 3389. Direction = ingress. Create the rule and delete other rules in that group
  - In the **science cloud dashboard**: go to your instance and *edit security groups* . Add the newly created group together wtih the default group into the VM groups
 
-## 1.6.Attach a NAS
+## 1.6. Attach a NAS
 - `sudo apt install cifs-utils`
 - If not created yet create the directory `sudo mkdir /mnt/smbdir`
 - Mont the NAS: `sudo mount -t cifs -o rw,user=<uzh_username>,uid=<instance_username> //<nas_address> /mnt/smbdir`
