@@ -56,9 +56,11 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - Mont the NAS: `sudo mount -t cifs -o rw,user=<uzh_username>,uid=<instance_username> //<nas_address> /mnt/smbdir`
 
 # 2 Working in the Linux Virtual Machine
+With the right workflow the need for the VM graphical environment will be minimal
 ## Graphical environment limitations
-Keep in mind the current desktop environment:
-- is **NOT** capable to render advanced plots
+We use this environment to have more user friendly access some toolboxes, script running and troubleshooting. 
+**But** Keep in mind in the current setup the desktop environment:
+- may **NOT** capable to render advanced plots
 - is laggy
 - the *user* created does not have *sudo* permissions
 
