@@ -1,13 +1,14 @@
-clear all; close all; 
+
 %% EPOCH Data
 % ======================================================================
 % - Load preprocessed datasets
 % - Epoch around onset of the target words 
 
 %% ---------------------------------------------------------------------------
+clear all; close all; 
 % user input
 subjID = 'p004';
-pipelineID = 'pipeline_task-sin_01';
+pipelineID = 'pipeline-01';
 taskID = 'task-sin';
 
 
@@ -15,7 +16,8 @@ taskID = 'task-sin';
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
 
-dirinput = fullfile(baseDir,'Data','SiN','derivatives', subjID,taskID) ;
+dirinput_raw = fullfile(baseDir,'Data','SiN','rawdata', subjID,taskID, 'eeg') ;
+dirinput_deriv = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, taskID,subjID) ;
 diroutput = fullfile(baseDir,'Data','SiN','derivatives', subjID, taskID, pipelineID);
 
 % list triggers : 1st digit = type , 2nd digit = target position , 3rd digit = word 
@@ -23,8 +25,8 @@ diroutput = fullfile(baseDir,'Data','SiN','derivatives', subjID, taskID, pipelin
 target_codes = {'111','112','113','114','211','212','213','214','121','122','123','124','221','222','223','224','131','132','133','134','231','232','233','234'};
 
 %%  find files 
-file_event = dir([dirinput, filesep, '**',filesep,'*_events_accuracy.csv']);
-file_eeg = dir([dirinput, filesep, '*.set']); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%>>>>>> Expect change in file pattern to load preprocessed files
+file_event = dir([dirinput_raw,filesep,'*_events_accu.tsv'])
+%file_eeg = dir([dirinput, filesep, '*.set']); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%>>>>>> Expect change in file pattern to load preprocessed files
 
 % Read targets accuracy 
 tabEvent = readtable(fullfile(file_event.folder,file_event.name))

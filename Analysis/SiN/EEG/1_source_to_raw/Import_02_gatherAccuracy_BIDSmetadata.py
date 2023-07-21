@@ -17,15 +17,16 @@ import os
 import pandas as pd
 import json
 import mne
+import sys
 
-# paths 
+# paths and custom modules
 baseDir =  os.path.abspath(__file__).split('scripts')[0]
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)),'functions')) 
+from gather_accuracies_events import gather_accuracies_events
 chanLocsFile =  os.path.join(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_71ch_EEGlab_xyz.tsv')
 
-# User inputs  
-subjPattern = 'p004'
-save_event_file = True 
-
+# >>>>>>>> User inputs <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+subjPattern = 'p005'
 
 # %% Subject loop 
 # find subject Raw eeg files
@@ -50,30 +51,36 @@ for fileinput in files:
     #%%        
     # % Get events for event .tsv file
     # ------------------------------------------------------------------
-    if save_event_file:      
-        # find events 
-        #events = mne.find_events(raw,min_duration=0.002) # use this if importing bdf
-        events = raw.annotations #this reads events with onset in seconds
-        (events_from_annot, event_dict) = mne.events_from_annotations(raw) #this provides the samples 
+    # find events in file
+    #events = mne.find_events(raw,min_duration=0.002) # use this if importing bdf
+    events = raw.annotations #this reads events with onset in seconds
+    (events_from_annot, event_dict) = mne.events_from_annotations(raw) #this provides the samples 
 
-        eventsTab = { 'SAMPLES': [samples[0]+1 for samples in mne.events_from_annotations(raw)[0]],
-                     'ONSET': [e['onset'] for e in events],
-                     'TRIAL_TYPE': [0] * len(events),
-                     'VALUE': [e['description'] for e in events]}
-        df_events=pd.DataFrame(eventsTab)
-        df_events['DURATION'] = [e['duration'] for e in events]
-        df_events['RESPONSE'] = 'n/a'
-        
-        
-                
-        tsv_file_path = os.path.join(diroutput,subjID +  '_' + taskID + '_events.tsv')
-        df_events.to_csv(tsv_file_path, sep='\t', index=False) 
-        
-        if not os.path.exists(tsv_file_path):               
-            print('---> added tsv file of events')        
-        else:
-            print("-.-.- overwritting existing file with events.")            
+    eventsTab = { 'SAMPLES': [samples[0]+1 for samples in mne.events_from_annotations(raw)[0]],
+                 'ONSET': [e['onset'] for e in events],
+                 'TRIAL_TYPE': [0] * len(events),
+                 'VALUE': [e['description'] for e in events]}
+    df_events=pd.DataFrame(eventsTab)
+    df_events['DURATION'] = [e['duration'] for e in events]
+    
+     
+    
+    # save tables of events        
+    tsv_file_path = os.path.join(diroutput,subjID +  '_' + taskID + '_events.tsv')
+    df_events.to_csv(tsv_file_path, sep='\t', index=False) 
+    
+    if not os.path.exists(tsv_file_path):               
+        print('---> added tsv file of events')        
+    else:
+        print("-.-.- overwritting existing file with events.")            
          
+       
+    # Call function to gather accuracy in events (only for task-sin data)
+    #----------------------------------------------------------------------------        
+    if re.search('task-sin',os.path.basename(tsv_file_path)): 
+        print(['...> Gathering accuracies for ' + os.path.basename(tsv_file_path)])
+        gather_accuracies_events(tsv_file_path)    
+    
     
     # %% Add copy of electrode coords in .tsv ( one per subject)
     # -----------------------------------------------------------------------------
