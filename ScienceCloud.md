@@ -1,9 +1,6 @@
-# QUERIES  ! 
-- Linux graphic interface
-- can I make a Linux VM accessible from internet browser in any computer? 
-- Windows matlab licensing
-- Windows as remote desktop. Recommended to create user profiles? Does this persists after closing the VM ?(in the snapshot) 
-- Transfer a VM (snapshot ) from one project to another 
+# current QUERIES for Science Cloud  
+- [x]  Linux graphic environment: accessibility, security
+- [x] sharing snapshots between projects
  
 # Linux VM with Graphical interface 
 This approach uses the interface provided in the browser by the Science cloud. It has potential safety vulnerabilities as involves creating a user with a password so access would be possible without ssh key
