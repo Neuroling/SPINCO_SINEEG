@@ -31,7 +31,7 @@ Note: You can add several ssh keys to a VM
 
 ## 3. Install Mate-minimal 
 - `sudo apt install tasksel`
-- `tasksel` and select Mate-minimal
+- `sudo tasksel` and select Mate-minimal (use arrow keys and spacebar to select, press tab to go to the OK button)  
 
 ## 4. Create user 
  **Important safety note ! ** install `sudo apt install fail2ban` to block it when someone puts the password wrong 3 times. 
