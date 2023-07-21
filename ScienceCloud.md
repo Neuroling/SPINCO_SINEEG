@@ -55,7 +55,8 @@ It is the responsability the user to keep the VM up to date! some of the regular
 ## Attach a NAS
 - `sudo apt install cifs-utils`
 - If not created yet create the directory `sudo mkdir /mnt/smbdir`
-- Mont instance: `sudo mount -t cifs -o rw,user=<uzh_username>,uid=<instance_username> //<nas_address> /mnt/smbdir`
+- Mont the NAS: `sudo mount -t cifs -o rw,user=<uzh_username>,uid=<instance_username> //<nas_address> /mnt/smbdir`
+e.g. `sudo mount -t cifs -o rw,user=gfraga,uid=ubuntu //idnas12.d.uzh.ch/G_PSYNEULIN_DATA$ /mnt/smbdir`  --- should prompt you for your UZH password
 
 
 
