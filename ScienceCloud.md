@@ -56,7 +56,7 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - Mont the NAS: `sudo mount -t cifs -o rw,user=<uzh_username>,uid=<instance_username> //<nas_address> /mnt/smbdir`
 
 # 2 Working in the Linux Virtual Machine
-## Desktop environment limitations
+## Graphical environment limitations
 Keep in mind the current desktop environment:
 - is **NOT** capable to render advanced plots
 - is laggy
