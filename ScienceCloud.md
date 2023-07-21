@@ -34,7 +34,7 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - `sudo tasksel` and select Mate-minimal (use arrow keys and spacebar to select, press tab to go to the OK button)  
 
 ## 1.4. Create user 
- > **IMPORTANT SAFETY NOTE ** For this
+ > **IMPORTANT SAFETY NOTE**  
 - Install `sudo apt install fail2ban`to block it when someone puts the password wrong 3 times.
   
 - Create user: `sudo adduser <yourusername>`
