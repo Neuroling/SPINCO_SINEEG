@@ -2,7 +2,7 @@
 - [x]  Linux graphic environment: accessibility, security
 - [x] sharing snapshots between projects
  
-# Linux VM with Graphical interface 
+# Linux VM with graphical environment
 This approach uses the interface provided in the browser by the Science cloud. It has potential safety vulnerabilities as involves creating a user with a password so access would be possible without ssh key
 
 ## 1. Set up ssh key
