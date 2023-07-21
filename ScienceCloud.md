@@ -25,6 +25,9 @@ Now you are in the VM!
 Note: You can add several ssh keys to a VM
 
 ## 2. Updates and upgrades
+> **IMPORTANT NOTE** 
+It is the responsability the user to keep the VM up to date! some of the regular updates may be critical
+
 - `sudo apt update` 
 - `sudo apt upgrade`
 - Critical updates will be regular. This process will have to be done regularly when working on the VM. It needs maintainance  constant `sudo unattended-upgrade`
@@ -42,7 +45,7 @@ Note: You can add several ssh keys to a VM
 
 ## 5. Access via your Cloud dashboard
  
- - You should see now the graphic environment in the running VM console. You can use now the newly created username and password
+  - You should see now the graphic environment in the running VM console. You can use now the newly created username and password
 
 
 
