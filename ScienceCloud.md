@@ -2,10 +2,10 @@
 - [x]  Linux graphic environment: accessibility, security
 - [x] sharing snapshots between projects
  
-# Linux VM with graphical environment
+# 1 Linux VM with graphical environment
 This approach uses the interface provided in the browser by the Science cloud. It has potential safety vulnerabilities as involves creating a user with a password so access would be possible without ssh key
 
-## 1. Set up ssh key
+## 1.1. Set up ssh key
 See the 'Getting access to my VM' of the training material: https://docs.s3it.uzh.ch/cloud/training/training_handout/
 It is likely you need to install Openssh feature for Windows(https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse?tabs=powershell#install-openssh-for-windows)
 I had to install it copying the commands for powershell (up to the section connect to Open SSH server, excluding that) 
@@ -21,7 +21,7 @@ Now you are in the VM!
 
 Note: You can add several ssh keys to a VM
 
-## 2. Updates and upgrades
+## 1.2. Updates and upgrades
 > **IMPORTANT NOTE** 
 It is the responsability the user to keep the VM up to date! some of the regular updates may be critical
 
@@ -29,11 +29,11 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - `sudo apt upgrade`
 - Critical updates will be regular. This process will have to be done regularly when working on the VM. It needs maintainance  constant `sudo unattended-upgrade`
 
-## 3. Install Mate-minimal 
+## 1.3. Install Mate-minimal 
 - `sudo apt install tasksel`
 - `sudo tasksel` and select Mate-minimal (use arrow keys and spacebar to select, press tab to go to the OK button)  
 
-## 4. Create user 
+## 1.4. Create user 
  > **IMPORTANT SAFETY NOTE ** For this
 - Install `sudo apt install fail2ban`to block it when someone puts the password wrong 3 times.
   
@@ -42,20 +42,20 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - Ignore other details if you wish (press Enter in the upcoming queries
  
 
-## 5. User Access to desktop environment
-### 5.1. via Science cloud website
+## 1.5. User Access to desktop environment
+### via Science cloud website
  - Simply click on the instance and in the *console* you will see the desktop environment window
-### 5.2. via remote desktop 
+### via remote desktop 
  - In the VM linux console: `sudo apt install xrdp`
  - In the **science cloud dashboard**: go to *Access & security* and then to create a new group and *Manage rules* there you can create a custom TCP rule with the port 3389. Direction = ingress. Create the rule and delete other rules in that group
  - In the **science cloud dashboard**: go to your instance and *edit security groups* . Add the newly created group together wtih the default group into the VM groups
 
-## 6.Attach a NAS
+## 1.6.Attach a NAS
 - `sudo apt install cifs-utils`
 - If not created yet create the directory `sudo mkdir /mnt/smbdir`
 - Mont the NAS: `sudo mount -t cifs -o rw,user=<uzh_username>,uid=<instance_username> //<nas_address> /mnt/smbdir`
 
-#  Working in the Linux Virtual Machine
+# 2 Working in the Linux Virtual Machine
 ## Desktop environment limitations
 Keep in mind the current desktop environment:
 - is **NOT** capable to render advanced plots
