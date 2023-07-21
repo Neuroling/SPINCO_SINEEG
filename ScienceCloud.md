@@ -34,12 +34,13 @@ It is the responsability the user to keep the VM up to date! some of the regular
 - `sudo tasksel` and select Mate-minimal (use arrow keys and spacebar to select, press tab to go to the OK button)  
 
 ## 4. Create user 
- > **IMPORTANT SAFETY NOTE **
- 
-- Install `sudo apt install fail2ban` to block it when someone puts the password wrong 3 times. 
-- `sudo adduser <yourusername>`
+ > **IMPORTANT SAFETY NOTE ** For this
+- Install `sudo apt install fail2ban`to block it when someone puts the password wrong 3 times.
+  
+- Create user: `sudo adduser <yourusername>`
 - Give a SECURE password! min 16 characters combination of letters, numbers and symbols...
 - Ignore other details if you wish (press Enter in the upcoming queries
+ 
 
 ## 5. User Access to desktop environment
 ### 5.1. via Science cloud website
