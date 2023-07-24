@@ -28,3 +28,7 @@ Examples for Multiple Commits:
 ggiip - committed twice, the rating remained
 
 goiip - committed twice, the rating changed from ok to good
+
+## "reduced"
+
+Users may have observed a reduced_*.mat file in the results folders. This file is a downsampled version of the EEG data and is used for faster displaying in the data viewer.
