@@ -1,9 +1,13 @@
 # Automagic prefixes
 Preprocessing done with Automagic 
 
-
 https://github.com/methlabUZH/automagic/wiki/Quality-Assessment-and-Rating
-## Combination of File Prefixes
+
+
+## Outputs 
+For each preprocessed dataset, a jpg. file is saved (in the same folder), providing a visual representation of the effects of the applied preprocessing methods.6 In addition, a log-file is saved for each dataset, describing the exact order and the used parameters of the preprocessing steps. This logfile can be used to precisely communicate the preprocessing of an EEG project in a publication in accordance with the recommendation for reporting standards of the Committee on Best Practice in Data Analysis and Sharing (COBIDAS) (Pernet et al., 2018).
+
+### Combination of File Prefixes
 
 np - preprocessed file not rated (no channels to interpolate / interpolated) 
 
@@ -29,6 +33,5 @@ ggiip - committed twice, the rating remained
 
 goiip - committed twice, the rating changed from ok to good
 
-## "reduced"
-
+### "reduced_" files
 Users may have observed a reduced_*.mat file in the results folders. This file is a downsampled version of the EEG data and is used for faster displaying in the data viewer.
