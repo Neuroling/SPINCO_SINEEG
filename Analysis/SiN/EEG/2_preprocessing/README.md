@@ -1,3 +1,11 @@
+# CURRENT ISSUES
+> If doing average reference after automagic:   "channels not used for ICA decomposition are used for rereferencing the ICA decomposition has been removed"
+Seems recommended to do average reference before ICA due to problems with data rank : https://sccn.ucsd.edu/pipermail/eeglablist/2018/013907.html
+
+
+
+
+
 # Automagic prefixes
 Preprocessing done with Automagic 
 
