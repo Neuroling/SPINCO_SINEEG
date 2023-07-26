@@ -41,13 +41,14 @@ else
     % Import
     eeglab nogui    
     EEG = pop_biosig(fullFileInput, 'importannot','off','ref', 48, 'refoptions',{ 'keepref' 'on' }, 'rmeventchan','off'); % Problems reading events when importing with pop_readbdf
-    
+    % 
     % Remove external channels 69 70  (were not recorded)
     EEG = pop_select (EEG, 'channel', [1:70,73]); 
     
     % load channel locations
-    EEG = pop_chanedit(EEG,'load',chanLocsFile);   
-       
+    EEG = pop_chanedit(EEG,'load',chanLocsFile);  
+    
+    
     %% Pilot debug 
     % Pilot edit for p004
     if contains(subjID,'p004')

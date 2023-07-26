@@ -9,8 +9,8 @@ thisDir = matlab.desktop.editor.getActiveFilename;
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
  
 dataFolder = fullfile(baseDir, 'Data','SiN','derivatives','pipeline-01','task-sin') ;
-resultsFolder = fullfile(baseDir, 'Data','SiN','derivatives','pipeline-01','task-sin_res');
-template_project = fullfile(fileparts(thisDir),'project_state.mat');
+resultsFolder = fullfile(baseDir, 'Data','SiN','derivatives','pipeline-01','task-sin_preproc');
+template_project = fullfile(fileparts(thisDir),'pipe-01_project_state.mat');
 mkdir(resultsFolder)
 %% Project definition
 load(template_project) 
@@ -22,8 +22,9 @@ load(template_project)
  VisualisationParams = struct();
  samplingrate = 2048; 
  
-eeglab nogui
+
 %% Run project       
+eeglab nogui
 addAutomagicPaths();
 project = Project(name, dataFolder, resultsFolder, ext, Params, VisualisationParams,samplingrate); % won't work without giving all these inputs including srate
-project.preprocessAll()
+project.preprocessAll();
