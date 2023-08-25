@@ -57,7 +57,7 @@ def gather_accuracies_events(tsv_file_path):
     idvars = ['noise','block','levels', 'mouseClickOnCall.clicked_name','mouseClickOnNumber.clicked_name','mouseClickOnColour.clicked_name'] 
    
     correctness =  pd.melt(df[cols2melt],id_vars=idvars)                
-    correctness = correctness[~correctness.noise.isna()] # remove files for the example trials         
+    correctness = correctness[~correctness.noise.isna()] # remove rows  for the example trials         
         
     
     # %% Summarize accuracy

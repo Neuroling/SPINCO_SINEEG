@@ -7,24 +7,24 @@
 % - Adjust triggers per trial relative to audio-output
 % - Read channel locations
 % - Divide the data using triggers to split resting state(s) and task
-% - Create and save each part as EEGLAB datasets
+% - Create and save each part as EEGLAB data
 
 %% user inputs
 clear all; close all ;
-subjID = 'p005';
+subjID = 's002';
 
 %% Paths and files
-addpath([fileparts(matlab.desktop.editor.getActiveFilename),filesep,'functions'])
-folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
-baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
+thisDir = mfilename('fullpath')
+addpath([fileparts(thisDir),filesep,'functions'])
+baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 %
 dirinput = fullfile(baseDir,'Data','SiN','sourcedata',subjID);
 chanLocsFile = fullfile(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_71ch_EEGlab_xyz.tsv');
-
-% find source eeg
+% Find files:
+% source eeg
 file  = dir([dirinput,filesep,'*.bdf']);
 
-% find source exp file (log of performance)to copy it into raw folder 
+% source exp file (log of performance)to copy it into raw folder 
 expfile = dir([dirinput,filesep,'*.csv']);
 expfile = expfile(find(~cellfun(@isempty, regexp({expfile.name}, '\d+\.csv$', 'match')))); % find the one ending in digit + '.csv' 
 
@@ -35,7 +35,7 @@ mkdir(diroutput)
 
 %% EEGLAB ------------------------------------------------------
 if length(file)~= 1
-    error('Eror. More than one source .bdf file found. Revise your paths')
+    error('Error. None or more than one source .bdf file found. Revise your paths')
 else
     
     % Import
@@ -91,7 +91,7 @@ else
             
             % select data
             EEG = pop_select( EEG, 'point',[segment_t0 segment_t1]  );
-            EEG.setname = splits(i).segment_name;
+            EEG.setname = [subjID,'_', splits(i).segment_name]
                        
             % save dataset
             newSetName = strrep(file.name,'.bdf',['_', splits(i).segment_name]);
@@ -110,10 +110,13 @@ else
     
     %% split: task part ------------------------------ 
     split = struct('segment_name', {'task-sin'},...
-        'onset_trigger',{5},... % unique onset trigger
-        'offset_trigger', {55},...% trigger to resting state after task instructions
+        'onset_trigger', {55},... % unique onset trigger
+        'offset_trigger', {9},...% trigger to instruction of resting state after task 
         'head', {1},...% seconds before onset trigger
-        'tail',{1}); % seconds after offset 
+        'tail',{1}); % seconds after offset        
+        %'onset_trigger',{5},... % unique onset trigge
+        %'offset_trigger', {55},...% trigger to resting state after task instructions
+        
     
     % Find unique onset trigger
     triggerIdx_onset = find(cell2mat({EEG.event(:).type})== split.onset_trigger);
@@ -126,7 +129,7 @@ else
     
     % select data
     EEG = pop_select( EEG, 'point',[segment_t0 segment_t1]  );
-    EEG.setname = split.segment_name;
+    EEG.setname = [subjID,'_', split.segment_name];
     
        
     % save dataset
@@ -137,10 +140,12 @@ else
     [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG);
     
     % copy log file 
-    newdiroutput = [diroutput,filesep,split.segment_name,filesep,'beh'];
-    mkdir(newdiroutput)
-    copyfile(fullfile(expfile.folder,expfile.name), newdiroutput)
+    newdiroutput_beh = [diroutput,filesep,split.segment_name,filesep,'beh'];
+    mkdir(newdiroutput_beh)
+    copyfile(fullfile(expfile.folder,expfile.name), newdiroutput_beh)
  
+    %% Save BIDS metadata 
+    saveBidsMetadata(EEG,newdiroutput)
    
  end % close if length(files)
 
