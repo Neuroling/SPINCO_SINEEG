@@ -11,7 +11,7 @@
 
 %% user inputs
 clear all; close all ;
-subjID = 's008';
+subjID = 'p004';
 
 %% Paths and files
 thisDir = mfilename('fullpath')
@@ -78,7 +78,7 @@ else
         'tail',{1, 1}); % seconds after offset trigger
     
     % Loop thru desired output files
-    for i = 1:length(splits)
+   for i = 1:length(splits)
         
         % Find unique onset trigger
         triggerIdx = find(cell2mat({EEG.event(:).type})== splits(i).onset_trigger);

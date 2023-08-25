@@ -3,6 +3,7 @@
 % =========================================================================
 % Author: G.FragaGonzalez
 % Description:
+
 % - Get accuracy of each target word within trial and add that to the event file
 function gather_accuracies_events(EEG,expfile,newdiroutput) 
 

@@ -7,26 +7,37 @@ clear all; close all;
 % Paths
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
- 
-dataFolder = fullfile(baseDir, 'Data','SiN','derivatives','pipeline-01','task-sin') ;
-resultsFolder = fullfile(baseDir, 'Data','SiN','derivatives','pipeline-01','task-sin_preproc');
-template_project = fullfile(fileparts(thisDir),'pipe-01_project_state.mat');
+taskID = 'task-sin';
+pipeID = 'pipeline-01';
+run = 1
+
+%% find data 
+dataFolder = fullfile(baseDir, 'Data','SiN','derivatives',pipeID,taskID) ;
+resultsFolder = fullfile(baseDir, 'Data','SiN','derivatives',pipeID,[taskID,'_preproc']);
+template_project = fullfile(fileparts(thisDir),'project_state.mat');
 mkdir(resultsFolder)
 
-%% Project definition
-c
-load(template_project) 
+%% Copy raw to derivatives folder 
+if run == 1
+    %% Project definition
+    cd (fileparts(template_project))
+    load(template_project)     
+    eeglab nogui
 
-% %% Define new project 
- name =  'PIPE01';  
- ext = '.set';
- Params = self.params; % param from previous
- VisualisationParams = struct();
- samplingrate = 2048; 
+    % %% Define new project 
+    name =  'PI01';  
+    ext = '.set';
+    Params = self.params; % param from previous
+    VisualisationParams = struct();
+    samplingrate = 2048; 
+
+    % fix channelLoc file path
+    Params.EEGSystem.locFile = fullfile(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_71ch_EEGlab_xyz.tsv');
+
+    %% Run project       
+    addAutomagicPaths();
+    project = Project(name, dataFolder, resultsFolder, ext, Params, VisualisationParams,samplingrate); % won't work without giving all these inputs including srate
+    project.preprocessAll();
+
+end
  
-
-%% Run project       
-eeglab nogui
-addAutomagicPaths();
-project = Project(name, dataFolder, resultsFolder, ext, Params, VisualisationParams,samplingrate); % won't work without giving all these inputs including srate
-project.preprocessAll();
