@@ -6,7 +6,7 @@
 % - Save json file with descriptions of the loaded EEG dataset 
 % - needs EEG data set and an output directory 
 
-function saveBidsMetadata(EEG,diroutput)
+function saveBidsMetadata(EEG,newdiroutput,chanLocsFile)
 
 %%  Task info 
 splitStr = strsplit(EEG.setname, '_');
@@ -27,7 +27,6 @@ end
 %% JSON FILE with rec info
 fileDuration = round(EEG.pnts/EEG.srate,4);
 fileSamplingRate  = EEG.srate;
-
 
 % Define metadata struct
 metaData = struct(...
@@ -56,13 +55,37 @@ metaData = struct(...
     'Comments', task_comments ...
 );
 
-
-%% 
+% 
 % Convert to JSON string
 jsonStr = jsonencode(metaData,'PrettyPrint',true); 
 % Write formatted JSON to file
-fileID = fopen(fullfile(diroutput, [EEG.setname '_eeg.json']), 'w');
+fileID = fopen(fullfile(newdiroutput, [EEG.setname '_eeg.json']), 'w');
 fprintf(fileID, '%s', jsonStr);
 fclose(fileID);
 disp('---> saved EEG json');
 
+
+%% JSON FILE with Electrode coordinate system info 
+% Define metadata struct
+electrode_metaData = struct(...
+    'EEGCoordinateSystem','EEGlab',...
+    'EEGCoordinateUnits', 'mm',...
+    'EEGCoordinateSystemDescription', 'https://eeglab.org/tutorials/ConceptsGuide/coordinateSystem.html',...
+    'IntendedFor', EEG.setname ... 
+);       
+% Convert to JSON string
+jsonStr = jsonencode(electrode_metaData,'PrettyPrint',true); 
+
+% Write formatted JSON to file
+sID = strsplit(EEG.setname,'_');
+sID = sID{1};
+fileID = fopen(fullfile(newdiroutput, [sID '_coordsystem.json']), 'w');
+fprintf(fileID, '%s', jsonStr);
+fclose(fileID);
+disp('---> saved EEG coordSystem file');
+
+%% Table with electrode coordinates 
+electrodes = readtable(chanLocsFile, "FileType","text",'Delimiter', '\t');
+writetable(electrodes,fullfile(newdiroutput,[sID,'_electrodes.tsv']),"FileType","text",'Delimiter', '\t')
+
+end

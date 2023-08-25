@@ -4,6 +4,7 @@
 % Author: G.FragaGonzalez
 % Description:
 % - Get accuracy of each target word within trial and add that to the event file
+function gather_accuracies
 filepath =  fullfile(expfile.folder, expfile.name);
 % Read data frame
 df = readtable(filepath,'Delimiter',',');
@@ -54,40 +55,25 @@ eventsTab.RESPONSE_ITEM = strings(length(EEG.event),1);
 value_list = ["111", "112", "113", "114", "211", "212", "213", "214"];
 idxs_log = find(accuTable.value_Indicator == "callSignCorrect")
 idxs_events = find(contains(eventsTab.VALUE,value_list))
-callTrialsAccu = accuTable.value(idxs_log);
-eventsTab.ACCURACY(idxs_events) = callTrialsAccu;
-eventsTab.RESPONSE_ITEM(idxs) = strrep(strrep(accuTable.mouseClickOnCall_clicked_name(idxs_log), "['", ""), "']", "");
+trialsAccu = accuTable.value(idxs_log);
+eventsTab.ACCURACY(idxs_events) = trialsAccu;
+eventsTab.RESPONSE_ITEM(idxs_events) = strrep(strrep(accuTable.mouseClickOnCall_clicked_name(idxs_log), "['", ""), "']", "");
  
 
 value_list = ["121", "122", "123", "124", "221", "222", "223", "224"];
 idxs_log = find(accuTable.value_Indicator == "colourCorrect")
 idxs_events = find(contains(eventsTab.VALUE,value_list))
 trialsAccu = accuTable.value(idxs_log);
-eventsTab.ACCURACY(idxs_events) = callTrialsAccu;
-eventsTab.RESPONSE_ITEM(idxs) = strrep(strrep(accuTable.mouseClickOnCall_clicked_name(idxs_log), "['", ""), "']", "");
+eventsTab.ACCURACY(idxs_events) = trialsAccu;
+eventsTab.RESPONSE_ITEM(idxs_events) = strrep(strrep(accuTable.mouseClickOnColour_clicked_name(idxs_log), "['", ""), "']", "");
 
 value_list = ["131", "132", "133", "134", "231", "232", "233", "234"];
 idxs_log = find(accuTable.value_Indicator == "numberCorrect")
 idxs_events = find(contains(eventsTab.VALUE,value_list))
 trialsAccu = accuTable.value(idxs_log);
 eventsTab.ACCURACY(idxs_events) = trialsAccu;
-eventsTab.RESPONSE_ITEM(idxs) = strrep(strrep(accuTable.mouseClickOnCall_clicked_name(idxs_log), "['", ""), "']", "");
+eventsTab.RESPONSE_ITEM(idxs_events) = strrep(strrep(accuTable.mouseClickOnNumber_clicked_name(idxs_log), "['", ""), "']", "");
 
-
-for i = 1:numel(value_list)
-    idx = find(eventsTab.VALUE == value_list(i));
-    eventsTab.ACCURACY(idx) = colorTrialsAccu{i};
-    eventsTab.RESPONSE_ITEM(idx) = strrep(strrep(accuTable.mouseClickOnColour_clicked_name(i), "['", ""), "']", "");
-end
-
-value_list = ["131", "132", "133", "134", "231", "232", "233", "234"];
-numberTrialsAccu = accuTable.value(accuTable.value_Indicator == "numberCorrect");
-for i = 1:numel(value_list)
-    idx = find(eventsTab.VALUE == value_list(i));
-    eventsTab.ACCURACY(idx) = numberTrialsAccu{i};
-    eventsTab.RESPONSE_ITEM(idx) = strrep(strrep(accuTable.mouseClickOnNumber_clicked_name(i), "['", ""), "']", "");
-end
-
-%%
+ 
 events2write = struct2table(eventsTab)
 writetable(events2write,fullfile(diroutput,'events.csv'))

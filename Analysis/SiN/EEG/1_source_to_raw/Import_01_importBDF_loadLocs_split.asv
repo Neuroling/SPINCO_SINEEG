@@ -11,7 +11,7 @@
 
 %% user inputs
 clear all; close all ;
-subjID = 's008';
+subjID = 's00';
 
 %% Paths and files
 thisDir = mfilename('fullpath')
