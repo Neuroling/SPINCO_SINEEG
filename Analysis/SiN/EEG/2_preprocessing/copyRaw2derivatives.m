@@ -9,7 +9,7 @@ thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
 pipeID = 'pipeline-01';
-subjects = {'s001','s002','s003','s004','s005','s006','s007','s008'};
+subjects = {'s001','s002','s003','s004','s005','s006','s007','s008','s009'};
 run = 0
 %% 
 for i = 1:length(subjects)
@@ -31,7 +31,8 @@ for i = 1:length(subjects)
     rawdatafile = dir([rawdataFolder,filesep,'*.set']);
     if length(rawdatafile)==1 
         copyfile (fullfile(rawdatafile.folder,rawdatafile.name), fullfile(resultsFolder,rawdatafile.name))
-
+        copyfile (fullfile(rawdatafile.folder,strrep(rawdatafile.name,'.set','.fdt')), fullfile(resultsFolder,strrep(rawdatafile.name,'.set','.fdt')))
+        
     else
         error('check rawdata files')
     end  

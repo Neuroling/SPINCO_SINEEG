@@ -11,7 +11,13 @@
 
 %% user inputs
 clear all; close all ;
-subjID = 'p004';
+
+%subjectlist = {'s001','s002','s003','s004','s005','s006','s007','s008','s009'};
+subjectlist = {'s010','s011','s012'}
+
+for s = 1:length(subjectlist)
+    
+subjID = subjectlist{s};
 
 %% Paths and files
 thisDir = mfilename('fullpath')
@@ -160,7 +166,7 @@ else
 
 
 
-
+end
 
 
 
