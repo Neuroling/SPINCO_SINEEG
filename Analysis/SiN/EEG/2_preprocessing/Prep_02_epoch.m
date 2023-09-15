@@ -7,9 +7,9 @@
 %% ---------------------------------------------------------------------------
 clear all; close all; 
 % Use subject list if you want to epoch several subjects at once 
-subjectList = {'p004','p005'};
+subjectList = {'s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013'};
 
-
+%%
 for s = 1:length(subjectList)
     % user input
     subjID = subjectList{s};
@@ -21,18 +21,16 @@ for s = 1:length(subjectList)
     % Paths 
     folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
     baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
+    addpath(fullfile(baseDir,'Tools','eeglab_current','eeglab2023.0'))
+    
     dirinput_raw = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, taskID,subjID) ;
-    dirinput_deriv = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, [taskID,'_res'],subjID) ;
-    diroutput = fullfile(baseDir,'Data','SiN','derivatives',  pipelineID, [taskID,'_res_epoched'],subjID);
+    dirinput_deriv = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, [taskID,'_preproc'],subjID) ;
+    diroutput = fullfile(baseDir,'Data','SiN','derivatives',  pipelineID, [taskID,'_preproc_epoched'],subjID);
 
     %  find files 
     fileinput = dir([dirinput_deriv,filesep,'*p_',subjID,'*.mat']); % find preproc file
-
-
-
-
     %% Load preprocessed file 
-    eeglab nogui
+    eeglab ;
     preproc_data = load(fullfile(fileinput.folder,fileinput.name));
     EEG = preproc_data.EEG;
 
@@ -41,7 +39,7 @@ for s = 1:length(subjectList)
 
     preproc_data.automagic.tobeInterpolated
     EEG = pop_interp(EEG, preproc_data.automagic.tobeInterpolated,'spherical');
-
+    pop_comments(EEG.comments,'','chans interpolated after automagic',1);
     %% Add accuracy to target events in the EEG dataset 
     % ----------------------------------------------------------------------
     % Read targets accuracy 
