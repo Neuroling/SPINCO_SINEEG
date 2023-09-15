@@ -15,7 +15,7 @@ thisDir = mfilename('fullpath');
 addpath([fileparts(thisDir),filesep,'functions'])
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 % user inputs
-subjectlist = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013'};
+subjectlist = {'s001','s002'};
 
 %%
 for s = 1:length(subjectlist)
@@ -39,14 +39,12 @@ for s = 1:length(subjectlist)
     diroutput = strrep([file.folder],'sourcedata','rawdata'); % Assuming only one 'rawdata' folder is present in the full path
     mkdir(diroutput)
     
-    
-    eeglab
     %% EEGLAB ------------------------------------------------------
     if length(file)~= 1
         error('Error. None or more than one source .bdf file found. Revise your paths')
     else
         % Import
-        
+        eeglab nogui
         pop_editoptions( 'option_storedisk', 0); % Change option to process multiple datasets
         EEG = pop_biosig(fullFileInput, 'importannot','off','ref', 48, 'refoptions',{ 'keepref' 'on' }, 'rmeventchan','off'); % Problems reading events when importing with pop_readbdf
         % 
@@ -83,39 +81,39 @@ for s = 1:length(subjectlist)
             'head', {1 ,1},...% seconds before onset trigger
             'tail',{1, 1}); % seconds after offset trigger
 
-            % Loop thru desired output files
-           for i = 1:length(splits)
+        % Loop thru desired output files
+       for i = 1:length(splits)
 
-                % Find unique onset trigger
-                triggerIdx = find(cell2mat({EEG.event(:).type})== splits(i).onset_trigger);
-                if length(triggerIdx) ~= 1
-                    error (['[error] It seems you have more than one event with code ', num2str(splits(i).onset_trigger), '. Check why'])
-                else
+            % Find unique onset trigger
+            triggerIdx = find(cell2mat({EEG.event(:).type})== splits(i).onset_trigger);
+            if length(triggerIdx) ~= 1
+                error (['[error] It seems you have more than one event with code ', num2str(splits(i).onset_trigger), '. Check why'])
+            else
 
-                    % Find data point to the relevant event +/- defined number of seconds before and after
-                    segment_t0 = EEG.event(triggerIdx).latency - (splits(i).head*EEG.srate) ;
-                    segment_t1 = EEG.event(triggerIdx).latency + (splits(i).segment_duration*EEG.srate) + (splits(i).tail*EEG.srate);
+                % Find data point to the relevant event +/- defined number of seconds before and after
+                segment_t0 = EEG.event(triggerIdx).latency - (splits(i).head*EEG.srate) ;
+                segment_t1 = EEG.event(triggerIdx).latency + (splits(i).segment_duration*EEG.srate) + (splits(i).tail*EEG.srate);
 
-                    % select data
-                    EEG = pop_select( EEG, 'point',[segment_t0 segment_t1]  );
-                    EEG.setname = [subjID,'_', splits(i).segment_name];
+                % select data
+                EEG = pop_select( EEG, 'point',[segment_t0 segment_t1]  );
+                EEG.setname = [subjID,'_', splits(i).segment_name];
 
-                    % save dataset
-                    newSetName = strrep(file.name,'.bdf',['_', splits(i).segment_name]);
-                    newdiroutput = [diroutput,filesep,splits(i).segment_name,filesep,'eeg'];
-                    mkdir(newdiroutput)
-                    pop_saveset (EEG, newSetName,newdiroutput);
-                    [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG);
+                % save dataset
+                newSetName = strrep(file.name,'.bdf',['_', splits(i).segment_name]);
+                newdiroutput = [diroutput,filesep,splits(i).segment_name,filesep,'eeg'];
+                mkdir(newdiroutput)
+                pop_saveset (EEG, newSetName,newdiroutput);
+                [ALLEEG, EEG, CURRENTSET] = eeg_store( ALLEEG, EEG);
 
-                    % Save BIDS metadata 
-                    saveBidsMetadata(EEG,newdiroutput,chanLocsFile)
+                % Save BIDS metadata 
+                saveBidsMetadata(EEG,newdiroutput,chanLocsFile)
 
-                    %Retrieve dataset before split
-                    EEG = eeg_retrieve(ALLEEG, 1); CURRENTSET = 1;
+                %Retrieve dataset before split
+                EEG = eeg_retrieve(ALLEEG, 1); CURRENTSET = 1;
 
-                end      
-
-          end % close splits loop
+            end      
+            
+      end % close splits loop
 
 
         %% SPLIT TASK ===========
@@ -164,7 +162,7 @@ for s = 1:length(subjectlist)
 
      end % close if length(files)
 
-     close all
+     
      disp('0000000000000000000000000000===== next ')
  end
 
