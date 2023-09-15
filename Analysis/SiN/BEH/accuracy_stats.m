@@ -25,8 +25,9 @@ T2=table2array(T);
 data=T2(5:end-1,:);
 %%
 AT=[];
-AT(1:3,1)=c('correctCallNV1','correctColNV1','correctNumNV1')
+%AT(1:3,1)=cbind('correctCallNV1','correctColNV1','correctNumNV1')
 AT(1:3,2)=sum(data(:,7)=='NV1'&data(:,8:10)=='True')
+
 
 %%
 sum(data(:,7)=='NV2'&data(:,8:10)=='True')/sum(data(:,7)=='NV2')
