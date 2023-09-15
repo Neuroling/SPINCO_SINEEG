@@ -9,7 +9,7 @@ thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
 pipeID = 'pipeline-01';
-run = 1
+run = 1;
 
 %% find data 
 dataFolder = fullfile(baseDir, 'Data','SiN','derivatives',pipeID,taskID) ;
