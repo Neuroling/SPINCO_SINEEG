@@ -1,10 +1,11 @@
 %% Script to save the automagic channel logs of each subj into a single df
-
 clear all; close all;
-
 save = 1; % set to 1 to save the output
 
 %%
+
+chanLabels = readtable('V:\Projects\Spinco\SINEEG\Data\SiN\_acquisition\_electrodes\Biosemi_71ch_EEGlab_xyz.tsv',"Delimiter",'\t','FileType','delimitedtext');
+chanLabels = chanLabels.Electrode; 
 thisDir = mfilename('fullpath');
 % if above returns a temp file, use the line below instead
 % thisDir = matlab.desktop.editor.getActiveFilename;
@@ -38,9 +39,15 @@ for f = 1:length(files)
     data.file{f}=fileinput;
     data.subjID{f}=files(f).name(4:7);
     data.n_interpolated(f)={length(automagic.tobeInterpolated)};
-    dataTemp.autoBadChansTemp(f)={automagic.autoBadChans};
-    tmp = sprintf('%.0f, ',dataTemp.autoBadChansTemp{f});
-    data.autoBadChans{f}= tmp(1:end-2);
+    
+    badchans = chanLabels(automagic.autoBadChans)';
+    badchans = sprintf('%s,',badchans{1:end})
+    badchans = badchans(1:end-1)
+    data.autoBadChans{f}= badchans  
+    
+    %    dataTemp.autoBadChansTemp(f)={automagic.autoBadChans};
+    % tmp = sprintf('%.0f, ',dataTemp.autoBadChansTemp{f});
+    % data.autoBadChans{f}= tmp(1:end-2);
     data.n_rejectedComponents(f)={length(automagic.iclabel.rejectComponents)};
     dataTemp.rejectedComponentsTemp(f)={automagic.iclabel.rejectComponents}; 
 	data.rejectedComponents{f}=sprintf('%.0f, ',dataTemp.rejectedComponentsTemp{f});
