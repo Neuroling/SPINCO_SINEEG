@@ -1,5 +1,3 @@
-## General info 
-Expect a numbered folder for each part of the analysis (1_Import, 2_preproc) indicating their sequence. Then within each folder scripts have a preffix indicating category + '-' +  order in which they are run (e.g., Prep-01_xxx , Prep-02_xxx). If there is a number in the middle of the filename, like for pipeline, the number indicates the version of the pipeline, and not the order in which they are run (e.g., Prep-01_pipe01_xx, Prep-01_pipe02_xxx ) 
 
 ## 1_source_to_raw 
 The Biosemi EEG data is recorded in a single **.bdf** file (24-bit) for the entire session, which consists on a main task and two resting state recordings (before and after task). 
@@ -13,9 +11,3 @@ Import raw data from Source with minimal preprocessing in EEGlab:
 -   
 [^1]: The .set format was preferred after previous issues when exporting to formats as bdf or edf with EEGlab and MNE toolboxes. When the 'Ergo1' channel with digital audio recorded was loaded, there were (what appeared to be) sampling errors in the exported bdf or edf from EEGlab (using *writeeg* from Biosig) and EDF with mne (https://mne.tools/stable/generated/mne.export.export_raw.html).These problems were not present when using the Biosemi Actitools software (however this is not a desired step as it requires manual input in GUI)
 
-## 2_preprocessing 
-Multiple pipelines for task and resting state data
-Generated data considered as *derivatives* 
-
-## 3_analysis
-Multiple analyses 

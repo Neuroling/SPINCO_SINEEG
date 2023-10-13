@@ -8,8 +8,8 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-pipeID = 'pipeline-01';
-subjects = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013'};
+pipeID = 'trimbreaks_pipeline-01';
+subjects = {'s001'};
 
 %% 
 for i = 1:length(subjects)
