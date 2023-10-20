@@ -26,11 +26,11 @@ import seaborn as sns
 # User inputs
 copyraw = 0
 taskID = 'task-sin'
-save = 1 # if = 1 it will save excel files and plots
+save = 0 # if = 1 it will save excel files and plots
 
 #%% PATHS
 thisDir = os.path.dirname(os.path.abspath(__file__))
-subIDs= os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata'))
+subIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 diroutput= os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis','beh')
 
 #%% Reading Files
@@ -104,30 +104,36 @@ if save == 1:
 vers_sns = int(sns.__version__[2:4])
 
 # %% Performance plots
+## palettes with accessible colours
+pal2 = ('#648fff','#ffb000')
+pal3 = ('#648fff', '#dc267f', '#ffb000')
+pal4 = ('#648fff', '#8068f1','#fe6100', '#ffb000')
+
 ## Plots comparing noise conditions (NV vs SiSSN)
 plt.figure()
 f, ax = plt.subplots(figsize=(7, 5))
-dy="noise"; dx="value"; ort="h"; pal = sns.husl_palette(2,h=.2)
-ax=pt.half_violinplot( x = dx, y = dy, data = dfLF, palette = pal, bw = .2, cut = 0.,
+dy="noise"; dx="value"; ort="h";
+ax=pt.half_violinplot( x = dx, y = dy, data = dfLF, palette = pal2, bw = .2, cut = 0.,
                       scale = "area", width = .6, inner = None, orient = ort)
-ax=sns.stripplot( x = dx, y = dy, data = dfLF, palette = pal, edgecolor = "white", size = 3, jitter = 0.1, zorder = 0, orient = ort)
+ax=sns.stripplot( x = dx, y = dy, data = dfLF, palette = pal2, edgecolor = "white", size = 3, jitter = 0.1, zorder = 0, orient = ort)
 plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_noise_raincloudPlot.png'),bbox_inches = "tight")
 
 plt.figure()
-sns.boxplot(data=dfLF, x='value',y='noise', linewidth=(0.5),palette=pal)
+sns.boxplot(data=dfLF, x='value',y='noise', linewidth=(0.5),palette=pal2)
 plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_noise_boxplot.png'),bbox_inches = "tight")
 
 
 ## Plots comparing blocks (NV1, NV2, SiSSN1, SiSSN2)
+
 plt.figure()
-ax=sns.boxplot(data=dfLF, x='value',y='noise', hue='block', linewidth=(0.5),palette=sns.color_palette("husl", 6))
+ax=sns.boxplot(data=dfLF, x='value',y='noise', hue='block', linewidth=(0.5),palette=pal4)
 plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_block_boxplot.png'),bbox_inches = "tight")
 
 plt.figure()
-ax=sns.violinplot(data=dfLF, x='value',y='noise', hue='block', linewidth=(0.5),split=True, inner="quart", palette=pal)
+ax=sns.violinplot(data=dfLF, x='value',y='noise', hue='block', linewidth=(0.5),split=True, inner="quart", palette=pal4)
 plt.xlabel('percent correct')
 if vers_sns >= 12: sns.move_legend(ax, "center left")
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_block_violinplot.png'),bbox_inches = "tight")
@@ -143,17 +149,17 @@ plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_levels_block_boxplot_v2.png'),bbox_inches = "tight")
 
 plt.figure()
-ax=sns.boxplot(data=dfSNL_LF, x='value',y='block', hue='levels', linewidth=(0.5))
+ax=sns.boxplot(data=dfSNL_LF, x='value',y='block', hue='levels', linewidth=(0.5), palette=pal3)
 plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_levels_block_boxplot.png'),bbox_inches = "tight")
 
 plt.figure()
-ax=sns.boxplot(data=dfSNL_LF, x='value',y='noise', hue='levels', linewidth=(0.5))
+ax=sns.boxplot(data=dfSNL_LF, x='value',y='noise', hue='levels', linewidth=(0.5), palette=pal3)
 plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_levels_noise_boxplot.png'),bbox_inches = "tight")
 
 plt.figure()
-ax=sns.violinplot(data=dfSNL_LF, x='value',y='levels', hue='noise', linewidth=(0.5),split=True, inner="quart", palette=pal)
+ax=sns.violinplot(data=dfSNL_LF, x='value',y='levels', hue='noise', linewidth=(0.5),split=True, inner="quart", palette=pal2)
 plt.xlabel('percent correct')
 if vers_sns >= 12: sns.move_legend(ax, "lower left")
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_levels_noise_violinplot.png'),bbox_inches = "tight")
@@ -161,8 +167,7 @@ if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_levels_noise_violinplot.png'
 
 ## Plots comparing the different stimuli (CallSign, Colour, Number)
 plt.figure()
-pal = ('#648fff', '#dc267f', '#ffb000')
-ax=sns.boxplot(dfTotal,linewidth=(0.5), orient=('h'), palette=pal)
+ax=sns.boxplot(dfTotal,linewidth=(0.5), orient=('h'), palette=pal3)
 ax.set_xlim(30,100)
 plt.xlabel('percent correct')
 plt.ylabel('stimulus')
@@ -171,9 +176,9 @@ if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_stim_boxplot.png'),bbox_inch
 plt.figure()
 f, ax = plt.subplots(figsize=(7, 5))
 dy="variable"; dx="value"; ort="h"
-ax=pt.half_violinplot( x = dx, y = dy, data = dfLF, palette = pal, bw = .2, cut = 0.,
+ax=pt.half_violinplot( x = dx, y = dy, data = dfLF, palette = pal3, bw = .2, cut = 0.,
                       scale = "area", width = .6, inner = None, orient = ort)
-ax=sns.stripplot( x = dx, y = dy, data = dfLF, palette = pal, edgecolor = "white", size = 3, jitter = 0.1, zorder = 0, orient = ort)
+ax=sns.stripplot( x = dx, y = dy, data = dfLF, palette = pal3, edgecolor = "white", size = 3, jitter = 0.1, zorder = 0, orient = ort)
 plt.ylabel('stimulus')
 plt.xlabel('percent correct')
 if save ==1: plt.savefig((diroutput+ '\\'+taskID+ '_stim_raincloudPlot.png'),bbox_inches = "tight")

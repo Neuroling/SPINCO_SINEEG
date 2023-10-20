@@ -22,7 +22,7 @@ taskID = 'task-sin'
 
 # PATHS
 thisDir = os.path.dirname(os.path.abspath(__file__))
-subIDs= os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata'))
+subIDs= [item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 
 for subID in subIDs:
