@@ -21,28 +21,29 @@ from sys import getsizeof
 # inputs and paths Paths
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-
+subjID='s015'
 
 thisDir = os.path.dirname(os.path.abspath(__file__))
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID + '_preproc_epoched',subjID)
 
-#%% This will go in a funs file later
-def eeglabEpo2mneEpo(fileinput):
-    """ takes the epoched .set file from EEGLAB and returns an mne.Epochs object
-    parameters: eeglab epoch file ending in .set
-    """
-    epochs = mne.io.read_epochs_eeglab(fileinput)
-    epo_fn = fileinput[:fileinput.find('_epoched.set')]+'-epo.fif'
-    epochs.save(epo_fn)
-    #epo = mne.read_epochs(epo_fn)
-    #return epochs
+# #%% This will go in a funs file later
+# def eeglabEpo2mneEpo(fileinput):
+#     """ takes the epoched .set file from EEGLAB and returns an mne.Epochs object
+#     parameters: eeglab epoch file ending in .set
+#     """
+#     epochs = mne.io.read_epochs_eeglab(fileinput)
+#     epo_fn = fileinput[:fileinput.find('_epoched.set')]+'-epo.fif'
+#     epochs.save(epo_fn, overwrite=True, fmt='double')
+#     #epo = mne.read_epochs(epo_fn)
+#     #return epochs
 
-#%% loop over subjs
-for subjID in subjIDs:
-    dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID + '_preproc_epoched',subjID)
-    fileinput = glob(os.path.join(dirinput, "*_epoched.set"), recursive=True)[0]
-    eeglabEpo2mneEpo(fileinput)
+# #%% loop over subjs
+# for subjID in subjIDs:
+#     dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID + '_preproc_epoched',subjID)
+#     fileinput = glob(os.path.join(dirinput, "*_epoched.set"), recursive=True)[0]
+#     print(fileinput)
+#     eeglabEpo2mneEpo(fileinput)
 
 
 # %% Read epochs
@@ -53,9 +54,13 @@ n_epochs = len(epochs.get_data())
 epo_fn = fileinput[:fileinput.find('_epoched.set')]+'-epo.fif'
 
 # Save as mne object fif
-epochs.save(epo_fn, overwrite=True)
-epo = mne.read_epochs(epo_fn)
+epochs.save(epo_fn, overwrite=True,fmt='double')
 
+
+epo = mne.read_epochs(epo_fn)
+epo.plot()
+
+# %% Read epochs
 
 # # CHECK EVENT CODES 
 # #  
