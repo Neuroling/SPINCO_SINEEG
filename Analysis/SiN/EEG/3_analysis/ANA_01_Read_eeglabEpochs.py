@@ -15,50 +15,59 @@ ioepoch ...
 import os
 from glob import glob
 import scipy.io as sio
+import numpy as np
 import mne 
-from sys import getsizeof
+import pandas as pd
+import MVPA.ANA_01_helper as hp
 
 # inputs and paths Paths
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
 subjID='s015'
 
+
 thisDir = os.path.dirname(os.path.abspath(__file__))
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID + '_preproc_epoched',subjID)
 
-# #%% This will go in a funs file later
-# def eeglabEpo2mneEpo(fileinput):
-#     """ takes the epoched .set file from EEGLAB and returns an mne.Epochs object
-#     parameters: eeglab epoch file ending in .set
-#     """
-#     epochs = mne.io.read_epochs_eeglab(fileinput)
-#     epo_fn = fileinput[:fileinput.find('_epoched.set')]+'-epo.fif'
-#     epochs.save(epo_fn, overwrite=True, fmt='double')
-#     #epo = mne.read_epochs(epo_fn)
-#     #return epochs
 
-# #%% loop over subjs
+#%% creating .fif files - takes a lot of ressources, only run if necessary
 # for subjID in subjIDs:
 #     dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID + '_preproc_epoched',subjID)
 #     fileinput = glob(os.path.join(dirinput, "*_epoched.set"), recursive=True)[0]
 #     print(fileinput)
-#     eeglabEpo2mneEpo(fileinput)
+#     hp.eeglabEpo2mneEpo(fileinput)
 
+
+#%% Read accu.tsv files for the event ids
+events_fp = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID, subjID)
+events_fp = glob(os.path.join(events_fp, "*accu.tsv"), recursive=True)[0]
+events_tsv = pd.read_csv(events_fp,sep='\t')
+
+#%% making an array of event ids to add to the epochs file
+event_ids = np.zeros(shape=(1152,3))
+idx = 0
+for i in range(1,len(events_tsv)):
+    if np.isnan(events_tsv['ACCURACY'][i]):
+        continue
+    else:
+        event_ids[idx] = [(events_tsv['SAMPLES'][i]),(events_tsv['VALUE'][i]),(events_tsv['ACCURACY'][i])]
+        idx=idx+1
+        
+del events_fp, events_tsv
+event_idds = [1,0]
+
+#%% from set file
+fileinput = glob(os.path.join(dirinput, "*_epoched.set"), recursive=True)[0]
+epochs = mne.io.read_epochs_eeglab(fileinput, events= event_ids, event_id=event_idds)
 
 # %% Read epochs
+#epochs.events= event_ids.astype(int)
 
-fileinput = glob(os.path.join(dirinput, "*_epoched.set"), recursive=True)[0]
-epochs = mne.io.read_epochs_eeglab(fileinput)
-n_epochs = len(epochs.get_data())
 epo_fn = fileinput[:fileinput.find('_epoched.set')]+'-epo.fif'
-
-# Save as mne object fif
-epochs.save(epo_fn, overwrite=True,fmt='double')
-
-
+epochs.save(epo_fn, overwrite=True, fmt='double')
 epo = mne.read_epochs(epo_fn)
-epo.plot()
+# epo.plot()
 
 # %% Read epochs
 

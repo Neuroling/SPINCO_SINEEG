@@ -7,8 +7,8 @@
 %% ---------------------------------------------------------------------------
 clear all; close all; 
 % Use subject list if you want to epoch several subjects at once 
-subjectList = {'s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013'};
-
+%subjectList = {'s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013'};
+subjectList = {'s001','s015'};
 %%
 for s = 1:length(subjectList)
     % user input
