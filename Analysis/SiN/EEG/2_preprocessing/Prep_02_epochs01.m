@@ -7,8 +7,8 @@
 %% ---------------------------------------------------------------------------
 clear all; close all; 
 % Use subject list if you want to epoch several subjects at once 
-%subjectList = {'s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013'};
-subjectList = {'s001','s015'};
+subjectList = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013','s015'};
+
 %%
 for s = 1:length(subjectList)
     % user input
@@ -28,7 +28,8 @@ for s = 1:length(subjectList)
     diroutput = fullfile(baseDir,'Data','SiN','derivatives',  pipelineID, [taskID,'_preproc_epoched'],subjID);
 
     %  find files 
-    fileinput = dir([dirinput_deriv,filesep,'*p_',subjID,'*.mat']); % find preproc file
+    fileinput = dir([dirinput_deriv,filesep,'*p_',subjID,'_',taskID,'*.mat']); % find preproc file
+    
     %% Load preprocessed file 
     eeglab ;
     preproc_data = load(fullfile(fileinput.folder,fileinput.name));
@@ -58,8 +59,13 @@ for s = 1:length(subjectList)
 
     % Combine target code and accuracy 
     accu_str(idx_targets_in_tsv) = strcat(accu_str(idx_targets_in_tsv),'_',string(tabEvent.VALUE(idx_targets_in_tsv)));
+%     %%
+    %EEG = pop_editeventvals(EEG, 'delete', [101,110,120,200,201,210,220])
+%     tcs = [111 112 113 114 211 212 213 214 121 122 123 124 221 222 223 224 131 132 133 134 231 232 233 234]
+%     tcs = string(tcs)
+%     EEG = pop_selectevent('type',[111 112 113 114 211 212 213 214 121 122 123 124 221 222 223 224 131 132 133 134 231 232 233 234])
 
-    % Add it to the EEG events, add 'miss' if response was missing 
+    %% Add it to the EEG events, add 'miss' if response was missing 
     for i = 1:length(idx_targets_in_tsv)
         if ismissing(accu_str(idx_targets_in_tsv(i)))        
             EEG.event(idx_targets_in_tsv(i)).type = string(strcat('miss_',EEG.event(idx_targets_in_tsv(i)).type));
@@ -86,14 +92,26 @@ for s = 1:length(subjectList)
       disp(['>>-> ' , num2str(length(targets_with_resp) + length(targets_with_missing_resp) ), ' target events found '])
       disp(['>>---> ' , num2str(length(targets_with_resp)), ' target events found with a response'])
       disp(['>>-----> ',num2str(length(targets_with_missing_resp)), ' target events missed a response'])
-
-    % do epoching
-     EEG =  pop_epoch(EEG, event_types_to_epoch, [epoch_t0 epoch_t1], 'newname', ... 
+    
+    %% do epoching
+      EEG =  pop_epoch(EEG, event_types_to_epoch, [epoch_t0 epoch_t1], 'newname', ... 
              strrep(fileinput.name,'.mat','_epoched'), ...
             'epochinfo', 'yes');
+    %% 
+    event_types={EEG.event.type};
+    n=1;
+    indxs=[]
+    for i = 1:length(event_types)
+        if length(event_types{i}) ~= 7
+            indxs(n)=i;
+            n=n+1;
+        end
+    end
+    
+    EEG = pop_editeventvals(EEG, 'delete', indxs);
 
     %% Save and  Export 
     mkdir(diroutput)
-    pop_saveset (EEG, [EEG.setname,'.set'], diroutput);
+    pop_saveset (EEG, [EEG.setname,'_2.set'], diroutput);
     clear EEG ALLEEG
 end
