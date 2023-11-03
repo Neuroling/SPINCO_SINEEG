@@ -58,9 +58,10 @@ for s = 1:length(subjectList)
     % replace 1 and 0 by string
     accu_str = replace(string(tabEvent.ACCURACY), {'1', '0'}, {'cor', 'inc'});
 
-    % Combine target code and accuracy 
+    % Combine target code and accuracy  
     accu_str(idx_targets_in_tsv) = strcat(accu_str(idx_targets_in_tsv),'/',string(tabEvent.VALUE(idx_targets_in_tsv)));
-
+    
+    % Replaced separator '_' by '/' for being able to filter in mne
     accu_str = replace(accu_str,{'/11','/12','/13','/21','/22','/23'},{'/NV/CallSign/','/NV/Colour/','/NV/Number/','/SSN/CallSign/','/SSN/Colour/','/SSN/Number/'});
 
     %% Add it to the EEG events, add 'miss' if response was missing 

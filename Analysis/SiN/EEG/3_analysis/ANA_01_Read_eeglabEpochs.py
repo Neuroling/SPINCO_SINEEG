@@ -23,7 +23,7 @@ thisDir = os.path.dirname(os.path.abspath(__file__))
 for subjID in cs.subjIDs:
     EmHp = hp.EpochManager(subjID)
     EmHp.set2fif(metadata=True)
-
+    
 
 
 # #%%
