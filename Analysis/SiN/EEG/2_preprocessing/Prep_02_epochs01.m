@@ -11,8 +11,9 @@ subjectList = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s
 
 %%
 for s = 1:length(subjectList)
-    % user input
-    subjID = subjectList{s};
+    % % user input
+     subjID = subjectList{s};
+
     pipelineID = 'pipeline-01';
     taskID = 'task-sin';
     epoch_t0 = -0.5; % start time in seconds  
@@ -22,14 +23,14 @@ for s = 1:length(subjectList)
     folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
     baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
     addpath(fullfile(baseDir,'Tools','eeglab_current','eeglab2023.0'))
-    
+
     dirinput_raw = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, taskID,subjID) ;
     dirinput_deriv = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, [taskID,'_preproc'],subjID) ;
     diroutput = fullfile(baseDir,'Data','SiN','derivatives',  pipelineID, [taskID,'_preproc_epoched'],subjID);
 
-    %  find files 
+    %  find files - won't work if "current folder" is anything but the root
     fileinput = dir([dirinput_deriv,filesep,'*p_',subjID,'_',taskID,'*.mat']); % find preproc file
-    
+
     %% Load preprocessed file 
     eeglab ;
     preproc_data = load(fullfile(fileinput.folder,fileinput.name));
@@ -58,17 +59,14 @@ for s = 1:length(subjectList)
     accu_str = replace(string(tabEvent.ACCURACY), {'1', '0'}, {'cor', 'inc'});
 
     % Combine target code and accuracy 
-    accu_str(idx_targets_in_tsv) = strcat(accu_str(idx_targets_in_tsv),'_',string(tabEvent.VALUE(idx_targets_in_tsv)));
-%     %%
-    %EEG = pop_editeventvals(EEG, 'delete', [101,110,120,200,201,210,220])
-%     tcs = [111 112 113 114 211 212 213 214 121 122 123 124 221 222 223 224 131 132 133 134 231 232 233 234]
-%     tcs = string(tcs)
-%     EEG = pop_selectevent('type',[111 112 113 114 211 212 213 214 121 122 123 124 221 222 223 224 131 132 133 134 231 232 233 234])
+    accu_str(idx_targets_in_tsv) = strcat(accu_str(idx_targets_in_tsv),'/',string(tabEvent.VALUE(idx_targets_in_tsv)));
+
+    accu_str = replace(accu_str,{'/11','/12','/13','/21','/22','/23'},{'/NV/CallSign/','/NV/Colour/','/NV/Number/','/SSN/CallSign/','/SSN/Colour/','/SSN/Number/'});
 
     %% Add it to the EEG events, add 'miss' if response was missing 
     for i = 1:length(idx_targets_in_tsv)
         if ismissing(accu_str(idx_targets_in_tsv(i)))        
-            EEG.event(idx_targets_in_tsv(i)).type = string(strcat('miss_',EEG.event(idx_targets_in_tsv(i)).type));
+            EEG.event(idx_targets_in_tsv(i)).type = string(strcat('miss/',EEG.event(idx_targets_in_tsv(i)).type));
         else 
             EEG.event(idx_targets_in_tsv(i)).type = accu_str(idx_targets_in_tsv(i));
         end 
@@ -83,8 +81,8 @@ for s = 1:length(subjectList)
     %% Epoch    
     % --------------------------------------
       %Define events to epoched 
-      targets_with_missing_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(miss)')));
-      targets_with_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(cor_|inc_)')));
+      targets_with_missing_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(miss/)')));
+      targets_with_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(cor/|inc/)')));
 
       event_types_to_epoch = unique({EEG.event(targets_with_resp).type});
 
@@ -92,7 +90,7 @@ for s = 1:length(subjectList)
       disp(['>>-> ' , num2str(length(targets_with_resp) + length(targets_with_missing_resp) ), ' target events found '])
       disp(['>>---> ' , num2str(length(targets_with_resp)), ' target events found with a response'])
       disp(['>>-----> ',num2str(length(targets_with_missing_resp)), ' target events missed a response'])
-    
+
     %% do epoching
       EEG =  pop_epoch(EEG, event_types_to_epoch, [epoch_t0 epoch_t1], 'newname', ... 
              strrep(fileinput.name,'.mat','_epoched'), ...
@@ -102,12 +100,12 @@ for s = 1:length(subjectList)
     n=1;
     indxs=[]
     for i = 1:length(event_types)
-        if length(event_types{i}) ~= 7
+        if length(event_types{i}) <= 7
             indxs(n)=i;
             n=n+1;
         end
     end
-    
+
     EEG = pop_editeventvals(EEG, 'delete', indxs);
 
     %% Save and  Export 

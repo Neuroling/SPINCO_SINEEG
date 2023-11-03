@@ -18,12 +18,13 @@ import scipy.io as sio
 import numpy as np
 import mne 
 import pandas as pd
-import MVPA.ANA_01_helper as hp
+#import MVPA.ANA_01_helper as hp
 
-# inputs and paths Paths
+#%% inputs and paths
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-subjID='s011'
+subjID='s015'
+setFileEnd = '_epoched_2.set'
 
 
 thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -31,8 +32,8 @@ subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts
 
 #%% input directories
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID + '_preproc_epoched',subjID)
-set_fp = glob(os.path.join(dirinput, "*_epoched_2.set"), recursive=True)[0]
-epo_fp = set_fp[:set_fp.find('_epoched_2.set')]+'-epo.fif'
+set_fp = glob(os.path.join(dirinput, str("*"+ setFileEnd)), recursive=True)[0]
+epo_fp = set_fp[:set_fp.find(setFileEnd)]+'-epo.fif'
 
 #%% Read accu.tsv files for the event ids
 events_fp = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', pipeID, taskID, subjID)
@@ -69,19 +70,13 @@ event_ids['stim'].replace([131,132,133,134,231,232,233,234],'Number',inplace=Tru
 
 #%% read epochs from eeglab .set file & save as mne .fif file
 epochs = mne.io.read_epochs_eeglab(set_fp)
-epochs.metadata=event_ids
+epochs.metadata=event_ids # add metadata
 epochs.save(epo_fp, overwrite=True, fmt='double')
 
 #%% Read epochs from .fif file
 epo = mne.read_epochs(epo_fp)
-epo.plot(events=True)
-
-#%% epoch to evoked
-evo = epo.average(by_event_type=True)
-
-
-#%% Create metadata
-
+# epo.plot(events=True)
+# epo_filt = epo.__getitem__('cor')
 
 # %% Read epochs
 
