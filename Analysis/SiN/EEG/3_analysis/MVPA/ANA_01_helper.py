@@ -6,16 +6,93 @@
 
 """ 
 import mne
+import MVPA.ANA_01_constants as cs
+import os
+from glob import glob
+import pandas as pd
+import numpy as np
 
-def eeglabEpo2mneEpo(fileinput):
-    """ takes the epoched .set file from EEGLAB and returns an mne.Epochs object
+class EpochManager:
+    def __init__(self, subjID):
+        self.subjID = subjID
+        self.thisDir = cs.thisDir
+        self.dirinput = os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', cs.pipeID, cs.taskID + '_preproc_epoched',subjID)
+        self.set_fp = glob(os.path.join(self.dirinput, str("*"+ cs.setFileEnd)), recursive=True)[0]
+        self.epo_fp = self.set_fp[:self.set_fp.find(cs.setFileEnd)]+'-epo.fif'
+        self.events_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', cs.pipeID, cs.taskID, subjID,"*accu.tsv"), recursive=True)[0]
+        self.beh_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, cs.taskID, 'beh',"*.csv"), recursive=True)[0]
+        
+    def set2fif(self,fileinput=None,fileoutput=None,metadata=False):
+        """ takes the epoched .set file from EEGLAB and returns an mne.Epochs object
+        
+        parameters: 
+            fileinput : eeglab epoch file ending in .set (default is set_fp)
+            fileoutput : where the mne file ending in .fif will be saved (default is epo_fp)
+            metadata : if metadata should be constructed and added (default is false)
+        """
+        if fileinput is None:
+            fileinput = self.set_fp
+        if fileoutput is None:
+            fileoutput = self.epo_fp
+        epochs = mne.io.read_epochs_eeglab(fileinput)
+        if metadata==True:
+            epochs = self.AddMetadata(epochs)
+        epochs.save(fileoutput, overwrite=True, fmt='double')
+        epo = mne.read_epochs(fileoutput)
+        return epo
     
-    parameters: 
-        fileinput : eeglab epoch file ending in .set
-    """
-    epochs = mne.io.read_epochs_eeglab(fileinput)
-    epo_fn = fileinput[:fileinput.find('.set')]+'-epo.fif'
-    epochs.save(epo_fn, overwrite=True, fmt='double')
-    del epochs
-    epo = mne.read_epochs(epo_fn)
-    return epo
+    def AddMetadata(self, epochs):
+        """ adds some metadata to the epochs. The metadata is taken from the
+        accu.tsv file and the behavioural output .csv file
+        
+        """
+        events_tsv = pd.read_csv(self.events_fp,sep='\t')
+        beh_csv = pd.read_csv(self.beh_fp)
+        
+        # Adding the info from the tsv to the mtdt array
+        tmp = len(events_tsv) - events_tsv['ACCURACY'].isnull().sum()
+        mtdt = np.zeros(shape=(tmp,3))
+        idx = 0
+        for i in range(1,len(events_tsv)):
+            if np.isnan(events_tsv['ACCURACY'][i]):
+                continue
+            else:
+                mtdt[idx] = [(events_tsv['SAMPLES'][i]),(events_tsv['VALUE'][i]),(events_tsv['ACCURACY'][i])]
+                idx=idx+1
+                
+        mtdt=pd.DataFrame(mtdt,columns=['tf','stim_code','accuracy'])
+        mtdt['accuracy'].replace(0,'inc', inplace=True)
+        mtdt['accuracy'].replace(1,'cor', inplace=True)
+        mtdt['block']=mtdt['stim_code']
+        mtdt['block'].replace([111,112,113,114,121,122,123,124,131,132,133,134],'NV',inplace=True)
+        mtdt['block'].replace([211,212,213,214,221,222,223,224,231,232,233,234],'NV',inplace=True)
+        mtdt['stim']=mtdt['stim_code']
+        mtdt['stim'].replace([111,112,113,114,211,212,213,214],'CallSign',inplace=True)
+        mtdt['stim'].replace([121,122,123,124,221,222,223,224],'Colour',inplace=True)
+        mtdt['stim'].replace([131,132,133,134,231,232,233,234],'Number',inplace=True)
+        
+        #adding the info from the csv to the mtdt array
+        beh_csv = beh_csv[['voice', 'levels', 'callSignCorrect','colourCorrect','numberCorrect']]
+        beh_csv=beh_csv.replace(['-11db','0.2p'], 'Lv3')
+        beh_csv=beh_csv.replace(['-9db','0.4p'], 'Lv2')
+        beh_csv=beh_csv.replace(['-7db','0.6p'], 'Lv1')
+        levels_mtdt = list()
+        voice_mtdt = list()
+        for i in range(1,len(beh_csv)):
+            if str(beh_csv['levels'][i]).startswith('L'):
+                if beh_csv['callSignCorrect'][i] != "NO_ANSW":
+                    levels_mtdt.append(beh_csv['levels'][i])
+                    voice_mtdt.append(beh_csv['voice'][i])
+                if beh_csv['colourCorrect'][i] != "NO_ANSW":
+                    levels_mtdt.append(beh_csv['levels'][i])
+                    voice_mtdt.append(beh_csv['voice'][i])
+                if beh_csv['numberCorrect'][i] != "NO_ANSW":
+                    levels_mtdt.append(beh_csv['levels'][i])
+                    voice_mtdt.append(beh_csv['voice'][i])
+                    
+        mtdt['levels'] = levels_mtdt
+        mtdt['voice'] = voice_mtdt
+        
+        epochs.metadata = mtdt
+        return epochs
+    
