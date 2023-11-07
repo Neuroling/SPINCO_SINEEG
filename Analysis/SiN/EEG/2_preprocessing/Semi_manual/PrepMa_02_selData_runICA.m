@@ -14,10 +14,13 @@ taskID = 'task-sin';
 dirinput = fullfile(baseDir, 'Data','SiN','derivatives_SM',taskID) ;
 diroutput = dirinput;
 
-%% Read table  with badchannels 
+%% Read table  with badchannels (SAM)
+chanCheck= readtable(fullfile(baseDir, 'Data','SiN','derivatives_SM','QualityAssessment.xlsx'));
+rowlabels=chanCheck.SUBJ;
+chanCheck=table(chanCheck.all_3, 'RowNames',rowlabels);
 
 %% find data 
-files = dir([dirinput,filesep,'**',filesep,'*',taskID,'*.set']) 
+files = dir([dirinput,filesep,'**',filesep,'*',taskID,'*.set']);
 
 %% loop thru files 
 %for f = 1:length(files)
@@ -25,6 +28,7 @@ for f= 1
 
     % input file 
     fileinput = fullfile(files(f).folder, files(f).name); 
+    subjID=files(f).name(1:4);
 
     %% Load set and run ICA 
     
@@ -38,14 +42,15 @@ for f= 1
     %Exclude EOGs 
     EEG = pop_select( EEG, 'rmchannel',{'EXT1','EXT2','EXT3','EXT4'});
 
-    %% EXCLUDE BAD CHANNELS 
+    %% EXCLUDE BAD CHANNELS (SAM)
      % Compare subjID in filename and in table with bad channels
-     
+     badChans = chanCheck(subjID,:);
+     badChans=split(badChans.Var1, ',');
      % find bad channels for this subject 
      
      
      % exclude from eeg    
-    EEG = pop_select( EEG, 'rmchannel',{'here the bad channels '});
+    EEG = pop_select( EEG, 'rmchannel',badChans);
     
      
     
