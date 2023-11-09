@@ -11,27 +11,58 @@ reading epoched eeglab .set files and saves mne .fif files
 import os
 from glob import glob
 import scipy.io as sio
-import numpy as np
+# import numpy as np
 import mne 
-import pandas as pd
-import MVPA.ANA_01_helper as hp
-import MVPA.ANA_01_constants as cs
+# import pandas as pd
+import MVPA.ANA_01_helper as helper
+import MVPA.ANA_01_constants as const
 
+#%% below is for debugging purposes
+subjID= 's001'
 thisDir = os.path.dirname(os.path.abspath(__file__))
+dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID + '_preproc_epoched',subjID)
+set_fp = glob(os.path.join(dirinput, str("*"+ const.setFileEnd)), recursive=True)[0]
+epo_fp = set_fp[:set_fp.find(const.setFileEnd)]+'-epo.fif'
+events_fp = glob(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
+beh_fp = glob(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
 
-#%% ============== EEGLAB .set TO MNE .fif ===================================
-for subjID in cs.subjIDs:
-    EmHp = hp.EpochManager(subjID)
-    EmHp.set2fif(metadata=True)
+#%% ============== EEGLAB .set TO MNE .fif =============================================================================
+## Looping over subj, will read epoched .set files, add metadata, and then save them to .fif files
+
+# for subjID in const.subjIDs:
+#     EpoManager = helper.EpochManager(subjID)
+#     EpoManager.set2fif(metadata=True)
     
+#%%
+subjID= 's001'
+EpoManager = helper.EpochManager(subjID)
+epo = EpoManager.readEpo()
+epo.info
+
+epo.plot(events=True)
+
+#%%
+# epochs = mne.io.read_epochs_eeglab(set_fp)   
+# # Relevant event fields
+# mdat = sio.loadmat(set_fp,squeeze_me = True,simplify_cells = True,mat_dtype=True)
+
+#%% This is theoretically how you could recode the events with the use of metadata, but it needs to be int with base10
+# and then you need to change the event_id dict to accommodate that
+for epIdx in range(len(epo.events)):
+    epo.events[epIdx][2]=epo.metadata['accuracy'][epIdx]
+     
+     
+# #     # recode events in MNE-read data
+# #     for epIdx in range(len(epochs.events)):
+# #         epochs.events[epIdx][2]=epochAccu[epIdx]*10 + epochDeg[epIdx]
+# #     # add event information 
+# #     epochs.event_id = {'corr/clear': 10,'corr/easy': 11,'corr/mid': 12,'corr/hard': 13,'incorr/clear': 0,'incorr/easy': 1,'incorr/mid': 2,'incorr/hard': 3}
+      
 
 
-# #%%
-# epo.plot(events=True)
-# epo_filt = epo.__getitem__('cor')
+#%% Old code to reuse
 
 
-# #################%% Below: old stuff, still needed
 # # # CHECK EVENT CODES 
 # # #  
 
