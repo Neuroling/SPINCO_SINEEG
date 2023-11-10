@@ -43,12 +43,14 @@ class EpochManager:
         self.events_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
         self.beh_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
     
+    
     def readEpo(self):
         """
         reads the epoched .fif file using the filepaths set by EpochManager
         """
         epo = mne.read_epochs(self.epo_fp)
         return epo
+    
     
     def set2fif(self,fileinput=None,fileoutput=None,addMetadata=False,relabelEvents=False):
         """ takes the epoched .set file from EEGLAB and saves it as .fif file from MNE
@@ -75,18 +77,29 @@ class EpochManager:
             epochs = self.relabelEvents(epochs)
         epochs.save(fileoutput, overwrite=True, fmt='double')
 
+
+    def addMetadata(self,epochs):
+        """
+        adds metadata to the epochs
+        metadata is constructed by calling constructMetadata
+
+        """
+        self.constructMetadata(epochs)
+        epochs.metadata = self.metadata
+        return epochs
     
-    def constructMetadata(self, epochs):
-        """ constructs some metadata for the epochs. The metadata is taken from the
-        accu.tsv file and the behavioural output .csv file
+    
+    def constructMetadata(self):
+        """ constructs some metadata for the epochs, using the accu.tsv file and the behavioural output .csv file. 
+        Filepaths are handled by EpochManager.__init__
         
         This function is called by addMetadata
-        
         """
+        # Reading files
         events_tsv = pd.read_csv(self.events_fp,sep='\t')
         beh_csv = pd.read_csv(self.beh_fp)
         
-        ## Adding the info from the tsv to the metadat array
+        ## Adding the info from the tsv to the metadat array, skipping missed responses
         tmp = len(events_tsv) - events_tsv['ACCURACY'].isnull().sum()
         metadat = np.zeros(shape=(tmp,3))
         idx = 0
@@ -97,7 +110,7 @@ class EpochManager:
                 metadat[idx] = [(events_tsv['SAMPLES'][i]),(events_tsv['VALUE'][i]),(events_tsv['ACCURACY'][i])]
                 idx=idx+1
         
-        ## re-labelling the stim_codes to make them more legible        
+        ## renaming to make everything more legible        
         metadat=pd.DataFrame(metadat,columns=['tf','stim_code','accuracy'])
         metadat['accuracy'].replace(0,'inc', inplace=True)
         metadat['accuracy'].replace(1,'cor', inplace=True)
@@ -117,7 +130,7 @@ class EpochManager:
         levels_metadat = list()
         voice_metadat = list()
         
-        ## excluding trials with no response
+        ## exclude trials with no response
         for i in range(1,len(beh_csv)):
             if str(beh_csv['levels'][i]).startswith('L'):
                 if beh_csv['callSignCorrect'][i] != "NO_ANSW":
@@ -130,21 +143,12 @@ class EpochManager:
                     levels_metadat.append(beh_csv['levels'][i])
                     voice_metadat.append(beh_csv['voice'][i])
         
-        ## adding it to the metadata
+        ## adding it to the metadat array
         metadat['levels'] = levels_metadat
         metadat['voice'] = voice_metadat
         self.metadata = metadat
         
-    def addMetadata(self,epochs):
-        """
-        adds metadata to the epochs
-        metadata is constructed by calling constructMetadata
 
-        """
-        self.constructMetadata(epochs)
-        epochs.metadata = self.metadata
-        return epochs
-    
     def relabelEvents(self,epochs,metadata=None):
         """
         relabels events and event_id using the metadata.
@@ -155,7 +159,7 @@ class EpochManager:
         ----------
         epochs : epochs.EpochsFIF
             the epoched data
-        metadata : metadata. Default is None, which will use the metadata from constructMetadata
+        metadata : metadata. Default is None, which will call constructMetadata
 
         Returns
         -------
@@ -166,12 +170,13 @@ class EpochManager:
             mtdat = metadata
         elif 'self.metadata' in locals():
             mtdat = self.metadata
-            print('hey sam, it works (line 169) :D')
+            print('hey sam, it works (line 169) :D') #remove this comment later [abcde]
         else:
             self.constructMetadata(epochs)
             print('constructing metadata')
             mtdat = self.metadata
         
+        #recoding the metadata because epochs.events need to be numeric
         mtdat['block'].replace('NV',1,inplace=True)
         mtdat['block'].replace('SSN',2,inplace=True)
         mtdat['stim'].replace('CallSign',1,inplace=True)
@@ -185,9 +190,10 @@ class EpochManager:
         mtdat['voice'].replace('Neural2-F',1,inplace=True)
         mtdat['voice'].replace('Neural2-D',2,inplace=True)
         
+        # put the recoded metadata together to create numeric codes
         for epIdx in range(len(epochs.events)):
             epochs.events[epIdx][2]=mtdat['block'][epIdx]*10000+ mtdat['stim'][epIdx]*1000+ mtdat['levels'][epIdx]*100+ mtdat['accuracy'][epIdx]*10+ mtdat['voice'][epIdx]
-        epochs.event_id = const.event_id       
+        epochs.event_id = const.event_id # using the   event_id dict from the constants
         return epochs
   
     

@@ -3,7 +3,7 @@
 =================================================================
 @author: samuemu & gfraga
 
-This script is a mess, because it is for trying out code and debugging before putting it into EPO_helper
+This script is an undocumented mess, because it is for trying out code and debugging before putting it into EPO_helper
 
 NOTE: 
     Some MNE plotting functions start bugging with matplotlib version 3.7.2 or earlier.
@@ -31,7 +31,7 @@ import EPO_constants as const
 # beh_fp = glob(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
 
    
-#%% Below: Used for debugging and trying new code to then put into the helper script
+#%% 
 
 subjID= 's001'
 EpoManager = helper.EpochManager(subjID)
