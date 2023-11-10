@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 
-""" Helper script fro ANA_01
+""" Helper script for EPO_runner
 =================================================================
 @author: samuemu
 
+This script contains all the functions needed to deal with MNE epoching.
+It requires EPO_constants for things that don't change across files.
+The functions are called by EPO_runner
+
 """ 
 import mne
-import MVPA.ANA_01_constants as const
+
 import os
 from glob import glob
 import pandas as pd
 import numpy as np
+thisDir = os.path.dirname(os.path.abspath(__file__))
+import EPO_constants as const
 
 class EpochManager:
     """
@@ -19,6 +25,7 @@ class EpochManager:
     It must therefore be called seperately for each subject.
     
     """
+    
     def __init__(self, subjID):
         """
         initialising function for EpochManager, used to determine file paths
@@ -35,7 +42,6 @@ class EpochManager:
         self.epo_fp = self.set_fp[:self.set_fp.find(const.setFileEnd)]+'-epo.fif'
         self.events_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
         self.beh_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
-        # self.metadata = 0
     
     def readEpo(self):
         """
@@ -158,11 +164,13 @@ class EpochManager:
         """
         if metadata != None:
             mtdat = metadata
+        elif 'self.metadata' in locals():
+            mtdat = self.metadata
+            print('hey sam, it works (line 169) :D')
         else:
-            # if self.metadata == 0:
-            #     self.constructMetadata(epochs)
-            # else:
-                mtdat = self.metadata
+            self.constructMetadata(epochs)
+            print('constructing metadata')
+            mtdat = self.metadata
         
         mtdat['block'].replace('NV',1,inplace=True)
         mtdat['block'].replace('SSN',2,inplace=True)
