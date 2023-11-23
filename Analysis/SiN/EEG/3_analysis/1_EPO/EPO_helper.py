@@ -38,17 +38,17 @@ class EpochManager:
         self.subjID = subjID
         self.thisDir = const.thisDir
         self.dirinput = os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID + '_preproc_epoched',subjID)
-        self.set_fp = glob(os.path.join(self.dirinput, str("*"+ const.setFileEnd)), recursive=True)[0]
-        self.epo_fp = self.set_fp[:self.set_fp.find(const.setFileEnd)]+'-epo.fif'
-        self.events_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
-        self.beh_fp = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
+        self.set_path = glob(os.path.join(self.dirinput, str("*"+ const.setFileEnd)), recursive=True)[0]
+        self.epo_path = self.set_path[:self.set_path.find(const.setFileEnd)]+'-epo.fif'
+        self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
+        self.beh_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
     
     
     def readEpo(self):
         """
         reads the epoched .fif file using the filepaths set by EpochManager
         """
-        epo = mne.read_epochs(self.epo_fp)
+        epo = mne.read_epochs(self.epo_path)
         return epo
     
     
@@ -56,8 +56,8 @@ class EpochManager:
         """ takes the epoched .set file from EEGLAB and saves it as .fif file from MNE
         
         parameters: 
-            fileinput : eeglab epoch file ending in .set (default is None, which will use the set_fp from EpochManager.__init__)
-            fileoutput : where the mne file ending in .fif will be saved (default is None, which will use the epo_fp from EpochManager.__init__)
+            fileinput : eeglab epoch file ending in .set (default is None, which will use the set_path from EpochManager.__init__)
+            fileoutput : where the mne file ending in .fif will be saved (default is None, which will use the epo_path from EpochManager.__init__)
             addMetadata : if metadata should be constructed and added (default is false)
             relabelEvents: if events should be relabelled (default is false)
         
@@ -67,9 +67,9 @@ class EpochManager:
         if relabelEvents==True and addMetadata==False:
             print('warning: metadata will be constructed to relabel events but will not be added')
         if fileinput is None:
-            fileinput = self.set_fp
+            fileinput = self.set_path
         if fileoutput is None:
-            fileoutput = self.epo_fp
+            fileoutput = self.epo_path
         epochs = mne.io.read_epochs_eeglab(fileinput)
         if addMetadata==True:
             epochs = self.addMetadata(epochs)
@@ -82,6 +82,8 @@ class EpochManager:
         """
         adds metadata to the epochs
         metadata is constructed by calling constructMetadata
+        
+        This function is called by set2fif (optional)
 
         """
         self.constructMetadata(epochs)
@@ -93,11 +95,14 @@ class EpochManager:
         """ constructs some metadata for the epochs, using the accu.tsv file and the behavioural output .csv file. 
         Filepaths are handled by EpochManager.__init__
         
-        This function is called by addMetadata
+        This function is called by addMetadata and by relabelEvents (optional)
+        
+        Returns:
+            metadata
         """
         # Reading files
-        events_tsv = pd.read_csv(self.events_fp,sep='\t')
-        beh_csv = pd.read_csv(self.beh_fp)
+        events_tsv = pd.read_csv(self.events_path,sep='\t')
+        beh_csv = pd.read_csv(self.beh_path)
         
         ## Adding the info from the tsv to the metadat array, skipping missed responses
         tmp = len(events_tsv) - events_tsv['ACCURACY'].isnull().sum()
@@ -110,7 +115,7 @@ class EpochManager:
                 metadat[idx] = [(events_tsv['SAMPLES'][i]),(events_tsv['VALUE'][i]),(events_tsv['ACCURACY'][i])]
                 idx=idx+1
         
-        ## renaming to make everything more legible        
+        ## adding columns for block, stimulus type and accuracy and renaming everything to be more leigble    
         metadat=pd.DataFrame(metadat,columns=['tf','stim_code','accuracy'])
         metadat['accuracy'].replace(0,'inc', inplace=True)
         metadat['accuracy'].replace(1,'cor', inplace=True)
@@ -147,12 +152,16 @@ class EpochManager:
         metadat['levels'] = levels_metadat
         metadat['voice'] = voice_metadat
         self.metadata = metadat
+        return metadat
         
 
     def relabelEvents(self,epochs,metadata=None):
         """
         relabels events and event_id using the metadata.
         event_id dict is taken from constants
+        
+        This function is called by set2fif (optional)
+        This function calls constructMetadata (optional)
         
 
         Parameters
@@ -166,7 +175,7 @@ class EpochManager:
         epochs : epochs.EpochsFIF
             epoched data with relabelled events and event_id
         """
-        if metadata != None:
+        if metadata != None: # if metadata is provided, use that
             mtdat = metadata
         elif 'self.metadata' in locals():
             mtdat = self.metadata
@@ -192,8 +201,8 @@ class EpochManager:
         
         # put the recoded metadata together to create numeric codes
         for epIdx in range(len(epochs.events)):
-            epochs.events[epIdx][2]=mtdat['block'][epIdx]*10000+ mtdat['stim'][epIdx]*1000+ mtdat['levels'][epIdx]*100+ mtdat['accuracy'][epIdx]*10+ mtdat['voice'][epIdx]
-        epochs.event_id = const.event_id # using the   event_id dict from the constants
+            epochs.events[epIdx][2]=mtdat['stim_code'][epIdx]*1000+ mtdat['levels'][epIdx]*100+ mtdat['accuracy'][epIdx]*10+ mtdat['voice'][epIdx]
+        epochs.event_id = const.event_id2 # using the   event_id dict from the constants
         return epochs
   
     

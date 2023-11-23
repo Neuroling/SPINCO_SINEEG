@@ -40,14 +40,14 @@ epo = EpoManager.readEpo()
 
 #%%
 
-# epo.info
-# epo.plot(events=True)
-epo.plot_image(picks=[41,42,43])
-#%%
-evo_NV=epo.__getitem__('NV').average()
-evo_SSN=epo.__getitem__('SSN').average()
+epo.info
+# # epo.plot(events=True)
+# epo.plot_image(picks=[41,42,43])
+# #%%
+# evo_NV=epo.__getitem__('NV').average()
+# evo_SSN=epo.__getitem__('SSN').average()
 
-mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
+# mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
 
 
 
