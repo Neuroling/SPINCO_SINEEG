@@ -20,11 +20,11 @@ rowlabels=chanCheck.SUBJ;
 chanCheck=table(chanCheck.all_3, 'RowNames',rowlabels);
 
 %% find data 
-files = dir([dirinput,filesep,'**',filesep,'*',taskID,'*.set']);
+files = dir([dirinput,filesep,'**',filesep,'*',taskID,'*_ds.set']);
 
 %% loop thru files 
-%for f = 1:length(files)
-for f= 1 
+for f = 1:length(files)
+%for f= 1 
 
     % input file 
     fileinput = fullfile(files(f).folder, files(f).name); 
@@ -40,24 +40,22 @@ for f= 1
     
     %% 
     %Exclude EOGs 
-    EEG = pop_select( EEG, 'rmchannel',{'EXT1','EXT2','EXT3','EXT4'});
+    EEG = pop_select( EEG, 'rmchannel',{'EXT1','EXT2','EXT3','EXT4','EXT5','EXT6','erg1'});
 
     %% EXCLUDE BAD CHANNELS (SAM)
      % Compare subjID in filename and in table with bad channels
      badChans = chanCheck(subjID,:);
      badChans=split(badChans.Var1, ',');
-     % find bad channels for this subject 
-     
-     
+ 
      % exclude from eeg    
-    EEG = pop_select( EEG, 'rmchannel',badChans);
+      EEG = pop_select( EEG, 'rmchannel',badChans);
     
      
     
     %% 
     % run ICA reducing the dimension by 1 to account for average reference     
-    EEG = pop_runica(EEG, 'icatype','runica','chanind',:);
-  
+     EEG = pop_runica( EEG, 'runica', 'extended', 1);
+
 
     %% Save 
     newsetname = [EEG.setname, '_ICA'];

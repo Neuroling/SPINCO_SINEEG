@@ -15,7 +15,7 @@ import os
 from glob import glob
 import pandas as pd
 import numpy as np
-thisDir = os.path.dirname(os.path.abspath(__file__))
+thisDir = os.getcwd()
 import EPO_constants as const
 
 class EpochManager:
@@ -86,7 +86,7 @@ class EpochManager:
         This function is called by set2fif (optional)
 
         """
-        self.constructMetadata(epochs)
+        self.constructMetadata()
         epochs.metadata = self.metadata
         return epochs
     
@@ -175,15 +175,16 @@ class EpochManager:
         epochs : epochs.EpochsFIF
             epoched data with relabelled events and event_id
         """
-        if metadata != None: # if metadata is provided, use that
-            mtdat = metadata
-        elif 'self.metadata' in locals():
-            mtdat = self.metadata
-            print('hey sam, it works (line 169) :D') #remove this comment later [abcde]
+        if metadata == None: # if metadata is provided, use that
+            if 'self.metadata' in locals():
+                mtdat = self.metadata
+                print('hey sam, it works (line 169) :D') #remove this comment later [abcde]
+            else:
+                self.constructMetadata()
+                print('constructing metadata')
+                mtdat = self.metadata
         else:
-            self.constructMetadata(epochs)
-            print('constructing metadata')
-            mtdat = self.metadata
+            mtdat = metadata
         
         #recoding the metadata because epochs.events need to be numeric
         mtdat['block'].replace('NV',1,inplace=True)
@@ -202,7 +203,7 @@ class EpochManager:
         # put the recoded metadata together to create numeric codes
         for epIdx in range(len(epochs.events)):
             epochs.events[epIdx][2]=mtdat['stim_code'][epIdx]*1000+ mtdat['levels'][epIdx]*100+ mtdat['accuracy'][epIdx]*10+ mtdat['voice'][epIdx]
-        epochs.event_id = const.event_id2 # using the   event_id dict from the constants
+        epochs.event_id = const.event_id # using the   event_id dict from the constants
         return epochs
   
     

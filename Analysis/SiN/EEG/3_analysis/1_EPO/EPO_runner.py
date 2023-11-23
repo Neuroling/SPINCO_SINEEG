@@ -15,7 +15,7 @@ Created on Fri Nov 10 14:59:24 2023
 import os
 # from glob import glob
 # import scipy.io as sio
-thisDir = os.path.dirname(os.path.abspath(__file__))
+thisDir = os.getcwd()
 # import numpy as np
 # import mne 
 # import pandas as pd
@@ -28,5 +28,3 @@ import EPO_constants as const
 for subjID in const.subjIDs:
     EpoManager = helper.EpochManager(subjID)
     EpoManager.set2fif(addMetadata=True,relabelEvents=True)
- 
-    
