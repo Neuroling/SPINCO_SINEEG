@@ -56,3 +56,9 @@ for noise_key, noise_value in NoiseType.items():
 
                         # Add the key-value pair to the combined dictionary
                         event_id[combined_key] = combined_value
+
+# Creating an empty frequency of occurrence table
+all_event_ids = list(event_id.values())
+freqCountEmpty = dict()
+for i in range(len(all_event_ids)):
+    freqCountEmpty[all_event_ids[i]] = 0

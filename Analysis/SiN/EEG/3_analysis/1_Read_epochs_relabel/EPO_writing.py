@@ -38,6 +38,30 @@ EpoManager = helper.EpochManager(subjID)
 # # epo = EpoManager.set2fif(metadata=True,relabelEvents=True)
 epo = EpoManager.readEpo()
 
+#%% This will count the frequency of occurrence of each event-code
+
+def countFreq(arr):
+ 
+    freqCount = const.freqCountEmpty
+    
+ 
+    # Traverse through array elements and count frequencies
+    for i in range(len(arr)): #for each index in arr
+        if arr[i] in freqCount.keys(): #if the value i is present in mp.keys, add +1. Else, add the value to the dict as key with freq 1
+            freqCount[arr[i]] += 1
+        else:
+            freqCount[arr[i]] = 1
+             
+    # # Traverse through map and print frequencies
+    # for key in mp: 
+    #     print(key, " ", mp[key])
+    return freqCount
+ 
+# runner
+arr = epo.events[:,2]
+
+freqTab = countFreq(arr)
+
 #%%
 
 epo.info
