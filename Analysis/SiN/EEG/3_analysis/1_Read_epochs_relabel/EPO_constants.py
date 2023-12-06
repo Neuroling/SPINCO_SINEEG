@@ -59,6 +59,7 @@ for noise_key, noise_value in NoiseType.items():
 
 # Creating an empty frequency of occurrence table
 all_event_ids = list(event_id.values())
+all_event_labels = list(event_id.keys())
 freqCountEmpty = dict()
 for i in range(len(all_event_ids)):
     freqCountEmpty[all_event_ids[i]] = 0

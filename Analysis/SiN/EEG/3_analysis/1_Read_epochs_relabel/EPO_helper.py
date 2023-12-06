@@ -205,5 +205,41 @@ class EpochManager:
             epochs.events[epIdx][2]=mtdat['stim_code'][epIdx]*1000+ mtdat['levels'][epIdx]*100+ mtdat['accuracy'][epIdx]*10+ mtdat['voice'][epIdx]
         epochs.event_id = const.event_id # using the   event_id dict from the constants
         return epochs
+    
+    def countEventFrequency(self,epoch):
+        """
+        Creates a table listing all event_id codes and labels and their frequency of occurrence.
+        
+        If the events are not first relabelled (using relabelEvents), it will output garbage
+        
+        Currently, this function only returns the frequency table but does not save it.
+        This function is not called by any other function.
+        
+
+        Parameters
+        ----------
+        epoch : epochs.EpochsFIF
+
+        Returns
+        -------
+        df : pandas dataframe
+
+        """
+        
+        #takes the empty freqCount array from the constants
+        freqCount = const.freqCountEmpty 
+        events = epoch.events[:,2] #making an array out of all recorded event ids
+        
+        # Go through array elements and count frequencies
+        for i in range(len(events)): #for each index in events, add +1 to the key of the corresponding event in freqCount
+            freqCount[events[i]] += 1
+        
+        df = pd.DataFrame(freqCount.items(),columns=["event_id","frequency"])
+        df.insert(1,"events",const.all_event_labels)
+        
+        return df
+        
+        
+
   
     

@@ -21,6 +21,7 @@ import mne
 # import pandas as pd
 import EPO_helper as helper
 import EPO_constants as const
+import pandas as pd
 
 #%% below is for debugging purposes
 # subjID= 's001'
@@ -62,23 +63,26 @@ arr = epo.events[:,2]
 
 freqTab = countFreq(arr)
 
+df = pd.DataFrame(freqTab.items(),columns=["event_id","frequency"])
+df.insert(1,"events",const.all_event_labels)
+
 #%%
 
-epo.info
-epo.plot()
-# plots from here on need matplotlib v3.7.3 or newer
-epo.plot_image(picks=[41,42,43])
-#%%
-evo_NV=epo.__getitem__('NV').average()
-evo_SSN=epo.__getitem__('SSN').average()
+# epo.info
+# epo.plot()
+# # plots from here on need matplotlib v3.7.3 or newer
+# epo.plot_image(picks=[41,42,43])
+# #%%
+# evo_NV=epo.__getitem__('NV').average()
+# evo_SSN=epo.__getitem__('SSN').average()
 
-mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
+# mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
 
 
 
-evo = epo.__getitem__('Lv3/Col/Cor').average()
-evo.plot()
-epo.compute_psd().plot(exclude=['Cz'])
+# evo = epo.__getitem__('Lv3/Col/Cor').average()
+# evo.plot()
+# epo.compute_psd().plot(exclude=['Cz'])
 
 #%% Old code to reuse
 
