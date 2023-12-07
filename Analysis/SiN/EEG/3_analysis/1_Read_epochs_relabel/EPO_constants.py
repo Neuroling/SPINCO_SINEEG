@@ -10,6 +10,7 @@ This script contains variables that do not change across scripts, such as subjec
 
 import os
 from glob import glob
+import pandas as pd
 
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
@@ -60,6 +61,8 @@ for noise_key, noise_value in NoiseType.items():
 # Creating an empty frequency of occurrence table
 all_event_ids = list(event_id.values())
 all_event_labels = list(event_id.keys())
+freqTableEmpty = pd.DataFrame([all_event_labels,all_event_ids],index=['events','event_codes']).T
+
 freqCountEmpty = dict()
 for i in range(len(all_event_ids)):
     freqCountEmpty[all_event_ids[i]] = 0

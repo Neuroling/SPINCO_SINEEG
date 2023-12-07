@@ -175,14 +175,22 @@ class EpochManager:
         epochs : epochs.EpochsFIF
             epoched data with relabelled events and event_id
         """
-        if metadata == None: # if metadata is provided, use that
-            if 'self.metadata' in locals():
-                mtdat = self.metadata
-                print('hey sam, it works (line 169) :D') #remove this comment later [abcde]
-            else:
-                self.constructMetadata()
-                print('constructing metadata')
-                mtdat = self.metadata
+        
+        
+        if metadata == None: # use the specified metadata or construct new one
+        
+        ## This option below is a bit more efficient but prone to error (if metadata from 
+        ## a previous subject is still saved, it might carry that over to the new subject)
+        
+            # try: # if there is already a metadata saved, use that. 
+            #     mtdat= self.metadata
+            # except NameError:
+            #     self.constructMetadata()
+            #     mtdat = self.metadata
+            
+        ## This method is a bit less efficient but does not risk that error    
+            mtdat = self.constructMetadata()
+            
         else:
             mtdat = metadata
         
@@ -206,28 +214,33 @@ class EpochManager:
         epochs.event_id = const.event_id # using the   event_id dict from the constants
         return epochs
     
-    def countEventFrequency(self,epoch):
+    def countEventFrequency(self,epoch=0):
         """
-        Creates a table listing all event_id codes and labels and their frequency of occurrence.
+        Creates a table listing all event_id codes, labels and their frequency of occurrence.
         
-        If the events are not first relabelled (using relabelEvents), it will output garbage
+        If the events are not first relabelled (using relabelEvents), it give an error
         
         Currently, this function only returns the frequency table but does not save it.
         This function is not called by any other function.
+        This function calls createEmptyFrequencyDict (see more info on why in the documentation for that function)
         
 
         Parameters
         ----------
-        epoch : epochs.EpochsFIF
+        epoch : epochs.EpochsFIF - Default is 0, which will call readEpo
 
         Returns
         -------
         df : pandas dataframe
 
         """
+        if epoch == 0: # if no epoch structure is given, then first read the epoch file
+            epoch = self.readEpo()
+            
+        # create empty dict (see documentation of createEmptyFrequencyDict() for more information)    
+        self.createEmptyFrequencyDict()
+        freqCount = self.freqCountEmpty 
         
-        #takes the empty freqCount array from the constants
-        freqCount = const.freqCountEmpty 
         events = epoch.events[:,2] #making an array out of all recorded event ids
         
         # Go through array elements and count frequencies
@@ -238,6 +251,29 @@ class EpochManager:
         df.insert(1,"events",const.all_event_labels)
         
         return df
+    
+    def createEmptyFrequencyDict(self):
+        """
+        This function creates a dict with all event_ids (from the constants) as keys 
+        and assign the value 0 to every key (essentially creating an empty frequency count dict).
+        
+        self.freqCountEmpty is created every time countEventFrequency is called,
+        and is then filled with the frequency counts in the same function.
+        
+        We cannot just create freqCountEmpty in the constants and then fill that,
+        because of python's variable assignment system: if we do <freqCount = const.freqCountEmpty>
+        and then fill freqCount, then const.freqCountEmpty would be updated as well.
+        Which would mean that if the function countEventFrequency is called again, the
+        const.freqCountEmpty would not be empty, and the new freqCount would be added 
+        cumulatively to the old freqCount.
+        
+        Hence the creation of a new dict for freqCountEmpty with every time countEventFrequency is called.
+
+        """
+        self.freqCountEmpty = dict()
+        for i in range(len(const.all_event_ids)):
+            self.freqCountEmpty[const.all_event_ids[i]] = 0
+        
         
         
 

@@ -28,3 +28,13 @@ import EPO_constants as const
 for subjID in const.subjIDs:
     EpoManager = helper.EpochManager(subjID)
     EpoManager.set2fif(addMetadata=True,relabelEvents=True)
+    
+#%% ============== CREATE EVENT FREQUENCY TABLE ========================================================================
+# Will create a frequency of occurrence table for the event_ids
+frequencyTable = const.freqTableEmpty
+for subjID in const.subjIDs:
+    EpoManager = helper.EpochManager(subjID)
+    df=EpoManager.countEventFrequency()
+    frequencyTable[subjID] = df['frequency']
+
+    

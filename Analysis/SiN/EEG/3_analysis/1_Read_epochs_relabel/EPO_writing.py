@@ -38,6 +38,9 @@ subjID= 's001'
 EpoManager = helper.EpochManager(subjID)
 # # epo = EpoManager.set2fif(metadata=True,relabelEvents=True)
 epo = EpoManager.readEpo()
+freqTable = EpoManager.countEventFrequency(epo)
+
+epo = EpoManager.relabelEvents(epo)
 
 #%% This will count the frequency of occurrence of each event-code
 
