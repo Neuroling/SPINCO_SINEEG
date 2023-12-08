@@ -47,24 +47,48 @@ for subID in subIDs:
                    
                 df.replace('NO_ANSW', eval('False'), inplace=True)
                 df.replace('FALSE', eval('False'), inplace=True)
-                df.replace('TRUE', eval('True'), inplace=True)
-        
-                # %% Summarize accuracy
-                # call or callSign  = is the animal ; col = color and num = number 
-                # 'uniqueTrials' is the number of target items per level, noise type and block (should be 32)
-                if np.average(df.value_counts('block'))/3 != np.average(df.value_counts('levels'))/2 or np.average(df.value_counts('noise'))/6 != np.average(df.value_counts('block'))/3:
-                    print('!!! not equal number of target items per noise, level and block!!!')
+                df.replace('TRUE', eval('True'), inplace=True)               
                 
-                #  
-                uniqueTrials = np.average(df.value_counts('block'))/3  
-                beh_stats=((df.groupby(['noise', 'block', 'levels'])[['callSignCorrect', 'colourCorrect','numberCorrect']].sum())*100/uniqueTrials).reset_index()
+                
+                # % drop the example trials
+                df = df.dropna(subset=['condsFile'])
+                
+                # % Add sentence information 
+                df['sentence'] = (df.groupby('block').cumcount() + 1).astype('category')
+                
+                # recode block to remove info from noise level 
+                df['block'] = df['block'].str.replace('NV','').str.replace('SSN','').astype('category')                
+                
+                #    
+                df['n_cor_items'] = df[['callSignCorrect', 'colourCorrect', 'numberCorrect']].sum(axis=1)
+                    
+                # %% Summarize accuracy
+                # # call or callSign  = is the animal ; col = color and num = number 
+                # # 'uniqueTrials' is the number of target items per level, noise type and block (should be 32)
+                # if np.average(df.value_counts('block'))/3 != np.average(df.value_counts('levels'))/2 or np.average(df.value_counts('noise'))/6 != np.average(df.value_counts('block'))/3:
+                #     print('!!! not equal number of target items per noise, level and block!!!')
+                
+                # #  
+                # uniqueTrialsPerItem = np.average(df.value_counts('block'))/3   # There are three item per trial 
+                # beh_stats=((df.groupby(['noise', 'block', 'levels'])[['callSignCorrect', 'colourCorrect','numberCorrect']].sum())*100/uniqueTrialsPerItem).reset_index()
+                
+                # # add subject identifyer 
+                # beh_stats.insert(0, 'subj',subID)
+
+                # # Save excel
+                # beh_stats.to_csv(os.path.join(diroutput, str(subID + '_' +  taskID + '_beh_summary.csv')),index=False)
+                
+               
+                # %%  Gather relevant variables for further analysis
+                
+                gathered = df[['noise','block','sentence','levels','callSignCorrect', 'colourCorrect', 'numberCorrect','n_cor_items']]
                 
                 # add subject identifyer 
-                beh_stats.insert(0, 'subj',subID)
-
-                # Save excel
-                beh_stats.to_csv(os.path.join(diroutput, str(subID + '_' +  taskID + '_beh_summary.csv')),index=False)
-
+                gathered.insert(0, 'subj',subID)
+                
+                #  Save excel
+                gathered.to_csv(os.path.join(diroutput, str(subID + '_' +  taskID + '_beh_gathered.csv')),index=False)
+                                
 # %%  Concatenate and Save in file 
 files =  [os.path.join(diroutput, f) for f in os.listdir(diroutput) if f.startswith('s') and f.endswith('.csv')]
 
@@ -72,13 +96,9 @@ files =  [os.path.join(diroutput, f) for f in os.listdir(diroutput) if f.startsw
 concat_df = pd.concat([pd.read_csv(f, index_col=None) for f in files], ignore_index=True)
 
 # Save 
-concat_df.to_csv(os.path.join(diroutput, str( 'Gathered_beh_summary.csv')),index=False)
+concat_df.to_csv(os.path.join(diroutput, str( 'Gathered_beh_all.csv')),index=False)
 print('Saved concatenated tables')
       
-
-
-
-
 # %% Figures from previous packages commented             
             # # Figures -----------------------------------------------------------
             # Transform to long                
