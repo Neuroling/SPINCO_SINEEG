@@ -42,37 +42,17 @@ freqTable = EpoManager.countEventFrequency(epo)
 
 epo = EpoManager.relabelEvents(epo)
 
-#%% This will count the frequency of occurrence of each event-code
-
-def countFreq(arr):
- 
-    freqCount = const.freqCountEmpty
-    
- 
-    # Traverse through array elements and count frequencies
-    for i in range(len(arr)): #for each index in arr
-        if arr[i] in freqCount.keys(): #if the value i is present in mp.keys, add +1. Else, add the value to the dict as key with freq 1
-            freqCount[arr[i]] += 1
-        else:
-            freqCount[arr[i]] = 1
-             
-    # # Traverse through map and print frequencies
-    # for key in mp: 
-    #     print(key, " ", mp[key])
-    return freqCount
- 
-# runner
-arr = epo.events[:,2]
-
-freqTab = countFreq(arr)
-
-df = pd.DataFrame(freqTab.items(),columns=["event_id","frequency"])
-df.insert(1,"events",const.all_event_labels)
+epo2=epo.set_eeg_reference(ch_type='eeg')
 
 #%%
 
 # epo.info
 # epo.plot()
+# epo["NV/Lv1"].plot()
+# epo.plot_sensors(kind="3d", ch_type="all")
+
+# epo["NV/Lv1/Call"].compute_psd(exclude=['Cz']).plot(picks="eeg",average=False)
+
 # # plots from here on need matplotlib v3.7.3 or newer
 # epo.plot_image(picks=[41,42,43])
 # #%%

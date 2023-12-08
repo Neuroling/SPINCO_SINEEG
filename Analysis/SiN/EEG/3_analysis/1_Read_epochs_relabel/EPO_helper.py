@@ -39,7 +39,7 @@ class EpochManager:
         self.thisDir = const.thisDir
         self.dirinput = os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID + '_preproc_epoched',subjID)
         self.set_path = glob(os.path.join(self.dirinput, str("*"+ const.setFileEnd)), recursive=True)[0]
-        self.epo_path = self.set_path[:self.set_path.find(const.setFileEnd)]+'-epo.fif'
+        self.epo_path = self.set_path[:self.set_path.find(const.setFileEnd)]+const.fifFileEnd
         self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
         self.beh_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
     

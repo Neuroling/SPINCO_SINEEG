@@ -1,3 +1,6 @@
+#
+Prep_02 interpolates channels and adds accuracy
+
 
 # Potential issues
 > If doing average reference after automagic:   "channels not used for ICA decomposition are used for rereferencing the ICA decomposition has been removed"

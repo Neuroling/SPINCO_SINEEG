@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Nov  3 11:47:21 2023
+Created on Fri Dec  8 12:23:55 2023
 
 @author: samuemu
-
-This script contains variables that do not change across scripts, such as subject IDs and event_id
 """
 
 import os
-# from glob import glob
+from glob import glob
 import pandas as pd
 
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-setFileEnd = '_epoched_2.set'
 fifFileEnd = '-epo.fif'
+setFileEnd = '_epoched_2.set'
+
+excludeElectrodes = ['Cz']
+# included channels are just:
+    # epo.info.ch_names
 
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
@@ -58,12 +60,3 @@ for noise_key, noise_value in NoiseType.items():
 
                         # Add the key-value pair to the combined dictionary
                         event_id[combined_key] = combined_value
-
-# Creating an empty frequency of occurrence table
-all_event_ids = list(event_id.values())
-all_event_labels = list(event_id.keys())
-freqTableEmpty = pd.DataFrame([all_event_labels,all_event_ids],index=['events','event_codes']).T
-
-freqCountEmpty = dict()
-for i in range(len(all_event_ids)):
-    freqCountEmpty[all_event_ids[i]] = 0

@@ -28,9 +28,11 @@ import EPO_constants as const
 for subjID in const.subjIDs:
     EpoManager = helper.EpochManager(subjID)
     EpoManager.set2fif(addMetadata=True,relabelEvents=True)
+
+# To do: average reference epochs. Put in a note saying "average reference was done after interpolating channels"
     
 #%% ============== CREATE EVENT FREQUENCY TABLE ========================================================================
-# Will create a frequency of occurrence table for the event_ids
+# Will create a frequency of occurrence table for the event_ids - NOT SAVED
 frequencyTable = const.freqTableEmpty
 for subjID in const.subjIDs:
     EpoManager = helper.EpochManager(subjID)
