@@ -6,6 +6,11 @@ EPO_constants.py contains variables that do not change across files, such as sub
 EPO_writing.py is for trying out and debugging code before putting it in EPO_helper.py
 
 
+----- Package Requirements -----
+Some plotting functions of mne are bugged in matplotlib version 3.7.2 and earlier. 
+Need to update matplotlib to at least 3.7.3 to ensure smooth operation.
+
+
 ----- Event Labels -----
 
 NoiseType / StimulusType / DegradationLevel / Accuracy / Voice
