@@ -84,7 +84,7 @@ The full-width half-maximum (FWHM) can be determined by:
 if << n_cycles = freqs / 2 >> then sigma will always be = 1 / (4 * np.pi) = 0.079577
 """
 
-power, itc = tfr_morlet(
+tfr, itc = tfr_morlet(
     epo,
     freqs=freqs,
     n_cycles=n_cycles,
@@ -108,8 +108,8 @@ mode is how the baseline correction is done, e.g. by subtracting the mean of bas
     
 """
 
-power.plot_topo(baseline=(-0.5, 0), mode="logratio", title="Average power")
-power.plot([28], baseline=(-0.5, 0), mode="logratio", title=power.ch_names[28])
+tfr.plot_topo(baseline=(-0.5, 0), mode="logratio", title="Average power")
+tfr.plot([28], baseline=(-0.5, 0), mode="logratio", title=tfr.ch_names[28])
 
 fig, axes = plt.subplots(1, 2, figsize=(7, 4), layout="constrained")
 topomap_kw = dict(
@@ -118,10 +118,10 @@ topomap_kw = dict(
 
 plot_dict = dict(Alpha=dict(fmin=8, fmax=12), Beta=dict(fmin=13, fmax=25))
 for ax, (title, fmin_fmax) in zip(axes, plot_dict.items()):
-    power.plot_topomap(**fmin_fmax, axes=ax, **topomap_kw)
+    tfr.plot_topomap(**fmin_fmax, axes=ax, **topomap_kw)
     ax.set_title(title)
 
-power.plot_joint(
+tfr.plot_joint(
     baseline=(-0.5, 0), mode="mean", tmin=tmin, tmax=tmax, 
     # timefreqs=[(-0.3, 10), (0.2, 8)] #this will plot the topomap at X seconds in Y frequency for each tuple (X,Y)
     # if timefreqs == None it will choose the absolute peak of time-frequency and plot the topomap there

@@ -12,7 +12,7 @@ def EEG_tfr_extract_freqBands(tfr_df,freqbands = None):
     Parameters
     ----------
     tfr: df derived from an Instance of 'tfr' or the tfr object
-        If TFR Object from mne it will be transformed to data frame. Expected a data frame after droping data points out of the COI
+        If TFR Object from mne it will be transformed to data frame. Expected a data frame after dropping data points out of the COI
 
         
     freq_bands: dict (optional)
