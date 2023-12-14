@@ -36,9 +36,10 @@ import pandas as pd
 
 subjID= 's001'
 EpoManager = helper.EpochManager(subjID)
-# # epo = EpoManager.set2fif(metadata=True,relabelEvents=True)
+# epo = EpoManager.set2fif(metadata=True,relabelEvents=True)
 epo = EpoManager.readEpo()
 freqTable = EpoManager.countEventFrequency(epo)
+metadata=EpoManager.constructMetadata()
 
 epo = EpoManager.relabelEvents(epo)
 
@@ -46,26 +47,30 @@ epo2=epo.set_eeg_reference(ch_type='eeg')
 
 #%%
 
-# epo.info
-# epo.plot()
-# epo["NV/Lv1"].plot()
-# epo.plot_sensors(kind="3d", ch_type="all")
+epo.info
+epo.plot()
+epo["NV/Lv1"].plot()
+epo.plot_sensors(kind="3d", ch_type="all")
 
-# epo["NV/Lv1/Call"].compute_psd(exclude=['Cz']).plot(picks="eeg",average=False)
+epo["NV/Lv1/Call"].compute_psd(exclude=['Cz']).plot(picks="eeg",average=False)
 
-# # plots from here on need matplotlib v3.7.3 or newer
-# epo.plot_image(picks=[41,42,43])
-# #%%
-# evo_NV=epo.__getitem__('NV').average()
-# evo_SSN=epo.__getitem__('SSN').average()
+# plots from here on need matplotlib v3.7.3 or newer
+epo.plot_image(picks=[41,42,43])
+#%%
+evo_NV=epo.__getitem__('NV').average()
+evo_SSN=epo.__getitem__('SSN').average()
 
-# mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
+mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
 
 
 
-# evo = epo.__getitem__('Lv3/Col/Cor').average()
-# evo.plot()
-# epo.compute_psd().plot(exclude=['Cz'])
+evo = epo.__getitem__('Lv3/Col/Cor').average()
+evo.plot()
+epo.compute_psd().plot(exclude=['Cz'])
+
+#%%
+
+
 
 #%% Old code to reuse
 

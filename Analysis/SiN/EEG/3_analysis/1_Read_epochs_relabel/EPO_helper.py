@@ -44,41 +44,81 @@ class EpochManager:
         self.beh_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
     
     
-    def readEpo(self):
+    def readEpo(self,fileinput=None):
         """
         reads the epoched .fif file using the filepaths set by EpochManager
+        
+        Parameters:
+            fileinput : str | None
+                Filepath to the epoched .fif file. If = None, will use the filepaths set by EpochManager
+        
+        returns :
+            epo : mne.Epochs instance
         """
-        epo = mne.read_epochs(self.epo_path)
+        if fileinput is None:
+            fileinput = self.epo_path
+        
+        epo = mne.read_epochs(fileinput)
         return epo
     
     
-    def set2fif(self,fileinput=None,fileoutput=None,addMetadata=False,relabelEvents=False):
+    def set2fif(self,
+                fileinput = None,
+                fileoutput = None,
+                applyAverageReference = False,
+                addMetadata = True,
+                relabelEvents = True,
+                ):
         """ takes the epoched .set file from EEGLAB and saves it as .fif file from MNE
         
-        parameters: 
-            fileinput : eeglab epoch file ending in .set (default is None, which will use the set_path from EpochManager.__init__)
-            fileoutput : where the mne file ending in .fif will be saved (default is None, which will use the epo_path from EpochManager.__init__)
-            addMetadata : if metadata should be constructed and added (default is false)
-            relabelEvents: if events should be relabelled (default is false)
-        
+        Parameters: 
+            fileinput : str | None
+                eeglab epoch file ending in .set (default is None, which will use the set_path from EpochManager.__init__)
+            
+            fileoutput : str | None
+                where the mne file ending in .fif will be saved (default is None, which will use the epo_path from EpochManager.__init__)
+            
+            applyAverageReference : bool | Default False
+                if = True, will re-reference the data to average reference. Default is false.
+            
+            addMetadata : bool | Default True
+                if metadata should be constructed and added (default is True)
+            
+            relabelEvents: bool | Default True
+                if events should be relabelled (default is True)
+                
         returns:
             Nothing. To open the freshly saved epoch, call EpochManager.readEpo()
         """
+        
         if relabelEvents==True and addMetadata==False:
             print('warning: metadata will be constructed to relabel events but will not be added')
+            
         if fileinput is None:
             fileinput = self.set_path
+            
         if fileoutput is None:
             fileoutput = self.epo_path
+        
+        print('---------- reading epoched data for ' +self.subjID +' ----------')
         epochs = mne.io.read_epochs_eeglab(fileinput)
+        
+        if applyAverageReference:
+            print('---------- applying average reference ----------')
+            epochs = epochs.set_eeg_reference()
+        
         if addMetadata==True:
             epochs = self.addMetadata(epochs)
+            
         if relabelEvents==True:
             epochs = self.relabelEvents(epochs)
+        
+        print('---------- saving epoched .fif file... ----------')
         epochs.save(fileoutput, overwrite=True, fmt='double')
+        print('Done.')
 
 
-    def addMetadata(self,epochs):
+    def addMetadata(self, epochs):
         """
         adds metadata to the epochs
         metadata is constructed by calling constructMetadata
@@ -95,7 +135,9 @@ class EpochManager:
         """ constructs some metadata for the epochs, using the accu.tsv file and the behavioural output .csv file. 
         Filepaths are handled by EpochManager.__init__
         
-        This function is called by addMetadata and by relabelEvents (optional)
+        This function is called by:
+            addMetadata
+            relabelEvents (optional)
         
         Returns:
             metadata
@@ -122,10 +164,16 @@ class EpochManager:
         metadat['block']=metadat['stim_code']
         metadat['block'].replace([111,112,113,114,121,122,123,124,131,132,133,134],'NV',inplace=True)
         metadat['block'].replace([211,212,213,214,221,222,223,224,231,232,233,234],'SSN',inplace=True)
-        metadat['stim']=metadat['stim_code']
-        metadat['stim'].replace([111,112,113,114,211,212,213,214],'CallSign',inplace=True)
-        metadat['stim'].replace([121,122,123,124,221,222,223,224],'Colour',inplace=True)
-        metadat['stim'].replace([131,132,133,134,231,232,233,234],'Number',inplace=True)
+        metadat['stimtype']=metadat['stim_code']
+        metadat['stimtype'].replace([111,112,113,114,211,212,213,214],'CallSign',inplace=True)
+        metadat['stimtype'].replace([121,122,123,124,221,222,223,224],'Colour',inplace=True)
+        metadat['stimtype'].replace([131,132,133,134,231,232,233,234],'Number',inplace=True)
+        metadat['stimulus']=metadat['stim_code']
+        metadat['stimulus'].replace([111,121,131,211,221,231],'Stim1',inplace=True)
+        metadat['stimulus'].replace([112,122,132,212,222,232],'Stim2',inplace=True)
+        metadat['stimulus'].replace([113,123,133,213,223,233],'Stim3',inplace=True)
+        metadat['stimulus'].replace([114,124,134,214,224,234],'Stim4',inplace=True)
+
         
         ## reading the info from the csv to the metadat array
         beh_csv = beh_csv[['voice', 'levels', 'callSignCorrect','colourCorrect','numberCorrect']]
@@ -155,7 +203,7 @@ class EpochManager:
         return metadat
         
 
-    def relabelEvents(self,epochs,metadata=None):
+    def relabelEvents(self, epochs, metadata=None):
         """
         relabels events and event_id using the metadata.
         event_id dict is taken from constants
@@ -168,6 +216,7 @@ class EpochManager:
         ----------
         epochs : epochs.EpochsFIF
             the epoched data
+            
         metadata : metadata. Default is None, which will call constructMetadata
 
         Returns
@@ -182,24 +231,19 @@ class EpochManager:
         ## This option below is a bit more efficient but prone to error (if metadata from 
         ## a previous subject is still saved, it might carry that over to the new subject)
         
-            # try: # if there is already a metadata saved, use that. 
+            # try: # if there is already a metadata saved in the workspace, use that. 
             #     mtdat= self.metadata
-            # except NameError:
+            # except NameError: # if you get an error saying that self.metadata doesn't exist, construct new one
             #     self.constructMetadata()
             #     mtdat = self.metadata
             
-        ## This method is a bit less efficient but does not risk that error    
+        ## This method is a bit less efficient since it constructs metadata again but does not risk that error    
             mtdat = self.constructMetadata()
             
         else:
             mtdat = metadata
         
         #recoding the metadata because epochs.events need to be numeric
-        mtdat['block'].replace('NV',1,inplace=True)
-        mtdat['block'].replace('SSN',2,inplace=True)
-        mtdat['stim'].replace('CallSign',1,inplace=True)
-        mtdat['stim'].replace('Colour',2,inplace=True)
-        mtdat['stim'].replace('Number',3,inplace=True)
         mtdat['levels'].replace('Lv1',1, inplace=True)
         mtdat['levels'].replace('Lv2',2, inplace=True)
         mtdat['levels'].replace('Lv3',3, inplace=True)
@@ -211,10 +255,28 @@ class EpochManager:
         # put the recoded metadata together to create numeric codes
         for epIdx in range(len(epochs.events)):
             epochs.events[epIdx][2]=mtdat['stim_code'][epIdx]*1000+ mtdat['levels'][epIdx]*100+ mtdat['accuracy'][epIdx]*10+ mtdat['voice'][epIdx]
-        epochs.event_id = const.event_id # using the   event_id dict from the constants
+        epochs.event_id = const.event_id # using the event_id dict from the constants
         return epochs
     
-    def countEventFrequency(self,epoch=0):
+    def averageReference(self,epochs):
+        """
+        Apply average reference to the epochs
+        
+        Parameters
+        ----------
+        epochs : mne.Epochs object
+
+        Returns
+        -------
+        epochs : mne.Epochs object
+            Now re-referenced to average reference
+
+        """
+        epochs = epochs.set_eeg_reference()
+        return epochs
+    
+    
+    def countEventFrequency(self,epochs=None):
         """
         Creates a table listing all event_id codes, labels and their frequency of occurrence.
         
@@ -227,21 +289,21 @@ class EpochManager:
 
         Parameters
         ----------
-        epoch : epochs.EpochsFIF - Default is 0, which will call readEpo
+        epochs : epochs.EpochsFIF - Default is None, which will call readEpo
 
         Returns
         -------
         df : pandas dataframe
 
         """
-        if epoch == 0: # if no epoch structure is given, then first read the epoch file
-            epoch = self.readEpo()
+        if epochs is None: # if no epoch structure is given, then first read the epoch file
+            epochs = self.readEpo()
             
-        # create empty dict (see documentation of createEmptyFrequencyDict() for more information)    
+        # create empty dict (see docstring of createEmptyFrequencyDict() for more information)    
         self.createEmptyFrequencyDict()
         freqCount = self.freqCountEmpty 
         
-        events = epoch.events[:,2] #making an array out of all recorded event ids
+        events = epochs.events[:,2] #making an array out of all recorded event ids
         
         # Go through array elements and count frequencies
         for i in range(len(events)): #for each index in events, add +1 to the key of the corresponding event in freqCount

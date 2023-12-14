@@ -12,20 +12,10 @@ import pandas as pd
 
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-fifFileEnd = '-epo.fif'
+fifFileEnd = '_avg-epo.fif'
 setFileEnd = '_epoched_2.set'
 
-excludeElectrodes = ['Cz'] # Cz is the reference, so it is all 0
-includedElectrodes = ['Fp1', 'AF7', 'AF3', 'F1', 'F3', 'F5', 'F7', 'FT7', 'FC5',
-                      'FC3', 'FC1', 'C1', 'C3', 'C5', 'T7', 'TP7', 'CP5', 'CP3',
-                      'CP1', 'P1', 'P3', 'P5', 'P7', 'P9', 'PO7', 'PO3', 'O1', 'Iz',
-                      'Oz', 'POz', 'Pz', 'CPz', 'Fpz', 'Fp2', 'AF8', 'AF4', 'Afz',
-                      'Fz', 'F2', 'F4', 'F6', 'F8', 'FT8', 'FC6', 'FC4', 'FC2', 'FCz',
-                      'C2', 'C4', 'C6', 'T8', 'TP8', 'CP6', 'CP4', 'CP2', 'P2',
-                      'P4', 'P6', 'P8', 'P10', 'PO8', 'PO4', 'O2']
-# TEMPORARY!!! Either do a less error-prone approach, or do the average reference,
-# so Cz doesn't need to be excluded
-# You get the above list by copying epo.info.ch_names and manually removing channels
+
 
 epo_duration= [-0.5, 0.49609375] # time window of the epoch (first and last idx of epo.times)
 

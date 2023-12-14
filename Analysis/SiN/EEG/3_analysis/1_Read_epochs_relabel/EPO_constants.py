@@ -15,7 +15,7 @@ import pandas as pd
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
 setFileEnd = '_epoched_2.set'
-fifFileEnd = '-epo.fif'
+fifFileEnd = '_avg-epo.fif'
 
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]

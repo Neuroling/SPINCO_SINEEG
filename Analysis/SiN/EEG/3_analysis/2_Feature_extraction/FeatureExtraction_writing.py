@@ -53,15 +53,15 @@ tmax = epo.times[len(epo.times)-1]
 #%% Plot Power Spectrum densities #########################################################################################
 # https://mne.tools/stable/generated/mne.time_frequency.EpochsSpectrum.html#mne.time_frequency.EpochsSpectrum
 
-epo.compute_psd(exclude=const.excludeElectrodes).plot() # We exclude electrode Cz (const.excludeElectrodes) because it is 0
-epo.compute_psd(exclude=const.excludeElectrodes).plot(average=True)
-epo.compute_psd(exclude=const.excludeElectrodes).plot_topomap(ch_type="eeg", normalize=False, contours=0)
+epo.compute_psd().plot() # We exclude electrode Cz (const.excludeElectrodes) because it is 0
+epo.compute_psd().plot(average=True)
+epo.compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
 
 
 #%% Now let's do the morlet time frequency representation (TFR) ###########################################################
 # https://mne.tools/stable/generated/mne.time_frequency.tfr_morlet.html
 
-incl_chans = const.includedElectrodes
+
 
 freqs = np.logspace(*np.log10([1, 48]), num=56) # define frequencies of interest
 n_cycles = 1 # [abcde] find optimal range
@@ -90,8 +90,7 @@ tfr, itc = tfr_morlet(
     n_cycles=n_cycles,
     use_fft=True,
     decim=3, # reduces data by this factor after convolution to reduce memory usage. May create aliasing artefacts
-    n_jobs=None, # sequential execution (less memory usage)
-    picks = incl_chans
+    n_jobs=None # sequential execution (less memory usage)
 )
 
 

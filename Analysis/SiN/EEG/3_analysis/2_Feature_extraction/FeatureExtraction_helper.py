@@ -107,7 +107,7 @@ class TFRManager:
                              average=False, 
                              use_fft=True, 
                              return_itc=True,
-                             n_jobs=8)
+                             n_jobs=-1)
             tfr.comment = {'n_cycles':n_cycles}
             features_dict['TFR'] = tfr
             if ITC:
