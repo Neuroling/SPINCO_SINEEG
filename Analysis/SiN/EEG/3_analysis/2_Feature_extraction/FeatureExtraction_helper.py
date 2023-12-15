@@ -233,6 +233,7 @@ class TFRManager:
             # Mean 
             curBandDF = tfr_df[tfr_df.band.isin([thisband])].copy()
             dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
+            # % TODO: the above gives the following error: TypeError: category dtype does not support aggregation 'mean'
             ts = dfmean.index.get_level_values('time').unique()
             # Save data in arrays formated for mvpa                     
             x = []
