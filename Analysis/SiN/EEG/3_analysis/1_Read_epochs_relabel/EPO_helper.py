@@ -42,6 +42,7 @@ class EpochManager:
         self.epo_path = self.set_path[:self.set_path.find(const.setFileEnd)]+const.fifFileEnd
         self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','derivatives', const.pipeID, const.taskID, subjID,"*accu.tsv"), recursive=True)[0]
         self.beh_path = glob(os.path.join(self.thisDir[:self.thisDir.find('Scripts')] + 'Data','SiN','rawdata', subjID, const.taskID, 'beh',"*.csv"), recursive=True)[0]
+        self.freqTable_path = os.path.join(self.dirinput[:self.dirinput.find(subjID)], 'event_group_frequencies.csv')
     
     
     def readEpo(self,fileinput=None):
@@ -58,6 +59,7 @@ class EpochManager:
         if fileinput is None:
             fileinput = self.epo_path
         
+        print('¸.·´¯`·.¸><(((º>   reading epoch from ' + fileinput)
         epo = mne.read_epochs(fileinput)
         return epo
     
@@ -92,7 +94,7 @@ class EpochManager:
         """
         
         if relabelEvents==True and addMetadata==False:
-            print('warning: metadata will be constructed to relabel events but will not be added')
+            print('WARNING: metadata will be constructed to relabel events but will not be added')
             
         if fileinput is None:
             fileinput = self.set_path
@@ -100,11 +102,11 @@ class EpochManager:
         if fileoutput is None:
             fileoutput = self.epo_path
         
-        print('---------- reading epoched data for ' +self.subjID +' ----------')
+        print('¸.·´¯`·.¸><(((º>   reading epoched data for ' +self.subjID +' from ' + fileinput)
         epochs = mne.io.read_epochs_eeglab(fileinput)
         
         if applyAverageReference:
-            print('---------- applying average reference ----------')
+            print('¸.·´¯`·.¸><(((º>   applying average reference')
             epochs = epochs.set_eeg_reference()
         
         if addMetadata==True:
@@ -113,7 +115,7 @@ class EpochManager:
         if relabelEvents==True:
             epochs = self.relabelEvents(epochs)
         
-        print('---------- saving epoched .fif file... ----------')
+        print('¸.·´¯`·.¸><(((º>   saving epoched .fif file to '+fileoutput)
         epochs.save(fileoutput, overwrite=True, fmt='double')
         print('Done.')
 

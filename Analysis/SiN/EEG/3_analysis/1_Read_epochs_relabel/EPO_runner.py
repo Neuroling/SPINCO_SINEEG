@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-This script is for handling all the epoching with MNE
+IMPORT EPOCHS INTO MNE, RELABEL EVENTS, GROUP-SUMMARY OF EVENT FREQUENCIES
+===============================================================================
+Created on Fri Nov 10 14:59:24 2023
+@author: samuemu
+
+This script reads eeglab epochs and handles them with MNE
 
 It takes the constants, such as subject ID, from EPO_constants,
 and the functions from EPO_helper
 
 
-Created on Fri Nov 10 14:59:24 2023
 
-@author: samuemu
 """
 
 
@@ -27,16 +30,18 @@ import EPO_constants as const
 
 for subjID in const.subjIDs:
     EpoManager = helper.EpochManager(subjID)
-    EpoManager.set2fif(applyAverageReference=True)
-
-# To do: average reference epochs. Put in a note saying "average reference was done after interpolating channels"
+    EpoManager.set2fif()
     
 #%% ============== CREATE EVENT FREQUENCY TABLE ========================================================================
-# Will create a frequency of occurrence table for the event_ids - NOT SAVED
+# Will create a frequency of occurrence table for the event_ids
 frequencyTable = const.freqTableEmpty
 for subjID in const.subjIDs:
     EpoManager = helper.EpochManager(subjID)
     df=EpoManager.countEventFrequency()
     frequencyTable[subjID] = df['frequency']
+frequencyTable.to_csv(EpoManager.freqTable_path)
+print("saved frequency table to" + EpoManager.freqTable_path)
 
-    
+# table_path = os.path.join(EpoManager.epo_path[:EpoManager.epo_path.find(const.pipeID)] + const.pipeID, const.taskID + '_preproc_epoched','event_group_frequencies.csv')
+# name event_group_frequencies.csv
+# Y:\Projects\Spinco\SINEEG\Data\SiN\derivatives\pipeline-01\task-sin_preproc_epoched
