@@ -61,6 +61,16 @@ for subID in subIDs:
                 
                 #    
                 df['n_cor_items'] = df[['callSignCorrect', 'colourCorrect', 'numberCorrect']].sum(axis=1)
+                
+                df[['callSign_resp','col_resp','numb_resp']]  = df[['mouseClickOnCall.clicked_name','mouseClickOnColour.clicked_name','mouseClickOnNumber.clicked_name']] 
+                
+                # %% Recode responses for clarity 
+                
+                df['callSign_resp'] = df['callSign_resp'].apply(lambda x: x.replace('call1', 'Adler').replace('call2', 'Drossel').replace('call3', 'Kroete').replace('call4', 'Tiger'))
+                
+                df['col_resp'] = df['col_resp'].apply(lambda x: x.replace('colour1', 'gelb').replace('colour2', 'gruen').replace('colour3', 'rot').replace('colour4', 'weiss'))
+                
+                df['numb_resp'] = df['numb_resp'].apply(lambda x: x.replace('number1', 'eins').replace('number2', 'zwei').replace('number3', 'drei').replace('number4', 'vier'))
                     
                 # %% Summarize accuracy
                 # # call or callSign  = is the animal ; col = color and num = number 
@@ -81,7 +91,7 @@ for subID in subIDs:
                
                 # %%  Gather relevant variables for further analysis
                 
-                gathered = df[['noise','block','sentence','levels','callSignCorrect', 'colourCorrect', 'numberCorrect','n_cor_items']]
+                gathered = df[['noise','block','sentence','levels','callSign','colour','number','callSign_resp','col_resp','numb_resp','callSignCorrect', 'colourCorrect', 'numberCorrect','n_cor_items']]
                 
                 # add subject identifyer 
                 gathered.insert(0, 'subj',subID)
