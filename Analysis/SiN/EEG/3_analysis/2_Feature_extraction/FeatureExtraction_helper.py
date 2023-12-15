@@ -21,10 +21,10 @@ import FeatureExtraction_constants as const
 class TFRManager:
     """
     """
-    def __init__(self,epo):
-        self.tmin = epo.times[0]
-        self.tmax = epo.times[len(epo.times)-1]
-        self.epo = epo
+    # def __init__(self,epo):
+    #     self.tmin = epo.times[0]
+    #     self.tmax = epo.times[len(epo.times)-1]
+    #     self.epo = epo
     
     def EEG_extract_feat(self, 
                          epochs,
@@ -32,13 +32,12 @@ class TFRManager:
                          n_cycles = None, 
                          PSD = True, 
                          TFR = True, 
-                         ITC = True,
                          spectral_connectivity = False):
      
         """Extract features from EEG epochs
         =================================================================
         Created on Tue Dec 13 16:39:45 2022
-        @author: gfraga
+        @author: gfraga & samuemu
         Refs:  
         https://mne.tools/stable/index.html ;  
         https://mne.tools/mne-connectivity/
@@ -49,19 +48,16 @@ class TFRManager:
             Epoched Object from mne. Features are extracted per epoch
         
         freqs: array (optional)
-            Frequencies for the time frequency analysis. If none, the default is: np.logspace(*np.log10([1, 48]), num=56)
+            Frequencies for the time frequency analysis. If none, the default is np.logspace(*np.log10([1, 48]), num=56)
         
         n_cycles: int (optional)
-            number of cycles for the wavelet analysis. If none, the default is: 3
+            number of cycles for the wavelet analysis. If none, the default is 3
             
         TFR: bool | (default True)
             True = run time frequency analysis (broadband and per band). False = do not run
             
         PSD: bool | (default True)
             True = run power analysis (spectrum of the entire epoch). False = do not run 
-             
-        ITC: bool | (default true)
-            True = return inter-trial correlation analysis. False = do not return
          
         spectral_connectivity: bool | (default False)   
             True = run connectivity analysis in the entire epoch (broadband and per band). False = do not run
@@ -94,28 +90,31 @@ class TFRManager:
         if TFR:                
             print(' ¸.·´¯`·.¸><(((º>  Running time frequency analysis')        
             if freqs is None or n_cycles is None:            
-                freqs = np.logspace(*np.log10([1, 48]), num=56)
-                n_cycles=3
-                print('---> No frequencies and n_cycles specified for the TFR analysis...Using default 3 cycles and 56 log-spaced freqs from 1 to 48 hz')
+                freqs = const.freqs
+                n_cycles=const.n_cycles
+                print('---> No frequencies and n_cycles specified for the TFR analysis...\n Using default 3 cycles and 56 log-spaced freqs from 1 to 48 hz')
                 
                   
             # Time freq
-            tfr, itc = tfr_morlet(epochs, 
+            tfr = tfr_morlet(epochs, 
                              freqs=freqs, 
-                             decim= 3, 
+                             decim= 2, # Decimates sampling rate by this factor (to avoid freezing the kernel)
                              n_cycles=n_cycles, 
                              average=False, 
                              use_fft=True, 
-                             return_itc=True,
+                             return_itc=False,
                              n_jobs=-1)
-            tfr.comment = {'n_cycles':n_cycles}
+            
+            if n_cycles != const.n_cycles:  # if not using default n_cycles, save n_cycles as comment
+                tfr.comment = {'n_cycles':n_cycles}
+            else:
+                tfr.comment = {'n_cycles' : 'default: const.n_cycles'}
+            
             features_dict['TFR'] = tfr
-            if ITC:
-                features_dict['ITC'] = itc
             print('Done.')             
                     
            
-        # % Phase connectivity (draft)
+        # % TODO % Phase connectivity (draft)
         #if spectral_connectivity: 
            # print(' ¸.·´¯`·.¸><(((º>  Running spectral connectivity per band')
            # method = 'pli2_unbiased' #['coh', 'cohy', 'imcoh', 'plv', 'ciplv', 'ppc', 'pli', 'dpli', 'wpli', 'wpli2_debiased'].        
@@ -129,11 +128,11 @@ class TFRManager:
         return features_dict if features_dict else None
     
 
-    def extractCOI(tfr):
+    def extractCOI(self,tfr):
         """Extract Cone of Influence from TFR
         =================================================================
         Created on Tue Jan 10 11:43:56 2023
-        @author: gfraga\n
+        @author: gfraga & samuemu
      
         Parameters
         ----------
@@ -150,17 +149,27 @@ class TFRManager:
             print("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles':XXX}")
             sys.exit()
             
-        else: n_cycles = tfr.comment['n_cycles']        
+        else: 
+            if tfr.comment['n_cycles'] == 'default: const.n_cycles':
+                coi = const.fwhm
+                freqs=tfr.freqs
+            else:
+                n_cycles = tfr.comment['n_cycles'] 
+                freqs = tfr.freqs
+                sigma = n_cycles/(2 * np.pi * freqs)
+                fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
+                coi = fwhm
+        # % wavelet width and coi are determined by full width half maximum (fwhm): the distance between 50% gain before peak to 50% gain after peak
+        # % see Cohen (2019) https://doi.org/10.1016/j.neuroimage.2019.05.048
             
         # % get coi values  (times per freq bin)
-        print('>> Cone of influence  --- HEY SAM THIS CODE IS UNVERIFIED [ABCDE]')            
-        freqs = tfr.freqs
-        wavelet_width = n_cycles/freqs # This value is not great. Need to choose either sigma or FWHM
-        coi = wavelet_width/2     # Same here  
+        print('>> Cone of influence')
+
       
-        print('Creating dataframe with tfr power and filtering out values outside COI')
+        print('Creating dataframe with tfr power and filtering out values outside COI ...')
         ts = tfr.times.copy()
         
+        #TODO this doesn't work yet: somehow tfr_df only has times before stimulus onset.
         #Create a data frame with TFR power indicating frequency band
         tfr_df = tfr.to_data_frame(time_format=None)         
         for c,cval in enumerate(coi):    
@@ -176,12 +185,12 @@ class TFRManager:
         
         return tfr_df
     
-    def extractFreqBands(tfr_df,freqbands = None):
+    def extractFreqBands(self,tfr_df,freqbands = None):
      
         """TFR power mean per frequency band 
         =================================================================
         Created on Tue Jan 10 14:42:36 2023
-        @author: gfraga\n
+        @author: gfraga & samuemu
         
         Parameters
         ----------

@@ -27,7 +27,6 @@ import mne
 from mne.time_frequency import tfr_morlet
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 import FeatureExtraction_constants as const
 # import FeatureExtraction_helper as FeatureExtractor
@@ -54,7 +53,7 @@ tmax = epo.times[len(epo.times)-1]
 #%% Plot Power Spectrum densities #########################################################################################
 # https://mne.tools/stable/generated/mne.time_frequency.EpochsSpectrum.html#mne.time_frequency.EpochsSpectrum
 
-epo.compute_psd().plot() 
+epo.compute_psd().plot() # We exclude electrode Cz (const.excludeElectrodes) because it is 0
 epo.compute_psd().plot(average=True)
 epo.compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
 
@@ -64,8 +63,8 @@ epo.compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
 
 
 
-freqs = np.logspace(*np.log10([5, 48]), num=56) # define frequencies of interest
-n_cycles = 3 #
+freqs = np.logspace(*np.log10([1, 48]), num=56) # define frequencies of interest
+n_cycles = freqs/2 #
 sigma = n_cycles/(2 * np.pi * freqs)
 
 """
@@ -94,83 +93,6 @@ tfr, itc = tfr_morlet(
     n_jobs=None # sequential execution (less memory usage)
 )
 
-#%% COI
-if not tfr.comment['n_cycles']:
-    print("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles':XXX}")
-    
-
-    
-else: 
-    if tfr.comment['n_cycles'] == 'default: const.n_cycles':
-        wavelet_width = const.fwhm
-        print('using default fwhm')
-    else:
-        n_cycles = tfr.comment['n_cycles'] 
-        freqs = tfr.freqs
-        sigma = n_cycles/(2 * np.pi * freqs)
-        fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
-        wavelet_width = fwhm
-   
-    
-# % get coi values  (times per freq bin)
-print('>> Cone of influence')
-coi = wavelet_width/2
-  
-print('Creating dataframe with tfr power and filtering out values outside COI')
-ts = tfr.times.copy()
-
-#Create a data frame with TFR power indicating frequency band
-tfr_df = tfr.to_data_frame(time_format=None)         
-for c,cval in enumerate(coi):    
-    #define time boundaries for each freq bin
-    timeCOI_starts = ts[0] + coi[c]
-    timeCOI_ends =   0 -coi[c]  
-    
-    #mark rows out of the COI as nan
-    tfr_df[((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends)) & (tfr_df['freq']==freqs[c])] = np.nan
-
-tfr_df.dropna(axis=0,inplace=True)                  
-print('Done.') 
-
-#%% Freq Bands
-
-freqbands = dict(Delta = [1,4],
-                 Theta = [4,8],
-                 Alpha=[8,13], 
-                 Beta= [13,25],
-                 Gamma =[25,48])
-
-# %%
-if type(tfr_df) is not pd.core.frame.DataFrame:
-    tfr_df = tfr_df.to_data_frame(time_format=None)   
-    print('Input converted to DF')
-            
-#%%         
-freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()] 
-tfr_df['band'] = pd.cut(tfr_df['freq'], list(freq_bounds),labels=list(freqbands))    
-
-#save averaged power per band in a dictionary
-tfr_bands= {}
-print('>> O_o Adding power averages per band to a dictionary')
-tfr_bands['freqbands']=freqbands
-for thisband in list(freqbands):                     
-    # Mean 
-    curBandDF = tfr_df[tfr_df.band.isin([thisband])].copy()
-    dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
-    ts = dfmean.index.get_level_values('time').unique()
-    # Save data in arrays formated for mvpa                     
-    x = []
-    epIds = dfmean.index.get_level_values('epoch').unique()
-    for ep in epIds:
-        thisEpoch = dfmean.filter(regex='^E.*',axis = 1 ).loc[ep].to_numpy().transpose() # find columns with channel values (start with E*.) for each epoch and transpose 
-        x.append(thisEpoch)
-        del thisEpoch  
-    X = np.dstack(x)                                                                        
-    
-    # Add to dictionary in shape:  epochs x Channels x TimePoints
-    tfr_bands[thisband] = X.transpose(2,0,1)       
-    tfr_bands['times_' + thisband] = ts
-    print('>>> ' + thisband + ' avg per epoch added')
 
 #%% power plots ###########################################################################################################
 
@@ -204,22 +126,22 @@ tfr.plot_joint(
     # if timefreqs == None it will choose the absolute peak of time-frequency and plot the topomap there
     )
 
-# #%% ITC plots  ############################################################################################################
-# itc.plot_topo(baseline=(-0.5, 0), mode="logratio", title="Average ITC")
+#%% ITC plots  ############################################################################################################
+itc.plot_topo(baseline=(-0.5, 0), mode="logratio", title="Average ITC")
 
 
-# fig, axes = plt.subplots(1, 2, figsize=(7, 4), layout="constrained")
-# topomap_kw = dict(
-#     ch_type="eeg", tmin=tmin, tmax=tmax, baseline=(-0.5, 0), mode="logratio", show=False
-# )
+fig, axes = plt.subplots(1, 2, figsize=(7, 4), layout="constrained")
+topomap_kw = dict(
+    ch_type="eeg", tmin=tmin, tmax=tmax, baseline=(-0.5, 0), mode="logratio", show=False
+)
 
-# plot_dict = dict(Alpha=dict(fmin=8, fmax=12), Beta=dict(fmin=13, fmax=25))
-# for ax, (title, fmin_fmax) in zip(axes, plot_dict.items()):
-#     itc.plot_topomap(**fmin_fmax, axes=ax, **topomap_kw)
-#     ax.set_title(title)
+plot_dict = dict(Alpha=dict(fmin=8, fmax=12), Beta=dict(fmin=13, fmax=25))
+for ax, (title, fmin_fmax) in zip(axes, plot_dict.items()):
+    itc.plot_topomap(**fmin_fmax, axes=ax, **topomap_kw)
+    ax.set_title(title)
 
-# itc.plot_joint(
-#     baseline=(-0.5, 0), mode="mean", tmin=tmin, tmax=tmax, 
-#     # timefreqs=[(-0.3, 10), (0.2, 8)] #this will plot the topomap at X seconds in Y frequency for each tuple (X,Y)
-#     # if timefreqs == None it will choose the absolute peak of time-frequency and plot the topomap there
-#     )
+itc.plot_joint(
+    baseline=(-0.5, 0), mode="mean", tmin=tmin, tmax=tmax, 
+    # timefreqs=[(-0.3, 10), (0.2, 8)] #this will plot the topomap at X seconds in Y frequency for each tuple (X,Y)
+    # if timefreqs == None it will choose the absolute peak of time-frequency and plot the topomap there
+    )
