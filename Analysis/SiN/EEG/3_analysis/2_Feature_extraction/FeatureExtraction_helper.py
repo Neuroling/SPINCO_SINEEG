@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Helper script for FeatureExtraction_runner
+===============================================================================
+@author: gfraga & samuemu
 Created on Wed Dec 13 07:57:06 2023
 
-@author: samuemu
+This script contains all the functions needed to deal with Feature Extraction.
+
+These functions are called by FeatureExtraction_runner, and require 
+FeatureExtraction_constants for variables that do not change across files.
+
+
 """
 import os
 from glob import glob
@@ -41,6 +49,9 @@ class TFRManager:
         Refs:  
         https://mne.tools/stable/index.html ;  
         https://mne.tools/mne-connectivity/
+        
+        Function to compute power spectrum densities (PSD) and time frequency 
+        representations (TFR)
         
         Parameters
         ----------
@@ -110,6 +121,8 @@ class TFRManager:
             else:
                 tfr.comment = {'n_cycles' : 'default: const.n_cycles'}
             
+            
+            
             features_dict['TFR'] = tfr
             print('Done.')             
                     
@@ -129,7 +142,7 @@ class TFRManager:
     
 
     def extractCOI(self,tfr):
-        """Extract Cone of Influence from TFR
+        """Extract Cone of Influence (COI) from TFR
         =================================================================
         Created on Tue Jan 10 11:43:56 2023
         @author: gfraga & samuemu
@@ -149,7 +162,7 @@ class TFRManager:
             print("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles':XXX}")
             sys.exit()
             
-        else: 
+        else: # if n_cycles used in EEG_extract_feat is not the default, calculate coi
             if tfr.comment['n_cycles'] == 'default: const.n_cycles':
                 coi = const.fwhm
                 freqs=tfr.freqs
@@ -158,24 +171,24 @@ class TFRManager:
                 freqs = tfr.freqs
                 sigma = n_cycles/(2 * np.pi * freqs)
                 fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
-                coi = fwhm
-        # % wavelet width and coi are determined by full width half maximum (fwhm): the distance between 50% gain before peak to 50% gain after peak
-        # % see Cohen (2019) https://doi.org/10.1016/j.neuroimage.2019.05.048
+                coi = fwhm/2
+        #% wavelet width and coi are determined by full width half maximum (fwhm): 
+        #% the distance between 50% gain before peak to 50% gain after peak.
+        #% So the edge of the COI is the point of 50% gain before/after peak (=fwhm/2)
+        #% see Cohen (2019) https://doi.org/10.1016/j.neuroimage.2019.05.048
             
         # % get coi values  (times per freq bin)
         print('>> Cone of influence')
 
       
         print('Creating dataframe with tfr power and filtering out values outside COI ...')
-        ts = tfr.times.copy()
-        
-        #TODO this doesn't work yet: somehow tfr_df only has times before stimulus onset.
+
         #Create a data frame with TFR power indicating frequency band
         tfr_df = tfr.to_data_frame(time_format=None)         
         for c,cval in enumerate(coi):    
             #define time boundaries for each freq bin
-            timeCOI_starts = ts[0] + coi[c]
-            timeCOI_ends =   0 -coi[c]  
+            timeCOI_starts = 0 - coi[c] # COI starts at the point of 50% gain before peak
+            timeCOI_ends =   0 + coi[c] # COI ends at the point of 50% gain after peak
             
             #mark rows out of the COI as nan
             tfr_df[((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends)) & (tfr_df['freq']==freqs[c])] = np.nan
@@ -210,20 +223,29 @@ class TFRManager:
              
         """      
         if freqbands is None: 
-            freqbands = dict(Delta = [1,4],
-                             Theta = [4,8],
-                             Alpha=[8,13], 
-                             Beta= [13,25],
-                             Gamma =[25,48])
+            freqbands = const.freqbands
             print('no freqbands specified. Using function defaults')
+        
         # %%
         if type(tfr_df) is not pd.core.frame.DataFrame:
             tfr_df = tfr_df.to_data_frame(time_format=None)   
             print('Input converted to DF')
                     
-        #%%         
-        freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()] 
-        tfr_df['band'] = pd.cut(tfr_df['freq'], list(freq_bounds),labels=list(freqbands))    
+        #%%    Instead of doing this below, we can also just take out delta-band
+        #% We do this because we do the TFR from frequencies 6-48; so having a
+        #% delta frequency band leads to errors due to it being below the frequencies
+        #% covered in the TFR
+        
+        # lowestFreq=tfr_df.freq.min()
+        freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()]
+        # if freq_bounds[0] < lowestFreq:
+        #     freq_bounds = [i for i in freq_bounds if i>=lowestFreq]
+        #     if freq_bounds[0] != lowestFreq:
+        #         freq_bounds.insert(0,lowestFreq)
+
+
+        tfr_df['band'] = pd.cut(tfr_df['freq'], list(freq_bounds),labels=list(freqbands))
+        tfr_df.drop(columns='condition',inplace=True)
         
         #save averaged power per band in a dictionary
         tfr_bands= {}
@@ -231,9 +253,9 @@ class TFRManager:
         tfr_bands['freqbands']=freqbands
         for thisband in list(freqbands):                     
             # Mean 
-            curBandDF = tfr_df[tfr_df.band.isin([thisband])].copy()
+            curBandDF = tfr_df[tfr_df.band.isin([thisband])].copy() # TODO - Hold on why is this empty
             dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
-            # % TODO: the above gives the following error: TypeError: category dtype does not support aggregation 'mean'
+            # TODO: the above gives the following error: TypeError: category dtype does not support aggregation 'mean'
             ts = dfmean.index.get_level_values('time').unique()
             # Save data in arrays formated for mvpa                     
             x = []

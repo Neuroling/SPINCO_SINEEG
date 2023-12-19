@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+CONSTANTS FOR FEATURE EXTRACTION SCRIPTS
+===============================================================================
+@author: samuemu
 Created on Fri Dec  8 12:23:55 2023
 
-@author: samuemu
 """
 
 import os
@@ -21,6 +23,11 @@ epo_duration= [-0.5, 0.49609375] # time window of the epoch (first and last idx 
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
+freqbands = dict(#Delta = [1,4],
+                 Theta = [4,8],
+                 Alpha=[8,13], 
+                 Beta= [13,25],
+                 Gamma =[25,48])
 
 """
 WAVELET WIDTH, CYCLES AND FREQUENCIES

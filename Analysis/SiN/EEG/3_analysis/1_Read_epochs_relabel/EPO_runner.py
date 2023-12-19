@@ -10,8 +10,6 @@ This script reads eeglab epochs and handles them with MNE
 It takes the constants, such as subject ID, from EPO_constants,
 and the functions from EPO_helper
 
-
-
 """
 
 
@@ -41,7 +39,3 @@ for subjID in const.subjIDs:
     frequencyTable[subjID] = df['frequency']
 frequencyTable.to_csv(EpoManager.freqTable_path)
 print("saved frequency table to" + EpoManager.freqTable_path)
-
-# table_path = os.path.join(EpoManager.epo_path[:EpoManager.epo_path.find(const.pipeID)] + const.pipeID, const.taskID + '_preproc_epoched','event_group_frequencies.csv')
-# name event_group_frequencies.csv
-# Y:\Projects\Spinco\SINEEG\Data\SiN\derivatives\pipeline-01\task-sin_preproc_epoched

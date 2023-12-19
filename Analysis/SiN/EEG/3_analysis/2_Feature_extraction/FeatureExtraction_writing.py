@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Feature extraction - writing and trial script
+===============================================================================
+author: samuemu
 Created on Fri Dec  8 12:18:39 2023
 
-@author: samuemu
 source: https://mne.tools/stable/auto_tutorials/time-freq/20_sensors_time_frequency.html
 
 Yet another largely undocumented script meant to try code in, which will then be 
@@ -45,14 +47,14 @@ epo = mne.read_epochs(epo_path)
 tmin = epo.times[0]
 tmax = epo.times[len(epo.times)-1]
 
-# # Conventient way to visualise epochs: The x-axis is time, and on the y-axis, each row of pixels represents a single epoch, 
-# # with the colour of each pixel representing signal value (if combine="mean" it's the average of all electrodes)
-# # https://mne.tools/stable/auto_tutorials/epochs/20_visualize_epochs.html#plotting-epochs-as-an-image-map
+# #% Conventient way to visualise epochs: The x-axis is time, and on the y-axis, each row of pixels represents a single epoch, 
+# #% with the colour of each pixel representing signal value (if combine="mean" it's the average of all electrodes)
+# #% https://mne.tools/stable/auto_tutorials/epochs/20_visualize_epochs.html#plotting-epochs-as-an-image-map
 # epo['NV/Call/Cor'].plot_image(picks="eeg",combine="mean")
 
 
 #%% Plot Power Spectrum densities #########################################################################################
-# https://mne.tools/stable/generated/mne.time_frequency.EpochsSpectrum.html#mne.time_frequency.EpochsSpectrum
+#% https://mne.tools/stable/generated/mne.time_frequency.EpochsSpectrum.html#mne.time_frequency.EpochsSpectrum
 
 epo.compute_psd().plot() 
 epo.compute_psd().plot(average=True)
@@ -60,9 +62,7 @@ epo.compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
 
 
 #%% Now let's do the morlet time frequency representation (TFR) ###########################################################
-# https://mne.tools/stable/generated/mne.time_frequency.tfr_morlet.html
-
-
+#% https://mne.tools/stable/generated/mne.time_frequency.tfr_morlet.html
 
 freqs = np.logspace(*np.log10([5, 48]), num=56) # define frequencies of interest
 n_cycles = 3 #
@@ -94,22 +94,16 @@ tfr, itc = tfr_morlet(
     n_jobs=None # sequential execution (less memory usage)
 )
 
-#%% COI
-if not tfr.comment['n_cycles']:
-    print("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles':XXX}")
-    
+#%% COI (debugging)
 
-    
-else: 
-    if tfr.comment['n_cycles'] == 'default: const.n_cycles':
-        wavelet_width = const.fwhm
-        print('using default fwhm')
-    else:
-        n_cycles = tfr.comment['n_cycles'] 
-        freqs = tfr.freqs
-        sigma = n_cycles/(2 * np.pi * freqs)
-        fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
-        wavelet_width = fwhm
+wavelet_width = const.fwhm
+    #     print('using default fwhm')
+    # else:
+    #     n_cycles = tfr.comment['n_cycles'] 
+    #     freqs = tfr.freqs
+    #     sigma = n_cycles/(2 * np.pi * freqs)
+    #     fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
+    #     wavelet_width = fwhm
    
     
 # % get coi values  (times per freq bin)
@@ -119,14 +113,14 @@ coi = wavelet_width/2
 print('Creating dataframe with tfr power and filtering out values outside COI')
 ts = tfr.times.copy()
 
-#Create a data frame with TFR power indicating frequency band
+#% Create a data frame with TFR power indicating frequency band
 tfr_df = tfr.to_data_frame(time_format=None)         
-for c,cval in enumerate(coi):    
-    #define time boundaries for each freq bin
+for c,cval in enumerate(coi):  # c = count of current iteration; cval = value of the item at the current iteration  
+    #% define time boundaries for each freq bin
     timeCOI_starts = ts[0] + coi[c]
     timeCOI_ends =   0 -coi[c]  
     
-    #mark rows out of the COI as nan
+    #% mark rows out of the COI as nan
     tfr_df[((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends)) & (tfr_df['freq']==freqs[c])] = np.nan
 
 tfr_df.dropna(axis=0,inplace=True)                  

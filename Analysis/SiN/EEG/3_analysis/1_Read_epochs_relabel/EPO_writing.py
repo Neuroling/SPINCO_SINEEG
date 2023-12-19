@@ -1,9 +1,13 @@
 
-""" READ EEGLAB EPOCHS in MNE 
-=================================================================
+""" 
+READ EEGLAB EPOCHS IN MNE - WRITING AND TRIAL SCRIPT
+===============================================================================
 @author: samuemu & gfraga
+Created November 2023
 
-This script is an undocumented mess, because it is for trying out code and debugging before putting it into EPO_helper
+This script is an undocumented mess, because it is for trying out code and 
+debugging before putting it into EPO_helper
+
 
 NOTE: 
     Some MNE plotting functions start bugging with matplotlib version 3.7.2 or earlier.
@@ -37,13 +41,13 @@ import pandas as pd
 subjID= 's001'
 EpoManager = helper.EpochManager(subjID)
 # epo = EpoManager.set2fif(metadata=True,relabelEvents=True)
-epo = EpoManager.readEpo()
-freqTable = EpoManager.countEventFrequency(epo)
-metadata=EpoManager.constructMetadata()
+epo = EpoManager.readEpo() # reading the epoched data 
+freqTable = EpoManager.countEventFrequency(epo) # creating a frequency of ocurrence table
+metadata=EpoManager.constructMetadata() # constructing metadata
 
-epo = EpoManager.relabelEvents(epo)
+epo = EpoManager.relabelEvents(epo) # relabelling events
 
-epo2=epo.set_eeg_reference(ch_type='eeg')
+epo2=epo.set_eeg_reference(ch_type='eeg') # re-referencing to average reference
 
 #%%
 
@@ -56,6 +60,7 @@ epo["NV/Lv1/Call"].compute_psd(exclude=['Cz']).plot(picks="eeg",average=False)
 
 # plots from here on need matplotlib v3.7.3 or newer
 epo.plot_image(picks=[41,42,43])
+
 #%%
 evo_NV=epo.__getitem__('NV').average()
 evo_SSN=epo.__getitem__('SSN').average()
