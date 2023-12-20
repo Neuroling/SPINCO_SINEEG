@@ -122,7 +122,7 @@ class TFRManager:
                 tfr.comment = {'n_cycles' : 'default: const.n_cycles'}
             
             
-            
+            self.ch_names=tfr.info.ch_names
             features_dict['TFR'] = tfr
             print('Done.')             
                     
@@ -223,7 +223,11 @@ class TFRManager:
              
         """      
         if freqbands is None: 
-            freqbands = const.freqbands
+            freqbands = dict(Delta = [1,4],
+                             Theta = [4,8],
+                             Alpha=[8,13], 
+                             Beta= [13,25],
+                             Gamma =[25,48])
             print('no freqbands specified. Using function defaults')
         
         # %%
@@ -231,13 +235,20 @@ class TFRManager:
             tfr_df = tfr_df.to_data_frame(time_format=None)   
             print('Input converted to DF')
                     
-        #%%    Instead of doing this below, we can also just take out delta-band
+        #%%  
+        
+        lowestFreq=tfr_df.freq.min()
+        freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()]
+        if freq_bounds[1] < lowestFreq:
+            raise ValueError(
+                f"At least one frequency band lies below lowest covered Frequency of {lowestFreq} Hz. \n"
+                 "            Change freqbands or perform the TFR for lower frequencies to proceed.")
+        
+        #% Instead of doing this below, we can also just take out delta-band
         #% We do this because we do the TFR from frequencies 6-48; so having a
         #% delta frequency band leads to errors due to it being below the frequencies
         #% covered in the TFR
         
-        # lowestFreq=tfr_df.freq.min()
-        freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()]
         # if freq_bounds[0] < lowestFreq:
         #     freq_bounds = [i for i in freq_bounds if i>=lowestFreq]
         #     if freq_bounds[0] != lowestFreq:
@@ -245,30 +256,44 @@ class TFRManager:
 
 
         tfr_df['band'] = pd.cut(tfr_df['freq'], list(freq_bounds),labels=list(freqbands))
-        tfr_df.drop(columns='condition',inplace=True)
+        tfr_df.drop(columns='condition',inplace=True) 
+        # We exclude the column "condition" for now because it contains the condition as str (e.g.  NV/Call/Stim1/Lv1/Inc/M)
+        # and not as int (event-codes such as 111102). That will cause the an error in the groupby-function later
+        # If needed, I can probably change the contents of the "condition" column to be event-codes instead of labels
+        # TODO
+    
         
         #save averaged power per band in a dictionary
         tfr_bands= {}
         print('>> O_o Adding power averages per band to a dictionary')
         tfr_bands['freqbands']=freqbands
-        for thisband in list(freqbands):                     
+        for thisband in list(freqbands):
+            print('>>> computing '+thisband)                          
             # Mean 
-            curBandDF = tfr_df[tfr_df.band.isin([thisband])].copy() # TODO - Hold on why is this empty
-            dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
-            # TODO: the above gives the following error: TypeError: category dtype does not support aggregation 'mean'
+            currentBandDF = tfr_df[tfr_df.band.isin([thisband])].copy() # reducing the df to only the selected freqbands
+            currentBandDF.drop(columns='band',inplace=True) # dropping "band" column because it constains str (which would raise error)
+            
+            dfmean = currentBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
+            dfmean.drop(columns='freq',inplace=True) # dropping the "freqs" column because it is now meaningless
+            
+            # get all unique time-values, so we have some information about the COI of a band
             ts = dfmean.index.get_level_values('time').unique()
-            # Save data in arrays formated for mvpa                     
-            x = []
-            epIds = dfmean.index.get_level_values('epoch').unique()
-            for ep in epIds:
-                thisEpoch = dfmean.filter(regex='^E.*',axis = 1 ).loc[ep].to_numpy().transpose() # find columns with channel values (start with E*.) for each epoch and transpose 
+            
+            # Save data in arrays formatted for mvpa
+            # !!! The following loop is MASSIVELY ressource-intense and WILL kill the kernel
+            # DO NOT use append in a loop!!!!!!!
+            x = 
+            epIds = dfmean.index.get_level_values('epoch').unique() # get unique epochs
+            for ep in epIds: # For each unique epoch...
+                print('>>> computing epoch '+str(ep))
+                thisEpoch = dfmean.filter(self.ch_names,axis = 1 ).loc[ep].to_numpy().transpose() # find columns with channel values for each epoch and transpose 
                 x.append(thisEpoch)
                 del thisEpoch  
             X = np.dstack(x)                                                                        
             
-            # Add to dictionary in shape:  epochs x Channels x TimePoints
+            # Add to dictionary in shape:  epochs x Channels x TimePoints # TODO this doesn't work
             tfr_bands[thisband] = X.transpose(2,0,1)       
             tfr_bands['times_' + thisband] = ts
-            print('>>> ' + thisband + ' avg per epoch added')
+            print('>>>> ' + thisband + ' avg per epoch added')
             
         return tfr_bands

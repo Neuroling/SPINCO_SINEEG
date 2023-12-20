@@ -36,4 +36,5 @@ features_dict=TFRManager.EEG_extract_feat(epo)
 tfr=features_dict['TFR']
 
 tfr_df = TFRManager.extractCOI(tfr)
-tfr_bands = TFRManager.extractFreqBands(tfr_df)
+# del tfr, features_dict
+# tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
