@@ -15,6 +15,7 @@ import mne
 from mne.time_frequency import tfr_morlet
 import matplotlib.pyplot as plt
 import numpy as np
+import pickle
 
 import FeatureExtraction_constants as const
 import FeatureExtraction_helper as helper
@@ -36,5 +37,6 @@ features_dict=TFRManager.EEG_extract_feat(epo)
 tfr=features_dict['TFR']
 
 tfr_df = TFRManager.extractCOI(tfr)
-# del tfr, features_dict
-# tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
+tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
+
+TFRManager.get_crossval_scores

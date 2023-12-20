@@ -31,6 +31,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold,cross_validate  
+from sklearn import metrics
+from sklearn import svm
+
 import FeatureExtraction_constants as const
 # import FeatureExtraction_helper as FeatureExtractor
 
@@ -64,9 +68,7 @@ epo.compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
 #%% Now let's do the morlet time frequency representation (TFR) ###########################################################
 #% https://mne.tools/stable/generated/mne.time_frequency.tfr_morlet.html
 
-freqs = np.logspace(*np.log10([5, 48]), num=56) # define frequencies of interest
-n_cycles = 3 #
-sigma = n_cycles/(2 * np.pi * freqs)
+
 
 """
 https://mne.tools/stable/generated/mne.time_frequency.morlet.html#mne.time_frequency.morlet
@@ -84,7 +86,7 @@ The full-width half-maximum (FWHM) can be determined by:
     
 if << n_cycles = freqs / 2 >> then sigma will always be = 1 / (4 * np.pi) = 0.079577
 """
-
+# This creates TFR that are AVERAGED over epochs
 tfr, itc = tfr_morlet(
     epo,
     freqs=const.freqs,
@@ -94,77 +96,7 @@ tfr, itc = tfr_morlet(
     n_jobs=None # sequential execution (less memory usage)
 )
 
-#%% COI (debugging)
 
-wavelet_width = const.fwhm
-    #     print('using default fwhm')
-    # else:
-    #     n_cycles = tfr.comment['n_cycles'] 
-    #     freqs = tfr.freqs
-    #     sigma = n_cycles/(2 * np.pi * freqs)
-    #     fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
-    #     wavelet_width = fwhm
-   
-    
-# % get coi values  (times per freq bin)
-print('>> Cone of influence')
-coi = wavelet_width/2
-  
-print('Creating dataframe with tfr power and filtering out values outside COI')
-ts = tfr.times.copy()
-
-#% Create a data frame with TFR power indicating frequency band
-tfr_df = tfr.to_data_frame(time_format=None)         
-for c,cval in enumerate(coi):  # c = count of current iteration; cval = value of the item at the current iteration  
-    #% define time boundaries for each freq bin
-    timeCOI_starts = ts[0] + coi[c]
-    timeCOI_ends =   0 -coi[c]  
-    
-    #% mark rows out of the COI as nan
-    tfr_df[((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends)) & (tfr_df['freq']==freqs[c])] = np.nan
-
-tfr_df.dropna(axis=0,inplace=True)                  
-print('Done.') 
-
-#%% Freq Bands
-
-freqbands = dict(Delta = [1,4],
-                 Theta = [4,8],
-                 Alpha=[8,13], 
-                 Beta= [13,25],
-                 Gamma =[25,48])
-
-# %%
-if type(tfr_df) is not pd.core.frame.DataFrame:
-    tfr_df = tfr_df.to_data_frame(time_format=None)   
-    print('Input converted to DF')
-            
-#%%         
-freq_bounds =  [0] +  [item[1][1] for item in freqbands.items()] 
-tfr_df['band'] = pd.cut(tfr_df['freq'], list(freq_bounds),labels=list(freqbands))    
-
-#save averaged power per band in a dictionary
-tfr_bands= {}
-print('>> O_o Adding power averages per band to a dictionary')
-tfr_bands['freqbands']=freqbands
-for thisband in list(freqbands):                     
-    # Mean 
-    curBandDF = tfr_df[tfr_df.band.isin([thisband])].copy()
-    dfmean = curBandDF.groupby(['epoch','time']).mean() # add mean per time point of all freqs selected across a selected set of channels
-    ts = dfmean.index.get_level_values('time').unique()
-    # Save data in arrays formated for mvpa                     
-    x = []
-    epIds = dfmean.index.get_level_values('epoch').unique()
-    for ep in epIds:
-        thisEpoch = dfmean.filter(regex='^E.*',axis = 1 ).loc[ep].to_numpy().transpose() # find columns with channel values (start with E*.) for each epoch and transpose 
-        x.append(thisEpoch)
-        del thisEpoch  
-    X = np.dstack(x)                                                                        
-    
-    # Add to dictionary in shape:  epochs x Channels x TimePoints
-    tfr_bands[thisband] = X.transpose(2,0,1)       
-    tfr_bands['times_' + thisband] = ts
-    print('>>> ' + thisband + ' avg per epoch added')
 
 #%% power plots ###########################################################################################################
 
@@ -217,3 +149,68 @@ tfr.plot_joint(
 #     # timefreqs=[(-0.3, 10), (0.2, 8)] #this will plot the topomap at X seconds in Y frequency for each tuple (X,Y)
 #     # if timefreqs == None it will choose the absolute peak of time-frequency and plot the topomap there
 #     )
+
+#%% MVPA
+y=None
+clf=svm.SVC(C=1, kernel='linear')
+cv=None
+scoretype='accuracy'
+
+# #[MVPA] Decoding based on entire epoch
+# ---------------------------------------------
+if len(X.shape) != 3:
+    if len(X.shape) > 3:
+        raise ValueError(f'Array X needs to be 2 or 3-dimensional, not {len(X.shape)}')
+    X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
+
+#% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
+all_scores_full = cross_validate(estimator = clf,
+                                 X = X_2d, # the data to fit the model
+                                 #y= y,  # target variable to predict
+                                 #cv=cv, # cross-validation splitting strategy
+                                 n_jobs=const.n_jobs,
+                                 scoring=scoretype,
+                                 error_score='raise')
+
+all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
+print('--> run classification on the full epoch')
+
+#%%
+
+#[MVPA] Time-resolved decoding 
+# ---------------------------------------------
+n_times = X.shape[2]       
+
+#Use dictionaries to store values for each score type 
+scores = {name: [] for name in scoretype}
+std_scores = {name: [] for name in scoretype}
+
+print('[--> starting classification per time point....')
+for t in range(n_times):
+    Xt = X[:, :, t]
+    
+    # Standardize features
+    Xt -= Xt.mean(axis=0)
+    Xt /= Xt.std(axis=0)
+    
+    #[O_O] Run cross-validation 
+    scores_t = cross_validate(clf, 
+                              Xt, 
+                              y, 
+                              cv=cv, 
+                              n_jobs=const.n_jobs,
+                              scoring=scoretype)     
+    
+    #Add CV mean and std of this time point to my output dict 
+    for name in scoretype:
+        scores[name].append(scores_t['test_' + name].mean()) 
+        std_scores[name].append(scores_t['test_' + name].std())
+
+#from lists to arrays 
+scores = {key: np.array(value) for key, value in scores.items()}
+std_scores = {key: np.array(value) for key, value in std_scores.items()}
+  
+print('Done <--]')
+# return all_scores_full, scores, std_scores 
+
+

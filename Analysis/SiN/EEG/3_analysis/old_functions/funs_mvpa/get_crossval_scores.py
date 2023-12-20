@@ -9,6 +9,7 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
     Created on Thu Dec 22 13:44:33 2022
     @author: gfraga\n
     Ref: visit documentation in https://scikit-learn.org/stable/modules/classes.html
+    https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
     
     Parameters
     ----------
@@ -41,12 +42,13 @@ def get_crossval_scores(X,y,clf,cv,scoretype):
     
     # #[MVPA] Decoding based on entire epoch
     # ---------------------------------------------
-    X_2d = X.reshape(len(X), -1)               
+    X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
+    
     all_scores_full = cross_validate(estimator = clf,
-                                     X = X_2d,
-                                     y= y, 
-                                     cv=cv, 
-                                     n_jobs=8,
+                                     X = X_2d, # the data to fit
+                                     y= y,  # target variable to predict
+                                     cv=cv, # cross-validation splitting strategy
+                                     n_jobs=-1,
                                      scoring=scoretype)
     
     all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
