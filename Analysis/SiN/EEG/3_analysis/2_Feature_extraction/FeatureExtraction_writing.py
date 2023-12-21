@@ -23,7 +23,7 @@ list of abbreviations:
 
 import os
 from glob import glob
-thisDir = os.getcwd()
+thisDir = os.path.dirname(__file__)
 
 import mne
 from mne.time_frequency import tfr_morlet
@@ -36,14 +36,15 @@ from sklearn import metrics
 from sklearn import svm
 
 import FeatureExtraction_constants as const
-# import FeatureExtraction_helper as FeatureExtractor
+import FeatureExtraction_helper as helper
 
 #%% User inputs ###########################################################################################################
 subjID = 's001'
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', 
                         const.pipeID, const.taskID + '_preproc_epoched',subjID)
 epo_path = glob(os.path.join(dirinput, str("*"+ const.fifFileEnd)), recursive=True)[0]
-# set_path = glob(os.path.join(dirinput, str("*"+ const.setFileEnd)), recursive=True)[0]
+
+
 
 
 #%% Read epoched data #####################################################################################################
@@ -56,6 +57,13 @@ tmax = epo.times[len(epo.times)-1]
 # #% https://mne.tools/stable/auto_tutorials/epochs/20_visualize_epochs.html#plotting-epochs-as-an-image-map
 # epo['NV/Call/Cor'].plot_image(picks="eeg",combine="mean")
 
+#%% Copied from runner
+TFRManager = helper.TFRManager()
+features_dict=TFRManager.EEG_extract_feat(epo)
+tfr=features_dict['TFR']
+
+tfr_df = TFRManager.extractCOI(tfr)
+tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
 
 #%% Plot Power Spectrum densities #########################################################################################
 #% https://mne.tools/stable/generated/mne.time_frequency.EpochsSpectrum.html#mne.time_frequency.EpochsSpectrum
@@ -151,7 +159,8 @@ tfr.plot_joint(
 #     )
 
 #%% MVPA
-y=None
+X= tfr_bands['Gamma']
+y=epo.metadata['accuracy']
 clf=svm.SVC(C=1, kernel='linear')
 cv=None
 scoretype='accuracy'
@@ -166,11 +175,50 @@ if len(X.shape) != 3:
 #% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
 all_scores_full = cross_validate(estimator = clf,
                                  X = X_2d, # the data to fit the model
-                                 #y= y,  # target variable to predict
+                                 y= y,  # target variable to predict
                                  #cv=cv, # cross-validation splitting strategy
                                  n_jobs=const.n_jobs,
                                  scoring=scoretype,
                                  error_score='raise')
+"""
+Documentation for the function cross_validate:
+ Returns
+    -------
+    scores : dict of float arrays of shape (n_splits,)
+        Array of scores of the estimator for each run of the cross validation.
+
+        A dict of arrays containing the score/time arrays for each scorer is
+        returned. The possible keys for this ``dict`` are:
+
+            ``test_score``
+                The score array for test scores on each cv split.
+                Suffix ``_score`` in ``test_score`` changes to a specific
+                metric like ``test_r2`` or ``test_auc`` if there are
+                multiple scoring metrics in the scoring parameter.
+            ``train_score``
+                The score array for train scores on each cv split.
+                Suffix ``_score`` in ``train_score`` changes to a specific
+                metric like ``train_r2`` or ``train_auc`` if there are
+                multiple scoring metrics in the scoring parameter.
+                This is available only if ``return_train_score`` parameter
+                is ``True``.
+            ``fit_time``
+                The time for fitting the estimator on the train
+                set for each cv split.
+            ``score_time``
+                The time for scoring the estimator on the test set for each
+                cv split. (Note time for scoring on the train set is not
+                included even if ``return_train_score`` is set to ``True``
+            ``estimator``
+                The estimator objects for each cv split.
+                This is available only if ``return_estimator`` parameter
+                is set to ``True``.
+            ``indices``
+                The train/test positional indices for each cv split. A dictionary
+                is returned where the keys are either `"train"` or `"test"`
+                and the associated values are a list of integer-dtyped NumPy
+                arrays with the indices. Available only if `return_indices=True`.
+"""
 
 all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
 print('--> run classification on the full epoch')
@@ -212,5 +260,3 @@ std_scores = {key: np.array(value) for key, value in std_scores.items()}
   
 print('Done <--]')
 # return all_scores_full, scores, std_scores 
-
-
