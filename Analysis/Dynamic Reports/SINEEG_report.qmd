@@ -1,0 +1,136 @@
+---
+title: |-
+  Data Report: An EEG experiment on 
+   Speech-in-Noise Comprehension
+subtitle: Pilot EEG study on using a sentence matrix comprehension task with noise-vocoded speech and speech in speech-shaped noise
+date: last-modified
+author:
+  - name: Gorka Fraga-Gonzalez
+    orcid: 0000-0002-1857-8607
+    email: gorka.fragagonzalez@uzh.ch
+    affiliation:
+      - name: 'Neurolinguistics group, University of Zurich'
+      
+  - name: Samuel Mueller
+    email: samuel.mueller@psychologie.uzh.ch
+    affiliation:
+      - name: 'Neurolinguistics group, University of Zurich'
+      
+  - name: Alexis Hervais-Adelman
+    orcid: 0000-0002-5232-626X
+    email: alexis.hervais-adelman@psychologie.uzh.ch
+    affiliation:
+      - name: 'Neurolinguistics group, University of Zurich'
+      - name: 'Department of fundamental neurosciences, University of Geneva'
+bibliography: references.bib
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-link: true
+    code-copy: true
+    code-tools: true
+jupyter:
+  kernelspec:
+    display_name: 'Python [conda env:spyder-env] *'
+    language: python
+    name: conda-env-spyder-env-py
+---
+
+## Abstract
+  In Europe, 71 million people – 16% of the population – suffer from hearing difficulties. One of the major consequences in hearing imparirment is reduced speech comprehension ability, specially in reverberant or noisy environments. The goal of this project is to investigate perception and decision-making processes associated with word access and comprehension in acoustically challenging conditions. German-speaking adults without hearing impairments were exposed to word comprehension tasks with two auditory manipulations: spectrally impoverish speech (achieved by 'noise vocoding') and speech-in-noise (embedded in background speech-shaped noise). Five levels of stimuli difficulty were presented. Three tasks were presented to groups of 40 non-overlapping participants: a lexical decision, a 2 alternatives forced-choice task and a picture matching task. The experiment was conducted via internet.
+  
+  The current report presents a summary of the data generated in this pilot, with some initial comparisons between sound manipulations, tasks and difficulty levels. These data and outputs will be used for later modeling analyses focused on the cognitive processes underlying performance. Importantly, this pilot will directly inform the paradigm design of a subsequent neurofeedback proof-of-concept investigation.
+  
+## Methods 
+
+### Participants and experimental procedures
+xxx German speakers were recruited via the specialized online platform [Prolific](https://www.prolific.com/). The criteria for participant selection in the platform were: Xx  (country ). Participants were compensated with X $ for their participation in the study. 
+Inclusion criteria were  xxx. Exclusion criteria were XX. Further, we included an additional check of task compliance (or attention) during the main experimental task using catch trials that were meant to be fully intelligible (see task description below). Of note, the platform Prolific restricts the criteria and checks that can be done to reject a participant once the task has began. To comply with their policies we allowed participants failing those catch trials (if performed XXX less) to finish the task, but their data were discarded and not included in any descriptive or inferential analysis. 
+    
+#### Issues with online implementation
+    
+The study was implemented with the [Gorilla](https://gorilla.sc/) experiment builder. An easy-to-use research tool for collecting behavioral data with validated reaction times in online experiments. 
+
+### Visual Stimuli  
+#### Initial pool of items
+For the three tasks, we first needed a pool of words, pseudowords and drawings that would be later matched for the experimental block design. We focused on *concrete nouns in German.* 
+
+-   We first checked the [Multipic](https://www.bcbl.eu/databases/multipic/) publicly available database for drawings. Multipic has a set of 750 drawings from common concrete concepts created by the same autho and standardized for name agreement and visual complexity in several languages, see @dunabeitia2018multipic.   
+
+-   The list of German words associated to the drawings in Multipic were used as input in the following data bases to obtain additional properties of the items. We used [Subtlex](http://crr.ugent.be/SUBTLEX-DE/) to get word frequencies based on subtitles.
+
+-   Then we used [Clearpond](https://clearpond.northwestern.edu/germanpond.php) to obtain phonological and orthographic neighborhood information and word lists. 
+
+-   Matching pseudowords were generated using [Wuggy](https://github.com/crr-ugent/wuggy); see the source publication @keuleers2010wuggy for details. Note: at the time of stimuli preparation we used this program as an .exe file downloaded from the Uni Gent site *http://crr.ugent.be/programs-data/wuggy/* (that link does not work). Currently there seems to be only the github repository, linked at the start of this paragraph, with the software available in Python . 
+
+#### Matching procedure 
+
+We used the program [Match](https://www.mrc-cbu.cam.ac.uk/people/maarten.van-casteren/mixandmatch/) for  matching items and/or participants in factorial designs, see @van2007match. 
+
+##### Features 
+The features that we considered more relevant were the following (in brackets: database or program from which they were obtained):
+
+-    *lgSUBTLEX (Subtlex)*. This is log10(CUMfreqcount+1). It is the value recommended for using when you want to match stimuli in various conditions. When a stimulus is not present in the corpus, lgSUBTLEX gets a value of 0. CUMfreqcount is the number of times the word is encountered in the subtitle corpus, independently of the letter case.  
+-    *PTAN (Clearpond)*. Size of phonological neighborhood
+-    *PTAF (Clearpond)*. Mean frequency of phonological neighbours. 
+-    *Ned1_diff (Wuggy)*. The difference in the number of orthographic neighbours at edit distance 1, i.e., the number of words that can be made from the candidate by substituting, deleting or inserting a single letter. We tried to select pseudowords with ned1_diff closest to zero. The automatically generated pseudowords were revised by a native German speaker for repetitions, pseudowords that may be used as actual words or those that may be pronounced as actual words. In those cases an alternative was suggested. 
+-    *nSyllables*. The number of syllables in the word. 
+
+
+##### Data preselection and matching criteria
+There was a data preselection excluding outliers to maximize homogeneity of the stimuli pool for the experiment. The subsequent matching criteria were adjusted per task due to take into account the number of items that each task required and the possibilities for finding sufficiently large sets of matched stimuli. 
+
+**Lexical decision (LD)**
+-    Outliers were removed based on Ned1_dff, PTAN, lgSUBTLEX and nSyllables
+-    Matched by: lgSUBTLEX, PTAN, Ned1, nSyllables, PTAF
+-    10 item per subset (10 items for each of 5 difficulty levels in each block; 50 words + the associated 50 pseudowords per block) 
+
+**Picture matching (PM)**
+-   Outliers were removed based on lgSUBTLEX, rows with empty PTAN were also discarded
+-   Subsets were matched by: lgSUBTLEX, PTAN, Ned1, nSyllables,
+-   20 item per subset (20 items for each of 5 difficulty levels in each block; 100 words per block) 
+
+**Two-alternative forced choice (2AFC)** 
+-   Here we needed minimum pairs (i.e., neighbours). We excluded rows for which Clearpond generated no orthographic or phonological neighbours. 
+-   The neighbours provided by Clearpound were manually inspected 
+-   Subsets were matched by: lgSUBTLEX, PTAN, Ned1, nSyllables,
+-   14 items per subset (14 items for each of 5 snr levels in each block; 70 words per block; their neighbours presented as response alternative) 
+
+#### Sequence generation 
+
+( ... )
+
+A more detailed dynamic report on how the items were distributed within and between the blocks visit this additional [dynamic report](https://github.com/Neuroling/SPINCO_SINON/blob/670fce8fae6f0e4332c6b22a251268c327450e61/Gen_stimuli/Gen_sequences/SINON_generate_sequences.html) (downloadable html including descriptive statistics in interactive plots and tables). 
+
+![image.png](attachment:da897914-4652-4bae-a39c-8e4c07fd9c20.png)
+
+### Auditory stimuli 
+
+#### Audio recordings 
+All item (word and pseudoword) recordings were performed in a sound-proof cabine at the facilities of the [Linguistic Research Infrastructure](https://www.liri.uzh.ch/) of the University of Zurich. We recorded the voice of a make adult, native German speaker and with expertise in speech science and phonetics. The files were recorded in two channels with a sampling rate of 44100 kHz and 24 bits per sample. (... equipment details here?...). 
+
+To avoid bias from fatigue the lists of words and pseudors were shuffled and divided into sublists 150 items each. The first recording took place in a single session. All items were prompted on a screen while the recording subject read them outload. Recording, prompting and the subsequent segmentation of the recording into audio file per item were preformed with XXX (...). The individual item recordins were manually inspected and misspelled items, those containing too long silences or background noises were recorded again. After triming of silences and inspection of all files they were used as input ofr the audio manipulation scripts. 
+
+ 
+---> include details here about the actual files and where to find them here. 
+
+
+#### Auditory manipulations
+
+##### Noise-vocoding 
+##### Speech in speech-shaped noise
+(...) they were normalized to -23 LUFS (Loudness Units Full Scale) using Matlab's [integratedLoudness](https://ch.mathworks.com/help/audio/ref/integratedloudness.html) function.
+
+
+
+### Tasks 
+#### Lexical decision (LD)
+#### Two alternatives forced-choice (2AF)
+#### Picture matching (PM)
+
+## Preliminary analysis
+### Data preprocessing  Gather individual stats
+## Import libraries and define paths
+Use location of this file to define relative paths
+
