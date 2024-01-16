@@ -1,7 +1,7 @@
 1_EPO folder is for all scripts and files handling epoching data
 
 EPO_runner.py is the main script for finished code
-EPO_helper.py is a collection of functions for handling epoching
+EPO_functions.py is a collection of functions for handling epoching
 EPO_constants.py contains variables that do not change across files, such as subject IDs
 EPO_writing.py is for trying out and debugging code before putting it in EPO_helper.py
 

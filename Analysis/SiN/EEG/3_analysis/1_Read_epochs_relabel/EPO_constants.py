@@ -9,7 +9,7 @@ Created on Fri Nov  3 11:47:21 2023
 This script contains variables that do not change across scripts, such as 
 filepath-chunks, subject_IDs, and event_id
 
-These variables are called by EPO_helper and EPO_runner
+These variables are called by EPO_functions and EPO_runner
 
 """
 

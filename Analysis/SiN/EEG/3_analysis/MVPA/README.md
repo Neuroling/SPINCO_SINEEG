@@ -1,2 +1,0 @@
-- *constants* file helps other scripts to reuse variables that do not change across files
-- *helper* file is a collection of functions for handling MNE epoch metadata 
