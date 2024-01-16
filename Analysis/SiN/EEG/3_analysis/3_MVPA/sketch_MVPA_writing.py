@@ -9,10 +9,15 @@ Created on Fri Jan 12 13:24:52 2024
 
 
 """
+import os
+import pickle
+thisDir = os.path.dirname(__file__)
 
+import MVPA_constants as const
+import MVPA_functions as functions
 
-with open(pickle_path, 'rb') as f:
-    loaded_dict = pickle.load(f)
+# with open(pickle_path, 'rb') as f:
+#     tfr_bands = pickle.load(f)
     
 
 # #%% Get crossvalidation scores
