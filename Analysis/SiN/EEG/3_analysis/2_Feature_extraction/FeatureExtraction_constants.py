@@ -22,6 +22,7 @@ pipeID = 'pipeline-01'
 fifFileEnd = '_avg-epo.fif'
 setFileEnd = '_epoched_2.set'
 pickleFileEnd = '_tfr_freqbands.pkl'
+AmplitudeExtractionFileEnd = '_amplitude-epo.fif'
 
 #%% Getting a list of subject IDs
 thisDir = os.getcwd()

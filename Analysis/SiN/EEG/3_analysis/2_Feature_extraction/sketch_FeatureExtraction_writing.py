@@ -53,6 +53,8 @@ epo_path = glob(os.path.join(dirinput, str("*"+ const.fifFileEnd)), recursive=Tr
 
 #%% Read epoched data #####################################################################################################
 epo = mne.read_epochs(epo_path)
+
+#%%
 tmin = epo.times[0]
 tmax = epo.times[len(epo.times)-1]
 
@@ -266,3 +268,9 @@ print('Done <--]')
 # return all_scores_full, scores, std_scores 
 
 
+
+#%% Amplitude extraction
+
+amplitudeFreqband = {}
+for thisband in const.freqbands.keys():
+    amplitudeFreqband[thisband] = epo.filter(const.freqbands[thisband][0],const.freqbands[thisband][1])

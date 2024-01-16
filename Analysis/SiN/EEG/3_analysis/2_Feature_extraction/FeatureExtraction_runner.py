@@ -55,6 +55,9 @@ for subjID in const.subjIDs:
     #%% Read epoched data #####################################################################################################
     epo = mne.read_epochs(epo_path)
     events = epo.events[:,2]
+    event_id=epo.event_id
+    
+    
     
     #%% Extract features ######################################################################################################
     TFRManager = functions.TFRManager()
@@ -66,7 +69,10 @@ for subjID in const.subjIDs:
     
     #%% Split into frequency bands ############################################################################################
     tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
-    tfr_bands['all_eventIDs'] = events # Adding a list of eventID of every epoch to the dict
+    tfr_bands['all_epoch_eventIDs'] = events # Adding a list of eventID of every epoch to the dict
+    tfr_bands['all_epoch_conditions'] = [key for item in events for key, value in event_id.items() if value == item]
+    #% the code above is a complicated way of saying "use the dict event_id to find the key corresponding to the value in events"
+    #% Which is a complicated way of saying "For each epoch, give me the event-labels instead of the numeric event-codes"
     
     #%% save dictionary (pickle it!) ##########################################################################################
     with open(pickle_path, 'wb') as f:
@@ -82,5 +88,7 @@ for subjID in const.subjIDs:
     #     tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
     #     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
     # # TODO - Hm. all [band]_timewise_mean and all [band]_timewise_std are the same value. Check if there's an error somewhere
+    
+    TFRManager.extractFreqbandAmplitude(epo, diroutput, subjID)
     
 print("All done.")

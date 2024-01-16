@@ -261,7 +261,6 @@ class TFRManager:
             raise ValueError(
                 f"At least one frequency band lies outside covered frequency range of {lowestFreq} to {highestFreq} Hz. \n"
                  "            Change freqbands or perform the TFR for lower/higher frequencies to proceed.")
-        
 
 
         tfr_df['band'] = pd.cut(tfr_df['freq'], list(freq_bounds),labels=list(freqbands))
@@ -309,6 +308,33 @@ class TFRManager:
             print('>>>> ' + thisband + ' avg per epoch added')
             
         return tfr_bands
+      
+    #%% Amplitude extraction
+    def extractFreqbandAmplitude(self, epo, diroutput, subjID):
+        """
+        # TODO
+
+        Parameters
+        ----------
+        epo : TYPE
+            DESCRIPTION.
+        diroutput : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        for thisband in const.freqbands.keys():
+            freq_epo = epo.filter(const.freqbands[thisband][0],const.freqbands[thisband][1],n_jobs=const.n_jobs)
+           
+            fname = os.path.join(diroutput, subjID + const.taskID + thisband + const.AmplitudeExtractionFileEnd)
+            freq_epo.save(fname, overwrite = True)
+            
+            
+        
       
     
     #%%
