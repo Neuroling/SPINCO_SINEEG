@@ -12,8 +12,8 @@ It is called by the FeatureExtraction_functions.py and the FeatureExtraction_run
 """
 
 import os
-from glob import glob
-import pandas as pd
+# from glob import glob
+# import pandas as pd
 import numpy as np
 
 #%% Building blocks for paths
@@ -29,7 +29,7 @@ thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 
-n_jobs = -1
+n_jobs = None
 #% Number of jobs to run in parallel. 
 #% n_jobs = None means sequential processing. 
 #% n_jobs = -1 means using all processors (so n_jobs is = number of processors)

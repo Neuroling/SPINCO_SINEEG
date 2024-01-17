@@ -22,8 +22,10 @@ So far, this script does not loop over subjects
 import os
 from glob import glob
 
-thisDir = os.path.join(os.getcwd(),'3_analysis','2_Feature_extraction')
-os.chdir(thisDir)
+# thisDir = os.path.join(os.getcwd(),'3_analysis','2_Feature_extraction')
+# os.chdir(thisDir)
+
+thisDir = os.getcwd()
 
 #%% Imports
 import mne
@@ -55,23 +57,24 @@ for subjID in const.subjIDs:
     #%% Read epoched data #####################################################################################################
     epo = mne.read_epochs(epo_path)
     events = epo.events[:,2]
-    event_id=epo.event_id
+    event_id = epo.event_id
     
     
     
     #%% Extract features ######################################################################################################
-    TFRManager = functions.TFRManager()
-    features_dict = TFRManager.EEG_extract_feat(epo)
+    FeatureExtractionManager = functions.FeatureExtractionManager()
+    features_dict = FeatureExtractionManager.EEG_extract_feat(epo)
     tfr = features_dict['TFR']
     
     #%% Get Cone of Influence #################################################################################################
-    tfr_df = TFRManager.extractCOI(tfr)
+    tfr_df = FeatureExtractionManager.extractCOI(tfr)
     
     #%% Split into frequency bands ############################################################################################
-    tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
+    tfr_bands = FeatureExtractionManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
     
     #%% Adding condition & trial information
     tfr_bands['all_epoch_eventIDs'] = list(events)
+    tfr_bands['metadata'] = epo.metadata
     tfr_bands['all_epoch_conditions'] = [key for item in events for key, value in event_id.items() if value == item]
     #% the code above is a complicated way of saying "use the dict event_id to find the key corresponding to the value in events"
     #% Which is a complicated way of saying "For each epoch, give me the event-labels instead of the numeric event-codes"
@@ -85,13 +88,18 @@ for subjID in const.subjIDs:
     # y = epo.metadata['accuracy'] # What variable we want to predict
     
     # for thisBand in const.freqbands:
-    #     all_scores_full, scores, std_scores = TFRManager.get_crossval_scores(X=tfr_bands[thisBand], y = y)
+    #     all_scores_full, scores, std_scores = FeatureExtractionManager.get_crossval_scores(X=tfr_bands[thisBand], y = y)
     #     tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full
     #     tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
     #     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
     # # TODO - Hm. all [band]_timewise_mean and all [band]_timewise_std are the same value. Check if there's an error somewhere
     
     #%% Extracting and saving amplitude per frequency band
-    TFRManager.extractFreqbandAmplitude(epo, diroutput, subjID)
+    # CAUTION: running the next line might be too much for your RAM to handle.
+    # If your kernel keeps restarting, change const.n_jobs to None and
+    # try again. (this will take a while to run)
+    # If that still does not help, comment the next line so it doesn't execute
+    # and then run the amplitude extraction alone without the TFR stuff later
+    FeatureExtractionManager.extractFreqbandAmplitude(epo, diroutput, subjID)
     
 print("All done.")

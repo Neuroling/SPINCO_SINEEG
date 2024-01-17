@@ -64,12 +64,12 @@ tmax = epo.times[len(epo.times)-1]
 epo['NV/Call/Cor'].plot_image(picks="eeg",combine="mean")
 
 #%% Copied from runner
-TFRManager = helper.TFRManager()
-features_dict=TFRManager.EEG_extract_feat(epo)
+FeatureExtractionManager = helper.FeatureExtractionManager()
+features_dict=FeatureExtractionManager.EEG_extract_feat(epo)
 tfr=features_dict['TFR']
 
-tfr_df = TFRManager.extractCOI(tfr)
-tfr_bands = TFRManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
+tfr_df = FeatureExtractionManager.extractCOI(tfr)
+tfr_bands = FeatureExtractionManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
 
 #%% Plot Power Spectrum densities #########################################################################################
 #% https://mne.tools/stable/generated/mne.time_frequency.EpochsSpectrum.html#mne.time_frequency.EpochsSpectrum

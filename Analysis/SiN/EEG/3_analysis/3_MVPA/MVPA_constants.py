@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-CONSTANTS FOR FEATURE EXTRACTION SCRIPTS
+CONSTANTS FOR MVPA SCRIPTS
 ===============================================================================
 @author: samuemu
 Created on Fri Dec  8 12:23:55 2023

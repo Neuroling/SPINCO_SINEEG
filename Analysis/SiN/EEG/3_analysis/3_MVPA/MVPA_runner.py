@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 """
+RUNNER SCRIPT FOR THE MVPA AND CROSS-VALIDATION
+===============================================================================
+@author: sameumu
 Created on Tue Jan 16 16:07:49 2024
 
-@author: User
+
 """
 
 import os

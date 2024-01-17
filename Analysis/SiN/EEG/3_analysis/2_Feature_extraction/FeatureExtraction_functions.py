@@ -25,20 +25,22 @@ import sys
 import pandas as pd
 # import pickle
 
-from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold,cross_validate  
-from sklearn import metrics
-from sklearn import svm
 
 import FeatureExtraction_constants as const
 
-class TFRManager:
+class FeatureExtractionManager:
     """
-    # TODO
+    FeatureExtractionManager is an object used to handle feature extraction.
+    It contains functions for computing power spectrum densities (PSD) and
+    time frequency representations (TFR), for extracting the cone of Influence (COI)
+    from the TFR, for computing an average of the TFR per frequency band, and for
+    extracting the amplitude of a given frequency band.
+    
+    Unlike the EpochManager object, FeatureExtractionManager can be initiated
+    on its own and does not require SubjIDs as parameters. Therefore, filepaths 
+    will have to be handled outside of FeatureExtractionManager
     """
-    # def __init__(self,epo):
-    #     self.tmin = epo.times[0]
-    #     self.tmax = epo.times[len(epo.times)-1]
-    #     self.epo = epo
+
     
     def EEG_extract_feat(self, 
                          epochs,
@@ -313,18 +315,33 @@ class TFRManager:
     #%% Amplitude extraction
     def extractFreqbandAmplitude(self, epo, diroutput, subjID):
         """
-        # TODO
+        EXTRACTING AMPLITUDE PER FREQUENCY BAND
+        =======================================================================
+        author: samuemu
+        
+        This function extracts the amplitude of a frequency band of a given epoched dataset.
+        
+        To do this,it will perform a bandpass filter on the data for every frequency band
+        set in the constants (const.freqbands). The resulting epoched datasets will be saved
+        as MNE -epo.fif files.
+        
 
         Parameters
         ----------
-        epo : TYPE
-            DESCRIPTION.
-        diroutput : TYPE
-            DESCRIPTION.
+        epo : MNE Epochs instance
+            The epoched dataset
+            
+        diroutput : str
+            directory where the new -epo.fif should be saved. Will be appended with
+            subjID + const.taskID + [freqBand]+ const.AmplitudeExtractionFileEnd
+            
+        subjID : str
+            the subject ID. Will only be used to construct the filename of the output
 
         Returns
         -------
         None.
+        To view the new files, use mne.read_epochs()
 
         """
         
@@ -337,7 +354,7 @@ class TFRManager:
             
         
       
-    
+### Below: MVPA and cross-validation. This code is now in the MVPA_functions.py script, and will be deleted from this script once it runs smoothly there
     # #%%
     # def get_crossval_scores(self,X,y,clf=svm.SVC(C=1, kernel='linear'),cv=None,scoretype=('accuracy')):    
     #     """ Get classification scores with a scikit classifier 

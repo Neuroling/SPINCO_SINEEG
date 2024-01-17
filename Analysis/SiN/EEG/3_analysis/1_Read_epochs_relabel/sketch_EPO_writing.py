@@ -6,7 +6,7 @@ READ EEGLAB EPOCHS IN MNE - WRITING AND TRIAL SCRIPT
 Created November 2023
 
 This script is an undocumented mess, because it is for trying out code and 
-debugging before putting it into EPO_helper
+debugging before putting it into EPO_functions
 
 
 NOTE: 
