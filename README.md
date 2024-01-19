@@ -1,3 +1,5 @@
+[[_TOC_]]
+
 # Speech-in-noise comprehension: SINEEG
 Speech-in-noise comprehension (SPINCO) subproject: sentence-in-noise EEG (SINEEG) studies at the Neurolinguistics group (University of Zurich). 
 
@@ -7,15 +9,15 @@ Experiments:
 
 The data and metadata  organization is heavily based on  [BIDS](https://bids-standard.github.io/)
  
-### Project Location
+## Project Location
 At date 19.01.2024 the entire project contents is stored in the NAS: _\idnas12.d.uzh.ch\G_PSYNEULIN_DATA\Projects\Spinco\SINEEG_ >> requires access permissions with UZH user
 This code repository is cloned at  _\idnas12.d.uzh.ch\G_PSYNEULIN_DATA\Projects\Spinco\SINEEG\Scripts_
 
-### Metadata
+## Metadata
 - JSON files at the level of the raw data files containing details of each recording.
 - README.txt at the main subfolders explaining content
  
-### Script folders content
+## Script folders content
 - Analysis: all needed for preprocessing (including import of source data) and analysis. Includes, Dynamic Reports (the main outputs with code, visualizations code, text) 
 - Experiments: psychopy scripts. The audio files are not pushed into github (too many). The files are in the 'Stimuli'  folder ~\Projects\Spinco\SINEEG\Stimuli\AudioGens\selected_audio_psychoPy_click
 - Gen_stimuli: generate stimuli sentences and add noise / vocode 
