@@ -1,35 +1,25 @@
 # Speech-in-noise comprehension: SINEEG
 Speech-in-noise comprehension (SPINCO) subproject: sentence-in-noise EEG (SINEEG) studies at the Neurolinguistics group (University of Zurich). 
 
+## Experiments
+- SiN: sentence-in-noise (**main**) 
+- (drafts based on previous work from THouweling ) DiN: digits-in-noise and WiN: words-in-noise
 
-Experiments
-- SiN: sentence-in-noise (main) 
-- (drafts and previous work TH ) DiN: digits-in-noise and WiN: words-in-noise
+## Project Storage 
+At date 19.01.2024 the entire project contents is stored in the NAS: _\idnas12.d.uzh.ch\G_PSYNEULIN_DATA\Projects\Spinco\SINEEG_ >> requires access permissions with UZH user
+This code repository is cloned at  _\idnas12.d.uzh.ch\G_PSYNEULIN_DATA\Projects\Spinco\SINEEG\Scripts_
 
-Folders
-- utils: various generic utilities 
-- Analysis: main functions for analyses
-- Experiment: psychopy scripts: local version contains the .wav files, also stored in the data location
+### Script folders content
+- Analysis: all needed for preprocessing (including import of source data) and analysis. Includes, Dynamic Reports (the main outputs with code, visualizations code, text) 
+- Experiments: psychopy scripts. The audio files are not pushed into github (too many). The files are in the 'Stimuli'  folder ~\Projects\Spinco\SINEEG\Stimuli\AudioGens\selected_audio_psychoPy_click
 - Gen_stimuli: generate stimuli sentences and add noise / vocode 
-- Misc: miscelanea, including _fromRobertBecker: collection of scripts shared by R.B 
+- Misc: miscelanea, including _fromRobertBecker: collection of scripts shared by R.B
+- utils: various generic utilities 
 
+# Data organization 
+See README.txt files within each subfolder for more information. The main folders are: 
 
-# BIDS data organization
-(BIDS) Dataset will be made available in a public data repo *tbd*
-
-## Folders
-See : https://bids-specification.readthedocs.io/en/stable/02-common-principles.html#source-vs-raw-vs-derived-data
-
-## sourcedata
-Single **.bdf** file (24-bit) file with unedited recording. Contains the entire session, which consists on a main task and two resting state recordings (before and after task). 
-The file has an  'ergo1' channel with the audio output signal to help correcting for audio delay.
-
-## rawdata 
-.set EEGlab datasets after minimal preprocessing of source data to: correct audio delay in triggers, load channel locations and split resting and task recordings from file)
-
-## Derivatives (preprocessed at multiple stages)
-    
-
+Folder tree 
 ````
 ./spinco_data
     ├──SINEEG
@@ -55,6 +45,22 @@ The file has an  'ergo1' channel with the audio output signal to help correcting
     
 * if the optional 'electrodes.tsv' file is provided, with the electrode locations, then the coordsystem.json file should be provided specifying units and position system used. 
 ````
+
+## sourcedata
+Single **.bdf** file (24-bit) file with unedited recording. Contains the entire session, which consists on a main task and two resting state recordings (before and after task). 
+The file has an  'ergo1' channel with the audio output signal to help correcting for audio delay.
+
+## rawdata  
+.set EEGlab datasets after minimal preprocessing of source data to: correct audio delay in triggers, load channel locations and split resting and task recordings from file)
+>>> this is the raw data to be used for preprocessing and analysis
+
+## Derivatives (preprocessed at multiple stages)
+This contains We run a pipeline using automagic a
+
+## Derivatives_SM
+The alternative pipeline used by Sibylle Meier's Master Thesis. 
+
+
 
 ## EEG data set Metadata (JSON)
 Put one of of this at the subject and task level 
