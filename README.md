@@ -1,5 +1,3 @@
-[[_TOC_]]
-
 # Speech-in-noise comprehension: SINEEG
 Speech-in-noise comprehension (SPINCO) subproject: sentence-in-noise EEG (SINEEG) studies at the Neurolinguistics group (University of Zurich). 
 
