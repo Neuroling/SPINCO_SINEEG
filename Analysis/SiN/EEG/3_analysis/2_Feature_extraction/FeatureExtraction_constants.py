@@ -19,8 +19,7 @@ import numpy as np
 #%% Building blocks for paths
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-fifFileEnd = '_avg-epo.fif'
-setFileEnd = '_epoched_2.set'
+fifFileEnd = '_avgRef_epo.fif'
 pickleFileEnd = '_tfr_freqbands.pkl'
 AmplitudeExtractionFileEnd = '_amplitude-epo.fif'
 
@@ -29,11 +28,12 @@ thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 
-n_jobs = None
+n_jobs = -1
 #% Number of jobs to run in parallel. 
-#% n_jobs = None means sequential processing. 
+#% n_jobs = None means sequential processing (takes longer, but takes less RAM)
 #% n_jobs = -1 means using all processors (so n_jobs is = number of processors)
 
+decim = 1 # When doing the TFR, decimates sampling rate by this factor (to avoid freezing the kernel)
 
 freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
                  Theta = [4,8],

@@ -12,9 +12,8 @@ all constants are in the FeatureExtraction_constants.py script.
 
 First, TFR is extracted
 Then, values outside the COI are excluded
-Then, crossvalidation scores are processed
-
-So far, this script does not loop over subjects
+Then, TFR means for every frequency band are computed.
+Then, amplitude per frequency band is extracted
 """
 
 #%% Set working directory
@@ -40,6 +39,7 @@ import FeatureExtraction_functions as functions
 #%% Looping over subjects
 for subjID in const.subjIDs:
     
+    print('- - - - - now processing',subjID,'- - - - -')
     #%% File paths ###########################################################################################################
 
     dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', 
@@ -63,7 +63,7 @@ for subjID in const.subjIDs:
     
     #%% Extract features ######################################################################################################
     FeatureExtractionManager = functions.FeatureExtractionManager()
-    features_dict = FeatureExtractionManager.EEG_extract_feat(epo)
+    features_dict = FeatureExtractionManager.EEG_extract_feat(epo, PSD=False)
     tfr = features_dict['TFR']
     
     #%% Get Cone of Influence #################################################################################################
@@ -83,16 +83,7 @@ for subjID in const.subjIDs:
     with open(pickle_path, 'wb') as f:
         pickle.dump(tfr_bands, f)
     print("pickling the dictionary")
-    
-    # #%% Get crossvalidation scores
-    # y = epo.metadata['accuracy'] # What variable we want to predict
-    
-    # for thisBand in const.freqbands:
-    #     all_scores_full, scores, std_scores = FeatureExtractionManager.get_crossval_scores(X=tfr_bands[thisBand], y = y)
-    #     tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full
-    #     tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
-    #     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
-    # # TODO - Hm. all [band]_timewise_mean and all [band]_timewise_std are the same value. Check if there's an error somewhere
+
     
     #%% Extracting and saving amplitude per frequency band
     # CAUTION: running the next line might be too much for your RAM to handle.
@@ -100,6 +91,8 @@ for subjID in const.subjIDs:
     # try again. (this will take a while to run)
     # If that still does not help, comment the next line so it doesn't execute
     # and then run the amplitude extraction alone without the TFR stuff later
-    FeatureExtractionManager.extractFreqbandAmplitude(epo, diroutput, subjID)
+    
+    # Actually, we should do the amplitude extraction before epoching
+    # FeatureExtractionManager.extractFreqbandAmplitude(epo, diroutput, subjID)
     
 print("All done.")

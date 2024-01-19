@@ -8,7 +8,7 @@
 clear all; close all; 
 % Use subject list if you want to epoch several subjects at once 
 subjectList = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013','s015'};
-subjectList = {'s001'};
+
 
 %%
 for s = 1:length(subjectList)
@@ -46,8 +46,7 @@ for s = 1:length(subjectList)
      EEG = pop_reref( EEG, []);
     
     %% Interpolate (this option may be commented if interpolating is done with Automagic)
-    % ---------------------------------------------------------------------
-    
+    % ---------------------------------------------------------------------    
     preproc_data.automagic.tobeInterpolated
     EEG = pop_interp(EEG, preproc_data.automagic.tobeInterpolated,'spherical');
     pop_comments(EEG.comments,'','chans interpolated after automagic',1);
@@ -74,7 +73,7 @@ for s = 1:length(subjectList)
     % Replaced separator '_' by '/' for being able to filter in MNE
     accu_str = replace(accu_str,{'/11','/12','/13','/21','/22','/23'},{'/NV/CallSign/','/NV/Colour/','/NV/Number/','/SSN/CallSign/','/SSN/Colour/','/SSN/Number/'});
 
-    %% Add it to the EEG events, add 'miss' if response was missing 
+    % Add it to the EEG events, add 'miss' if response was missing 
     for i = 1:length(idx_targets_in_tsv)
         if ismissing(accu_str(idx_targets_in_tsv(i)))        
             EEG.event(idx_targets_in_tsv(i)).type = string(strcat('miss/',EEG.event(idx_targets_in_tsv(i)).type));
@@ -88,19 +87,19 @@ for s = 1:length(subjectList)
 
     %% Resample 
     EEG = pop_resample( EEG, 256);
-
+ 
     %% Epoch    
     % --------------------------------------
-      %Define events to epoched 
-      targets_with_missing_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(miss/)')));
-      targets_with_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(cor/|inc/)')));
+    %Define events to epoched 
+    targets_with_missing_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(miss/)')));
+    targets_with_resp = find(~cellfun('isempty', regexp({EEG.event.type}, '^(cor/|inc/)')));
 
-      event_types_to_epoch = unique({EEG.event(targets_with_resp).type});
+    event_types_to_epoch = unique({EEG.event(targets_with_resp).type});
 
-       % print info 
-      disp(['>>-> ' , num2str(length(targets_with_resp) + length(targets_with_missing_resp) ), ' target events found '])
-      disp(['>>---> ' , num2str(length(targets_with_resp)), ' target events found with a response'])
-      disp(['>>-----> ',num2str(length(targets_with_missing_resp)), ' target events missed a response'])
+    % print info 
+    disp(['>>-> ' , num2str(length(targets_with_resp) + length(targets_with_missing_resp) ), ' target events found '])
+    disp(['>>---> ' , num2str(length(targets_with_resp)), ' target events found with a response'])
+    disp(['>>-----> ',num2str(length(targets_with_missing_resp)), ' target events missed a response'])
 
     % do epoching
       EEG =  pop_epoch(EEG, event_types_to_epoch, [epoch_t0 epoch_t1], 'newname', ... 

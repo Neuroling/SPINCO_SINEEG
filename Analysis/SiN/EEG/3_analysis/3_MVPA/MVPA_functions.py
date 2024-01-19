@@ -20,6 +20,116 @@ class MVPAManager:
     # TODO
     """
     
+    # def getFilteredIdx(self, event_labels, 
+    #                     conditionExclude = None,
+    #                     NoiseType = None,
+    #                     StimulusType = None,
+    #                     Stimulus = None,
+    #                     Degradation = None,
+    #                     Accuracy = None,
+    #                     Voice = None):
+    #     """
+        
+
+    #     Parameters
+    #     ----------
+    #     event_labels : list
+    #         event labels organised like 'NV/Call/Stim4/Lv2/Inc/F'
+    #         (e.g. tfr_bands['all_epoch_conditions'])
+                    
+    #     NoiseType : str, optional
+    #         DESCRIPTION. The default is None, which will include all NoiseTypes
+    #     StimulusType : TYPE, optional
+    #         DESCRIPTION. The default is None, which will include all StimulusTypes
+    #     Stimulus : TYPE, optional
+    #         DESCRIPTION. The default is None, which will include all Stimuli
+    #     Degradation : TYPE, optional
+    #         DESCRIPTION. The default is None.
+    #     Accuracy : TYPE, optional
+    #         DESCRIPTION. The default is None.
+    #     Voice : TYPE, optional
+    #         DESCRIPTION. The default is None.
+            
+    #     conditionExclude : list, optional
+    #         Condition where the speficied sub-condition is to be excluded rather than included.
+    #         The default is None.
+
+
+    #     Returns
+    #     -------
+    #     filt_idx : TYPE
+    #         DESCRIPTION.
+
+    #     """
+
+
+        
+    #     # Put all of the conditions & parameters into a dict
+    #     tempDict = {'NoiseType' : NoiseType, 
+    #                'StimulusType' : StimulusType,
+    #                'Stimulus' : Stimulus,
+    #                'Degradation' : Degradation,
+    #                'Accuracy' : Accuracy,
+    #                'Voice' : Voice}
+
+    #     # Create a set of all indexes. Items that are not in the desired conditions will be removed
+    #     filt_idx = set(range(len(event_labels)))
+        
+    #     # For any condition that should be excluded, get the indices and remove them from filt_idx
+    #     # (technically, it gets the indices of every epoch NOT in the condition and keeps only those. Same difference)
+    #     if conditionExclude is not None: 
+    #         for cond in conditionExclude: 
+    #             idx = [i for i, x in enumerate(event_labels) if tempDict[cond] not in x]
+    #             filt_idx = filt_idx & set(idx) # keep only common elements
+                
+    #             tempDict[cond] = None # And then set the parameter to = None in the dict
+    #             # Otherwise filt_dict would be empty in the end (no common elements between complementary events)
+
+
+    #     # For each parameter, if it is not None, get the indices of the desired condition
+    #     # and then compare them to filt_idx. From filt_idx, remove all elements not in the desired condition
+    #     for key in tempDict.keys():
+    #         if tempDict[key] is not None:
+    #             idx = [i for i, x in enumerate(event_labels) if tempDict[key] in x]
+    #             filt_idx = filt_idx & set(idx) # Keep only the common elements
+        
+    #     del tempDict, idx, key
+    #     return filt_idx
+
+    def getFilteredIdx(self, event_labels, 
+                        conditionExclude = None,
+                        conditionInclude = None):
+
+        if conditionExclude is not None and conditionInclude is not None:
+            if set(conditionExclude) & set(conditionInclude):
+                raise ValueError(f"Cannot both include and exclude condition {conditionExclude & conditionInclude}")
+            
+        # Create a set of all indexes. Items that are not in the desired conditions will be removed
+        filt_idx = set(range(len(event_labels)))
+        
+        # For any condition that should be excluded, get the indices and remove them from filt_idx
+        # (technically, it gets the indices of every epoch NOT in the condition and keeps only those. Same difference)
+        if conditionExclude is not None: 
+            for cond in conditionExclude: 
+                idx = [i for i, x in enumerate(event_labels) if cond not in x]
+                filt_idx = filt_idx & set(idx) # keep only common elements
+                print("excluding all epochs labelled ", cond)
+
+        # For each parameter, if it is not None, get the indices of the desired condition
+        # and then compare them to filt_idx. From filt_idx, remove all elements not in the desired condition
+        if conditionInclude is not None:
+            for cond in conditionInclude:
+                idx = [i for i, x in enumerate(event_labels) if cond in x]
+                filt_idx = filt_idx & set(idx) # Keep only the common elements
+                print("removing epochs outside of", cond+"-condition")
+        
+        return filt_idx
+        
+        
+        
+    
+    
+
 
 #%%
     def get_crossval_scores(self,X,y,clf=svm.SVC(C=1, kernel='linear'),cv=None,scoretype=('accuracy')):    
@@ -39,6 +149,7 @@ class MVPAManager:
         y: array-like of shape (n_samples,) or (n_samples, n_outputs)
             The target variable to try to predict in the case of supervised learning.
             For instance, the accuracy labels of the epochs (y = epo.metadata['accuracy'])
+            # TODO I need to include an error if the 
         
         clf: str 
            Define classifier, i.e. the object to use to fit the data. 
@@ -77,6 +188,7 @@ class MVPAManager:
         if len(X.shape) != 3:
             raise ValueError(f'Array X needs to be 3-dimensional, not {len(X.shape)}')
         X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
+        self.X_2d = X_2d
         
         #% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
         all_scores_full = cross_validate(estimator = clf,
@@ -124,7 +236,7 @@ class MVPAManager:
             if type(scoretype) is str:
                 scores[t]=scores_t['test_score'].mean()
                 std_scores[t]=scores_t['test_score'].std()
-             # TODO Somehow, all values in scores are the same. Check if there's something wrong
+
                 
             else:
                 for name in scoretype:

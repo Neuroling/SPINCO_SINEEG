@@ -45,16 +45,21 @@ class EpochManager:
         self.thisDir = const.thisDir
         self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
             'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched', subjID)
+        
         self.set_path = glob(os.path.join(self.dirinput, str(
             "*" + const.setFileEnd)), recursive=True)[0]
+        
         self.epo_path = self.set_path[:self.set_path.find(
             const.setFileEnd)]+const.fifFileEnd
+        
         self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
             'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID, subjID, "*accu.tsv"), recursive=True)[0]
+        
         self.beh_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
             'Scripts')] + 'Data', 'SiN', 'rawdata', subjID, const.taskID, 'beh', "*.csv"), recursive=True)[0]
+        
         self.freqTable_path = os.path.join(
-            self.dirinput[:self.dirinput.find(subjID)], 'event_group_frequencies.csv')
+            self.dirinput[:self.dirinput.find(subjID)], const.freqTableEnd)
 
     def readEpo(self, fileinput=None):
         """
@@ -128,7 +133,7 @@ class EpochManager:
 
         print('¸.·´¯`·.¸><(((º>   saving epoched .fif file to '+fileoutput)
         epochs.save(fileoutput, overwrite=True, fmt='double')
-        print('Done.')
+        print('_.~"~._.~"~._.~"~._.~"~._ Done. _.~"~._.~"~._.~"~._.~"~._')
 
     def addMetadata(self, epochs):
         """

@@ -19,8 +19,9 @@ import pandas as pd
 
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-setFileEnd = '_epoched.set'
+setFileEnd = '_avgRef_epo.set'
 fifFileEnd = '_avgRef_epo.fif'
+freqTableEnd = 'event_group_frequencies.csv'
 
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]

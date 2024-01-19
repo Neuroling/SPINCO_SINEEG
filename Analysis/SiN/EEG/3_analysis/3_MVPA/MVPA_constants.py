@@ -19,7 +19,8 @@ taskID = 'task-sin'
 pipeID = 'pipeline-01'
 fifFileEnd = '_avg-epo.fif'
 setFileEnd = '_epoched_2.set'
-pickleFileEnd = '_tfr_freqbands.pkl'
+inputPickleFileEnd = '_tfr_freqbands.pkl'
+outputPickleFileEnd = '_tfr_freqbands_crossval.pkl'
 
 
 thisDir = os.getcwd()
