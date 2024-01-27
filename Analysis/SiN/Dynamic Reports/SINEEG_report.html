@@ -78,6 +78,8 @@ div.csl-indent {
   <li><a href="#blocks-design" id="toc-blocks-design" class="nav-link" data-scroll-target="#blocks-design">Blocks design</a></li>
   <li><a href="#stimuli" id="toc-stimuli" class="nav-link" data-scroll-target="#stimuli">Stimuli</a></li>
   <li><a href="#speech-generation" id="toc-speech-generation" class="nav-link" data-scroll-target="#speech-generation">Speech generation</a></li>
+  <li><a href="#trimming-silences" id="toc-trimming-silences" class="nav-link" data-scroll-target="#trimming-silences">Trimming silences</a></li>
+  <li><a href="#reading-the-target-word-onsets-and-offsets" id="toc-reading-the-target-word-onsets-and-offsets" class="nav-link" data-scroll-target="#reading-the-target-word-onsets-and-offsets">Reading the target word onsets and offsets</a></li>
   </ul></li>
   <li><a href="#resting-state" id="toc-resting-state" class="nav-link" data-scroll-target="#resting-state">Resting-state</a></li>
   <li><a href="#eeg" id="toc-eeg" class="nav-link" data-scroll-target="#eeg">EEG</a>
@@ -194,11 +196,22 @@ Hearing loss is becoming an increasingly common complaint, not solely due to agi
 </section>
 <section id="speech-generation" class="level3">
 <h3 class="anchored" data-anchor-id="speech-generation">Speech generation</h3>
-<p>We used the <a href="https://cloud.google.com/text-to-speech/">Google Cloud text-to-speech API</a> to generate the 64 possible variations of our sentence in a female and male speaker voice. Each sentence was output in a separate .wav file with 48KHz sampling rate. After trying several of the freely available voices we chose the <a href="https://cloud.google.com/text-to-speech/docs/voice-types#neural2_voices">neural2 voices</a> ‘de-DE-Neural2-D’ and ‘de-DE-Neural2-F’ for male and female speech, respective, as they sounded more natural (this was verified by native speakers). We used a Python script to communicate with the text-to-speech API (see<br>
+<p>We used the <a href="https://cloud.google.com/text-to-speech/">Google Cloud Text-to-speech API</a> to generate the 64 possible variations of our sentence in a female and male speaker voice. Each sentence was output in a separate .wav file with 48KHz sampling rate. After trying several of the freely available voices we chose the <a href="https://cloud.google.com/text-to-speech/docs/voice-types#neural2_voices">neural2 voices</a> ‘de-DE-Neural2-D’ and ‘de-DE-Neural2-F’ for male and female speech, respective, as they sounded more natural (this was verified by native speakers). We used a Python script to communicate with the text-to-speech API (see<br>
 <a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/65c604a2246d26b94cdd150298f1dd7150bd728f/Gen_stimuli/Gen_speech/TTS_sentenceGenerator.py">Gen_stimuli script</a> in our project repository)</p>
-<pre><code>Afte</code></pre>
+</section>
+<section id="trimming-silences" class="level3">
+<h3 class="anchored" data-anchor-id="trimming-silences">Trimming silences</h3>
+<pre><code>...</code></pre>
+</section>
+<section id="reading-the-target-word-onsets-and-offsets" class="level3">
+<h3 class="anchored" data-anchor-id="reading-the-target-word-onsets-and-offsets">Reading the target word onsets and offsets</h3>
+<p>The onsets and offsets times of the target items for each of the audio files with the sentences was dectected following a semiautomatic approach. We used the freely available phonetics tool <a href="https://www.fon.hum.uva.nl/praat/">Praat</a></p>
 <section id="noise-vocoding" class="level4">
 <h4 class="anchored" data-anchor-id="noise-vocoding">Noise vocoding</h4>
+<p>We used the approach described in <span class="citation" data-cites="aller2022differential">Aller et al. (<a href="#ref-aller2022differential" role="doc-biblioref">2022</a>)</span>, and modified from <span class="citation" data-cites="zoefel2023intelligibility">Zoefel, Gilbert, and Davis (<a href="#ref-zoefel2023intelligibility" role="doc-biblioref">2023</a>)</span>.</p>
+</section>
+<section id="speech-in-speech-shaped-noise" class="level4">
+<h4 class="anchored" data-anchor-id="speech-in-speech-shaped-noise">Speech in speech-shaped noise</h4>
 </section>
 </section>
 </section>
@@ -244,6 +257,9 @@ Hearing loss is becoming an increasingly common complaint, not solely due to agi
 </section>
 
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-aller2022differential" class="csl-entry" role="listitem">
+Aller, Máté, Heidi Solberg Økland, Lucy J MacGregor, Helen Blank, and Matthew H Davis. 2022. <span>“Differential Auditory and Visual Phase-Locking Are Observed During Audio-Visual Benefit and Silent Lip-Reading for Speech Perception.”</span> <em>Journal of Neuroscience</em> 42 (31): 6108–20.
+</div>
 <div id="ref-delorme2004eeglab" class="csl-entry" role="listitem">
 Delorme, Arnaud, and Scott Makeig. 2004. <span>“EEGLAB: An Open Source Toolbox for Analysis of Single-Trial EEG Dynamics Including Independent Component Analysis.”</span> <em>Journal of Neuroscience Methods</em> 134 (1): 9–21.
 </div>
@@ -255,6 +271,9 @@ Pedroni, Andreas, Amirreza Bahreini, and Nicolas Langer. 2019. <span>“Automagi
 </div>
 <div id="ref-shargorodsky2010change" class="csl-entry" role="listitem">
 Shargorodsky, Josef, Sharon G Curhan, Gary C Curhan, and Roland Eavey. 2010. <span>“Change in Prevalence of Hearing Loss in US Adolescents.”</span> <em>Jama</em> 304 (7): 772–78.
+</div>
+<div id="ref-zoefel2023intelligibility" class="csl-entry" role="listitem">
+Zoefel, Benedikt, Rebecca A Gilbert, and Matthew H Davis. 2023. <span>“Intelligibility Improves Perception of Timing Changes in Speech.”</span> <em>Plos One</em> 18 (1): e0279024.
 </div>
 </div></section></div></main>
 <!-- /main column -->
