@@ -33,6 +33,7 @@ import mne
 # import matplotlib.pyplot as plt
 # import numpy as np
 import pickle
+from datetime import datetime
 
 import FeatureExtraction_constants as const
 import FeatureExtraction_functions as functions
@@ -76,6 +77,10 @@ for subjID in const.subjIDs:
     tfr_bands['epoch_conditions'] = [key for item in events for key, value in event_id.items() if value == item]
     #% the line above is a complicated way to say "use the dict event_id to find the key corresponding to the value in events"
     #% Which is a complicated way of saying "For each epoch, give me the event-labels instead of the numeric event-codes"
+    
+    #%% Add additional information to the metadata of the dict ################################################################
+    tfr_bands['metadata']['epoch_path']=epo_path
+    tfr_bands['metadata']['date_created']=str(datetime.now())
     
     #%% save dictionary (pickle it!) ##########################################################################################
     with open(pickle_path, 'wb') as f:

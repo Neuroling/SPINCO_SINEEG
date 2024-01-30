@@ -189,29 +189,30 @@ class FeatureExtractionManager:
             
         else: # if n_cycles used in EEG_extract_feat is not the default, calculate coi
             if tfr.comment['n_cycles'] == 'default: const.n_cycles':
-                coi = const.fwhm
+                sigma = const.sigma
                 freqs=tfr.freqs
             else:
                 n_cycles = tfr.comment['n_cycles'] 
                 freqs = tfr.freqs
                 sigma = n_cycles/(2 * np.pi * freqs)
-                fwhm = sigma * 2 * np.sqrt(2 * np.log(2))
-                coi = fwhm/2
 
-            
+
+        start = tfr.times[0]    
+        end = tfr.times[len(tfr.times)-1]
 
         print('Creating dataframe with tfr power and filtering out values outside COI ...')
 
         #Create a data frame with TFR power indicating frequency band
         tfr_df = tfr.to_data_frame()         
-        for c,cval in enumerate(coi):    
+        for c,cval in enumerate(sigma):    
             #define time boundaries for each freq bin
-            timeCOI_starts = 0 - coi[c] # COI starts at the point of 50% gain before peak
-            timeCOI_ends =   0 + coi[c] # COI ends at the point of 50% gain after peak
+            timeCOI_starts = start + (sigma[c]*const.hwhm_const) # COI starts at the point of 50% gain before peak
+            timeCOI_ends =  end - (sigma[c]*const.hwhm_const) # COI ends at the point of 50% gain after peak
             
             #mark rows out of the COI as nan
             tfr_df[((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends)) & (tfr_df['freq']==freqs[c])] = np.nan
             
+        self.metadata['COI_extraction']= const.comment_COI_extraction
         
         tfr_df.dropna(axis=0,inplace=True)                  
         print('Done.')             
@@ -252,6 +253,7 @@ class FeatureExtractionManager:
                              Beta= [13,25],
                              Gamma =[25,48])
             print('no freqbands specified. Using function defaults')
+        self.metadata['freqbands'] = freqbands
         
         # %%
         if type(tfr_df) is not pd.core.frame.DataFrame:
@@ -281,6 +283,7 @@ class FeatureExtractionManager:
         
         #%% save averaged power per band in a dictionary
         tfr_bands= {}
+        tfr_bands['metadata']=self.metadata
         print('>> O_o Adding power averages per band to a dictionary')
         tfr_bands['All_freqbands']=freqbands
         
