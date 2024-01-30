@@ -13,11 +13,12 @@ all constants are in the FeatureExtraction_constants.py script.
 First, TFR is extracted
 Then, values outside the COI are excluded
 Then, TFR means for every frequency band are computed.
-Then, amplitude per frequency band is extracted
+Then, the TFR dict is saved using the pickle-module
+
 """
 
-#%% Set working directory
-#% This requires working with the spyder project on this directory: Y:\Projects\Spinco\SINEEG\Scripts\Analysis\SiN\EEG    # TODO
+#%% Set working directory #####################################################################################################
+#% This requires working with the spyder project on this directory: Y:\Projects\Spinco\SINEEG\Scripts\Analysis\SiN\EEG  # TODO
 import os
 from glob import glob
 
@@ -26,7 +27,7 @@ from glob import glob
 
 thisDir = os.getcwd()
 
-#%% Imports
+#%% Imports ###################################################################################################################
 import mne
 # from mne.time_frequency import tfr_morlet
 # import matplotlib.pyplot as plt
@@ -36,11 +37,11 @@ import pickle
 import FeatureExtraction_constants as const
 import FeatureExtraction_functions as functions
 
-#%% Looping over subjects
+#%% Looping over subjects #####################################################################################################
 for subjID in const.subjIDs:
     
     print('- - - - - now processing',subjID,'- - - - -')
-    #%% File paths ###########################################################################################################
+    #%% File paths ############################################################################################################
 
     dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', 
                             const.pipeID, const.taskID + '_preproc_epoched',subjID)
@@ -48,18 +49,15 @@ for subjID in const.subjIDs:
     diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
                             const.taskID,'features',subjID)
     
-    if not os. path.exists(diroutput):
+    if not os. path.exists(diroutput): # If the output directory doesn't exist, create it
         os.makedirs(diroutput)
         print("path created: "+diroutput)
     pickle_path = os.path.join(diroutput, subjID + const.pickleFileEnd)
-    
     
     #%% Read epoched data #####################################################################################################
     epo = mne.read_epochs(epo_path)
     events = epo.events[:,2]
     event_id = epo.event_id
-    
-    
     
     #%% Extract features ######################################################################################################
     FeatureExtractionManager = functions.FeatureExtractionManager()
@@ -72,27 +70,16 @@ for subjID in const.subjIDs:
     #%% Split into frequency bands ############################################################################################
     tfr_bands = FeatureExtractionManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
     
-    #%% Adding condition & trial information
-    tfr_bands['all_epoch_eventIDs'] = list(events)
-    tfr_bands['metadata'] = epo.metadata
-    tfr_bands['all_epoch_conditions'] = [key for item in events for key, value in event_id.items() if value == item]
-    #% the code above is a complicated way of saying "use the dict event_id to find the key corresponding to the value in events"
+    #%% Adding condition & trial information ##################################################################################
+    tfr_bands['epoch_eventIDs'] = list(events)
+    tfr_bands['epoch_metadata'] = epo.metadata
+    tfr_bands['epoch_conditions'] = [key for item in events for key, value in event_id.items() if value == item]
+    #% the line above is a complicated way to say "use the dict event_id to find the key corresponding to the value in events"
     #% Which is a complicated way of saying "For each epoch, give me the event-labels instead of the numeric event-codes"
     
     #%% save dictionary (pickle it!) ##########################################################################################
     with open(pickle_path, 'wb') as f:
         pickle.dump(tfr_bands, f)
     print("pickling the dictionary")
-
-    
-    #%% Extracting and saving amplitude per frequency band
-    # CAUTION: running the next line might be too much for your RAM to handle.
-    # If your kernel keeps restarting, change const.n_jobs to None and
-    # try again. (this will take a while to run)
-    # If that still does not help, comment the next line so it doesn't execute
-    # and then run the amplitude extraction alone without the TFR stuff later
-    
-    # Actually, we should do the amplitude extraction before epoching
-    # FeatureExtractionManager.extractFreqbandAmplitude(epo, diroutput, subjID)
     
 print("All done.")

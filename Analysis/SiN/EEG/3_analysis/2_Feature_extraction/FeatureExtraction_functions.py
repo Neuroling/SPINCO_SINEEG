@@ -21,7 +21,7 @@ thisDir = os.getcwd()
 from mne.time_frequency import tfr_morlet
 # import matplotlib.pyplot as plt
 import numpy as np
-import sys
+# import sys
 import pandas as pd
 # import pickle
 
@@ -40,6 +40,8 @@ class FeatureExtractionManager:
     on its own and does not require SubjIDs as parameters. Therefore, filepaths 
     will have to be handled outside of FeatureExtractionManager
     """
+    def __init__(self):
+        self.metadata={}
 
     
     def EEG_extract_feat(self, 
@@ -114,7 +116,9 @@ class FeatureExtractionManager:
                 print('---> No frequencies and n_cycles specified for the TFR analysis...\n ',
                       'Using those defined in constants:', const.n_cycles, 'cycles and', 
                       len(const.freqs), 'log-spaced freqs from',const.freqs[0],'to',const.freqs[len(const.freqs)-1],'hz')
-                
+                self.metadata['freqs'] = str("np.logspace(*np.log10(["+const.freqs[0]+", "+const.freqs[len(const.freqs)-1]+"]), num="+len(const.freqs)+")")
+            else:
+                self.metadata['freqs'] = freqs
                   
             # Time freq
             tfr = tfr_morlet(epochs, 
@@ -132,10 +136,11 @@ class FeatureExtractionManager:
                 tfr.comment = {'n_cycles' : 'default: const.n_cycles'}
             
             
-            self.ch_names=tfr.info.ch_names
+            # self.ch_names=tfr.info.ch_names
             features_dict['TFR'] = tfr
             print('Done.')             
-                    
+        
+        self.metadata['n_cycles'] = n_cycles  
            
         # TODO % Phase connectivity (draft)
         #if spectral_connectivity: 
@@ -174,9 +179,13 @@ class FeatureExtractionManager:
         -------
         tfr_df : large data frame with tfr values per channel,epoch, tp, freqbin (columns: freq, time, epoch). Rows with values outside COI were dropped
                      
-        """            
+        """    
+        # % get coi values  (times per freq bin)
+        print('>> Cone of influence')
+        
         if not tfr.comment['n_cycles']:
             raise ValueError("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles':XXX}")
+        
             
         else: # if n_cycles used in EEG_extract_feat is not the default, calculate coi
             if tfr.comment['n_cycles'] == 'default: const.n_cycles':
@@ -190,10 +199,7 @@ class FeatureExtractionManager:
                 coi = fwhm/2
 
             
-        # % get coi values  (times per freq bin)
-        print('>> Cone of influence')
 
-      
         print('Creating dataframe with tfr power and filtering out values outside COI ...')
 
         #Create a data frame with TFR power indicating frequency band
@@ -310,10 +316,13 @@ class FeatureExtractionManager:
             print('>>>> ' + thisband + ' avg per epoch added')
             
         return tfr_bands
-      
+   
+        
     #%% Amplitude extraction
     def extractFreqbandAmplitude(self, epo, diroutput, subjID):
         """
+        D E P R E C A T E D
+        
         EXTRACTING AMPLITUDE PER FREQUENCY BAND
         =======================================================================
         author: samuemu
@@ -324,6 +333,19 @@ class FeatureExtractionManager:
         set in the constants (const.freqbands). The resulting epoched datasets will be saved
         as MNE -epo.fif files.
         
+        CAUTION!!!! DEPRECATED!!!!
+        Due to issues with performing a bandpass filter on epoched data, the amplitude extraction
+        per frequency band will have to be done differently. This function is still here for
+        documentation and later recycling purposes but it is not called by the runner-script.
+        
+        More detail on the issue:
+            Got the following warning:
+                "Runtime Warning: filter_length (423) is longer than the signal (256), 
+                distortion is likely. Reduce filter length or filter a longer signal."
+            Explanation: 
+                The lower the frequency, the higher the filter_length (in samples).
+                If you want to filter a signal into a low frequency band, you need 
+                a longer signal in order to avoid aliasing/distorting the signal.
 
         Parameters
         ----------

@@ -30,7 +30,7 @@ subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts
 
 n_jobs = -1
 #% Number of jobs to run in parallel. 
-#% n_jobs = None means sequential processing (takes longer, but takes less RAM)
+#% n_jobs = None means sequential processing (takes longer, but requires less RAM)
 #% n_jobs = -1 means using all processors (so n_jobs is = number of processors)
 
 decim = 1 # When doing the TFR, decimates sampling rate by this factor (to avoid freezing the kernel)

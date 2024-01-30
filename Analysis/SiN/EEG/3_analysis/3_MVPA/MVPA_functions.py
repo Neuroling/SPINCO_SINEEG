@@ -113,7 +113,7 @@ class MVPAManager:
             for cond in conditionExclude: 
                 idx = [i for i, x in enumerate(event_labels) if cond not in x]
                 filt_idx = filt_idx & set(idx) # keep only common elements
-                print("excluding all epochs labelled ", cond)
+                print("excluding epochs in the", cond+'-condition')
 
         # For each parameter, if it is not None, get the indices of the desired condition
         # and then compare them to filt_idx. From filt_idx, remove all elements not in the desired condition
@@ -121,7 +121,7 @@ class MVPAManager:
             for cond in conditionInclude:
                 idx = [i for i, x in enumerate(event_labels) if cond in x]
                 filt_idx = filt_idx & set(idx) # Keep only the common elements
-                print("removing epochs outside of", cond+"-condition")
+                print("excluding epochs NOT in the", cond+"-condition")
         
         return filt_idx
         
@@ -172,6 +172,7 @@ class MVPAManager:
             see https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
             Default= ('accuracy')
         
+        
         Returns
         -------       
         scores_full: classification score for the whole epoch
@@ -200,7 +201,7 @@ class MVPAManager:
         
         all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
         # TODO get only mean and std instead of all 5 (ask Gorka if he wants all 5)
-        print('--> run classification on the full epoch')
+        print('---> run classification on the full epoch')
         
         
         
@@ -216,7 +217,7 @@ class MVPAManager:
             scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
             std_scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
         
-        print('[--> starting classification per time point....')
+        print('----> starting classification per time point....')
         for t in range(n_times): # for each timepoint...
             Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
             
@@ -248,6 +249,6 @@ class MVPAManager:
             scores = {key: np.array(value) for key, value in scores.items()}
             std_scores = {key: np.array(value) for key, value in std_scores.items()}
           
-        print('Done <--]')
+        print('-----> Done.')
         return all_scores_full, scores, std_scores 
     
