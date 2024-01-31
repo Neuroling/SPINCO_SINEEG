@@ -70,25 +70,25 @@ print('opening dict:',pickle_path_in)
 with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
     
-#%% Filter conditions using the user inputs
-idx = list(MVPAManager.getFilteredIdx(
-    tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
+# #%% Filter conditions using the user inputs
+# idx = list(MVPAManager.getFilteredIdx(
+#     tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
 
-#%% Get crossvalidation scores
-y = tfr_bands['metadata'][prediction][idx] # What variable we want to predict (set in the user inputs)
+# #%% Get crossvalidation scores
+# y = tfr_bands['metadata'][prediction][idx] # What variable we want to predict (set in the user inputs)
 
-for thisBand in const.freqbands: # loop over all frequency bands
-    print('--> now performing crossvalidation for', thisBand)
-    X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+# for thisBand in const.freqbands: # loop over all frequency bands
+#     print('--> now performing crossvalidation for', thisBand)
+#     X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
     
-    all_scores_full, scores, std_scores = MVPAManager.get_crossval_scores(X = X, y = y) # Get scores and add to the dict
-    tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full['test_score']
-    tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
-    tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
-# TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
-# Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
+#     all_scores_full, scores, std_scores = MVPAManager.get_crossval_scores(X = X, y = y) # Get scores and add to the dict
+#     tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full['test_score']
+#     tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
+#     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
+# # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
+# # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
 
-# #%% Saving the dict
-# print("pickling the dictionary to: /n"+pickle_path_out)
-# with open(pickle_path_out, 'wb') as f:
-#     pickle.dump(tfr_bands, f)
+# # #%% Saving the dict
+# # print("pickling the dictionary to: /n"+pickle_path_out)
+# # with open(pickle_path_out, 'wb') as f:
+# #     pickle.dump(tfr_bands, f)

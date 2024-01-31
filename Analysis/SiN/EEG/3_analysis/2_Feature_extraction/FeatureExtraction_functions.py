@@ -116,7 +116,7 @@ class FeatureExtractionManager:
                 print('---> No frequencies and n_cycles specified for the TFR analysis...\n ',
                       'Using those defined in constants:', const.n_cycles, 'cycles and', 
                       len(const.freqs), 'log-spaced freqs from',const.freqs[0],'to',const.freqs[len(const.freqs)-1],'hz')
-                self.metadata['freqs'] = str("np.logspace(*np.log10(["+const.freqs[0]+", "+const.freqs[len(const.freqs)-1]+"]), num="+len(const.freqs)+")")
+                self.metadata['freqs'] = str("np.logspace(*np.log10(["+str(const.freqs[0])+", "+str(const.freqs[len(const.freqs)-1])+"]), num="+str(len(const.freqs))+")")
             else:
                 self.metadata['freqs'] = freqs
                   
@@ -210,7 +210,7 @@ class FeatureExtractionManager:
             timeCOI_ends =  end - (sigma[c]*const.hwhm_const) # COI ends at the point of 50% gain after peak
             
             #mark rows out of the COI as nan
-            tfr_df[((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends)) & (tfr_df['freq']==freqs[c])] = np.nan
+            tfr_df[(tfr_df['freq']==freqs[c]) & ((tfr_df['time'] < timeCOI_starts) | (tfr_df['time'] > timeCOI_ends))] = np.nan
             
         self.metadata['COI_extraction']= const.comment_COI_extraction
         

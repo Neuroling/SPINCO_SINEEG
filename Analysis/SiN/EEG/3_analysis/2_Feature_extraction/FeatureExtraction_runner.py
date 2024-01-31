@@ -15,6 +15,12 @@ Then, values outside the COI are excluded
 Then, TFR means for every frequency band are computed.
 Then, the TFR dict is saved using the pickle-module
 
+FREEZING KERNEL
+If your kernel keeps freezing when trying to run the code,
+try one or more of these solutions
+    - In the constants, set n_jobs = None
+    - In the constants, set decim = 2 (or higher if necessary. This will decimate the sampling rate.)
+    - Instead of looping over subjects, manually run the code for each subject. Open a new console for every subject.
 """
 
 #%% Set working directory #####################################################################################################
@@ -38,15 +44,16 @@ from datetime import datetime
 import FeatureExtraction_constants as const
 import FeatureExtraction_functions as functions
 
+
 #%% Looping over subjects #####################################################################################################
 for subjID in const.subjIDs:
     
-    print('- - - - - now processing',subjID,'- - - - -')
+    print('_.~"(_.~"(_.~"(_.~"(_.~"(  now processing',subjID,'   _.~"(_.~"(_.~"(_.~"(_.~"(')
     #%% File paths ############################################################################################################
 
     dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', 
                             const.pipeID, const.taskID + '_preproc_epoched',subjID)
-    epo_path = glob(os.path.join(dirinput, str("*"+ const.fifFileEnd)), recursive=True)[0]
+    epo_path = glob(os.path.join(dirinput, str("*"+ const.taskID + const.fifFileEnd)), recursive=True)[0]
     diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
                             const.taskID,'features',subjID)
     
@@ -64,12 +71,15 @@ for subjID in const.subjIDs:
     FeatureExtractionManager = functions.FeatureExtractionManager()
     features_dict = FeatureExtractionManager.EEG_extract_feat(epo, PSD=False)
     tfr = features_dict['TFR']
+    del features_dict
     
     #%% Get Cone of Influence #################################################################################################
     tfr_df = FeatureExtractionManager.extractCOI(tfr)
+    del tfr
     
     #%% Split into frequency bands ############################################################################################
     tfr_bands = FeatureExtractionManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
+    del tfr_df
     
     #%% Adding condition & trial information ##################################################################################
     tfr_bands['epoch_eventIDs'] = list(events)
@@ -81,10 +91,16 @@ for subjID in const.subjIDs:
     #%% Add additional information to the metadata of the dict ################################################################
     tfr_bands['metadata']['epoch_path']=epo_path
     tfr_bands['metadata']['date_created']=str(datetime.now())
+    tfr_bands['metadata']['decimation_factor']=const.decim
+    tfr_bands['metadata']['ch_names']=epo.ch_names
     
     #%% save dictionary (pickle it!) ##########################################################################################
     with open(pickle_path, 'wb') as f:
         pickle.dump(tfr_bands, f)
     print("pickling the dictionary")
+    
+    del tfr_bands
+    del FeatureExtractionManager # to make sure there is no spill-over between subjects, we delete the Manager in each loop
+    
     
 print("All done.")

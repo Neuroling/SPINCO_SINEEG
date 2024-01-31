@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """ 
-Helper script for EPO_runner
+Function script for EPO_runner
 ===============================================================================
 @author: samuemu
 Created November 2023
@@ -130,6 +130,8 @@ class EpochManager:
 
         if relabelEvents == True:
             epochs = self.relabelEvents(epochs)
+        
+        epochs.comment = 'based on EEGlab file from '+fileinput
 
         print('¸.·´¯`·.¸><(((º>   saving epoched .fif file to '+fileoutput)
         epochs.save(fileoutput, overwrite=True, fmt='double')

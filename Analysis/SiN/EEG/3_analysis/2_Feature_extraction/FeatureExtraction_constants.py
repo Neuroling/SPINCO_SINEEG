@@ -28,12 +28,12 @@ thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 
-n_jobs = -1
+n_jobs = None
 #% Number of jobs to run in parallel. 
 #% n_jobs = None means sequential processing (takes longer, but requires less RAM)
 #% n_jobs = -1 means using all processors (so n_jobs is = number of processors)
 
-decim = 1 # When doing the TFR, decimates sampling rate by this factor (to avoid freezing the kernel)
+decim = 1 # When doing the TFR, decimates sampling rate by this factor (choose 2 to avoid freezing the kernel)
 
 freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
                  Theta = [4,8],
