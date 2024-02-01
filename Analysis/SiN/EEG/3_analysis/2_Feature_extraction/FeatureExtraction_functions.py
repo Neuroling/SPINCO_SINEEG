@@ -41,7 +41,7 @@ class FeatureExtractionManager:
     will have to be handled outside of FeatureExtractionManager
     """
     def __init__(self):
-        self.metadata={}
+        self.metadata={'codebook':const.codebook}
 
     
     def EEG_extract_feat(self, 
@@ -116,7 +116,8 @@ class FeatureExtractionManager:
                 print('---> No frequencies and n_cycles specified for the TFR analysis...\n ',
                       'Using those defined in constants:', const.n_cycles, 'cycles and', 
                       len(const.freqs), 'log-spaced freqs from',const.freqs[0],'to',const.freqs[len(const.freqs)-1],'hz')
-                self.metadata['freqs'] = str("np.logspace(*np.log10(["+str(const.freqs[0])+", "+str(const.freqs[len(const.freqs)-1])+"]), num="+str(len(const.freqs))+")")
+                self.metadata['freqs_code'] = str("np.logspace(*np.log10(["+str(const.freqs[0])+", "+str(const.freqs[len(const.freqs)-1])+"]), num="+str(len(const.freqs))+")")
+                self.metadata['freqs'] = freqs
             else:
                 self.metadata['freqs'] = freqs
                   
@@ -285,7 +286,7 @@ class FeatureExtractionManager:
         tfr_bands= {}
         tfr_bands['metadata']=self.metadata
         print('>> O_o Adding power averages per band to a dictionary')
-        tfr_bands['All_freqbands']=freqbands
+
         
         for thisband in list(freqbands):  
                       

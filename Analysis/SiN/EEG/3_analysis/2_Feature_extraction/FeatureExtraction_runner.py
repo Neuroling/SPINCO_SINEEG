@@ -90,7 +90,7 @@ for subjID in const.subjIDs:
     
     #%% Add additional information to the metadata of the dict ################################################################
     tfr_bands['metadata']['epoch_path']=epo_path
-    tfr_bands['metadata']['date_created']=str(datetime.now())
+    tfr_bands['metadata']['date_TFR_extraction']=str(datetime.now())
     tfr_bands['metadata']['decimation_factor']=const.decim
     tfr_bands['metadata']['ch_names']=epo.ch_names
     

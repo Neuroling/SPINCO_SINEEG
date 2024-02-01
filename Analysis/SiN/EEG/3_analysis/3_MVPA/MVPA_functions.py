@@ -8,8 +8,7 @@ Created on Tue Jan 16 15:48:30 2024
 """
 
 from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold, cross_validate  
-from sklearn import metrics
-from sklearn import svm
+from sklearn import svm, metrics, __version__
 import numpy as np
 import pandas as pd
 
@@ -19,86 +18,47 @@ class MVPAManager:
     """
     # TODO
     """
+    def __init__(self):
+        self.metadata={}
     
-    # def getFilteredIdx(self, event_labels, 
-    #                     conditionExclude = None,
-    #                     NoiseType = None,
-    #                     StimulusType = None,
-    #                     Stimulus = None,
-    #                     Degradation = None,
-    #                     Accuracy = None,
-    #                     Voice = None):
-    #     """
-        
-
-    #     Parameters
-    #     ----------
-    #     event_labels : list
-    #         event labels organised like 'NV/Call/Stim4/Lv2/Inc/F'
-    #         (e.g. tfr_bands['all_epoch_conditions'])
-                    
-    #     NoiseType : str, optional
-    #         DESCRIPTION. The default is None, which will include all NoiseTypes
-    #     StimulusType : TYPE, optional
-    #         DESCRIPTION. The default is None, which will include all StimulusTypes
-    #     Stimulus : TYPE, optional
-    #         DESCRIPTION. The default is None, which will include all Stimuli
-    #     Degradation : TYPE, optional
-    #         DESCRIPTION. The default is None.
-    #     Accuracy : TYPE, optional
-    #         DESCRIPTION. The default is None.
-    #     Voice : TYPE, optional
-    #         DESCRIPTION. The default is None.
-            
-    #     conditionExclude : list, optional
-    #         Condition where the speficied sub-condition is to be excluded rather than included.
-    #         The default is None.
-
-
-    #     Returns
-    #     -------
-    #     filt_idx : TYPE
-    #         DESCRIPTION.
-
-    #     """
-
-
-        
-    #     # Put all of the conditions & parameters into a dict
-    #     tempDict = {'NoiseType' : NoiseType, 
-    #                'StimulusType' : StimulusType,
-    #                'Stimulus' : Stimulus,
-    #                'Degradation' : Degradation,
-    #                'Accuracy' : Accuracy,
-    #                'Voice' : Voice}
-
-    #     # Create a set of all indexes. Items that are not in the desired conditions will be removed
-    #     filt_idx = set(range(len(event_labels)))
-        
-    #     # For any condition that should be excluded, get the indices and remove them from filt_idx
-    #     # (technically, it gets the indices of every epoch NOT in the condition and keeps only those. Same difference)
-    #     if conditionExclude is not None: 
-    #         for cond in conditionExclude: 
-    #             idx = [i for i, x in enumerate(event_labels) if tempDict[cond] not in x]
-    #             filt_idx = filt_idx & set(idx) # keep only common elements
-                
-    #             tempDict[cond] = None # And then set the parameter to = None in the dict
-    #             # Otherwise filt_dict would be empty in the end (no common elements between complementary events)
-
-
-    #     # For each parameter, if it is not None, get the indices of the desired condition
-    #     # and then compare them to filt_idx. From filt_idx, remove all elements not in the desired condition
-    #     for key in tempDict.keys():
-    #         if tempDict[key] is not None:
-    #             idx = [i for i, x in enumerate(event_labels) if tempDict[key] in x]
-    #             filt_idx = filt_idx & set(idx) # Keep only the common elements
-        
-    #     del tempDict, idx, key
-    #     return filt_idx
 
     def getFilteredIdx(self, event_labels, 
                         conditionExclude = None,
                         conditionInclude = None):
+        """
+        This function will return the indices of all epochs in a specified set of 
+        conditions. This can then be used to filter the data.
+        
+        It does that by comparing the items in conditionExclude / conditionInclude
+        with the items of event_labels and saving the indices where the two do not
+        overlap / do overlap.
+
+        Parameters
+        ----------
+        event_labels : list of str
+            the event labels in str, organised like 'NV/Call/Stim4/Lv2/Inc/F'
+            given for example by tfr_bands['epoch_conditions']
+            
+        conditionExclude : list of str, optional
+            Epochs in these conditions will be excluded. The default is None.
+            
+        conditionInclude : list of str, optional
+            Epochs NOT in this condition will be excluded. The default is None.
+
+
+        Raises
+        ------
+        ValueError
+            conditionExclude and conditionInclude must not overlap. You cannot both 
+            include and exclude the same condition at the same time.
+
+
+        Returns
+        -------
+        filt_idx : set
+            a set of all indexes of epochs in the desired conditions.
+
+        """
 
         if conditionExclude is not None and conditionInclude is not None:
             if set(conditionExclude) & set(conditionInclude):
@@ -115,14 +75,14 @@ class MVPAManager:
                 filt_idx = filt_idx & set(idx) # keep only common elements
                 print("excluding epochs in the", cond+'-condition')
 
-        # For each parameter, if it is not None, get the indices of the desired condition
+        # For each specified condition, get the indices of the desired condition
         # and then compare them to filt_idx. From filt_idx, remove all elements not in the desired condition
         if conditionInclude is not None:
             for cond in conditionInclude:
                 idx = [i for i, x in enumerate(event_labels) if cond in x]
                 filt_idx = filt_idx & set(idx) # Keep only the common elements
                 print("excluding epochs NOT in the", cond+"-condition")
-        
+                
         return filt_idx
         
         
@@ -165,7 +125,7 @@ class MVPAManager:
             
             - If int/None input, and if clf is a classifier and y is either binary or multiclass,
               then StratifiedKFold is used. Otherwise, KFold is used. Both will be instantiated with
-              shuffle=False, so splits will be the same across class.
+              shuffle=False, so the splits will be the same across all calls.
             
         scoretype: str | callable | list | tuple | dict
             the type of score (e.g., 'roc_auc','accuracy','f1')
@@ -183,13 +143,17 @@ class MVPAManager:
         
         """  
         
-        
-        # #[MVPA] Decoding based on entire epoch
-        # ---------------------------------------------
+
         if len(X.shape) != 3:
             raise ValueError(f'Array X needs to be 3-dimensional, not {len(X.shape)}')
         X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
-        self.X_2d = X_2d
+        # self.X_2d = X_2d
+        
+                
+        # #[MVPA] Decoding based on entire epoch
+        # ---------------------------------------------
+        print('---> run classification on the full epoch')
+        
         
         #% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
         all_scores_full = cross_validate(estimator = clf,
@@ -197,11 +161,14 @@ class MVPAManager:
                                          y= y,  # target variable to predict
                                          cv=cv, # cross-validation splitting strategy
                                          n_jobs=const.n_jobs,
-                                         scoring=scoretype)
+                                         scoring=scoretype,                                    
+                                         return_indices=True)
+
         
         all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
+        
         # TODO get only mean and std instead of all 5 (ask Gorka if he wants all 5)
-        print('---> run classification on the full epoch')
+        
         
         
         
@@ -209,13 +176,14 @@ class MVPAManager:
         # ---------------------------------------------
         n_times = X.shape[2] # get number of timepoints
         
-        #Use dictionaries to store values for each score type
+        #If multiple scroretypes, use dictionaries to store values for each score type
         if type(scoretype) is str:
             scores = np.zeros(shape=(n_times,1))
             std_scores = np.zeros(shape=(n_times,1))
         else:
             scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
             std_scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
+        
         
         print('----> starting classification per time point....')
         for t in range(n_times): # for each timepoint...
@@ -248,6 +216,9 @@ class MVPAManager:
         if type(scoretype) is not str:
             scores = {key: np.array(value) for key, value in scores.items()}
             std_scores = {key: np.array(value) for key, value in std_scores.items()}
+            
+        if cv is not None:
+            cv = 'Default (None)'
           
         print('-----> Done.')
         return all_scores_full, scores, std_scores 

@@ -55,7 +55,7 @@ prediction : str --- must be a column name from tfr_bands['epoch_metadata']
 
 """
 conditionInclude = ['Lv3'] 
-conditionExculde = ['Call']
+conditionExculde = []
 prediction = 'accuracy'
 
 #%% setting filepaths 
@@ -70,14 +70,14 @@ print('opening dict:',pickle_path_in)
 with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
     
-# #%% Filter conditions using the user inputs
-# idx = list(MVPAManager.getFilteredIdx(
-#     tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
+#%% Filter conditions using the user inputs
+idx = list(MVPAManager.getFilteredIdx(
+    tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
 
 # #%% Get crossvalidation scores
-# y = tfr_bands['metadata'][prediction][idx] # What variable we want to predict (set in the user inputs)
+# y = tfr_bands['epoch_metadata'][prediction][idx] # What variable we want to predict (set in the user inputs)
 
-# for thisBand in const.freqbands: # loop over all frequency bands
+# for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
 #     print('--> now performing crossvalidation for', thisBand)
 #     X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
     
@@ -87,8 +87,14 @@ with open(pickle_path_in, 'rb') as f:
 #     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
 # # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
 # # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
+# # Huh. As of now (01.02.24) they are once again the same. conditionExclude Call, conditionInclude Lv3, prediciton accuracy. See screenshot.
 
-# # #%% Saving the dict
-# # print("pickling the dictionary to: /n"+pickle_path_out)
-# # with open(pickle_path_out, 'wb') as f:
-# #     pickle.dump(tfr_bands, f)
+# tfr_bands['metadata']['conditionInclude']= conditionInclude
+# tfr_bands['metadata']['conditionExclude']= conditionExculde
+# tfr_bands['metadata']['prediction']=prediction
+# tfr_bands['metadata']['codebook']=const.codebook
+
+# #%% Saving the dict
+# print("pickling the dictionary to: /n"+pickle_path_out)
+# with open(pickle_path_out, 'wb') as f:
+#     pickle.dump(tfr_bands, f)
