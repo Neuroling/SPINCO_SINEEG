@@ -29,6 +29,7 @@ thisDir = os.path.dirname(__file__)
 
 import MVPA_constants as const
 import MVPA_functions as functions
+from sklearn import __version__ as sklearn_version
 
 MVPAManager = functions.MVPAManager()
 
@@ -74,27 +75,31 @@ with open(pickle_path_in, 'rb') as f:
 idx = list(MVPAManager.getFilteredIdx(
     tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
 
-# #%% Get crossvalidation scores
-# y = tfr_bands['epoch_metadata'][prediction][idx] # What variable we want to predict (set in the user inputs)
+#%% Get crossvalidation scores
+y = tfr_bands['epoch_metadata'][prediction][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
 
-# for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
-#     print('--> now performing crossvalidation for', thisBand)
-#     X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
+    print('--> now performing crossvalidation for', thisBand)
+    X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
     
-#     all_scores_full, scores, std_scores = MVPAManager.get_crossval_scores(X = X, y = y) # Get scores and add to the dict
-#     tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full['test_score']
-#     tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
-#     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
-# # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
-# # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
-# # Huh. As of now (01.02.24) they are once again the same. conditionExclude Call, conditionInclude Lv3, prediciton accuracy. See screenshot.
+    all_scores_full, scores, std_scores, clf, cv, scoretype = MVPAManager.get_crossval_scores(X = X, y = y) # Get scores and add to the dict
+    tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full['test_score']
+    tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
+    tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
+# TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
+# Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
+# Huh. As of now (01.02.24) they are once again the same. conditionExclude Call, conditionInclude Lv3, prediciton accuracy. See screenshot (@samuemu)
 
-# tfr_bands['metadata']['conditionInclude']= conditionInclude
-# tfr_bands['metadata']['conditionExclude']= conditionExculde
-# tfr_bands['metadata']['prediction']=prediction
-# tfr_bands['metadata']['codebook']=const.codebook
+tfr_bands['metadata']['conditionInclude']= conditionInclude
+tfr_bands['metadata']['conditionExclude']= conditionExculde
+tfr_bands['metadata']['prediction']=prediction
+tfr_bands['metadata']['estimator']=str(clf)
+tfr_bands['metadata']['cv']=cv
+tfr_bands['metadata']['sklearn_version']= sklearn_version
+tfr_bands['metadata']['scoretype']=str(scoretype)
+tfr_bands['metadata']['codebook']=const.codebook
 
-# #%% Saving the dict
-# print("pickling the dictionary to: /n"+pickle_path_out)
-# with open(pickle_path_out, 'wb') as f:
-#     pickle.dump(tfr_bands, f)
+#%% Saving the dict
+print("pickling the dictionary to: /n"+pickle_path_out)
+with open(pickle_path_out, 'wb') as f:
+    pickle.dump(tfr_bands, f)

@@ -161,13 +161,12 @@ class MVPAManager:
                                          y= y,  # target variable to predict
                                          cv=cv, # cross-validation splitting strategy
                                          n_jobs=const.n_jobs,
-                                         scoring=scoretype,                                    
-                                         return_indices=True)
-
+                                         scoring=scoretype)                                    
+                                      
         
         all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
         
-        # TODO get only mean and std instead of all 5 (ask Gorka if he wants all 5)
+        # TODO get only mean and std of the 5 instead of all 5 (ask Gorka if he wants all 5)
         
         
         
@@ -217,9 +216,9 @@ class MVPAManager:
             scores = {key: np.array(value) for key, value in scores.items()}
             std_scores = {key: np.array(value) for key, value in std_scores.items()}
             
-        if cv is not None:
+        if cv is None:
             cv = 'Default (None)'
           
         print('-----> Done.')
-        return all_scores_full, scores, std_scores 
+        return all_scores_full, scores, std_scores , clf, cv, scoretype
     

@@ -37,43 +37,16 @@ for s = 1:length(subjectList)
     preproc_data = load(fullfile(fileinput.folder,fileinput.name));
     EEG = preproc_data.EEG;
     
-    %% Remove channels deleted by automagic (they are NaN after automagic)  
-    
-%     EEG  = pop_select( EEG, 'rmchannel',preproc_data.automagic.tobeInterpolated);
-     
-     % Commenting the above line because the Interpolation two cells below
-     % will automatically remove channels and then interpolate the channels
-     % it just removed. By manually removing the channels here, the
-     % Interpolation will be performed on another set of channels. 
-     % For example, let's say the 9th and 13th channel should be interpolated.
-     % If we remove the 9th and 13th channel here, then the
-     % Interpolation will be performed on the channel 10 and channel 15 of the
-     % original data, because channel 9 & 13 are missing, making the
-     % channel 10 the new 9th channel. In addition to the wrong channels
-     % getting interpolated, the final data will lack two channels.
-     
-     % Issue: this way, the re-referencing is performed on channels
-     % consisting of NaN (because their data was deleted by automagic).
-     % This will cause ALL channels to be NaN. Therefore, the
-     % re-referencing needs to be done after the interpolation. 
-     
-    %% Re-reference to average of all available scalp electrodes        
-%     % --------------------------------------------------------------------    
-%     %re reference to average 
-%      EEG = pop_reref( EEG, []);
-    
-    %% Interpolate (this option may be commented if interpolating is done with Automagic)
+    %% Interpolate electrodes marked for interp in Automagic
     % ---------------------------------------------------------------------    
-    preproc_data.automagic.tobeInterpolated
     EEG = pop_interp(EEG, preproc_data.automagic.tobeInterpolated,'spherical');
     pop_comments(EEG.comments,'','chans interpolated after automagic',1);
+        
     
-    EEG.data(preproc_data.automagic.tobeInterpolated,42)
-    
-        %% Re-reference to average of all available scalp electrodes        
+    %% Re-reference to average of all available scalp electrodes        
     % --------------------------------------------------------------------    
     %re reference to average 
-     EEG = pop_reref( EEG, []);
+    EEG = pop_reref( EEG, []);
     
     %% Add accuracy to target events in the EEG dataset 
     % ----------------------------------------------------------------------
