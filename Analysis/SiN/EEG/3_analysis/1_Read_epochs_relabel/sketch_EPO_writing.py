@@ -23,7 +23,7 @@ thisDir = os.getcwd()
 # import numpy as np
 import mne 
 # import pandas as pd
-import EPO_helper as helper
+import EPO_functions as helper
 import EPO_constants as const
 import pandas as pd
 
@@ -56,22 +56,22 @@ epo.plot()
 epo["NV/Lv1"].plot()
 epo.plot_sensors(kind="3d", ch_type="all")
 
-epo["NV/Lv1/Call"].compute_psd(exclude=['Cz']).plot(picks="eeg",average=False)
+epo["NV/Lv1"].compute_psd(exclude=['Cz']).plot(picks="eeg",average=False)
 
-# plots from here on need matplotlib v3.7.3 or newer
+# # plots from here on need matplotlib v3.7.3 or newer
 epo.plot_image(picks=[41,42,43])
 
-#%%
-evo_NV=epo.__getitem__('NV').average()
-evo_SSN=epo.__getitem__('SSN').average()
+# #%%
+# evo_NV=epo.__getitem__('NV').average()
+# evo_SSN=epo.__getitem__('SSN').average()
 
-mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
+# mne.viz.plot_compare_evokeds(dict(Nv=evo_NV, SSN=evo_SSN))
 
 
 
-evo = epo.__getitem__('Lv3/Col/Cor').average()
-evo.plot()
-epo.compute_psd().plot(exclude=['Cz'])
+# evo = epo.__getitem__('Lv3/Col/Cor').average()
+# evo.plot()
+# epo.compute_psd().plot(exclude=['Cz'])
 
 #%%
 

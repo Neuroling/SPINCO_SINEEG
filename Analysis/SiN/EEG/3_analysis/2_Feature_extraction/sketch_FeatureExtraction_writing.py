@@ -40,7 +40,7 @@ from sklearn import metrics
 from sklearn import svm
 
 import FeatureExtraction_constants as const
-import FeatureExtraction_helper as helper
+import FeatureExtraction_functions as helper
 
 #%% User inputs ###########################################################################################################
 subjID = 's001'
@@ -76,7 +76,8 @@ tfr_bands = FeatureExtractionManager.extractFreqBands(tfr_df,freqbands=const.fre
 
 epo.compute_psd().plot() 
 epo.compute_psd().plot(average=True)
-epo.compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
+epo['Cor'].compute_psd().plot_topomap(ch_type="eeg", normalize=False, contours=0)
+
 
 
 #%% Now let's do the morlet time frequency representation (TFR) ###########################################################
@@ -164,113 +165,113 @@ tfr.plot_joint(
 #     # if timefreqs == None it will choose the absolute peak of time-frequency and plot the topomap there
 #     )
 
-#%% MVPA
-X= tfr_bands['Gamma']
-y=epo.metadata['accuracy']
-clf=svm.SVC(C=1, kernel='linear')
-cv=None
-scoretype='accuracy'
+# #%% MVPA
+# X= tfr_bands['Gamma']
+# y=epo.metadata['accuracy']
+# clf=svm.SVC(C=1, kernel='linear')
+# cv=None
+# scoretype='accuracy'
 
-# #[MVPA] Decoding based on entire epoch
-# ---------------------------------------------
-if len(X.shape) != 3:
-    if len(X.shape) > 3:
-        raise ValueError(f'Array X needs to be 2 or 3-dimensional, not {len(X.shape)}')
-    X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
+# # #[MVPA] Decoding based on entire epoch
+# # ---------------------------------------------
+# if len(X.shape) != 3:
+#     if len(X.shape) > 3:
+#         raise ValueError(f'Array X needs to be 2 or 3-dimensional, not {len(X.shape)}')
+#     X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
 
-#% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
-all_scores_full = cross_validate(estimator = clf,
-                                 X = X_2d, # the data to fit the model
-                                 y= y,  # target variable to predict
-                                 #cv=cv, # cross-validation splitting strategy
-                                 n_jobs=const.n_jobs,
-                                 scoring=scoretype,
-                                 error_score='raise')
-"""
-Documentation for the function cross_validate:
- Returns
-    -------
-    scores : dict of float arrays of shape (n_splits,)
-        Array of scores of the estimator for each run of the cross validation.
+# #% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
+# all_scores_full = cross_validate(estimator = clf,
+#                                  X = X_2d, # the data to fit the model
+#                                  y= y,  # target variable to predict
+#                                  #cv=cv, # cross-validation splitting strategy
+#                                  n_jobs=const.n_jobs,
+#                                  scoring=scoretype,
+#                                  error_score='raise')
+# """
+# Documentation for the function cross_validate:
+#  Returns
+#     -------
+#     scores : dict of float arrays of shape (n_splits,)
+#         Array of scores of the estimator for each run of the cross validation.
 
-        A dict of arrays containing the score/time arrays for each scorer is
-        returned. The possible keys for this ``dict`` are:
+#         A dict of arrays containing the score/time arrays for each scorer is
+#         returned. The possible keys for this ``dict`` are:
 
-            ``test_score``
-                The score array for test scores on each cv split.
-                Suffix ``_score`` in ``test_score`` changes to a specific
-                metric like ``test_r2`` or ``test_auc`` if there are
-                multiple scoring metrics in the scoring parameter.
-            ``train_score``
-                The score array for train scores on each cv split.
-                Suffix ``_score`` in ``train_score`` changes to a specific
-                metric like ``train_r2`` or ``train_auc`` if there are
-                multiple scoring metrics in the scoring parameter.
-                This is available only if ``return_train_score`` parameter
-                is ``True``.
-            ``fit_time``
-                The time for fitting the estimator on the train
-                set for each cv split.
-            ``score_time``
-                The time for scoring the estimator on the test set for each
-                cv split. (Note time for scoring on the train set is not
-                included even if ``return_train_score`` is set to ``True``
-            ``estimator``
-                The estimator objects for each cv split.
-                This is available only if ``return_estimator`` parameter
-                is set to ``True``.
-            ``indices``
-                The train/test positional indices for each cv split. A dictionary
-                is returned where the keys are either `"train"` or `"test"`
-                and the associated values are a list of integer-dtyped NumPy
-                arrays with the indices. Available only if `return_indices=True`.
-"""
+#             ``test_score``
+#                 The score array for test scores on each cv split.
+#                 Suffix ``_score`` in ``test_score`` changes to a specific
+#                 metric like ``test_r2`` or ``test_auc`` if there are
+#                 multiple scoring metrics in the scoring parameter.
+#             ``train_score``
+#                 The score array for train scores on each cv split.
+#                 Suffix ``_score`` in ``train_score`` changes to a specific
+#                 metric like ``train_r2`` or ``train_auc`` if there are
+#                 multiple scoring metrics in the scoring parameter.
+#                 This is available only if ``return_train_score`` parameter
+#                 is ``True``.
+#             ``fit_time``
+#                 The time for fitting the estimator on the train
+#                 set for each cv split.
+#             ``score_time``
+#                 The time for scoring the estimator on the test set for each
+#                 cv split. (Note time for scoring on the train set is not
+#                 included even if ``return_train_score`` is set to ``True``
+#             ``estimator``
+#                 The estimator objects for each cv split.
+#                 This is available only if ``return_estimator`` parameter
+#                 is set to ``True``.
+#             ``indices``
+#                 The train/test positional indices for each cv split. A dictionary
+#                 is returned where the keys are either `"train"` or `"test"`
+#                 and the associated values are a list of integer-dtyped NumPy
+#                 arrays with the indices. Available only if `return_indices=True`.
+# """
 
-all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
-print('--> run classification on the full epoch')
+# all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
+# print('--> run classification on the full epoch')
 
-#%%
+# #%%
 
-#[MVPA] Time-resolved decoding 
-# ---------------------------------------------
-n_times = X.shape[2]       
+# #[MVPA] Time-resolved decoding 
+# # ---------------------------------------------
+# n_times = X.shape[2]       
 
-#Use dictionaries to store values for each score type 
-scores = {name: [] for name in scoretype}
-std_scores = {name: [] for name in scoretype}
+# #Use dictionaries to store values for each score type 
+# scores = {name: [] for name in scoretype}
+# std_scores = {name: [] for name in scoretype}
 
-print('[--> starting classification per time point....')
-for t in range(n_times):
-    Xt = X[:, :, t]
+# print('[--> starting classification per time point....')
+# for t in range(n_times):
+#     Xt = X[:, :, t]
     
-    # Standardize features
-    Xt -= Xt.mean(axis=0)
-    Xt /= Xt.std(axis=0)
+#     # Standardize features
+#     Xt -= Xt.mean(axis=0)
+#     Xt /= Xt.std(axis=0)
     
-    #[O_O] Run cross-validation 
-    scores_t = cross_validate(clf, 
-                              Xt, 
-                              y, 
-                              cv=cv, 
-                              n_jobs=const.n_jobs,
-                              scoring=scoretype)     
+#     #[O_O] Run cross-validation 
+#     scores_t = cross_validate(clf, 
+#                               Xt, 
+#                               y, 
+#                               cv=cv, 
+#                               n_jobs=const.n_jobs,
+#                               scoring=scoretype)     
     
-    #Add CV mean and std of this time point to my output dict 
-    for name in scoretype:
-        scores[name].append(scores_t['test_' + name].mean()) 
-        std_scores[name].append(scores_t['test_' + name].std())
+#     #Add CV mean and std of this time point to my output dict 
+#     for name in scoretype:
+#         scores[name].append(scores_t['test_' + name].mean()) 
+#         std_scores[name].append(scores_t['test_' + name].std())
 
-#from lists to arrays 
-scores = {key: np.array(value) for key, value in scores.items()}
-std_scores = {key: np.array(value) for key, value in std_scores.items()}
+# #from lists to arrays 
+# scores = {key: np.array(value) for key, value in scores.items()}
+# std_scores = {key: np.array(value) for key, value in std_scores.items()}
   
-print('Done <--]')
-# return all_scores_full, scores, std_scores 
+# print('Done <--]')
+# # return all_scores_full, scores, std_scores 
 
 
 
-#%% Amplitude extraction
+# #%% Amplitude extraction
 
-amplitudeFreqband = {}
-for thisband in const.freqbands.keys():
-    amplitudeFreqband[thisband] = epo.filter(const.freqbands[thisband][0],const.freqbands[thisband][1])
+# amplitudeFreqband = {}
+# for thisband in const.freqbands.keys():
+#     amplitudeFreqband[thisband] = epo.filter(const.freqbands[thisband][0],const.freqbands[thisband][1])
