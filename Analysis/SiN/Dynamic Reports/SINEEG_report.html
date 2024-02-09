@@ -2,14 +2,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.2.335">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Gorka Fraga-Gonzalez">
 <meta name="author" content="Samuel Mueller">
 <meta name="author" content="Alexis Hervais-Adelman">
-<meta name="dcterms.date" content="2024-02-04">
+<meta name="dcterms.date" content="2024-02-09">
 
 <title>Data Report: An EEG experiment on Speech-in-Noise Comprehension</title>
 <style>
@@ -21,10 +21,9 @@ div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
   width: 0.8em;
-  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  margin: 0 0.8em 0.2em -1.6em;
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
@@ -51,19 +50,48 @@ pre.numberSource code > span > a:first-child::before
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
     padding: 0 4px; width: 4em;
+    color: #aaaaaa;
   }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
   {   }
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 div.csl-bib-body { }
 div.csl-entry {
   clear: both;
 }
-.hanging-indent div.csl-entry {
+.hanging div.csl-entry {
   margin-left:2em;
   text-indent:-2em;
 }
@@ -77,7 +105,8 @@ div.csl-right-inline {
 }
 div.csl-indent {
   margin-left: 2em;
-}</style>
+}
+</style>
 
 
 <script src="SINEEG_report_files/libs/clipboard/clipboard.min.js"></script>
@@ -155,7 +184,7 @@ div.csl-indent {
   <div class="quarto-title-meta-heading">Affiliations</div>
   
     <div class="quarto-title-meta-contents">
-    <p class="author">Gorka Fraga-Gonzalez <a href="https://orcid.org/0000-0002-1857-8607" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+    Gorka Fraga-Gonzalez <a href="https://orcid.org/0000-0002-1857-8607" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a>
   </div>
     <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -163,7 +192,7 @@ div.csl-indent {
           </p>
       </div>
       <div class="quarto-title-meta-contents">
-    <p class="author">Samuel Mueller </p>
+    Samuel Mueller 
   </div>
     <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -171,7 +200,7 @@ div.csl-indent {
           </p>
       </div>
       <div class="quarto-title-meta-contents">
-    <p class="author">Alexis Hervais-Adelman <a href="https://orcid.org/0000-0002-5232-626X" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a></p>
+    Alexis Hervais-Adelman <a href="https://orcid.org/0000-0002-5232-626X" class="quarto-title-author-orcid"> <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg=="></a>
   </div>
     <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -189,7 +218,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 4, 2024</p>
+      <p class="date">February 9, 2024</p>
     </div>
   </div>
   
@@ -205,9 +234,19 @@ div.csl-indent {
 <p>
 </p><p>Our experiment uses electroencephalography (EEG) to investigate patterns of electrophysiological activity associated with better speech in noise comprehension. This pilot study has data from 15 healthy adult participants performing a sentence comprehension task with noise-vocoded speech and speech in speech-shaped noise stimuili. We use a multivariate pattern analysis approach focused on using EEG information preceding stimuli to decode accuracy of performance.</p>
 <p>This pilot study is aimed at specifying targets and experimental design for subsequent studies focused on potential neurofeedback interventions</p>
-<blockquote class="blockquote">
-<p>NOTE: some of the links in this report use the permalink to scripts in the github repository. If any of these links is found to be broken, please contact the authors.</p>
-</blockquote>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Some of the links in this report use the permalink to scripts in the github repository. If any of these links is found to be broken, please contact the authors.</p>
+</div>
+</div>
 </section>
 <section id="methods" class="level1">
 <h1>Methods</h1>
@@ -215,18 +254,151 @@ div.csl-indent {
 <h2 class="anchored" data-anchor-id="participants-and-procedures">Participants and procedures</h2>
 <p>We recruited 15 adult participants using a mailing list of the Faculty of Psychology (University of Zurich) and flyers. Inclusion criteria were: age 18-35 years, normmal hearing without hearing aids, normal vision (corrections allowed), German as first language, right-handed. Exclusion criteria were being fuent in more than two languages, having hearing aids or history of hearing impairments or having any psychological or psychiatric condition that may impede adequate task performance (e.g., attentional problems, speech comprehension issues). All participants signed an inform consent form before participation with included a 60 CHF reward for participation. The study was approved by the ethics commision of the canton of Zurich.</p>
 <p>XX were excluded due to…Data from x participant was discarded…</p>
-<p>Before selection for the experiment participants were screened via phone call or email on the main inclusion criteria for the study. Upon arrival to the lab participants first filled in a short questionnaire with a additional questions on language hearing and an relevant psychological or psychiatric condition that may impact task performance. The questionnaire was presented using the web application <a href="https://www.project-redcap.org/">Redcap</a> to ensure that any personal data was saved in a secure environment. [[[<strong><em>Enter what variables were masked and list of variables in the appendix</em></strong> ]]]. After completion of the pilot the survey data was downloaded as a table with identifying variables like D.O.B masked.</p>
+<p>Before selection for the experiment participants were screened via phone call or email on the main inclusion criteria for the study. Upon arrival to the lab participants first filled in a short questionnaire with a additional questions on language hearing and an relevant psychological or psychiatric condition that may impact task performance. The questionnaire was presented using the web application <a href="https://www.project-redcap.org/">Redcap</a> to ensure that any personal data was saved in a secure environment. After completion of the pilot the survey data was downloaded as a table with identifying variables like D.O.B masked.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Expand to see the variable names from the Redcap file
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<table class="table">
+<colgroup>
+<col style="width: 100%">
+</colgroup>
+<tbody>
+<tr class="odd">
+<td>Study subject ID</td>
+</tr>
+<tr class="even">
+<td>Alter in Jahren</td>
+</tr>
+<tr class="odd">
+<td>Geschlecht</td>
+</tr>
+<tr class="even">
+<td>Händigkeit</td>
+</tr>
+<tr class="odd">
+<td>Was ist Ihr höchster Schulabschluss?</td>
+</tr>
+<tr class="even">
+<td>Falls ‘Andere’, bitte geben Sie genauere Informationen.</td>
+</tr>
+<tr class="odd">
+<td>Welches ist Ihre höchste berufliche Qualifikation/Berufsbildung?</td>
+</tr>
+<tr class="even">
+<td>Bitte präzisieren Sie den Stand Ihrer Berufsbildung, falls Sie ‘Andere’ gewählt haben.</td>
+</tr>
+<tr class="odd">
+<td>Erstsprache Was ist die Sprach, welche Sie als erstes erlernt haben? Entspricht gewöhnlich der Sprache, welche in der Familie gesprochen wurde. (Falls Sie mehrsprachig aufgewachsen sind, bitte geben Sie eine an)</td>
+</tr>
+<tr class="even">
+<td>Sind Sie mehrsprachig aufgewachsen?</td>
+</tr>
+<tr class="odd">
+<td>Falls ja, welche weiteren Sprachen haben Sie seit Kindheit an regelmässig gesprochen?</td>
+</tr>
+<tr class="even">
+<td>Welche Sprache würden Sie als Ihre Erstsprache bezeichnen? (Sprache die Sie als erstes erlernt haben; normalerweise Sprache die in der Familie gesprochen wurde)</td>
+</tr>
+<tr class="odd">
+<td>Bitte präzisieren Sie Ihre Erstsprache falls ‘Andere’.</td>
+</tr>
+<tr class="even">
+<td>Bitte angeben</td>
+</tr>
+<tr class="odd">
+<td>Wenn Sie mehrsprachig aufgewachsen sind: Welche Sprache beherrschen Sie am besten?</td>
+</tr>
+<tr class="even">
+<td>Bitte angeben</td>
+</tr>
+<tr class="odd">
+<td>Hatten/haben Sie Probleme mit den Ohren oder dem Gehör? (Mittelohrentzündung, Operationen, Schwerhörigkeit, Tinnitus etc.) Wenn ja, welche?</td>
+</tr>
+<tr class="even">
+<td>Falls ja, welche?</td>
+</tr>
+<tr class="odd">
+<td>Wann?</td>
+</tr>
+<tr class="even">
+<td>Hatten/haben Sie Probleme damit Ihre Aufmerksamkeit aufrecht zu halten?</td>
+</tr>
+<tr class="odd">
+<td>Befinden Sie sich aktuell deswegen in psychologischer oder psychiatrischer Behandlung?</td>
+</tr>
+<tr class="even">
+<td>Bitte angeben</td>
+</tr>
+<tr class="odd">
+<td>Haben Sie jemals die Diagnose einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ADS/ADHS) erhalten? Wenn ja, welche?</td>
+</tr>
+<tr class="even">
+<td>Bitte angeben</td>
+</tr>
+<tr class="odd">
+<td>Leiden Sie aktuell oder haben Sie in den letzten 5 Jahren an einer neurologischen Erkrankung gelitten? (Epilepsie, Migräne etc.) Wenn ja, welche?</td>
+</tr>
+<tr class="even">
+<td>Bitte angeben</td>
+</tr>
+<tr class="odd">
+<td>Nehmen Sie zurzeit schlaffördernde Medikamente oder Naturheilmittel, Psychopharmaka oder andere Medikamente ein?</td>
+</tr>
+<tr class="even">
+<td>Falls ja, bitte geben Sie den Namen und die Dosierung an.</td>
+</tr>
+<tr class="odd">
+<td>Haben Sie jemals ein Schädel-Hirntrauma (Gehirnerschütterung) erlitten?</td>
+</tr>
+<tr class="even">
+<td>Wenn ja, wann und weshalb? Haben Sie das Bewusstsein verloren oder danach Bewusstseinsveränderungen erlebt? Waren Sie in ärztlicher Behandlung deswegen?</td>
+</tr>
+<tr class="odd">
+<td>Haben Sie Probleme mit den Augen oder dem Sehvermögen? (Allergien, Schielen (Strabismus), Kurz-/Weitsichtigkeit, Hornhautverkrümmung etc.)</td>
+</tr>
+<tr class="even">
+<td>Wenn ja, welche? Seit wann? Hatten Sie deswegen Operationen?</td>
+</tr>
+<tr class="odd">
+<td>Tragen Sie eine Brille oder Kontaktlinsen?</td>
+</tr>
+<tr class="even">
+<td>Wenn ja, welche Dioptrien (rechtes Auge, linkes Auge) und tragen Sie diese aktuell?</td>
+</tr>
+<tr class="odd">
+<td>Haben Sie eine Farbenfehlsichtigkeit (z.B. Rot-Grün-Schwäche)?</td>
+</tr>
+<tr class="even">
+<td>Wenn ja, welche?</td>
+</tr>
+<tr class="odd">
+<td>Haben Sie abschliessende Bemerkungen oder spezielle Anliegen, welche für die Studienteilnahme relevant sein könnten?</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 <p>After completing the questionnaires participants were informed about the specific content of the session. Electrode placement and signal check took approximately between 20 and 40 minutes. Then a few example trials were presented before starting the session consisting of: a 4 minutes resting state recording with eyes closed, the main task (with 4 blocks of approximately 15 minuntes duration each) and finally, another 4 minutes of eyes closed resting state.</p>
 </section>
 <section id="experimental-task" class="level2">
 <h2 class="anchored" data-anchor-id="experimental-task">Experimental Task</h2>
 <section id="trial-design" class="level3">
 <h3 class="anchored" data-anchor-id="trial-design">Trial design</h3>
-<p>We used a version of the Coordinate Response Measure (CRM) task used in brungart2001evaluation. In the task, participants hear different versions of a setence with a fixed structure and three words that change in every trial. There are 4 possible alternatives for each of the targets, thus there are 64 possible variations of the sentences. The task was originally designed to investigate intelligibility of speech commands (in a military context) in audio transmissions with various types of background competition. The German sentence used in this study was: “<em>Vorsicht</em> [call sign], <em>geh sofort zum</em> [color] <em>Feld von der Spalte</em>[number]” (Translated with a small variation from the original article in English: “<em>Ready [call sign] go to [color][number] now</em>”). The 4 possible call sign items were: Adler, Drossel, Tiger or Kröte (eagle, thrush, tiger or toad). The possible colors were gelben, gruenen, roten, weissen (yellow, green, red or white). The numbers were Ein, Zwei, Drei or Vier (one to four).</p>
+<p>We used a version of the Coordinate Response Measure (CRM) task used in <span class="citation" data-cites="brungart2001evaluation">Brungart (<a href="#ref-brungart2001evaluation" role="doc-biblioref">2001</a>)</span>. In the task, participants listen to different versions of a sentence with a fixed structure and three words that change in every trial. There are 4 possible alternatives for each of the targets, thus there are 64 possible variations of the sentences. The task was originally designed to investigate intelligibility of speech commands (in a military context) in audio transmissions with various types of background competition. The German sentence used in this study was: “<em>Vorsicht</em> [call sign], <em>geh sofort zum</em> [color] <em>Feld von der Spalte</em>[number]” (Translated with a small variation from the original article in English: “<em>Ready [call sign] go to [color][number] now</em>”). The 4 possible call sign items were: Adler, Drossel, Tiger or Kröte (eagle, thrush, tiger or toad). The possible colors were gelben, gruenen, roten, weissen (yellow, green, red or white). The numbers were Ein, Zwei, Drei or Vier (one to four).</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/Experiment_outline.jpg" class="lightbox img-fluid figure-img"></p>
-<figcaption class="figure-caption">Figure 1. Overview of the experimental session</figcaption>
+<p></p><figcaption class="figure-caption">Figure 1. Overview of the experimental session</figcaption><p></p>
 </figure>
 </div>
 <p>In each trial the sentences were aurally presented and a fixation cross was shown in the center of the screen. After playing the sentence, an array of 4 x 3 was shown with drawings representing the target items, the array had always in the same order and columns 1-3 represented targets 1-3 in the same order as they appeared in the sentence, that is, first the column with call signs, then colors and then numbers. Participants had to click with the mouse on the picture representing the item they heard in each of the columns before moving on to the next trial. The trials were response-terminated, but there was a response time limit of 10 seconds before moving on to the next trial. In the example trials, presented with 3 different levels of auditory difficulty the researchers conducting the experiment ensured that participants understood that they should click on each of the three columns in all trials, even if they were not sure what item they heard.</p>
@@ -238,6 +410,7 @@ div.csl-indent {
 </section>
 <section id="stimuli" class="level3">
 <h3 class="anchored" data-anchor-id="stimuli">Stimuli</h3>
+<p>We presented the stimuli using the external audio interface Fireface UFX II and <a href="https://shop.neurospec.com/er2-tubal-insert-ear-phones">ER-1 tubal in-ear headphones</a>.</p>
 </section>
 <section id="speech-generation" class="level3">
 <h3 class="anchored" data-anchor-id="speech-generation">Speech generation</h3>
@@ -276,11 +449,27 @@ div.csl-indent {
 <p>The script <a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/cb2142e48d062009dc40702651937dde7e18e0aa/Analysis/SiN/EEG/1_source_to_raw/Import_01_importBDF_loadLocs_split.m">Import_01</a>performs the following:</p>
 <ul>
 <li><strong>Event trigger adjustment</strong>. The click’s inserted at the start of the <em>audio signal</em> are detected for each trial in the task. The onset of the clicks is used to adjust the event triggers (target word onsets and start/end of the sentence) accounting for any audio output delay</li>
-<li><strong>Split file</strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> in three datasets: <code>s001_task-rest-pre.set</code>, <code>s001_task-rest-post.set</code>, <code>s001_task-sin.set</code> (event triggers are used to determine the split segments)</li>
+<li><strong>Split file</strong>[^1] in three datasets: <code>s001_task-rest-pre.set</code>, <code>s001_task-rest-post.set</code>, <code>s001_task-sin.set</code> (event triggers are used to determine the split segments)</li>
 <li><strong>Load Channel locations</strong></li>
 <li><strong>Create Metadata</strong>. This includes<code>.json</code> metadata files and <code>.tsv</code> channel location and event table files. <strong>NOTE</strong> we add the trial accuracy values into the <em>event table file</em>, this values are read from the experimental file (in behavioral folder ‘beh’)</li>
 </ul>
 <p>The resulting datasets are considered ‘raw’ for subsequent preprocessing and analysis.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Why did we used .set and not .bdf ? The .set format was preferred after finding several issues when exporting to formats as bdf or edf using EEGlab and MNE toolboxes. When the ‘Ergo1’ channel with digital audio recorded was loaded, there were (what appeared to be) sampling errors in the exported bdf or edf from EEGlab (using <em>writeeg</em> from Biosig) and EDF with mne (https://mne.tools/stable/generated/mne.export.export_raw.html).These problems were not present when using the Biosemi Actitools software (however this is not a desired step as it requires manual input in GUI and could not be integrated in the scripts).</p>
+</div>
+</div>
+</div>
 </section>
 <section id="preprocessing" class="level3">
 <h3 class="anchored" data-anchor-id="preprocessing">Preprocessing</h3>
@@ -302,11 +491,9 @@ div.csl-indent {
 <h5 class="anchored" data-anchor-id="manual-bad-channel-identification-and-rejection">(Manual) Bad channel identification and rejection</h5>
 <p>Researchers were instructed to search for channels that are persistently unstable, noisy or flat. For further information the <a href="https://eeglab.org/tutorials/06_RejectArtifacts/Channel_rejection.html">eeglab Channel_rejection tutorial</a> is proposed. Two raters performed this inspection and the bad channels identified by them were compared with those selected by automagic (.&gt;&gt;&gt;…read table..&lt;&lt;&lt;..)</p>
 <ul>
-<li>Describe Actions..</li>
+<li><p>Describe Actions…</p></li>
+<li><p>https://www.fieldtriptoolbox.org/faq/should_I_rereference_prior_to_or_after_ica_for_artifact_removal/ —-&gt; on avg ref before ICA ##### Channel rejection</p></li>
 </ul>
-</section>
-<section id="channel-rejection" class="level5">
-<h5 class="anchored" data-anchor-id="channel-rejection">Channel rejection</h5>
 <p>broadly on what happens from raw data to the epoched data for analysis, the tutorial distinguish between: - <em>Preprocessing</em>: filter, re-referencing and resampling. - <em>Reject artifacts</em>: removing bad channels, bad data and automatic artifact rejection and correction (Indep.Comp.Analysis)</p>
 </section>
 <section id="bad-channels-identification-and-rejection" class="level5">
@@ -356,7 +543,7 @@ div.csl-indent {
 <section id="behavioral-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="behavioral-analysis">Behavioral analysis</h2>
 <p>Gathered table</p>
-<div class="cell" data-tags="[]" data-execution_count="46">
+<div class="cell" data-tags="[]" data-execution_count="2">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Library installations: </span></span>
@@ -422,49 +609,26 @@ div.csl-indent {
 }
 </style>
 <div class="itables">
-
-<table id="e676ddfe-6c21-4753-a0d8-9338e06b7f33" class="display nowrap table table-sm table-striped small" data-quarto-postprocess="true">
-<thead>
-<tr class="header" style="text-align: right;">
-<th data-quarto-table-cell-role="th">subj</th>
-<th data-quarto-table-cell-role="th">noise</th>
-<th data-quarto-table-cell-role="th">block</th>
-<th data-quarto-table-cell-role="th">sentence</th>
-<th data-quarto-table-cell-role="th">levels</th>
-<th data-quarto-table-cell-role="th">callSign</th>
-<th data-quarto-table-cell-role="th">colour</th>
-<th data-quarto-table-cell-role="th">number</th>
-<th data-quarto-table-cell-role="th">callSign_resp</th>
-<th data-quarto-table-cell-role="th">col_resp</th>
-<th data-quarto-table-cell-role="th">numb_resp</th>
-<th data-quarto-table-cell-role="th">callSignCorrect</th>
-<th data-quarto-table-cell-role="th">colourCorrect</th>
-<th data-quarto-table-cell-role="th">numberCorrect</th>
-<th data-quarto-table-cell-role="th">n_cor_items</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Loading... (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-
+<table id="f172a56b-12a2-4ae7-a791-36831a53d894" class="display nowrap" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom"><thead>
+    <tr style="text-align: right;">
+      
+      <th>subj</th>
+      <th>noise</th>
+      <th>block</th>
+      <th>sentence</th>
+      <th>levels</th>
+      <th>callSign</th>
+      <th>colour</th>
+      <th>number</th>
+      <th>callSign_resp</th>
+      <th>col_resp</th>
+      <th>numb_resp</th>
+      <th>callSignCorrect</th>
+      <th>colourCorrect</th>
+      <th>numberCorrect</th>
+      <th>n_cor_items</th>
+    </tr>
+  </thead><tbody><tr><td>Loading... (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td></tr></tbody></table>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <script type="module">
     // Import jquery and DataTable
@@ -481,13 +645,13 @@ div.csl-indent {
 
     $(document).ready(function () {
         
-        $('#e676ddfe-6c21-4753-a0d8-9338e06b7f33').DataTable(dt_args);
+        $('#f172a56b-12a2-4ae7-a791-36831a53d894').DataTable(dt_args);
     });
 </script>
 </div>
 </div>
 </div>
-<div class="cell" data-tags="[]" data-execution_count="52">
+<div class="cell" data-tags="[]" data-execution_count="3">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># Long transform</span></span>
@@ -522,33 +686,18 @@ div.csl-indent {
 }
 </style>
 <div class="itables">
-
-<table id="a0345956-2b5a-4633-ab11-ed7e69956fbe" class="display nowrap table table-sm table-striped small" data-quarto-postprocess="true">
-<thead>
-<tr class="header" style="text-align: right;">
-<th data-quarto-table-cell-role="th">subj</th>
-<th data-quarto-table-cell-role="th">noise</th>
-<th data-quarto-table-cell-role="th">block</th>
-<th data-quarto-table-cell-role="th">levels</th>
-<th data-quarto-table-cell-role="th">sentence</th>
-<th data-quarto-table-cell-role="th">item</th>
-<th data-quarto-table-cell-role="th">accu</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Loading... (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-
-
+<table id="a76f0bdf-957e-45be-95c0-2ab413e6224c" class="display nowrap" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom"><thead>
+    <tr style="text-align: right;">
+      
+      <th>subj</th>
+      <th>noise</th>
+      <th>block</th>
+      <th>levels</th>
+      <th>sentence</th>
+      <th>item</th>
+      <th>accu</th>
+    </tr>
+  </thead><tbody><tr><td>Loading... (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td></tr></tbody></table>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
 <script type="module">
     // Import jquery and DataTable
@@ -565,7 +714,7 @@ div.csl-indent {
 
     $(document).ready(function () {
         
-        $('#a0345956-2b5a-4633-ab11-ed7e69956fbe').DataTable(dt_args);
+        $('#a76f0bdf-957e-45be-95c0-2ab413e6224c').DataTable(dt_args);
     });
 </script>
 </div>
@@ -580,184 +729,183 @@ div.csl-indent {
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">'noise'</span>, <span class="st">'block'</span>, <span class="st">'levels'</span>,<span class="st">'sentence'</span>,<span class="st">'callSign'</span>,<span class="st">'colour'</span>,<span class="st">'number'</span>,<span class="st">'n_cor_items'</span>])[[<span class="st">'callSignCorrect'</span>, <span class="st">'colourCorrect'</span>,<span class="st">'numberCorrect'</span>]].<span class="bu">sum</span>().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display" data-execution_count="53">
+
 <div>
 
-
-<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
-<thead>
-<tr class="header">
-<th data-quarto-table-cell-role="th"></th>
-<th data-quarto-table-cell-role="th">noise</th>
-<th data-quarto-table-cell-role="th">block</th>
-<th data-quarto-table-cell-role="th">levels</th>
-<th data-quarto-table-cell-role="th">sentence</th>
-<th data-quarto-table-cell-role="th">callSign</th>
-<th data-quarto-table-cell-role="th">colour</th>
-<th data-quarto-table-cell-role="th">number</th>
-<th data-quarto-table-cell-role="th">n_cor_items</th>
-<th data-quarto-table-cell-role="th">callSignCorrect</th>
-<th data-quarto-table-cell-role="th">colourCorrect</th>
-<th data-quarto-table-cell-role="th">numberCorrect</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">0</td>
-<td>NV</td>
-<td>1</td>
-<td>1_easy</td>
-<td>1</td>
-<td>Ad</td>
-<td>ro</td>
-<td>Vi</td>
-<td>2.0</td>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">1</td>
-<td>NV</td>
-<td>1</td>
-<td>1_easy</td>
-<td>1</td>
-<td>Ad</td>
-<td>ro</td>
-<td>Zw</td>
-<td>1.0</td>
-<td>0</td>
-<td>0</td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">2</td>
-<td>NV</td>
-<td>1</td>
-<td>1_easy</td>
-<td>1</td>
-<td>Dr</td>
-<td>we</td>
-<td>Ei</td>
-<td>2.0</td>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">3</td>
-<td>NV</td>
-<td>1</td>
-<td>1_easy</td>
-<td>2</td>
-<td>Ad</td>
-<td>ro</td>
-<td>Zw</td>
-<td>2.0</td>
-<td>0</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">4</td>
-<td>NV</td>
-<td>1</td>
-<td>1_easy</td>
-<td>2</td>
-<td>Dr</td>
-<td>we</td>
-<td>Ei</td>
-<td>3.0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">5106</td>
-<td>SiSSN</td>
-<td>2</td>
-<td>3_hard</td>
-<td>96</td>
-<td>Ad</td>
-<td>gr</td>
-<td>Dr</td>
-<td>3.0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5107</td>
-<td>SiSSN</td>
-<td>2</td>
-<td>3_hard</td>
-<td>96</td>
-<td>Dr</td>
-<td>gr</td>
-<td>Dr</td>
-<td>3.0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">5108</td>
-<td>SiSSN</td>
-<td>2</td>
-<td>3_hard</td>
-<td>96</td>
-<td>Kr</td>
-<td>we</td>
-<td>Zw</td>
-<td>3.0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="even">
-<td data-quarto-table-cell-role="th">5109</td>
-<td>SiSSN</td>
-<td>2</td>
-<td>3_hard</td>
-<td>96</td>
-<td>Ti</td>
-<td>ro</td>
-<td>Zw</td>
-<td>3.0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-<tr class="odd">
-<td data-quarto-table-cell-role="th">5110</td>
-<td>SiSSN</td>
-<td>2</td>
-<td>3_hard</td>
-<td>96</td>
-<td>Ti</td>
-<td>we</td>
-<td>Zw</td>
-<td>3.0</td>
-<td>1</td>
-<td>1</td>
-<td>1</td>
-</tr>
-</tbody>
+<table class="dataframe table table-sm table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <th>noise</th>
+      <th>block</th>
+      <th>levels</th>
+      <th>sentence</th>
+      <th>callSign</th>
+      <th>colour</th>
+      <th>number</th>
+      <th>n_cor_items</th>
+      <th>callSignCorrect</th>
+      <th>colourCorrect</th>
+      <th>numberCorrect</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>NV</td>
+      <td>1</td>
+      <td>1_easy</td>
+      <td>1</td>
+      <td>Ad</td>
+      <td>ro</td>
+      <td>Vi</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>NV</td>
+      <td>1</td>
+      <td>1_easy</td>
+      <td>1</td>
+      <td>Ad</td>
+      <td>ro</td>
+      <td>Zw</td>
+      <td>1.0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>NV</td>
+      <td>1</td>
+      <td>1_easy</td>
+      <td>1</td>
+      <td>Dr</td>
+      <td>we</td>
+      <td>Ei</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>NV</td>
+      <td>1</td>
+      <td>1_easy</td>
+      <td>2</td>
+      <td>Ad</td>
+      <td>ro</td>
+      <td>Zw</td>
+      <td>2.0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>NV</td>
+      <td>1</td>
+      <td>1_easy</td>
+      <td>2</td>
+      <td>Dr</td>
+      <td>we</td>
+      <td>Ei</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>5106</th>
+      <td>SiSSN</td>
+      <td>2</td>
+      <td>3_hard</td>
+      <td>96</td>
+      <td>Ad</td>
+      <td>gr</td>
+      <td>Dr</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5107</th>
+      <td>SiSSN</td>
+      <td>2</td>
+      <td>3_hard</td>
+      <td>96</td>
+      <td>Dr</td>
+      <td>gr</td>
+      <td>Dr</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5108</th>
+      <td>SiSSN</td>
+      <td>2</td>
+      <td>3_hard</td>
+      <td>96</td>
+      <td>Kr</td>
+      <td>we</td>
+      <td>Zw</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5109</th>
+      <td>SiSSN</td>
+      <td>2</td>
+      <td>3_hard</td>
+      <td>96</td>
+      <td>Ti</td>
+      <td>ro</td>
+      <td>Zw</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>5110</th>
+      <td>SiSSN</td>
+      <td>2</td>
+      <td>3_hard</td>
+      <td>96</td>
+      <td>Ti</td>
+      <td>we</td>
+      <td>Zw</td>
+      <td>3.0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
 </table>
-
 <p>5111 rows × 11 columns</p>
 </div>
 </div>
@@ -766,32 +914,29 @@ div.csl-indent {
 </section>
 </section>
 
-
-<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-aller2022differential" class="csl-entry" role="listitem">
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-aller2022differential" class="csl-entry" role="doc-biblioentry">
 Aller, Máté, Heidi Solberg Økland, Lucy J MacGregor, Helen Blank, and Matthew H Davis. 2022. <span>“Differential Auditory and Visual Phase-Locking Are Observed During Audio-Visual Benefit and Silent Lip-Reading for Speech Perception.”</span> <em>Journal of Neuroscience</em> 42 (31): 6108–20.
 </div>
-<div id="ref-delorme2004eeglab" class="csl-entry" role="listitem">
+<div id="ref-brungart2001evaluation" class="csl-entry" role="doc-biblioentry">
+Brungart, Douglas S. 2001. <span>“Evaluation of Speech Intelligibility with the Coordinate Response Measure.”</span> <em>The Journal of the Acoustical Society of America</em> 109 (5): 2276–79.
+</div>
+<div id="ref-delorme2004eeglab" class="csl-entry" role="doc-biblioentry">
 Delorme, Arnaud, and Scott Makeig. 2004. <span>“EEGLAB: An Open Source Toolbox for Analysis of Single-Trial EEG Dynamics Including Independent Component Analysis.”</span> <em>Journal of Neuroscience Methods</em> 134 (1): 9–21.
 </div>
-<div id="ref-niskar2001estimated" class="csl-entry" role="listitem">
+<div id="ref-niskar2001estimated" class="csl-entry" role="doc-biblioentry">
 Niskar, Amanda Sue, Stephanie M Kieszak, Alice E Holmes, Emilio Esteban, Carol Rubin, and Debra J Brody. 2001. <span>“Estimated Prevalence of Noise-Induced Hearing Threshold Shifts Among Children 6 to 19 Years of Age: The Third National Health and Nutrition Examination Survey, 1988–1994, United States.”</span> <em>Pediatrics</em> 108 (1): 40–43.
 </div>
-<div id="ref-pedroni2019automagic" class="csl-entry" role="listitem">
+<div id="ref-pedroni2019automagic" class="csl-entry" role="doc-biblioentry">
 Pedroni, Andreas, Amirreza Bahreini, and Nicolas Langer. 2019. <span>“Automagic: Standardized Preprocessing of Big EEG Data.”</span> <em>NeuroImage</em> 200: 460–73.
 </div>
-<div id="ref-shargorodsky2010change" class="csl-entry" role="listitem">
+<div id="ref-shargorodsky2010change" class="csl-entry" role="doc-biblioentry">
 Shargorodsky, Josef, Sharon G Curhan, Gary C Curhan, and Roland Eavey. 2010. <span>“Change in Prevalence of Hearing Loss in US Adolescents.”</span> <em>Jama</em> 304 (7): 772–78.
 </div>
-<div id="ref-zoefel2023intelligibility" class="csl-entry" role="listitem">
+<div id="ref-zoefel2023intelligibility" class="csl-entry" role="doc-biblioentry">
 Zoefel, Benedikt, Rebecca A Gilbert, and Matthew H Davis. 2023. <span>“Intelligibility Improves Perception of Timing Changes in Speech.”</span> <em>Plos One</em> 18 (1): e0279024.
 </div>
-</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
-
-<ol>
-<li id="fn1"><p>The .set format was preferred after previous issues when exporting to formats as bdf or edf with EEGlab and MNE toolboxes. When the ‘Ergo1’ channel with digital audio recorded was loaded, there were (what appeared to be) sampling errors in the exported bdf or edf from EEGlab (using <em>writeeg</em> from Biosig) and EDF with mne (https://mne.tools/stable/generated/mne.export.export_raw.html).These problems were not present when using the Biosemi Actitools software (however this is not a desired step as it requires manual input in GUI).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
-</section></div></main>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
@@ -820,23 +965,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     icon: icon
   };
   anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
   const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
+    target: function(trigger) {
+      return trigger.previousElementSibling;
     }
   });
   clipboard.on('success', function(e) {
@@ -952,92 +1083,6 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       return note.innerHTML;
     });
   }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
   const findCites = (el) => {
     const parentEl = el.parentElement;
     if (parentEl) {
