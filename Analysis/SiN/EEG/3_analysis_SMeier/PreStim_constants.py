@@ -12,8 +12,8 @@ import pandas as pd
 
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
-setFileEnd = '_avgRef_epo.set'
-fifFileEnd = '_avgRef_epo.fif'
+
+fifFileEnd = 'resampled_ICA_rej_epo.fif'
 freqTableEnd = 'event_group_frequencies.csv'
 inputPickleFileEnd = '_tfr_freqbands.pkl'
 

@@ -19,12 +19,13 @@ import pickle
 subjID = 's001'
 
 dirinput = os.path.join(const.thisDir[:const.thisDir.find(
-    'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched', subjID)
-epo_path = glob(os.path.join(dirinput, str("*" + const.fifFileEnd)), recursive=True)[0]
+    'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched')
+epo_path = glob(os.path.join(dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
 
 pickle_path_in = os.path.join(dirinput[:dirinput.find(
     'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
 
+#%%
 print('opening dict:',pickle_path_in)
 with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
@@ -33,16 +34,9 @@ with open(pickle_path_in, 'rb') as f:
 
 
 #%% create frequency dataset to run the LMM on
-df = tfr_bands['epoch_metadata']
-df['data'] = tfr_bands['Alpha_data'][:,0,0] # all trials, electrode 0, timepoint 0
-df['subjID'] = [subjID for i in range(1152)]
-
-#%% Create arrays and lists
-thisBand = 'Theta'
-channels = [i for i in range(64)]
-times = [i for i in range(len(tfr_bands[str(thisBand+"_COI_times")]))]
-
-p_values = np.zeros(shape=(len(channels),len(times),9))
+df = tfr_bands['epoch_metadata'] # get trial information 
+df['data'] = tfr_bands['Alpha_data'][:,0,0] # get data of all trials, at electrode 0, and at timepoint 0
+df['subjID'] = [subjID for i in range(len(df))] # Put in a column with the subject ID
 
 
 #%%
@@ -59,6 +53,12 @@ And we would need to run this for every single freq band.
 
 Which means that this script is so ridiculously badly optimised, that it is almost funny.
 
+#%% Create arrays and lists
+thisBand = 'Theta'
+channels = [i for i in range(64)]
+times = [i for i in range(len(tfr_bands[str(thisBand+"_COI_times")]))]
+
+p_values = np.zeros(shape=(len(channels),len(times),9))
 
 #%% And now the big loop...
 
@@ -108,15 +108,163 @@ for thisChannel in channels:
   
 """
 
+#%% Alright! Let's optimise!
+
+#%% Create arrays and lists
+thisBand = 'Theta'
+channels = [i for i in range(64)] # list of channels
+times = [i for i in range(len(tfr_bands[str(thisBand+"_COI_times")]))] #list of timepoints
+
+p_values = np.zeros(shape=(len(channels),len(times),9)) # empty array for the p_values
+
+#%% First, create a dict of all subj data of thisBand to store in the memory
+data_dict = {}
+metadata_dict = {}
+
+for subjID in const.subjIDs:
+    pickle_path_in = os.path.join(const.thisDir[:const.thisDir.find(
+        'Scripts')] + 'Data', 'SiN','analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
+    
+    print('opening dict:',pickle_path_in)
+    with open(pickle_path_in, 'rb') as f:
+        tfr_bands = pickle.load(f)
+    
+    data_dict[subjID]=tfr_bands[str(thisBand+'_data')]
+    metadata_dict[subjID] = tfr_bands['epoch_metadata']
+    
+    # re-code and delete unneeded data
+    metadata_dict[subjID]['subjID'] = [subjID for i in range(len(metadata_dict[subjID]))]
+    metadata_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
+    metadata_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
+    metadata_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
+    metadata_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
+    metadata_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
+    metadata_dict[subjID]['block'].replace('NV', 0, inplace=True)
+    metadata_dict[subjID]['block'].replace('SSN', 1, inplace=True)
+    metadata_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice'], axis = 1, inplace = True)
+    
+    del tfr_bands
+
+
+
+#%% And now loop over that...
+
+for thisChannel in channels:
+    print('running channel',thisChannel,'of', len(channels))
+    
+    for tf in times:
+           
+        # the data & trial information of each subject at a given timepoint and channel
+        tmp_dict = {}
+        for subjID in const.subjIDs:    
+            tmp_dict[subjID] = metadata_dict[subjID]
+            tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
+
+        
+        # Combine all subject's data into one dataframe so we can run the LMM on that
+        df = pd.concat(tmp_dict.values(), axis=0)
+        del tmp_dict
+        
+        # calculate LMM
+        md = smf.mixedlm("accuracy ~ levels * eeg_data * block", df, groups = df["subjID"])        
+        mdf = md.fit()
+        
+        # record p-Values
+        p_values[thisChannel,tf,:] = mdf.pvalues
+        
+index_p_values = mdf.pvalues.index
+formula_LMM = md.formula
+
+
 #%%
-md = smf.mixedlm("accuracy ~ levels * data * block", df, groups = df["subjID"]) 
+md = smf.mixedlm("accuracy ~ levels + eeg_data + block", df, groups = df["subjID"]) 
 mdf = md.fit()
 print(mdf.summary())
 print(mdf.pvalues)
+pvals = mdf.pvalues.index
+
+#%%
+
+md2 = smf.mixedlm('accuracy ~ eeg_data + levels * block', groups = 'subjID', data = df)
+mdf2 = md2.fit()
+print(mdf2.summary())
 
 
-vc = {'subjID': '0 + C(subjID)'}
-md2 = smf.mixedlm('accuracy ~ data',vc_formula = vc, groups = 'subjID', data = df)
+###################################################################################################################
+#%% And  now let's do that with EEG amplitude instead of tfr-band
+
+epo = mne.read_epochs(epo_path)
+epo = epo._get_data(tmax=0)
+
+#%% First, create a dict of all subj data to store in the memory
+data_dict = {}
+metadata_dict = {}
+
+for subjID in const.subjIDs:
+    
+    # get filepath
+    epo_path = glob(os.path.join(dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
+    epo = mne.read_epochs(epo_path)
+
+    
+    data_dict[subjID] = epo._get_data(tmax = 0) # get data
+    metadata_dict[subjID] = epo.metadata # get trial information
+    
+    # re-code and delete unneeded data
+    metadata_dict[subjID]['noiseType'] = metadata_dict[subjID]['block'] 
+    metadata_dict[subjID]['subjID'] = [subjID for i in range(len(metadata_dict[subjID]))]
+    metadata_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
+    metadata_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
+    metadata_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
+    metadata_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
+    metadata_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
+    metadata_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
+    metadata_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
+    metadata_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+    
+    del epo
+    
+#%% Create arrays and lists
+
+channels = [i for i in range(data_dict[subjID].shape[1])] # list of channels
+times = [i for i in range(data_dict[subjID].shape[2])] #list of timepoints
+
+p_values = np.zeros(shape=(len(channels),len(times),9)) # empty array for the p_values
+#%% And now loop over that...
+
+for thisChannel in channels:
+    print('running channel',thisChannel,'of', len(channels))
+    
+    for tf in times:
+           
+        # the data & trial information of each subject at a given timepoint and channel
+        tmp_dict = {}
+        for subjID in const.subjIDs:    
+            tmp_dict[subjID] = metadata_dict[subjID]
+            tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
+
+        
+        # Combine all subject's data into one dataframe so we can run the LMM on that
+        df = pd.concat(tmp_dict.values(), axis=0)
+        del tmp_dict
+        
+        # calculate LMM
+        md = smf.mixedlm("accuracy ~ levels * eeg_data * noiseType", df, groups = "subjID")        
+        mdf = md.fit()
+        
+        # record p-Values
+        p_values[thisChannel,tf,:] = mdf.pvalues
+        
+index_p_values = mdf.pvalues.index
+formula_LMM = md.formula
+
+
+#%%
+md = smf.mixedlm("accuracy ~ levels + eeg_data + noiseType", df, groups = 'subjID') 
+mdf = md.fit()
+print(mdf.summary())
+print(mdf.pvalues)
+pvals = mdf.pvalues.index
 
 #%% Creating Evoked
 # epo=mne.read_epochs(epo_path) # read Epoched .fif file
