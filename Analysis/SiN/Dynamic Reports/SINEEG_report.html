@@ -9,7 +9,7 @@
 <meta name="author" content="Gorka Fraga-Gonzalez">
 <meta name="author" content="Samuel Mueller">
 <meta name="author" content="Alexis Hervais-Adelman">
-<meta name="dcterms.date" content="2024-02-09">
+<meta name="dcterms.date" content="2024-02-10">
 
 <title>Data Report: An EEG experiment on Speech-in-Noise Comprehension</title>
 <style>
@@ -2637,28 +2637,20 @@ vertical-align: -.125em;
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="toc-section-number">1</span>  Introduction</a></li>
   <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="toc-section-number">2</span>  Methods</a>
-  <ul>
+  <ul class="collapse">
   <li><a href="#participants-and-procedures" id="toc-participants-and-procedures" class="nav-link" data-scroll-target="#participants-and-procedures"><span class="toc-section-number">2.1</span>  Participants and procedures</a></li>
   <li><a href="#resting-state-recordings" id="toc-resting-state-recordings" class="nav-link" data-scroll-target="#resting-state-recordings"><span class="toc-section-number">2.2</span>  Resting-state recordings</a></li>
   <li><a href="#main-task" id="toc-main-task" class="nav-link" data-scroll-target="#main-task"><span class="toc-section-number">2.3</span>  Main Task</a>
   <ul class="collapse">
   <li><a href="#trial-design" id="toc-trial-design" class="nav-link" data-scroll-target="#trial-design"><span class="toc-section-number">2.3.1</span>  Trial design</a></li>
   <li><a href="#blocks-design" id="toc-blocks-design" class="nav-link" data-scroll-target="#blocks-design"><span class="toc-section-number">2.3.2</span>  Blocks design</a></li>
-  <li><a href="#stimuli" id="toc-stimuli" class="nav-link" data-scroll-target="#stimuli"><span class="toc-section-number">2.3.3</span>  Stimuli</a>
-  <ul class="collapse">
-  <li><a href="#speech-generation" id="toc-speech-generation" class="nav-link" data-scroll-target="#speech-generation">Speech generation</a></li>
-  <li><a href="#noise-vocoding" id="toc-noise-vocoding" class="nav-link" data-scroll-target="#noise-vocoding">Noise vocoding</a></li>
-  <li><a href="#speech-in-speech-shaped-noise" id="toc-speech-in-speech-shaped-noise" class="nav-link" data-scroll-target="#speech-in-speech-shaped-noise">Speech in speech-shaped noise</a></li>
-  </ul></li>
+  <li><a href="#stimuli" id="toc-stimuli" class="nav-link" data-scroll-target="#stimuli"><span class="toc-section-number">2.3.3</span>  Stimuli</a></li>
   </ul></li>
   <li><a href="#eeg" id="toc-eeg" class="nav-link" data-scroll-target="#eeg"><span class="toc-section-number">2.4</span>  EEG</a>
   <ul class="collapse">
   <li><a href="#signal-acquisition" id="toc-signal-acquisition" class="nav-link" data-scroll-target="#signal-acquisition"><span class="toc-section-number">2.4.1</span>  Signal acquisition</a></li>
   <li><a href="#minimal-preprocessing-of-source-data-into-raw-data" id="toc-minimal-preprocessing-of-source-data-into-raw-data" class="nav-link" data-scroll-target="#minimal-preprocessing-of-source-data-into-raw-data"><span class="toc-section-number">2.4.2</span>  Minimal preprocessing of source data into ‘raw’ data</a></li>
-  <li><a href="#preprocessing" id="toc-preprocessing" class="nav-link" data-scroll-target="#preprocessing"><span class="toc-section-number">2.4.3</span>  Preprocessing</a>
-  <ul class="collapse">
-  <li><a href="#main-pipeline-automatic-with-automagic" id="toc-main-pipeline-automatic-with-automagic" class="nav-link" data-scroll-target="#main-pipeline-automatic-with-automagic">Main Pipeline (automatic with Automagic)</a></li>
-  </ul></li>
+  <li><a href="#preprocessing" id="toc-preprocessing" class="nav-link" data-scroll-target="#preprocessing"><span class="toc-section-number">2.4.3</span>  Preprocessing</a></li>
   <li><a href="#ongoing-analysis" id="toc-ongoing-analysis" class="nav-link" data-scroll-target="#ongoing-analysis"><span class="toc-section-number">2.4.4</span>  Ongoing Analysis</a></li>
   </ul></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="toc-section-number">2.5</span>  Results</a>
@@ -2672,11 +2664,11 @@ vertical-align: -.125em;
   </ul></li>
   </ul></li>
   <li><a href="#appendix-1---additional-information" id="toc-appendix-1---additional-information" class="nav-link" data-scroll-target="#appendix-1---additional-information"><span class="toc-section-number">3</span>  Appendix 1 - Additional information</a>
-  <ul>
+  <ul class="collapse">
   <li><a href="#sec-Supplement1" id="toc-sec-Supplement1" class="nav-link" data-scroll-target="#sec-Supplement1"><span class="toc-section-number">3.1</span>  Participant information</a></li>
   <li><a href="#sec-Supplement2" id="toc-sec-Supplement2" class="nav-link" data-scroll-target="#sec-Supplement2"><span class="toc-section-number">3.2</span>  Manual preprocessing: bad channel selection</a></li>
   </ul></li>
-  <li><a href="#appendix-2-alternative-analysis---master-thesis" id="toc-appendix-2-alternative-analysis---master-thesis" class="nav-link" data-scroll-target="#appendix-2-alternative-analysis---master-thesis"><span class="toc-section-number">4</span>  Appendix 2: Alternative analysis - Master Thesis</a></li>
+  <li><a href="#appendix-2-alternative-pipeline-and-analysis-from-a-master-thesis" id="toc-appendix-2-alternative-pipeline-and-analysis-from-a-master-thesis" class="nav-link" data-scroll-target="#appendix-2-alternative-pipeline-and-analysis-from-a-master-thesis"><span class="toc-section-number">4</span>  Appendix 2: Alternative pipeline and analysis from a Master Thesis</a></li>
   </ul>
 </nav>
 </div>
@@ -2728,7 +2720,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">February 9, 2024</p>
+      <p class="date">February 10, 2024</p>
     </div>
   </div>
   
@@ -2756,7 +2748,7 @@ Important note on the links to scripts on Github
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
-<p>This is ongoing work and contains links to scripts in the project’s Github repository. Instead of using the Github’s permalink to a script, which would link to the script version at the time of writing this report, we used the URL of a given script folder. This was done because it is possible that some scripts changed or were debugged after this report. Based on the description, filenames and comments in the code, it should be easy to identify which scripts performed the reported actions.</p>
+<p>This is ongoing work and contains links to scripts in the project’s Github repository. Here we often use the URL of a specific folder in the scripts’ repository, instead of using the Github’s permalink to a script, which would link to the script version at the time of writing this report. This was done because it is possible that some scripts changed or were debugged after this report. Based on the description, filenames and comments in the code, it should be easy to identify which scripts performed the reported actions. In other instance, like for stimuli generation and presentation of the experiment, we use the permalink to point at the script version used at the time of the experiments.</p>
 <p>👁️! If you find any broken link or cannot find a script described in this report, please contact the authors</p>
 </div>
 </div>
@@ -2799,7 +2791,7 @@ Important note on the links to scripts on Github
 <section id="speech-generation" class="level4">
 <h4 class="anchored" data-anchor-id="speech-generation">Speech generation</h4>
 <p>We used the <a href="https://cloud.google.com/text-to-speech/">Google Cloud Text-to-speech API</a> to generate the 64 possible variations of our sentence in a female and male speaker voice. Each sentence was output in a separate .wav file with 48KHz sampling rate. After trying several of the freely available voices we chose the <a href="https://cloud.google.com/text-to-speech/docs/voice-types#neural2_voices">neural2 voices</a> ‘de-DE-Neural2-D’ and ‘de-DE-Neural2-F’ for male and female speech, respective, as they sounded more natural (this was verified by native speakers). We used a Python script to communicate with the text-to-speech API (see<br>
-<a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/main/Gen_stimuli/Gen_speech/TTS_sentenceGenerator.py">sentence generation script</a> in our project repository)</p>
+<a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/9d0c5f89611f521f7e93dd9b2087706180e1036d/Gen_stimuli/Gen_speech/TTS_sentenceGenerator.py">sentence generation script</a> in our project repository)</p>
 <ul>
 <li><p>Trimming silences …</p></li>
 <li><p><em>Reading the onsets and offsets of target words</em>. The onsets and offsets times of the target items for each of the audio files with the sentences was dectected following a semiautomatic approach. We used the freely available phonetics tool <a href="https://www.fon.hum.uva.nl/praat/">Praat</a></p></li>
@@ -2807,13 +2799,15 @@ Important note on the links to scripts on Github
 </section>
 <section id="noise-vocoding" class="level4">
 <h4 class="anchored" data-anchor-id="noise-vocoding">Noise vocoding</h4>
-<p>We used the approach described in <span class="citation" data-cites="aller2022differential">Aller et al. (<a href="#ref-aller2022differential" role="doc-biblioref">2022</a>)</span>, and modified from <span class="citation" data-cites="zoefel2023intelligibility">Zoefel, Gilbert, and Davis (<a href="#ref-zoefel2023intelligibility" role="doc-biblioref">2023</a>)</span>.</p>
+<p>With the noise vocoding technique we manipulate and degrade spectral information of speech stimuli, while preserving slow varying temporal cues. This approach functions as a crude approaximation or simulation to the loss of frequency information experienced by individual with cochlear implants. In short, it consists of filtering the signal into a range of frequency bands, extracting the smoothed amplitude profile of each band, using this profile as modulating wave of some noise (typically white noise) and then reconstructing the signal. The less frequency bands we use the less channels we have to reconstruct the signal and the less intelligible the output will be (16 channels yields intelligible speech, 3 practically non-intelligible). An important specification is how are the frequency bands spaced, for example they can be spaced linearly, logarithmically or following other functions. The Greenwood frequency-position function (see e.g., <span class="citation" data-cites="greenwood1990cochlear">Greenwood (<a href="#ref-greenwood1990cochlear" role="doc-biblioref">1990</a>)</span> for a review) is used often to esimate how the frequencies are represented in cochlear implant electrodes. It correlates the position of hair cells in the inner ear to the frequencies that stimulate their auditory neurons.</p>
+<p>We used the approach described in <span class="citation" data-cites="aller2022differential">Aller et al. (<a href="#ref-aller2022differential" role="doc-biblioref">2022</a>)</span>, and modified from <span class="citation" data-cites="zoefel2023intelligibility">Zoefel, Gilbert, and Davis (<a href="#ref-zoefel2023intelligibility" role="doc-biblioref">2023</a>)</span>. Our scripts are at the [Gen_speech_noise folder] (https://github.com/Neuroling/SPINCO_SINEEG/tree/main/Gen_stimuli/Gen_speech_noise)of our repository. A wrapper <a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/9d0c5f89611f521f7e93dd9b2087706180e1036d/Gen_stimuli/Gen_speech_noise/Run_vocoder_aller.m"><em>run</em> script</a> is used to call the associated functions for this manipulation. The main function used was <a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/9d0c5f89611f521f7e93dd9b2087706180e1036d/Gen_stimuli/Gen_speech_noise/functions/vocode_aller.m">vocode_aller.m</a>.</p>
+<p>In the approach of <span class="citation" data-cites="aller2022differential">Aller et al. (<a href="#ref-aller2022differential" role="doc-biblioref">2022</a>)</span> they filtered the signal into 16 logarithmic spaced (we use Greenwood ) frequency bands. Then the envelope (env) of each frequency band (b) was multiplied by a proportion (p) of the broadband envelope: envfinal(b)=env(b)<em>p+env(broadband)</em>(1−p). The proportion ranges from 0 to 1. If p = 1 it is equivalent to applying a 16-channels vocoder (i.e., fully intelligible). Smaller <em>p</em> values (e.g., 0.8) lead to different levels of degradation. This approach allows a bit finer tunning of the intelligibility levels than changing the number of channels in the ‘conventional’ vocoding approach. Internal pilot tests in our lab confirmed this advantage for our stimuli.</p>
+<p>We used the levels…. discussion..</p>
 </section>
 <section id="speech-in-speech-shaped-noise" class="level4">
 <h4 class="anchored" data-anchor-id="speech-in-speech-shaped-noise">Speech in speech-shaped noise</h4>
-<ul>
-<li></li>
-</ul>
+<p>Another auditory manipulation in this study was embedding the sentences into background noise. This is a frequent acoustically challenging circumstance, for example, when having to undestand someone with the noise of traffic of in the background. As a control in this manipulation, the background noise used was created to have similar spectral properties as speech, that is, we used speech-shaped noise.</p>
+<p>The <a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/9d0c5f89611f521f7e93dd9b2087706180e1036d/Gen_stimuli/Gen_speech_noise/Run_speechShapeNoise.m"><em>runner</em> script</a> called an <a href="https://github.com/Neuroling/SPINCO_SINEEG/blob/9d0c5f89611f521f7e93dd9b2087706180e1036d/Gen_stimuli/Gen_speech_noise/functions/speechshapednoise.m">in-house function</a> to filter white noise with the long-term average speech spectrum (LTASS) derived from the signal, which was the concatenated sentences (filtered wiht a 70 to 5000 Hz Butterworth filter, see scripts for details). The LTASS calculation used a function from <a href="https://github.com/JacobD10/SoundZone_Tools/archive/master.zip">SoundZone_Tools</a>. After generating the speech-shaped noise from the concatenated sentence, chunks of noise selected at random from the concatenated signal, were added as background to the sentence, with 0.5 seconds in and out ramps.</p>
 </section>
 </section>
 </section>
@@ -2840,7 +2834,7 @@ Important note on the links to scripts on Github
 <i class="callout-icon"></i>
 </div>
 <div class="callout-caption-container flex-fill">
-Why did we used .set and not .bdf ?
+Why was minimally preprocessed raw saved as .set and not .bdf ?
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -2871,7 +2865,7 @@ Why did we used .set and not .bdf ?
 <section id="behavioral-analysis" class="level3" data-number="2.5.1">
 <h3 data-number="2.5.1" class="anchored" data-anchor-id="behavioral-analysis"><span class="header-section-number">2.5.1</span> Behavioral analysis</h3>
 <p>Gathered table</p>
-<div class="cell" data-tags="[]" data-execution_count="2">
+<div class="cell" data-tags="[]" data-execution_count="4">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Library installations: </span></span>
@@ -2904,10 +2898,9 @@ Why did we used .set and not .bdf ?
 <span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>levelmapping <span class="op">=</span> {<span class="st">&#39;0.6p&#39;</span>: <span class="st">&#39;1_easy&#39;</span>,<span class="st">&#39;0.4p&#39;</span>: <span class="st">&#39;2_mid&#39;</span>,<span class="st">&#39;0.2p&#39;</span>: <span class="st">&#39;3_hard&#39;</span>,<span class="st">&#39;-7db&#39;</span>: <span class="st">&#39;1_easy&#39;</span>,<span class="st">&#39;-9db&#39;</span>: <span class="st">&#39;2_mid&#39;</span>,<span class="st">&#39;-11db&#39;</span>: <span class="st">&#39;3_hard&#39;</span>}</span>
 <span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>df[<span class="st">&#39;levels&#39;</span>] <span class="op">=</span> df[<span class="st">&#39;levels&#39;</span>].replace(levelmapping) </span>
 <span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a> <span class="co">#  ---------------</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39; Table read with &#39;</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(df)) <span class="op">+</span> <span class="st">&#39; rows and &#39;</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(df. columns)) <span class="op">+</span> <span class="st">&#39; columns&#39;</span>)</span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>show(df, scrollY<span class="op">=</span><span class="st">&quot;400px&quot;</span>, scrollCollapse<span class="op">=</span><span class="va">True</span>, paging<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a> <span class="co">#  ---------------</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&#39; Table read with &#39;</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(df)) <span class="op">+</span> <span class="st">&#39; rows and &#39;</span> <span class="op">+</span> <span class="bu">str</span>(<span class="bu">len</span>(df. columns)) <span class="op">+</span> <span class="st">&#39; columns&#39;</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>show(df, scrollY<span class="op">=</span><span class="st">&quot;400px&quot;</span>, scrollCollapse<span class="op">=</span><span class="va">True</span>, paging<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code> Table read with 5376 rows and 15 columns</code></pre>
@@ -2934,7 +2927,7 @@ box-sizing: border-box;
 }
 </style>
 <div class="itables">
-<table id="f172a56b-12a2-4ae7-a791-36831a53d894" class="display nowrap" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom"><thead>
+<table id="b3a57000-3030-493b-9b35-76b2f75c0db9" class="display nowrap" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom"><thead>
     <tr style="text-align: right;">
       
       <th>subj</th>
@@ -2971,7 +2964,7 @@ box-sizing: border-box;
 
     $(document).ready(function () {
         
-        $('#f172a56b-12a2-4ae7-a791-36831a53d894').DataTable(dt_args);
+        $('#b3a57000-3030-493b-9b35-76b2f75c0db9').DataTable(dt_args);
     });
 </script>
 </div>
@@ -2995,7 +2988,7 @@ box-sizing: border-box;
 <li><p>Explore consistency of IAF (before and after task). This can give an impression of robustness of features like individual alpha peak and by extension of using power averaged by the classical frequency bands.</p></li>
 <li><p>Explore correlations between resting state power and task performance</p></li>
 </ul>
-<div class="cell" data-tags="[]" data-execution_count="3">
+<div class="cell" data-tags="[]" data-execution_count="5">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a> <span class="co"># Long transform</span></span>
@@ -3027,7 +3020,7 @@ box-sizing: border-box;
 }
 </style>
 <div class="itables">
-<table id="a76f0bdf-957e-45be-95c0-2ab413e6224c" class="display nowrap" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom"><thead>
+<table id="13a10f02-3f68-4cd7-9edc-ddd0e95a54a9" class="display nowrap" style="table-layout:auto;width:auto;margin:auto;caption-side:bottom"><thead>
     <tr style="text-align: right;">
       
       <th>subj</th>
@@ -3056,13 +3049,13 @@ box-sizing: border-box;
 
     $(document).ready(function () {
         
-        $('#a76f0bdf-957e-45be-95c0-2ab413e6224c').DataTable(dt_args);
+        $('#13a10f02-3f68-4cd7-9edc-ddd0e95a54a9').DataTable(dt_args);
     });
 </script>
 </div>
 </div>
 </div>
-<div class="cell" data-tags="[]" data-execution_count="53">
+<div class="cell" data-tags="[]" data-execution_count="6">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># %% Summarize accuracy</span></span>
@@ -3070,7 +3063,7 @@ box-sizing: border-box;
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># &#39;uniqueTrials&#39; is the number of target items per level, noise type and block (should be 32)</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>df.groupby([<span class="st">&#39;noise&#39;</span>, <span class="st">&#39;block&#39;</span>, <span class="st">&#39;levels&#39;</span>,<span class="st">&#39;sentence&#39;</span>,<span class="st">&#39;callSign&#39;</span>,<span class="st">&#39;colour&#39;</span>,<span class="st">&#39;number&#39;</span>,<span class="st">&#39;n_cor_items&#39;</span>])[[<span class="st">&#39;callSignCorrect&#39;</span>, <span class="st">&#39;colourCorrect&#39;</span>,<span class="st">&#39;numberCorrect&#39;</span>]].<span class="bu">sum</span>().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display" data-execution_count="53">
+<div class="cell-output cell-output-display" data-execution_count="6">
 
 <div>
 
@@ -3260,7 +3253,7 @@ box-sizing: border-box;
 <section id="sec-Supplement1" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="sec-Supplement1"><span class="header-section-number">3.1</span> Participant information</h2>
 <p>This file was downloaded from Redcap, any potentially identifying information like date of birth was masked from the file by Redcap.</p>
-<div class="cell" data-tags="[]" data-execution_count="43">
+<div class="cell" data-tags="[]" data-execution_count="1">
 <details>
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reading quality assessment tab</span></span>
@@ -3279,94 +3272,8 @@ box-sizing: border-box;
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>     scrollX<span class="op">=</span><span class="va">True</span>,</span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>     style<span class="op">=</span><span class="st">&quot;width:1200px&quot;</span>, autoWidth<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-display">
-
-<style>.itables table td {
-text-overflow: ellipsis;
-overflow: hidden;
-}
-.itables table th {
-text-overflow: ellipsis;
-overflow: hidden;
-}
-.itables thead input {
-width: 100%;
-padding: 3px;
-box-sizing: border-box;
-}
-.itables tfoot input {
-width: 100%;
-padding: 3px;
-box-sizing: border-box;
-}
-</style>
-<div class="itables">
-<table id="45e26cc6-2c6e-4199-a733-fbd1de98f0fe" class="display nowrap" style="width:1200px"><thead>
-    <tr style="text-align: right;">
-      
-      <th>Study subject ID</th>
-      <th>Alter in Jahren</th>
-      <th>Geschlecht</th>
-      <th>Händigkeit</th>
-      <th>Was ist Ihr höchster Schulabschluss?</th>
-      <th>Falls &#39;Andere&#39;, bitte geben Sie genauere Informationen.</th>
-      <th>Welches ist Ihre höchste berufliche Qualifikation/Berufsbildung?</th>
-      <th>Bitte präzisieren Sie den Stand Ihrer Berufsbildung, falls Sie &#39;Andere&#39; gewählt haben.</th>
-      <th>Erstsprache Was ist die Sprach, welche Sie als erstes erlernt haben? Entspricht gewöhnlich der Sprache, welche in der Familie gesprochen wurde. (Falls Sie mehrsprachig aufgewachsen sind, bitte geben Sie eine an)</th>
-      <th>Sind Sie mehrsprachig aufgewachsen?</th>
-      <th>Falls ja, welche weiteren Sprachen haben Sie seit Kindheit an regelmässig gesprochen?</th>
-      <th>Welche Sprache würden Sie als Ihre Erstsprache bezeichnen? (Sprache die Sie als erstes erlernt haben; normalerweise Sprache die in der Familie gesprochen wurde)</th>
-      <th>Bitte präzisieren Sie Ihre Erstsprache falls &#39;Andere&#39;.</th>
-      <th>Bitte angeben</th>
-      <th>Wenn Sie mehrsprachig aufgewachsen sind: Welche Sprache beherrschen Sie am besten?</th>
-      <th>Bitte angeben.1</th>
-      <th>Hatten/haben Sie Probleme mit den Ohren oder dem Gehör?  (Mittelohrentzündung, Operationen, Schwerhörigkeit, Tinnitus etc.)  Wenn ja, welche?</th>
-      <th>Falls ja, welche?</th>
-      <th>Wann?</th>
-      <th>Hatten/haben Sie Probleme damit Ihre Aufmerksamkeit aufrecht zu halten?</th>
-      <th>Befinden Sie sich aktuell deswegen in psychologischer oder psychiatrischer Behandlung?</th>
-      <th>Bitte angeben.2</th>
-      <th>Haben Sie jemals die Diagnose einer Aufmerksamkeitsdefizit-/Hyperaktivitätsstörung (ADS/ADHS) erhalten?  Wenn ja, welche?</th>
-      <th>Bitte angeben.3</th>
-      <th>Leiden Sie aktuell oder haben Sie in den letzten 5 Jahren an einer neurologischen Erkrankung gelitten?  (Epilepsie, Migräne etc.)  Wenn ja, welche?</th>
-      <th>Bitte angeben.4</th>
-      <th>Nehmen Sie zurzeit schlaffördernde Medikamente oder Naturheilmittel, Psychopharmaka oder andere Medikamente ein?</th>
-      <th>Falls ja, bitte geben Sie den Namen und die Dosierung an.</th>
-      <th>Haben Sie jemals ein Schädel-Hirntrauma (Gehirnerschütterung) erlitten?</th>
-      <th>Wenn ja, wann und weshalb? Haben Sie das Bewusstsein verloren oder danach Bewusstseinsveränderungen erlebt? Waren Sie in ärztlicher Behandlung deswegen?</th>
-      <th>Haben Sie Probleme mit den Augen oder dem Sehvermögen? (Allergien, Schielen (Strabismus), Kurz-/Weitsichtigkeit, Hornhautverkrümmung etc.)</th>
-      <th>Wenn ja, welche? Seit wann? Hatten Sie deswegen Operationen?</th>
-      <th>Tragen Sie eine Brille oder Kontaktlinsen?</th>
-      <th>Wenn ja, welche Dioptrien (rechtes Auge, linkes Auge) und tragen Sie diese aktuell?</th>
-      <th>Haben Sie eine Farbenfehlsichtigkeit (z.B. Rot-Grün-Schwäche)?</th>
-      <th>Wenn ja, welche?</th>
-      <th>Haben Sie abschliessende Bemerkungen oder spezielle Anliegen, welche für die Studienteilnahme relevant sein könnten?</th>
-      <th>Complete?</th>
-      <th>Enter EEG recording log for subject</th>
-      <th>Complete?.1</th>
-    </tr>
-  </thead><tbody><tr><td>Loading... (need <a href="https://mwouts.github.io/itables/troubleshooting.html">help</a>?)</td></tr></tbody></table>
-<style type="text/css">table.dataTable td.dt-control{text-align:center;cursor:pointer}table.dataTable td.dt-control:before{height:1em;width:1em;margin-top:-9px;display:inline-block;color:white;border:.15em solid white;border-radius:1em;box-shadow:0 0 .2em #444;box-sizing:content-box;text-align:center;text-indent:0 !important;font-family:"Courier New",Courier,monospace;line-height:1em;content:"+";background-color:#31b131}table.dataTable tr.dt-hasChild td.dt-control:before{content:"-";background-color:#d33333}table.dataTable thead>tr>th.sorting,table.dataTable thead>tr>th.sorting_asc,table.dataTable thead>tr>th.sorting_desc,table.dataTable thead>tr>th.sorting_asc_disabled,table.dataTable thead>tr>th.sorting_desc_disabled,table.dataTable thead>tr>td.sorting,table.dataTable thead>tr>td.sorting_asc,table.dataTable thead>tr>td.sorting_desc,table.dataTable thead>tr>td.sorting_asc_disabled,table.dataTable thead>tr>td.sorting_desc_disabled{cursor:pointer;position:relative;padding-right:26px}table.dataTable thead>tr>th.sorting:before,table.dataTable thead>tr>th.sorting:after,table.dataTable thead>tr>th.sorting_asc:before,table.dataTable thead>tr>th.sorting_asc:after,table.dataTable thead>tr>th.sorting_desc:before,table.dataTable thead>tr>th.sorting_desc:after,table.dataTable thead>tr>th.sorting_asc_disabled:before,table.dataTable thead>tr>th.sorting_asc_disabled:after,table.dataTable thead>tr>th.sorting_desc_disabled:before,table.dataTable thead>tr>th.sorting_desc_disabled:after,table.dataTable thead>tr>td.sorting:before,table.dataTable thead>tr>td.sorting:after,table.dataTable thead>tr>td.sorting_asc:before,table.dataTable thead>tr>td.sorting_asc:after,table.dataTable thead>tr>td.sorting_desc:before,table.dataTable thead>tr>td.sorting_desc:after,table.dataTable thead>tr>td.sorting_asc_disabled:before,table.dataTable thead>tr>td.sorting_asc_disabled:after,table.dataTable thead>tr>td.sorting_desc_disabled:before,table.dataTable thead>tr>td.sorting_desc_disabled:after{position:absolute;display:block;opacity:.125;right:10px;line-height:9px;font-size:.8em}table.dataTable thead>tr>th.sorting:before,table.dataTable thead>tr>th.sorting_asc:before,table.dataTable thead>tr>th.sorting_desc:before,table.dataTable thead>tr>th.sorting_asc_disabled:before,table.dataTable thead>tr>th.sorting_desc_disabled:before,table.dataTable thead>tr>td.sorting:before,table.dataTable thead>tr>td.sorting_asc:before,table.dataTable thead>tr>td.sorting_desc:before,table.dataTable thead>tr>td.sorting_asc_disabled:before,table.dataTable thead>tr>td.sorting_desc_disabled:before{bottom:50%;content:"▲"}table.dataTable thead>tr>th.sorting:after,table.dataTable thead>tr>th.sorting_asc:after,table.dataTable thead>tr>th.sorting_desc:after,table.dataTable thead>tr>th.sorting_asc_disabled:after,table.dataTable thead>tr>th.sorting_desc_disabled:after,table.dataTable thead>tr>td.sorting:after,table.dataTable thead>tr>td.sorting_asc:after,table.dataTable thead>tr>td.sorting_desc:after,table.dataTable thead>tr>td.sorting_asc_disabled:after,table.dataTable thead>tr>td.sorting_desc_disabled:after{top:50%;content:"▼"}table.dataTable thead>tr>th.sorting_asc:before,table.dataTable thead>tr>th.sorting_desc:after,table.dataTable thead>tr>td.sorting_asc:before,table.dataTable thead>tr>td.sorting_desc:after{opacity:.6}table.dataTable thead>tr>th.sorting_desc_disabled:after,table.dataTable thead>tr>th.sorting_asc_disabled:before,table.dataTable thead>tr>td.sorting_desc_disabled:after,table.dataTable thead>tr>td.sorting_asc_disabled:before{display:none}table.dataTable thead>tr>th:active,table.dataTable thead>tr>td:active{outline:none}div.dataTables_scrollBody table.dataTable thead>tr>th:before,div.dataTables_scrollBody table.dataTable thead>tr>th:after,div.dataTables_scrollBody table.dataTable thead>tr>td:before,div.dataTables_scrollBody table.dataTable thead>tr>td:after{display:none}div.dataTables_processing{position:absolute;top:50%;left:50%;width:200px;margin-left:-100px;margin-top:-26px;text-align:center;padding:2px}div.dataTables_processing>div:last-child{position:relative;width:80px;height:15px;margin:1em auto}div.dataTables_processing>div:last-child>div{position:absolute;top:0;width:13px;height:13px;border-radius:50%;background:rgba(13, 110, 253, 0.9);animation-timing-function:cubic-bezier(0, 1, 1, 0)}div.dataTables_processing>div:last-child>div:nth-child(1){left:8px;animation:datatables-loader-1 .6s infinite}div.dataTables_processing>div:last-child>div:nth-child(2){left:8px;animation:datatables-loader-2 .6s infinite}div.dataTables_processing>div:last-child>div:nth-child(3){left:32px;animation:datatables-loader-2 .6s infinite}div.dataTables_processing>div:last-child>div:nth-child(4){left:56px;animation:datatables-loader-3 .6s infinite}@keyframes datatables-loader-1{0%{transform:scale(0)}100%{transform:scale(1)}}@keyframes datatables-loader-3{0%{transform:scale(1)}100%{transform:scale(0)}}@keyframes datatables-loader-2{0%{transform:translate(0, 0)}100%{transform:translate(24px, 0)}}table.dataTable.nowrap th,table.dataTable.nowrap td{white-space:nowrap}table.dataTable th.dt-left,table.dataTable td.dt-left{text-align:left}table.dataTable th.dt-center,table.dataTable td.dt-center,table.dataTable td.dataTables_empty{text-align:center}table.dataTable th.dt-right,table.dataTable td.dt-right{text-align:right}table.dataTable th.dt-justify,table.dataTable td.dt-justify{text-align:justify}table.dataTable th.dt-nowrap,table.dataTable td.dt-nowrap{white-space:nowrap}table.dataTable thead th,table.dataTable thead td,table.dataTable tfoot th,table.dataTable tfoot td{text-align:left}table.dataTable thead th.dt-head-left,table.dataTable thead td.dt-head-left,table.dataTable tfoot th.dt-head-left,table.dataTable tfoot td.dt-head-left{text-align:left}table.dataTable thead th.dt-head-center,table.dataTable thead td.dt-head-center,table.dataTable tfoot th.dt-head-center,table.dataTable tfoot td.dt-head-center{text-align:center}table.dataTable thead th.dt-head-right,table.dataTable thead td.dt-head-right,table.dataTable tfoot th.dt-head-right,table.dataTable tfoot td.dt-head-right{text-align:right}table.dataTable thead th.dt-head-justify,table.dataTable thead td.dt-head-justify,table.dataTable tfoot th.dt-head-justify,table.dataTable tfoot td.dt-head-justify{text-align:justify}table.dataTable thead th.dt-head-nowrap,table.dataTable thead td.dt-head-nowrap,table.dataTable tfoot th.dt-head-nowrap,table.dataTable tfoot td.dt-head-nowrap{white-space:nowrap}table.dataTable tbody th.dt-body-left,table.dataTable tbody td.dt-body-left{text-align:left}table.dataTable tbody th.dt-body-center,table.dataTable tbody td.dt-body-center{text-align:center}table.dataTable tbody th.dt-body-right,table.dataTable tbody td.dt-body-right{text-align:right}table.dataTable tbody th.dt-body-justify,table.dataTable tbody td.dt-body-justify{text-align:justify}table.dataTable tbody th.dt-body-nowrap,table.dataTable tbody td.dt-body-nowrap{white-space:nowrap}table.dataTable{width:100%;margin:0 auto;clear:both;border-collapse:separate;border-spacing:0}table.dataTable thead th,table.dataTable tfoot th{font-weight:bold}table.dataTable thead th,table.dataTable thead td{padding:10px;border-bottom:1px solid rgba(0, 0, 0, 0.3)}table.dataTable thead th:active,table.dataTable thead td:active{outline:none}table.dataTable tfoot th,table.dataTable tfoot td{padding:10px 10px 6px 10px;border-top:1px solid rgba(0, 0, 0, 0.3)}table.dataTable tbody tr{background-color:transparent}table.dataTable tbody tr.selected>*{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.9);color:white}table.dataTable tbody tr.selected a{color:#090a0b}table.dataTable tbody th,table.dataTable tbody td{padding:8px 10px}table.dataTable.row-border tbody th,table.dataTable.row-border tbody td,table.dataTable.display tbody th,table.dataTable.display tbody td{border-top:1px solid rgba(0, 0, 0, 0.15)}table.dataTable.row-border tbody tr:first-child th,table.dataTable.row-border tbody tr:first-child td,table.dataTable.display tbody tr:first-child th,table.dataTable.display tbody tr:first-child td{border-top:none}table.dataTable.cell-border tbody th,table.dataTable.cell-border tbody td{border-top:1px solid rgba(0, 0, 0, 0.15);border-right:1px solid rgba(0, 0, 0, 0.15)}table.dataTable.cell-border tbody tr th:first-child,table.dataTable.cell-border tbody tr td:first-child{border-left:1px solid rgba(0, 0, 0, 0.15)}table.dataTable.cell-border tbody tr:first-child th,table.dataTable.cell-border tbody tr:first-child td{border-top:none}table.dataTable.stripe>tbody>tr.odd>*,table.dataTable.display>tbody>tr.odd>*{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.023)}table.dataTable.stripe>tbody>tr.odd.selected>*,table.dataTable.display>tbody>tr.odd.selected>*{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.923)}table.dataTable.hover>tbody>tr:hover>*,table.dataTable.display>tbody>tr:hover>*{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.035)}table.dataTable.hover>tbody>tr.selected:hover>*,table.dataTable.display>tbody>tr.selected:hover>*{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.935)}table.dataTable.order-column>tbody tr>.sorting_1,table.dataTable.order-column>tbody tr>.sorting_2,table.dataTable.order-column>tbody tr>.sorting_3,table.dataTable.display>tbody tr>.sorting_1,table.dataTable.display>tbody tr>.sorting_2,table.dataTable.display>tbody tr>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.019)}table.dataTable.order-column>tbody tr.selected>.sorting_1,table.dataTable.order-column>tbody tr.selected>.sorting_2,table.dataTable.order-column>tbody tr.selected>.sorting_3,table.dataTable.display>tbody tr.selected>.sorting_1,table.dataTable.display>tbody tr.selected>.sorting_2,table.dataTable.display>tbody tr.selected>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.919)}table.dataTable.display>tbody>tr.odd>.sorting_1,table.dataTable.order-column.stripe>tbody>tr.odd>.sorting_1{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.054)}table.dataTable.display>tbody>tr.odd>.sorting_2,table.dataTable.order-column.stripe>tbody>tr.odd>.sorting_2{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.047)}table.dataTable.display>tbody>tr.odd>.sorting_3,table.dataTable.order-column.stripe>tbody>tr.odd>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.039)}table.dataTable.display>tbody>tr.odd.selected>.sorting_1,table.dataTable.order-column.stripe>tbody>tr.odd.selected>.sorting_1{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.954)}table.dataTable.display>tbody>tr.odd.selected>.sorting_2,table.dataTable.order-column.stripe>tbody>tr.odd.selected>.sorting_2{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.947)}table.dataTable.display>tbody>tr.odd.selected>.sorting_3,table.dataTable.order-column.stripe>tbody>tr.odd.selected>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.939)}table.dataTable.display>tbody>tr.even>.sorting_1,table.dataTable.order-column.stripe>tbody>tr.even>.sorting_1{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.019)}table.dataTable.display>tbody>tr.even>.sorting_2,table.dataTable.order-column.stripe>tbody>tr.even>.sorting_2{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.011)}table.dataTable.display>tbody>tr.even>.sorting_3,table.dataTable.order-column.stripe>tbody>tr.even>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.003)}table.dataTable.display>tbody>tr.even.selected>.sorting_1,table.dataTable.order-column.stripe>tbody>tr.even.selected>.sorting_1{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.919)}table.dataTable.display>tbody>tr.even.selected>.sorting_2,table.dataTable.order-column.stripe>tbody>tr.even.selected>.sorting_2{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.911)}table.dataTable.display>tbody>tr.even.selected>.sorting_3,table.dataTable.order-column.stripe>tbody>tr.even.selected>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.903)}table.dataTable.display tbody tr:hover>.sorting_1,table.dataTable.order-column.hover tbody tr:hover>.sorting_1{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.082)}table.dataTable.display tbody tr:hover>.sorting_2,table.dataTable.order-column.hover tbody tr:hover>.sorting_2{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.074)}table.dataTable.display tbody tr:hover>.sorting_3,table.dataTable.order-column.hover tbody tr:hover>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(0, 0, 0, 0.062)}table.dataTable.display tbody tr:hover.selected>.sorting_1,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_1{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.982)}table.dataTable.display tbody tr:hover.selected>.sorting_2,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_2{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.974)}table.dataTable.display tbody tr:hover.selected>.sorting_3,table.dataTable.order-column.hover tbody tr:hover.selected>.sorting_3{box-shadow:inset 0 0 0 9999px rgba(13, 110, 253, 0.962)}table.dataTable.no-footer{border-bottom:1px solid rgba(0, 0, 0, 0.3)}table.dataTable.compact thead th,table.dataTable.compact thead td,table.dataTable.compact tfoot th,table.dataTable.compact tfoot td,table.dataTable.compact tbody th,table.dataTable.compact tbody td{padding:4px}table.dataTable th,table.dataTable td{box-sizing:content-box}.dataTables_wrapper{position:relative;clear:both}.dataTables_wrapper .dataTables_length{float:left}.dataTables_wrapper .dataTables_length select{border:1px solid #aaa;border-radius:3px;padding:5px;background-color:transparent;padding:4px}.dataTables_wrapper .dataTables_filter{float:right;text-align:right}.dataTables_wrapper .dataTables_filter input{border:1px solid #aaa;border-radius:3px;padding:5px;background-color:transparent;margin-left:3px}.dataTables_wrapper .dataTables_info{clear:both;float:left;padding-top:.755em}.dataTables_wrapper .dataTables_paginate{float:right;text-align:right;padding-top:.25em}.dataTables_wrapper .dataTables_paginate .paginate_button{box-sizing:border-box;display:inline-block;min-width:1.5em;padding:.5em 1em;margin-left:2px;text-align:center;text-decoration:none !important;cursor:pointer;color:inherit !important;border:1px solid transparent;border-radius:2px}.dataTables_wrapper .dataTables_paginate .paginate_button.current,.dataTables_wrapper .dataTables_paginate .paginate_button.current:hover{color:inherit !important;border:1px solid rgba(0, 0, 0, 0.3);background-color:rgba(230, 230, 230, 0.1);background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(230, 230, 230, 0.1)), color-stop(100%, rgba(0, 0, 0, 0.1)));background:-webkit-linear-gradient(top, rgba(230, 230, 230, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);background:-moz-linear-gradient(top, rgba(230, 230, 230, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);background:-ms-linear-gradient(top, rgba(230, 230, 230, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);background:-o-linear-gradient(top, rgba(230, 230, 230, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%);background:linear-gradient(to bottom, rgba(230, 230, 230, 0.1) 0%, rgba(0, 0, 0, 0.1) 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button.disabled,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover,.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active{cursor:default;color:#666 !important;border:1px solid transparent;background:transparent;box-shadow:none}.dataTables_wrapper .dataTables_paginate .paginate_button:hover{color:white !important;border:1px solid #111;background-color:#585858;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #585858), color-stop(100%, #111));background:-webkit-linear-gradient(top, #585858 0%, #111 100%);background:-moz-linear-gradient(top, #585858 0%, #111 100%);background:-ms-linear-gradient(top, #585858 0%, #111 100%);background:-o-linear-gradient(top, #585858 0%, #111 100%);background:linear-gradient(to bottom, #585858 0%, #111 100%)}.dataTables_wrapper .dataTables_paginate .paginate_button:active{outline:none;background-color:#2b2b2b;background:-webkit-gradient(linear, left top, left bottom, color-stop(0%, #2b2b2b), color-stop(100%, #0c0c0c));background:-webkit-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-moz-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-ms-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:-o-linear-gradient(top, #2b2b2b 0%, #0c0c0c 100%);background:linear-gradient(to bottom, #2b2b2b 0%, #0c0c0c 100%);box-shadow:inset 0 0 3px #111}.dataTables_wrapper .dataTables_paginate .ellipsis{padding:0 1em}.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter,.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_processing,.dataTables_wrapper .dataTables_paginate{color:inherit}.dataTables_wrapper .dataTables_scroll{clear:both}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody{-webkit-overflow-scrolling:touch}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>thead>tr>th,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>thead>tr>td,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>tbody>tr>th,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>tbody>tr>td{vertical-align:middle}.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>thead>tr>th>div.dataTables_sizing,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>thead>tr>td>div.dataTables_sizing,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>tbody>tr>th>div.dataTables_sizing,.dataTables_wrapper .dataTables_scroll div.dataTables_scrollBody>table>tbody>tr>td>div.dataTables_sizing{height:0;overflow:hidden;margin:0 !important;padding:0 !important}.dataTables_wrapper.no-footer .dataTables_scrollBody{border-bottom:1px solid rgba(0, 0, 0, 0.3)}.dataTables_wrapper.no-footer div.dataTables_scrollHead table.dataTable,.dataTables_wrapper.no-footer div.dataTables_scrollBody>table{border-bottom:none}.dataTables_wrapper:after{visibility:hidden;display:block;content:"";clear:both;height:0}@media screen and (max-width: 767px){.dataTables_wrapper .dataTables_info,.dataTables_wrapper .dataTables_paginate{float:none;text-align:center}.dataTables_wrapper .dataTables_paginate{margin-top:.5em}}@media screen and (max-width: 640px){.dataTables_wrapper .dataTables_length,.dataTables_wrapper .dataTables_filter{float:none;text-align:center}.dataTables_wrapper .dataTables_filter{margin-top:.5em}}
-</style>
-<script type="module">
-    // Import jquery and DataTable
-    import 'https://code.jquery.com/jquery-3.6.0.min.js';
-    import dt from 'https://cdn.datatables.net/1.12.1/js/jquery.dataTables.mjs';
-    dt($);
-
-    // Define the table data
-    const data = [["s001", 27, "Weiblich", "Rechts", "Bachelorabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Abschluss H\u00f6here Fachschule oder Fachhochschule", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Ja", "Kurzsichtig, seit 17 Jahren, Nein", "Ja", "0,75- 1,5", "Nein", NaN, "Nein", "Complete", "Arrival ~10.30. Yellow cap (head diam 54 cm).   Glasses. Cap placement time ~ 35 min   Initial signal OK, 50 % electrodes between 20-40 mV. A few bad contacts at the beginning   Frequent blinking. End time 12.37 ", "Complete"], ["s002", 25, "Weiblich", "Rechts", "Real-, Sekundar- oder Bezirksschulabschluss (Sek A/B)", NaN, "Abschluss H\u00f6here Fachschule oder Fachhochschule", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Ja", "Kurzsichtigkeit", "Ja", "rechtes Auge 0.75, linkes Auge 0.5", "Nein", NaN, "Nein", "Complete", "Arrival: 10.00  Task Start 10.45  Task End: 11.55    Cap size: Red yellow cap  Circumference: 57cm  Nasion-Inion: 34cm  Ear-Ear: 29cm    Offsets: 20-40 mV  Signal clear and stable at the beginning. Drifts afterwards, possibly sweat artifacts    Other notes:  Subject self-reports estimated 70% accuracy.  Subject came in with glasses but did the experiment without glasses, because she \"doesn't use them in everyday life all the time either\"", "Complete"], ["s003", 31, "Weiblich", "Rechts", "Masterabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Universit\u00e4t/ETH", NaN, "Hochdeutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Ja", "Kurz-/Weitsichtigkeit seit dem 14. Lebensjahr", "Ja", "4,0", "Nein", NaN, "Nein", "Complete", "Arrival: 13:35  Start Capping: 13:45  Task Start: 14.20  Task End: 15.30    BioSemi Cap Size: Yellow  Circumference: 54cm  Nasion-Inion: 32cm  Ear-Ear: 29cm  Glasses: wore the glasses during the experiment    Offsets: between 10-30 in 50% electrodes, below 10 in other 50%; at the end only 30% of channels between 10-30, rest below 10    Other notes:  Subject self-reports estimated 50% accuracy  Subject really needed to go to the bathroom at after the recording.    ", "Complete"], ["s004", 28, "Weiblich", "Rechts", "Bachelorabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Fachmittelschule", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Ja", "Mittelohrentz\u00fcndung", "Kindheit, Primarstufe", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Ja", "Als Kind vom Hochbett gefallen. Keine spezielle Behandlung.", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 10.00  Start Capping: 10.10  Start Task: 10.45, 11.00  --> Had to start twice because the triggers weren't there the first try. Subject did the resting state and 2-3 trials before the error was noticed. First recording was overwritten. Saved recording is the second try, which starts as usual with resting state.  End Task: 12.10    Cap Size: Yellow  Circumference 54cm  Nasion-Inion 32cm  Ear-Ear 30cm    Offsets:    Start: 13 channels between 10-30, rest below 10  End: Same    Other notes:  Electrode recording stable, very slight drift towards the end  Subject seems restless towards the end  Subject self reports estimated accuracy of 85% in the last block  ", "Complete"], ["s005", 35, "Weiblich", "Rechts", "Masterabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Universit\u00e4t/ETH", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Ja", "Lasik-Laser 2019 (Kurzsichtigkeit)", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 14.30  Start Capping: 14.45  Task Start: 15.15  Task End: 16.20    Cap Size: Yellow  Circumference: 56cm  Nasion-Inion: 31cm  Ear-ear: 31cm    Offsets between 10-30 in 40% of electrodes, rest below 10    Other notes:  Signal looks slightly cleaner and more stable when using average reference. Maybe reference electrode is a bit off?   Participant self-reported accuracy is 90%", "Complete"], ["s006", 27, "M\u00e4nnlich", "Rechts", "Bachelorabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Universit\u00e4t/ETH", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 12.25  Start Capping: 12.35  Start Task: 13.05  End Task: 14.15    Cap Size: Yellow  Circumference: 55cm  Nasion-Inion: 36cm  Ear-Ear: 33cm    Offsets: 17 between 10-20, rest below 10    Other notes:  Pretty sweaty. Frontal electrodes a bit noisy and prone to drift.   Very thick hair.  Participant fidgeted a lot during capping, seemingly having trouble sitting still. However, he managed the task well and completed it without seeming much more restless at the end.  Participant seems to have a lot of alpha activity during stimulus presentation. Upon question, he says he did not close his eyes during presentation.  We missed the break between the 2nd and 3rd block (Participant pressed space bar too fast)  Participant self-resported accuracy is 80%, guessed in 20%", "Complete"], ["s007", 29, "Weiblich", "Rechts", "Bachelorabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Abschluss H\u00f6here Fachschule oder Fachhochschule", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Ja", "Mittelohrenentz\u00fcndung", "2003", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Ja", "2016, Snowboardunfall, kurz bewusstlos. Spital \u00fcber Nacht zur Beobachtung, etwas unklar im Kopf f\u00fcr ca. 2 Monate (eine leichte Scheibe)", "Ja", "Kurzsichtig seit 2004, keine OP", "Ja", "Kontaktlinsen -6,5 auf beiden Augen, Ja", "Nein", NaN, "Nein", "Complete", "Arrival: 10.35  Start Capping: 10.55  Start Task: 11.30  End Task: 12.35    Cap Size: Yellow  Circumference: 55cm  Nasion-Inion: 31cm  Ear-Ear: 27cm    Offsets: In 55% of electrodes between 10-30, rest below    Other notes:  Participant self-reported accuracy is 80%", "Complete"], ["s008", 35, "Weiblich", "Rechts", "Masterabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Abschluss H\u00f6here Fachschule oder Fachhochschule", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Ja", "mehrere Mittelohrentz\u00fcndungen", "vor etwa 10 Jahren", "Nein", "Nein", "NaN", "Nein", "NaN", "Ja", "Migr\u00e4ne, sehr selten", "nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "Schwangerschaft, seit 7 Wochen; m\u00f6gliches Problem mit Langzeitged\u00e4chtnis, aber nie untersucht", "Complete", "Arrival: 10.00  Start Capping: 10.20  Start Task: 10.55  End Task: 12.20    Cap Size: Yellow  Circumference: 54cm  Nasion-Inion: 34cm  Ear-Ear: 30cm    Offsets: Between 30-40 in 2 electrodes, between 20-30 in 16 electrodes, between 10-20 in 15 electrodes, rest below 10; External electrodes 1-5 all between 25-40. Eyeblinks and eyemovements are easily visible nonetheless.  End of recording lower offsets      Other Notes:  Participant has a bit of trouble with the headphone-plugs. She reports that she also has trouble with in-ear headphones because her ear canals seem to be too tight. Fixated ear plugs with tape over the cap.  After first block, participant says she didn't realise for a while that it was \"Drossel\" and not \"Vogel\" and \"Kr\u00f6te\" and not \"Frosch\".  After second block, participant reports that the task is exhausting and that she would like to stand up for a bit, but is understanding when we tell her not to stand up. She says the female voice is easier to understand than the male voice.  After third block, participant reports being tired and having a bit of trouble concentrating.  Participant reports finding the task very frustrating.  Self-reported accuracy: 80%", "Complete"], ["s009", 20, "Weiblich", "Rechts", "Gymnasiale Maturit\u00e4t, Berufsmaturit\u00e4t, Passarelle", NaN, "Universit\u00e4t/ETH", NaN, "CH-Deutsch", "Ja", "Ungarisch", "CH-Deutsch", NaN, "NaN", "CH-Deutsch", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 13.35  Start Capping: 13.50  Start Task: 14.25  End Task: 15.35    Cap Size: Yellow  Circumference: 55cm  Nasion-Inion: 33cm  Ear-Ear: 29cm    Offsets: 32 electrodes between 10-25, rest below 10, at the end 12 electrodes between 10-30, rest below    Self-reported accuracy: 50%", "Complete"], ["s010", 31, "M\u00e4nnlich", "Rechts", "Masterabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Universit\u00e4t/ETH", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Ja", "Velounfall 2002, kein Bewusstseinsverlust, keine weiteren Bewusststeinsver\u00e4nderungen", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 10.30  Start Capping: 10.45  Start Task: 11.15  End Task: 12:20    Cap Size: Yellow-Red  Circumference: 58  Nasion-Inion: 37  Ear-Ear: 30    Offsets: 25 electrodes between 10-20, rest below 10. None above 20    Self-reported accuracy: 85-90%    Other notes:  Strong intermittent electrode drift in frontal electrodes, maybe due to forehead movements.   Sometimes high frequency noise in many channels, possibly due to jaw movement/clenching", "Complete"], ["s011", 19, "Weiblich", "Rechts", "Gymnasiale Maturit\u00e4t, Berufsmaturit\u00e4t, Passarelle", NaN, "Kein Berufsabschluss (ungelernt)", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "ja", "Symbicort 200; nach Bedarf. Gegen Asthma.", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 14.07  Start Capping: 14.20  Start Task: 14.55  End task:16:08    Cap Size: Yellow  Circumference: 55cm  Nasion-Inion: 35cm  Ear-Ear: 29cm    Offsets: 2 between 10-15, 1 between 20-25, rest below 10    Self-reported Accuracy: 95%    Other Notes:   Slight drift in frontal electrodes.  Sometimes high frequency noise across electrodes, most likely due to jaw clenching. Participant reports being told in the past by other people that she clenches her jaw, but is never aware of it until it is pointed out.  Participant is tired after the second block and takes a few sips from an energy drink she brought along and that we bring her into the booth (and take out again after the break).  ", "Complete"], ["s012", 32, "Weiblich", "Rechts", "Masterabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Abschluss H\u00f6here Fachschule oder Fachhochschule", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Ja", "Riss im Trommelfell, rechts; keine Einschr\u00e4nkungen mehr", "2017", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Ja", "Kurzsichtigkeit", "Ja", "R: -0.25, L: -0.75", "Nein", NaN, "NaN", "Complete", "Arrival: 13.32  Start Capping: 13.45  Start Task: 14.20  End Task: 15.35    Cap Size: Yellow  Circumference: 54cm  Nasion-Inion: 34cm  Ear-Ear: 30cm    Offsets: 29 electrodes between 10-20, 3 electrodes between 20-30, rest below 10; offsets of all external electrodes between 20-40  At the end, 13 electrodes between 10-20, electrode P6 at ~25, rest below 10    Self-reported Accuracy: 65%    Other Notes:   I feel like electrodes FP1, AF7 and T7 are always a bit noisier than the rest. Not just in this participant, also in others before.", "Complete"], ["s013", 29, "M\u00e4nnlich", "Rechts", "Gymnasiale Maturit\u00e4t, Berufsmaturit\u00e4t, Passarelle", NaN, "Anlehre", NaN, "CH-Deutsch", "Ja", "Englisch", "CH-Deutsch", NaN, "NaN", "CH-Deutsch", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 14.18  Start Capping: 14.27  Start Task: 15.00  End Task: 16:14    Cap Size: Red  Circumference: 57cm  Nasion-Inion: 36cm  Ear-Ear: 31cm    Offsets: at the end between 10 an 25    Self-reported Accuracy: 15%    Other notes: we had to restart after 8 minutes", "Complete"], ["s014", 32, "M\u00e4nnlich", "Rechts", "Gymnasiale Maturit\u00e4t, Berufsmaturit\u00e4t, Passarelle", NaN, "3-4-j\u00e4hrige Berufslehre", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Ja", "Mit ca. 10 Jahren beim Sport. Bewusstseinsverlust aber keine Ver\u00e4nderung im Nachgang.", "Ja", "Kurzsichtig, seit 10 Jahren, aber nicht st\u00f6rend und auch keine Operation.", "Ja", "k.A. Nein", "Nein", NaN, "NaN", "Complete", "Arrival: 13.30  Start Capping: 13.45  Task Start: 14.20  Task End: 15.45    Cap Size: Red  Circumference: 58cm  Nasion-Inion: 35cm  Ear-Ear: 28cm    Offsets: 12 between 20-40 (P1 at ~35; Cz at 30); 15 between 10-20; rest below; EXG3 has a very high offset; At the end, 11 between 10-30, rest below 10    Self-reported Accuracy: 60%    Other Notes: IMPORTANT: Two PsychoPy Outputs for this paticipant: Block one is in the first one, Block 2-4 in the second. Due to accidental pressing of the space bar during the break, the psychopy experiment had to be re-started. I put in a keyboard-input option to force the end of the routine to skip the pre-resting state and the trials of block 1, so I could skip past the first block. While doing that, the Biosemi recording was paused to avoid recording the triggers. When reaching the break (where it was stopped), the biosemi recording was resumed as normal. However, the participant then had to press the spacebar after hearing the stimulus to proceed to the response screen for each trial", "Complete"], ["s015", 27, "Weiblich", "Rechts", "Bachelorabschluss an Universit\u00e4t, ETH, Fachhochschule oder h\u00f6herer Fachschule", NaN, "Universit\u00e4t/ETH", NaN, "CH-Deutsch", "Nein", "NaN", "NaN", NaN, "NaN", "NaN", NaN, "Nein", "NaN", "NaN", "Nein", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", "NaN", "Nein", NaN, "NaN", "Complete", "Arrival: 14.30  Start Capping: 14.45  Start Task: 15.15  End Task: 16.20    Cap Size: Red  Circumference: 57cm  Nasion-Inion: 35cm  Ear-Ear: 31cm    Offsets: At start: 30 electrodes between 10-25, rest below 10; at end 19 electrodes between 10-20, rest below 10    Self-reported Accuracy: 70%    Other Notes: Eletrode F6 sometimes drifts a little. Electrode T7 is bad as always.", "Complete"]];
-
-    // Define the dt_args
-    let dt_args = {"search": true, "scrollY": "400px", "paging": false, "columnDefs": [{"width": "100px", "targets": "_all"}], "scrollX": true, "autoWidth": false, "order": []};
-    dt_args["data"] = data;
-
-    $(document).ready(function () {
-        
-        $('#45e26cc6-2c6e-4199-a733-fbd1de98f0fe').DataTable(dt_args);
-    });
-</script>
-</div>
+<div class="cell-output cell-output-error">
+<pre><code>NameError: name &#39;os&#39; is not defined</code></pre>
 </div>
 </div>
 </section>
@@ -3376,18 +3283,18 @@ box-sizing: border-box;
 <div class="cell" data-tags="[]" data-execution_count="37">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reading quality assessment tab</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>thisScriptDir <span class="op">=</span> os.getcwd()</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>baseDir <span class="op">=</span> thisScriptDir[:thisScriptDir.find(<span class="st">&quot;Scripts&quot;</span>)]</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>fileinput <span class="op">=</span> os.path.join(baseDir <span class="op">+</span> <span class="st">&#39;Data&#39;</span>,<span class="st">&#39;SiN&#39;</span>,<span class="st">&#39;derivatives_SM&#39;</span>,<span class="st">&#39;QualityAssessment.xlsx&#39;</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Find file read data set </span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_excel(fileinput, <span class="st">&#39;QA&#39;</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># render table </span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>show(df, search <span class="op">=</span> <span class="va">True</span>, </span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>     scrollY<span class="op">=</span><span class="st">&#39;400px&#39;</span>, paging<span class="op">=</span><span class="va">False</span>,  </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>     columnDefs<span class="op">=</span>[{<span class="st">&quot;width&quot;</span>: <span class="st">&quot;100px&quot;</span>, <span class="st">&quot;targets&quot;</span>: <span class="st">&quot;_all&quot;</span>}],</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>     scrollX<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>     style<span class="op">=</span><span class="st">&quot;width:1200px&quot;</span>, autoWidth<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reading quality assessment tab</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>thisScriptDir <span class="op">=</span> os.getcwd()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>baseDir <span class="op">=</span> thisScriptDir[:thisScriptDir.find(<span class="st">&quot;Scripts&quot;</span>)]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fileinput <span class="op">=</span> os.path.join(baseDir <span class="op">+</span> <span class="st">&#39;Data&#39;</span>,<span class="st">&#39;SiN&#39;</span>,<span class="st">&#39;derivatives_SM&#39;</span>,<span class="st">&#39;QualityAssessment.xlsx&#39;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Find file read data set </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_excel(fileinput, <span class="st">&#39;QA&#39;</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># render table </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>show(df, search <span class="op">=</span> <span class="va">True</span>, </span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>     scrollY<span class="op">=</span><span class="st">&#39;400px&#39;</span>, paging<span class="op">=</span><span class="va">False</span>,  </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>     columnDefs<span class="op">=</span>[{<span class="st">&quot;width&quot;</span>: <span class="st">&quot;100px&quot;</span>, <span class="st">&quot;targets&quot;</span>: <span class="st">&quot;_all&quot;</span>}],</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>     scrollX<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>     style<span class="op">=</span><span class="st">&quot;width:1200px&quot;</span>, autoWidth<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 
@@ -3463,8 +3370,8 @@ box-sizing: border-box;
 </div>
 </section>
 </section>
-<section id="appendix-2-alternative-analysis---master-thesis" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Appendix 2: Alternative analysis - Master Thesis</h1>
+<section id="appendix-2-alternative-pipeline-and-analysis-from-a-master-thesis" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Appendix 2: Alternative pipeline and analysis from a Master Thesis</h1>
 <p>The following preprocessing and analysis were performed for the Master Thesis of Sybille Meyer. #### Alternative semi-automatic pipeline A semiautomatic pipeline (find scripts <a href="https://github.com/Neuroling/SPINCO_SINEEG/tree/main/Analysis/SiN/EEG/2_preprocessing/Semi_manual">here &gt;&gt;</a> (scripts numbered to indicate run sequence) was set for the master Thesis of Sybille Meier. For this pipeline we did <strong>not</strong> used Automagic. This semimanual approach is largely (but loosely) based on the <a href="https://eeglab.org/tutorials/">EEGlab tutorials</a>. The data folder for this pipeline was named <strong>derivatives_SM</strong></p>
 <p>The main steps were:</p>
 <section id="script-initial-filters-and-downsampling-for-filter" class="level5">
@@ -3524,6 +3431,9 @@ Brungart, Douglas S. 2001. <span>“Evaluation of Speech Intelligibility with th
 </div>
 <div id="ref-delorme2004eeglab" class="csl-entry" role="doc-biblioentry">
 Delorme, Arnaud, and Scott Makeig. 2004. <span>“EEGLAB: An Open Source Toolbox for Analysis of Single-Trial EEG Dynamics Including Independent Component Analysis.”</span> <em>Journal of Neuroscience Methods</em> 134 (1): 9–21.
+</div>
+<div id="ref-greenwood1990cochlear" class="csl-entry" role="doc-biblioentry">
+Greenwood, Donald D. 1990. <span>“A Cochlear Frequency-Position Function for Several Species—29 Years Later.”</span> <em>The Journal of the Acoustical Society of America</em> 87 (6): 2592–2605.
 </div>
 <div id="ref-niskar2001estimated" class="csl-entry" role="doc-biblioentry">
 Niskar, Amanda Sue, Stephanie M Kieszak, Alice E Holmes, Emilio Esteban, Carol Rubin, and Debra J Brody. 2001. <span>“Estimated Prevalence of Noise-Induced Hearing Threshold Shifts Among Children 6 to 19 Years of Age: The Third National Health and Nutrition Examination Survey, 1988–1994, United States.”</span> <em>Pediatrics</em> 108 (1): 40–43.
