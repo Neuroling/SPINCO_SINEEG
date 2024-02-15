@@ -32,8 +32,8 @@ if run == 1
 %% loop thru files 
 
 countEp = []; countICsKept = [];countICsRej=[]; countChans = []; 
-for f = 1:length(files)
-%for f= 1 
+%for f = 1:length(files)
+for f= 1 
 
     % input file 
     fileinput = fullfile(files(f).folder, files(f).name); 

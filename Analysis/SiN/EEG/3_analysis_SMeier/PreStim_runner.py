@@ -14,6 +14,8 @@ import statsmodels.formula.api as smf
 import statsmodels.stats.multitest as ssm
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 dirinput = os.path.join(const.thisDir[:const.thisDir.find(
     'Scripts')] + 'Data', 'SiN', 'derivatives_SM', const.taskID)
@@ -29,7 +31,7 @@ for subjID in const.subjIDs:
     epo = mne.read_epochs(epo_path)
 
     
-    data_dict[subjID] = epo._get_data(tmax = 0) # get data
+    data_dict[subjID] = epo.get_data(tmax = 0) # get data as array of shape [n_epochs, n_channels, n_times]
     metadata_dict[subjID] = epo.metadata # get trial information
     
     # re-code and delete unneeded data
@@ -44,7 +46,23 @@ for subjID in const.subjIDs:
     metadata_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
     metadata_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
     
-    del epo
+    #del epo
+    
+"""
+HOLD ON!
+
+Not all subjects have 64 electrodes. The matlab script rejects some channels but does not interpolate them.
+Which leads to unequal numbers of channels.
+
+This means we cannot simply compare the n-th channel of each subject because the n-th channel
+might not be the same across subjects, if any channel between 1 and n has been removed.
+
+So we need to first check each subj channels (epo.ch_names) against a list of all 64 channels
+to figure out which ones are missing, and insert a...
+
+Or: create an array of shape [n_channels, n_subjects] filled with boolean values.
+Then only incl channels if True
+"""
     
 #%% Create arrays and lists
 channels = [i for i in range(data_dict[subjID].shape[1])] # list of channels
@@ -72,7 +90,7 @@ for thisChannel in channels:
         
         # calculate LMM
         md = smf.mixedlm("accuracy ~ levels * eeg_data * noiseType", df, groups = "subjID")        
-        mdf = md.fit()
+        mdf = md.fit() # This gives the convergence warning # TODO
         
         # record p-Values
         p_values[thisChannel,tf,:] = mdf.pvalues
@@ -82,7 +100,16 @@ formula_LMM = md.formula
 
 #%% Now for the FDR correction...
 print('Time for the FDR.................................................................')
-p_values_1dim = p_values.flatten()
-rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim)
+p_values_1dim = p_values.flatten() #transforms the array into a one-dimensional array (needed for the FDR)
+rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim) # get FDR corrected p-Values
 
-p_values_FDR = p_values_FDR.reshape(p_values.shape)
+p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
+
+print('done! ...........................................................................')
+
+#%% do some plots
+run = True
+if run == True:
+    f,ax = plt.subplots(figsize=(10,8))
+    sns.heatmap(p_values_FDR[:,:,8], vmin = 0, vmax = 0.05)
+    ax.set(xlabel="times", ylabel="electrodes")
