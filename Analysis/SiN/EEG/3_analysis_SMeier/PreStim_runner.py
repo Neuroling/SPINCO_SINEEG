@@ -12,10 +12,12 @@ import mne
 import PreStim_constants as const
 import statsmodels.formula.api as smf
 import statsmodels.stats.multitest as ssm
+import statsmodels.base.optimizer as smo
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pickle
 
 dirinput = os.path.join(const.thisDir[:const.thisDir.find(
     'Scripts')] + 'Data', 'SiN', 'derivatives_SM', const.taskID)
@@ -47,22 +49,7 @@ for subjID in const.subjIDs:
     metadata_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
     
     #del epo
-    
-"""
-HOLD ON!
-
-Not all subjects have 64 electrodes. The matlab script rejects some channels but does not interpolate them.
-Which leads to unequal numbers of channels.
-
-This means we cannot simply compare the n-th channel of each subject because the n-th channel
-might not be the same across subjects, if any channel between 1 and n has been removed.
-
-So we need to first check each subj channels (epo.ch_names) against a list of all 64 channels
-to figure out which ones are missing, and insert a...
-
-Or: create an array of shape [n_channels, n_subjects] filled with boolean values.
-Then only incl channels if True
-"""
+ 
     
 #%% Create arrays and lists
 channels = [i for i in range(data_dict[subjID].shape[1])] # list of channels
@@ -90,13 +77,16 @@ for thisChannel in channels:
         
         # calculate LMM
         md = smf.mixedlm("accuracy ~ levels * eeg_data * noiseType", df, groups = "subjID")        
-        mdf = md.fit() # This gives the convergence warning # TODO
+        mdf = md.fit(full_output = True) # This gives the convergence warning # TODO
+        ## https://www.statsmodels.org/devel/_modules/statsmodels/regression/mixed_linear_model.html#MixedLM.fit
+        ## Fitting is first tried with bfgs, then lbfgs, then cg - see https://www.statsmodels.org/stable/generated/statsmodels.base.optimizer._fit_lbfgs.html
         
         # record p-Values
         p_values[thisChannel,tf,:] = mdf.pvalues
         
 index_p_values = mdf.pvalues.index
 formula_LMM = md.formula
+
 
 #%% Now for the FDR correction...
 print('Time for the FDR.................................................................')
@@ -107,9 +97,15 @@ p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to
 
 print('done! ...........................................................................')
 
+with open(dirinput + '/ERP/LMM_p_Values_FDR.pkl', 'wb') as f:
+    pickle.dump(p_values_FDR, f)
+print("saving...........................................................................")
+
 #%% do some plots
 run = True
 if run == True:
     f,ax = plt.subplots(figsize=(10,8))
-    sns.heatmap(p_values_FDR[:,:,8], vmin = 0, vmax = 0.05)
+    sns.heatmap(p_values_FDR[:,:,7], vmin = 0, vmax = 0.20)
     ax.set(xlabel="times", ylabel="electrodes")
+    
+    # sns.lineplot(data=p_values_FDR[1:10,1:10,3])

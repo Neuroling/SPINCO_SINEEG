@@ -23,6 +23,8 @@ thisDir = os.getcwd()
 import EPO_functions as functions
 import EPO_constants as const
 
+CreateFreqTable = False
+
 #%% ============== EEGLAB .set TO MNE .fif =============================================================================
 # Looping over subj, will read epoched .set files, add metadata, and then save them to .fif files
 
@@ -30,12 +32,13 @@ for subjID in const.subjIDs:
     EpoManager = functions.EpochManager(subjID)
     EpoManager.set2fif()
     
-# #%% ============== CREATE EVENT FREQUENCY TABLE ========================================================================
-# # Will create a frequency of occurrence table for the event_ids
-# frequencyTable = const.freqTableEmpty
-# for subjID in const.subjIDs:
-#     EpoManager = functions.EpochManager(subjID)
-#     df=EpoManager.countEventFrequency()
-#     frequencyTable[subjID] = df['frequency']
-# frequencyTable.to_csv(EpoManager.freqTable_path)
-# print("saved frequency table to" + EpoManager.freqTable_path)
+#%% ============== CREATE EVENT FREQUENCY TABLE ========================================================================
+if CreateFreqTable == True:
+    # Will create a frequency of occurrence table for the event_ids
+    frequencyTable = const.freqTableEmpty
+    for subjID in const.subjIDs:
+        EpoManager = functions.EpochManager(subjID)
+        df=EpoManager.countEventFrequency()
+        frequencyTable[subjID] = df['frequency']
+    frequencyTable.to_csv(EpoManager.freqTable_path)
+    print("saved frequency table to" + EpoManager.freqTable_path)

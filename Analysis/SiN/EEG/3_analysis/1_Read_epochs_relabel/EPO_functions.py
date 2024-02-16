@@ -32,25 +32,42 @@ class EpochManager:
 
     """
 
-    def __init__(self, subjID):
+    def __init__(self, subjID, SM=False):
         """
         initialising function for EpochManager, used to determine file paths
+        
 
         Parameters
         ----------
         subjID : subject ID
+        
+        SM : bool
+            If true, will use the derivatives_SM data. Default false
 
         """
         self.subjID = subjID
         self.thisDir = const.thisDir
-        self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
-            'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched', subjID)
         
-        self.set_path = glob(os.path.join(self.dirinput, str(
-            "*" + const.setFileEnd)), recursive=True)[0]
-        
-        self.epo_path = self.set_path[:self.set_path.find(
-            const.setFileEnd)]+const.fifFileEnd
+        if SM == False:
+            self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
+                'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched', subjID)
+            
+            self.set_path = glob(os.path.join(self.dirinput, str(
+                "*" + const.setFileEnd)), recursive=True)[0]
+            
+            self.epo_path = self.set_path[:self.set_path.find(
+                const.setFileEnd)]+const.fifFileEnd
+            
+        else:
+            self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
+                'Scripts')] + 'Data', 'SiN', 'derivatives_SM', const.taskID, subjID)
+            
+            self.set_path = glob(os.path.join(self.dirinput, str(
+                "*" + const.setFileEnd_SM)), recursive=True)[0]
+            
+            self.epo_path = self.set_path[:self.set_path.find(
+                const.setFileEnd_SM)]+const.fifFileEnd_SM
+                
         
         self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
             'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID, subjID, "*accu.tsv"), recursive=True)[0]

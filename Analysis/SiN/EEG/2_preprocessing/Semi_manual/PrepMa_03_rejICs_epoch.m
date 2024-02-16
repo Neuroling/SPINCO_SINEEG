@@ -21,19 +21,32 @@ diroutput = dirinput;
 epoch_t0 = -0.5; % start time in seconds  
 epoch_t1 = 0.5;  % end time in seconds  
 
+%allchansEEG = EEg
 
+
+%% get chanLocs
+f=1;
+files = dir([dirinput,filesep,'**',filesep,'*',taskID,'*_ds.set']);
+
+fileinput = fullfile(files(f).folder, files(f).name); 
+subjID=files(f).name(1:4);
+
+% load set  
+[ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
+EEG = pop_loadset('filename',fileinput);
+EEG = pop_select(EEG, 'rmchannel', {'EXT1', 'EXT2','EXT3','EXT4'});
+origEEG = EEG;
 
 %% find data 
 files = dir([dirinput,filesep,'**',filesep,'*',taskID,'*_marked.set']);
-
 %% 
 run = 1;
 if run == 1
 %% loop thru files 
 
 countEp = []; countICsKept = [];countICsRej=[]; countChans = []; 
-%for f = 1:length(files)
-for f= 1 
+for f = 1:length(files)
+%for f= 1:2
 
     % input file 
     fileinput = fullfile(files(f).folder, files(f).name); 
@@ -47,6 +60,9 @@ for f= 1
     %% Exclude components flagged as bad 
     EEG = pop_subcomp( EEG, find(EEG.reject.gcompreject), 0);
     EEG.comments = pop_comments(EEG.comments,'','rejected ICs manually flagged as bad',1);  
+    
+    %% Interpolate missing channels
+    EEG = pop_interp(EEG, origEEG.chanlocs, 'spherical');
   
     %% Add accuracy to target events in the EEG dataset 
     % ----------------------------------------------------------------------
