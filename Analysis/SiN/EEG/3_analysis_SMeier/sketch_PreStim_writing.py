@@ -10,6 +10,8 @@ import os
 from glob import glob
 import mne
 import PreStim_constants as const
+import PreStim_functions as function
+ERPManager = function.ERPManager()
 import statsmodels.formula.api as smf
 import pandas as pd
 import numpy as np
@@ -26,7 +28,7 @@ epo_path = glob(os.path.join(dirinput, subjID, str("*" + const.fifFileEnd)), rec
 pickle_path_in = os.path.join(dirinput[:dirinput.find(
     'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
 
-# #%%
+#%%
 # print('opening dict:',pickle_path_in)
 # with open(pickle_path_in, 'rb') as f:
 #     tfr_bands = pickle.load(f)
@@ -192,7 +194,54 @@ pickle_path_in = os.path.join(dirinput[:dirinput.find(
 
 
 ###################################################################################################################
+data_dict, metadata_dict = ERPManager.get_data(output = True)
 
+#%% Create arrays and lists
+channels = [i for i in range(64)] # list of channels
+times = [i for i in range(64)] #list of timepoints
+
+p_values = np.zeros(shape=(len(channels),len(times),9)) # empty array for the p_values
+
+#%% And now the big loop
+
+for thisChannel in channels:
+    print('>>>> running channel',thisChannel,'of', len(channels))
+    
+    for tf in times:
+           
+        # the data & trial information of each subject at a given timepoint and channel
+        tmp_dict = {}
+        for subjID in const.subjIDs:    
+            tmp_dict[subjID] = metadata_dict[subjID]
+            tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
+
+        
+        # Combine all subject's data into one dataframe so we can run the LMM on that
+        df = pd.concat(tmp_dict.values(), axis=0)
+        del tmp_dict
+        
+        # calculate LMM
+        md = smf.mixedlm("accuracy ~ levels * eeg_data * noiseType", df, groups = "subjID")        
+        mdf = md.fit(full_output = True) # This gives the convergence warning # TODO
+        ## https://www.statsmodels.org/devel/_modules/statsmodels/regression/mixed_linear_model.html#MixedLM.fit
+        ## Fitting is first tried with bfgs, then lbfgs, then cg - see https://www.statsmodels.org/stable/generated/statsmodels.base.optimizer._fit_lbfgs.html
+        
+        # record p-Values
+        p_values[thisChannel,tf,:] = mdf.pvalues
+        
+index_p_values = mdf.pvalues.index
+formula_LMM = md.formula
+
+
+#%% Now for the FDR correction...
+print('Time for the FDR.................................................................')
+p_values_1dim = p_values.flatten() #transforms the array into a one-dimensional array (needed for the FDR)
+rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim) # get FDR corrected p-Values
+
+p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
+
+print('done! ...........................................................................')
+###################################################################################
 
 #%% Creating Evoked
 epo=mne.read_epochs(epo_path) # read Epoched .fif file
@@ -273,30 +322,30 @@ mne.viz.plot_compare_evokeds([evokeds['NV/Lv1/Cor'], evokeds['NV/Lv1/Inc']],
                             )
 plt.show()
 
-#%% some plots
+# #%% some plots
 
-# Visualising global amplitude
-evo_inc.plot(gfp=True, spatial_colors=True)
-evo_cor.plot(gfp=True, spatial_colors=True)
+# # Visualising global amplitude
+# evo_inc.plot(gfp=True, spatial_colors=True)
+# evo_cor.plot(gfp=True, spatial_colors=True)
 
-# Comparing amplitude between conditions
-evokeds=dict(cor=evo_cor, inc=evo_inc)
-picks = [1] #which electrode to compare - if None, will compare GFP
-mne.viz.plot_compare_evokeds(evokeds, picks=picks, combine="mean")
+# # Comparing amplitude between conditions
+# evokeds=dict(cor=evo_cor, inc=evo_inc)
+# picks = [1] #which electrode to compare - if None, will compare GFP
+# mne.viz.plot_compare_evokeds(evokeds, picks=picks, combine="mean")
 
-# And here with confidence intervals
-evokeds = dict(
-    cor=list(epo["Cor"].iter_evoked()),
-    inc=list(epo["Inc"].iter_evoked()),
-)
-mne.viz.plot_compare_evokeds(evokeds, combine="mean", picks=None)
-## Hm... that's interesting. For subj s001, the GFP before correct trials is way less varied / more stable.
-## ... actually, that reflects the unequal number of trials per condition (918 correct, 234 incorrect)
+# # And here with confidence intervals
+# evokeds = dict(
+#     cor=list(epo["Cor"].iter_evoked()),
+#     inc=list(epo["Inc"].iter_evoked()),
+# )
+# mne.viz.plot_compare_evokeds(evokeds, combine="mean", picks=None)
+# ## Hm... that's interesting. For subj s001, the GFP before correct trials is way less varied / more stable.
+# ## ... actually, that reflects the unequal number of trials per condition (918 correct, 234 incorrect)
 
-# We can also combine evokeds!
-inc_minus_cor = mne.combine_evoked([evo_inc, evo_cor], weights = [1, -1])
-inc_minus_cor.plot(gfp=True, spatial_colors=True)
-inc_minus_cor.plot_joint()
+# # We can also combine evokeds!
+# inc_minus_cor = mne.combine_evoked([evo_inc, evo_cor], weights = [1, -1])
+# inc_minus_cor.plot(gfp=True, spatial_colors=True)
+# inc_minus_cor.plot_joint()
 
 
 
