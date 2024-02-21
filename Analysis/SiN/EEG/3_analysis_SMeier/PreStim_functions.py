@@ -18,19 +18,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
+from datetime import datetime
 
 class ERPManager:
     
     def __init__(self):
         self.dirinput = const.dirinput
-    
+        self.metadata = {}
+        self.metadata['date_run'] = str(datetime.now())
+ 
+#%%    
     def get_data(self, output = False):
         """
         OPEN EPOCHED DATA AND RESHAPE IT FOR LMM
         =======================================================================
         
         Opens epoched data of every subject and stores it in a dict (data_dict) 
-        along with trial information (metadata_dict)
+        along with trial information (condition_dict)
         
         Automatically calls check_chans_and_times to check for equal n_channels and n_times across subj
         
@@ -38,10 +42,14 @@ class ERPManager:
         Parameters
         ----------
         output : bool, default = False
-            Whether data_dict and metadata_dict should be returned. The default is False.
-            In both cases, data_dict and metadata_dict will be stored in the ERPManager object.
+            Whether data_dict and condition_dict should be returned. The default is False.
+            In both cases, data_dict and condition_dict will be stored in the ERPManager object.
             The function run_LMM() will default to using the dicts from the ERPManager object.
-            Therefore, setting output to False will avoid storing two versions of the dicts in the memory
+            Therefore, setting output to False will optimise memory usage.
+            
+            (If you later decide you do want them in the variable explorer, 
+             call `data_dict = ERPManager.data_dict` )
+
 
         Returns
         -------
@@ -51,49 +59,56 @@ class ERPManager:
             data_dict : dict
                 contains [n_subj] arrays of shape [n_epochs, n_channels, n_times]
                 
-            metadata_dict : dict
+            condition_dict : dict
                 contains [n_subj] dataframes, each containing accuracy, levels, noiseType and subjID for every trial
 
         """
         
-        #%% First, create a dict of all subj data to store in the memory
+        #% First, create a dict of all subj data to store in the memory
         data_dict = {}
-        metadata_dict = {}
+        condition_dict = {}
+        self.metadata['epo_paths'] = []
     
         for subjID in const.subjIDs:
             
             # get filepath
             epo_path = glob(os.path.join(self.dirinput, subjID, str(subjID + '_' + const.taskID + "*" + const.fifFileEnd)), recursive=True)[0]
             epo = mne.read_epochs(epo_path)
+            self.metadata['epo_paths'].append(epo_path)
     
             
             data_dict[subjID] = epo.get_data(tmax = 0) # get data as array of shape [n_epochs, n_channels, n_times]
-            metadata_dict[subjID] = epo.metadata # get trial information
+            condition_dict[subjID] = epo.metadata # get trial information
             
             # re-code and delete unneeded data
-            metadata_dict[subjID]['noiseType'] = metadata_dict[subjID]['block'] 
-            metadata_dict[subjID]['subjID'] = [subjID for i in range(len(metadata_dict[subjID]))]
-            metadata_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
-            metadata_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
-            metadata_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
-            metadata_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
-            metadata_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
-            metadata_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
-            metadata_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
-            metadata_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+            condition_dict[subjID]['noiseType'] = condition_dict[subjID]['block'] 
+            condition_dict[subjID]['subjID'] = [subjID for i in range(len(condition_dict[subjID]))]
+            condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
+            condition_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
+            condition_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
+            condition_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
+            condition_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
+            condition_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
+            condition_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
+            condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
             
             
             #del epo
+
         self.LastSubjID = subjID
         self.data_dict = data_dict
-        self.metadata_dict = metadata_dict
+        self.condition_dict = condition_dict
         
         self.check_chans_and_times() # do a quick check if n_channels and n_times are equal across subj
         
-        if output : return data_dict, metadata_dict
+        # add channel names and time in seconds to metadata
+        self.metadata['ch_names'] = epo.ch_names
+        self.metadata['times'] = epo._raw_times[0:-1]
+        
+        if output : return data_dict, condition_dict
     
     
-    
+#%%    
     def check_chans_and_times(self):
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
@@ -123,8 +138,8 @@ class ERPManager:
 #%%
     def run_LMM(self, 
                 data_dict= None, 
-                metadata_dict = None,
-                function = "accuracy ~ levels * eeg_data * noiseType", 
+                condition_dict = None,
+                formula = "accuracy ~ levels * eeg_data * noiseType", 
                 groups = "subjID"):
         """
         # TODO
@@ -133,9 +148,9 @@ class ERPManager:
         ----------
         data_dict : TYPE, optional
             DESCRIPTION. The default is None.
-        metadata_dict : TYPE, optional
+        condition_dict : TYPE, optional
             DESCRIPTION. The default is None.
-        function : TYPE, optional
+        formula : TYPE, optional
             DESCRIPTION. The default is "accuracy ~ levels * eeg_data * noiseType".
         groups : TYPE, optional
             DESCRIPTION. The default is "subjID".
@@ -150,26 +165,26 @@ class ERPManager:
         if data_dict == None:
             data_dict = self.data_dict
             
-        if metadata_dict == None:
-            metadata_dict = self.metadata_dict
+        if condition_dict == None:
+            condition_dict = self.condition_dict
             
-        #%% Create arrays and lists
-        channels = [i for i in range(data_dict[self.LastSubjID].shape[1])] # list of channels
-        times = [i for i in range(data_dict[self.LastSubjID].shape[2])] #list of timepoints
+        #% Create arrays and lists
+        channelsIdx = [i for i in range(data_dict[self.LastSubjID].shape[1])] # list of channels
+        timesIdx = [i for i in range(data_dict[self.LastSubjID].shape[2])] #list of timepoints
 
-        p_values = np.zeros(shape=(len(channels),len(times),9)) # empty array for the p_values
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),9)) # empty array for the p_values
 
-        #%% And now the big loop - do the LMM for every channel and every timepoint
+        #% And now the big loop - do the LMM for every channel and every timepoint
 
-        for thisChannel in channels:
-            print('>>>> running channel',thisChannel,'of', len(channels))
+        for thisChannel in channelsIdx:
+            print('>>>> running channel',thisChannel,'of', len(channelsIdx))
             
-            for tf in times:
+            for tf in timesIdx:
                    
                 # the data & trial information of each subject at a given timepoint and channel
                 tmp_dict = {}
                 for subjID in const.subjIDs:    
-                    tmp_dict[subjID] = metadata_dict[subjID]
+                    tmp_dict[subjID] = condition_dict[subjID]
                     tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
 
                 
@@ -178,34 +193,105 @@ class ERPManager:
                 del tmp_dict
                 
                 # calculate LMM
-                md = smf.mixedlm(function, df, groups = groups)        
+                md = smf.mixedlm(formula, df, groups = groups)        
                 mdf = md.fit(full_output = True) # This gives the convergence warning # TODO
                 ## https://www.statsmodels.org/devel/_modules/statsmodels/regression/mixed_linear_model.html#MixedLM.fit
                 ## Fitting is first tried with bfgs, then lbfgs, then cg - see https://www.statsmodels.org/stable/generated/statsmodels.base.optimizer._fit_lbfgs.html
                 
                 # record p-Values
                 p_values[thisChannel,tf,:] = mdf.pvalues
-                
-        self.index_p_values = mdf.pvalues.index
-        self.formula_LMM = md.formula
+        
+        self.metadata['p_Values_index'] = mdf.pvalues.index
+        self.metadata['LMM_formula'] = md.formula
+        self.metadata['LMM_groups'] = groups
+        self.metadata['FDR_correction'] = False
+        self.metadata['axes'] = ['channel, timeframe, p-Value']
+        
+        self.p_values = p_values
+        return p_values
 
+#%%
+    def FDR_correction(self, p_values = None, alpha = 0.05):
+        """
+        # TODO
 
-        #%% Now for the FDR correction...
+        """
+    
+            
+        if not p_values:
+            p_values = self.p_values
+            if self.metadata['FDR_correction']:
+                raise ValueError('data is already FDR corrected')
+        else: 
+            if p_values['metadata']['FDR_correction']:
+                raise ValueError('data is already FDR corrected')
+            p_values = p_values.p_values
+            
         print('Time for the FDR.................................................................')
         p_values_1dim = p_values.flatten() #transforms the array into a one-dimensional array (needed for the FDR)
-        rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim) # get FDR corrected p-Values
+        rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim, alpha = alpha) # get FDR corrected p-Values
 
         p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
 
         print('done! ...........................................................................')
-        return p_values_FDR, self.index_p_values
+        
+        self.p_values_FDR = p_values_FDR
+        self.metadata['FDR_correction'] = True
+        self.metadata['FDR_alpha'] = alpha
+        
+        return p_values_FDR
 
-    def save_pValues(self, p_values):
+#%%
+    def save_pValues(self, addMetadata = True):
+        """
+        # TODO
+
+        Parameters
+        ----------
+        p_values : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        p_values = {'metadata':self.metadata}
+        try:
+            p_values['p_values'] = self.p_values_FDR
+        except AttributeError:
+            p_values['p_values'] = self.p_values
+        
+        
         with open(const.diroutput + const.pValsPickleFileEnd, 'wb') as f:
             pickle.dump(p_values, f)
         print("saving to ",const.diroutput + const.pValsPickleFileEnd)
+        return p_values
         
     def get_evokeds(self, save = True):
+        """
+        This function returns a dict containing a lists for every condition, 
+        which contain evoked arrays for every subject.
+        
+        In other words: Every subjects *_epo.fif is opened, then the evoked is
+        created for every possible combination of degradation_level, noise_Type and
+        accuracy. The evoked object is then appended to a list - there is a list
+        for every combination of conditions, and each list stores the evoked-object
+        of that condition of every subject. All lists are stored in a dict.
+
+        Parameters
+        ----------
+        save : bool, default = True
+            Whether the evoked dict should be saved as .pkl or only returned
+            The default is True.
+
+        Returns
+        -------
+        evokeds : dict of lists containing MNE evoked objects
+            
+
+        """
+        # specify conditions
         accuracy = ['Cor','Inc']
         degradation = ['Lv1','Lv2','Lv3']
         noise = ['NV','SSN']
@@ -213,19 +299,29 @@ class ERPManager:
         # creating a list of every possible combination of accuracy, noise & degradation, separated by /
         conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
 
-        # This gives us a dict containing a lists for every condition, which contain evoked arrays for every subject
-        evokeds = {condition : [] for condition in conditions}
-        for subjID in const.subjIDs:
+        # This will give us a dict containing a lists for every condition, which contain evoked arrays for every subject
+        evokeds = {condition : [] for condition in conditions} # Create dict with empty lists for every condition
+        
+        for subjID in const.subjIDs: # for every subj, open *_epo.fif 
             epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
             epo = mne.read_epochs(epo_path)
-            for event_type in conditions:
-                    evokeds[event_type].append(epo[event_type]._compute_aggregate(picks=None))
+            for event_type in conditions: # create the evoked-object for every condition and append to list inside the dict
+                evo = epo[event_type]._compute_aggregate(picks=None)
+                evo.comment = event_type
+                evokeds[event_type].append(evo)
 
         if save:
             with open(const.diroutput + const.evokedsPickleFileEnd, 'wb') as f:
                 pickle.dump(evokeds, f)
             print("saving...........................................................................")
+            print('saved to', const.diroutput + const.evokedsPickleFileEnd)
         return evokeds
         
+    def grandaverage_evokeds(self, evokeds):
+        evokeds_gAvg= {}
+        for condition in const.conditions:
+            evokeds_gAvg[condition] = mne.grand_average(evokeds[condition], drop_bads = False, interpolate_bads = False)
+        return evokeds_gAvg
+    
                 
             

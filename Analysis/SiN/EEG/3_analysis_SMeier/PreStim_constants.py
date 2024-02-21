@@ -46,3 +46,5 @@ idx = ['Intercept',
 accuracy = ['Cor','Inc']
 degradation = ['Lv1','Lv2','Lv3']
 noise = ['NV','SSN']
+
+conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]

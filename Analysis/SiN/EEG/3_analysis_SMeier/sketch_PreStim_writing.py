@@ -23,10 +23,10 @@ subjID = 's001'
 
 dirinput = os.path.join(const.thisDir[:const.thisDir.find(
     'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched')
-epo_path = glob(os.path.join(dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
+epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
 
-pickle_path_in = os.path.join(dirinput[:dirinput.find(
-    'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
+# pickle_path_in = os.path.join(dirinput[:dirinput.find(
+#     'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
 
 #%%
 # print('opening dict:',pickle_path_in)
