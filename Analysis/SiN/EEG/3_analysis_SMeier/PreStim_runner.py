@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb  2 09:01:21 2024
-
+ # TODO  refer to the constants file 
+ # TODO describe input and output files  
 @author: samuemu
 """
 #%% Imports ###################################################################################################################
@@ -21,28 +22,30 @@ import pickle
 
 import PreStim_constants as const
 from PreStim_functions import ERPManager
-ERPManager = ERPManager() #initiate ERPManager
+ERPManager = ERPManager() #initiate ERPManager (collection of functions)
 
-#%% 
+#%% USER INPUT 
 Runner = False 
-plots = True
+doPlots = False
+
 """
 Runner : bool
     if True, will re-run the LMM and re-compute the evokeds, and save them,
     overwriting previously saved pickles. This will take a lot of time.
     If False, will open previously saved pickles instead
     
-plots : bool
+doPlots : bool
     if True, will run plots
 
 """
 
 if Runner:
     #%% Run LMM and save p-Values #############################################################################################
-    ERPManager.get_data()
-    ERPManager.run_LMM()
-    ERPManager.FDR_correction()
-    p_values_FDR = ERPManager.save_pValues()
+    for noise in const.noise:
+        data_dict, condition_dict = ERPManager.get_data(output = True, condition = noise)
+        ERPManager.run_LMM()
+        ERPManager.FDR_correction()
+        p_values_FDR = ERPManager.save_pValues()
     
     #%% get evoked objects # TODO document more
     evokeds = ERPManager.get_evokeds()
@@ -56,7 +59,7 @@ else:
         evokeds = pickle.load(f)
 
 #%% do some plots
-if plots:
+if doPlots:
 
     pVals = p_values_FDR['p_values']     
     
@@ -71,6 +74,8 @@ if plots:
             axs[i,j].set(xlabel="times", ylabel="electrodes")
     plt.subplots_adjust(hspace=0.5, wspace=0.5)
     plt.show()
+    # TODO change electrode numbers in y-axis to labels like Fpz, Oz, etc
+    # TODO change times to seconds instead of tf
 
     
     # sns.lineplot(data=p_values_FDR[1:10,1:10,3])
@@ -139,12 +144,29 @@ if plots:
 #     plt.show()
     
 #%% topomap
-evokeds_gAvg = ERPManager.grandaverage_evokeds(evokeds)
- 
-for condition in const.conditions:
-    # f, axs = plt.subplots(1,10, figsize=(10, 8))  
-    mne.viz.plot_evoked_topomap(evokeds_gAvg[condition])
-    plt.show()
-
-
+    evokeds_gAvg = ERPManager.grandaverage_evokeds(evokeds)
+    
+    # times_array = [-0.5, -0.4,-0.3,-0.2,-0.1,0]
+    
+    for condition in const.conditions:
+        #f, axs = plt.subplots(1,10, figsize=(10, 8
+        # plt.figure()
+        fig = mne.viz.plot_evoked_topomap(
+            evokeds_gAvg[condition],
+            # times = times_array
+            )
+        # fig.suptitle(f'Topomaps for {condition}')
+        # plt.show()
+     
+    for condition in const.conditions:
+        #f, axs = plt.subplots(1,10, figsize=(10, 8
+        # plt.figure()
+        fig = mne.viz.plot_evoked_topo(
+            evokeds_gAvg[condition],
+            title=f'{condition}'
+            )
+        # fig.suptitle(f'Topomaps for {condition}')
+        # plt.shSow()
+    
+    
 

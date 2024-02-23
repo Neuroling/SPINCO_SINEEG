@@ -91,7 +91,7 @@ for subID in subIDs:
                
                 # %%  Gather relevant variables for further analysis
                 
-                gathered = df[['noise','block','sentence','levels','callSign','colour','number','callSign_resp','col_resp','numb_resp','callSignCorrect', 'colourCorrect', 'numberCorrect','n_cor_items']]
+                gathered = df[['noise','block','voice','sentence','levels','callSign','colour','number','callSign_resp','col_resp','numb_resp','callSignCorrect', 'colourCorrect', 'numberCorrect','n_cor_items']]
                 
                 # add subject identifyer 
                 gathered.insert(0, 'subj',subID)
@@ -106,7 +106,7 @@ files =  [os.path.join(diroutput, f) for f in os.listdir(diroutput) if f.startsw
 concat_df = pd.concat([pd.read_csv(f, index_col=None) for f in files], ignore_index=True)
 
 # Save 
-concat_df.to_csv(os.path.join(diroutput, str( 'Gathered_beh_all.csv')),index=False)
+concat_df.to_csv(os.path.join(diroutput, str('Gathered_beh_all.csv')),index=False)
 print('Saved concatenated tables')
       
 # %% Figures from previous packages commented             

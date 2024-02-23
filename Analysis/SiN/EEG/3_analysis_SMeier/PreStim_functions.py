@@ -3,6 +3,12 @@
 """
 Created on Fri Feb  2 09:01:21 2024
 
+- All functions in this is script belong to the class "ERPManager". 
+- In the runner script you first need to initialize this class to be able to use the functions. Do  ERPManager = ERPManager(). This is similar to importing  a module with functions. 
+- This also initializes metadata and set input directory (see def __init__ code below)
+- "self" just means the current class
+
+
 @author: samuemu
 """
 
@@ -20,15 +26,18 @@ import seaborn as sns
 import pickle
 from datetime import datetime
 
-class ERPManager:
+
+# TODO Call PreStimManager
+class ERPManager: 
     
     def __init__(self):
+        # TODO
         self.dirinput = const.dirinput
         self.metadata = {}
         self.metadata['date_run'] = str(datetime.now())
  
 #%%    
-    def get_data(self, output = False):
+    def get_data(self, output = False, condition = None):
         """
         OPEN EPOCHED DATA AND RESHAPE IT FOR LMM
         =======================================================================
@@ -75,15 +84,18 @@ class ERPManager:
             epo_path = glob(os.path.join(self.dirinput, subjID, str(subjID + '_' + const.taskID + "*" + const.fifFileEnd)), recursive=True)[0]
             epo = mne.read_epochs(epo_path)
             self.metadata['epo_paths'].append(epo_path)
-    
             
+            if condition:
+                epo = epo[condition]
+            
+            # TODO give option to adapt timewindow
             data_dict[subjID] = epo.get_data(tmax = 0) # get data as array of shape [n_epochs, n_channels, n_times]
             condition_dict[subjID] = epo.metadata # get trial information
             
             # re-code and delete unneeded data
             condition_dict[subjID]['noiseType'] = condition_dict[subjID]['block'] 
             condition_dict[subjID]['subjID'] = [subjID for i in range(len(condition_dict[subjID]))]
-            condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
+            condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True) # TODO check if this is needed or if it would run with str
             condition_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
             condition_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
             condition_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
@@ -92,8 +104,12 @@ class ERPManager:
             condition_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
             condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
             
+            if condition:
+                condition_dict[subjID].drop(labels=['noiseType'], axis = 1, inplace = True)
             
             #del epo
+        if condition:
+            self.metadata['condition'] = condition
 
         self.LastSubjID = subjID
         self.data_dict = data_dict
@@ -139,10 +155,11 @@ class ERPManager:
     def run_LMM(self, 
                 data_dict= None, 
                 condition_dict = None,
-                formula = "accuracy ~ levels * eeg_data * noiseType", 
+                formula = "accuracy ~ levels * eeg_data ", 
                 groups = "subjID"):
         """
-        # TODO
+        # TODO BINARY dependent variable adjustments 
+# TODO save entire model output obj (mdf)
 
         Parameters
         ----------
@@ -151,12 +168,14 @@ class ERPManager:
         condition_dict : TYPE, optional
             DESCRIPTION. The default is None.
         formula : TYPE, optional
-            DESCRIPTION. The default is "accuracy ~ levels * eeg_data * noiseType".
+            DESCRIPTION. The default is "accuracy ~ levels * eeg_data".
         groups : TYPE, optional
             DESCRIPTION. The default is "subjID".
 
         Returns
-        -------
+        ------- for the p_values
+
+        #% And now the big loop - do the LMM for every channel and every timepoint
         p_values_FDR : TYPE
             DESCRIPTION.
 
@@ -172,9 +191,8 @@ class ERPManager:
         channelsIdx = [i for i in range(data_dict[self.LastSubjID].shape[1])] # list of channels
         timesIdx = [i for i in range(data_dict[self.LastSubjID].shape[2])] #list of timepoints
 
-        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),9)) # empty array for the p_values
-
-        #% And now the big loop - do the LMM for every channel and every timepoint
+        # TODO Need to make sure the third axis (for the p-values) is not hardcoded and can change if the formula changes
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),5)) # empty array
 
         for thisChannel in channelsIdx:
             print('>>>> running channel',thisChannel,'of', len(channelsIdx))
@@ -204,7 +222,7 @@ class ERPManager:
         self.metadata['p_Values_index'] = mdf.pvalues.index
         self.metadata['LMM_formula'] = md.formula
         self.metadata['LMM_groups'] = groups
-        self.metadata['FDR_correction'] = False
+        self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
         self.metadata['axes'] = ['channel, timeframe, p-Value']
         
         self.p_values = p_values
@@ -230,7 +248,10 @@ class ERPManager:
         print('Time for the FDR.................................................................')
         p_values_1dim = p_values.flatten() #transforms the array into a one-dimensional array (needed for the FDR)
         rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim, alpha = alpha) # get FDR corrected p-Values
-
+        
+        
+        # TODO do not correct for the number of interaction         
+        # TODO run FDR corr separately for each channel  (so only correct across timepoints)
         p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
 
         print('done! ...........................................................................')
@@ -262,10 +283,17 @@ class ERPManager:
         except AttributeError:
             p_values['p_values'] = self.p_values
         
+        try:
+            condition = self.condition
+        except AttributeError:
+            condition = ''
+            
+        filepath = const.diroutput + condition + const.pValsPickleFileEnd,
         
-        with open(const.diroutput + const.pValsPickleFileEnd, 'wb') as f:
+        # TODO save under different name if not FDR correcetd (as **_uncor)
+        with open(filepath, 'wb') as f:
             pickle.dump(p_values, f)
-        print("saving to ",const.diroutput + const.pValsPickleFileEnd)
+        print("saving to ",filepath)
         return p_values
         
     def get_evokeds(self, save = True):
@@ -295,10 +323,13 @@ class ERPManager:
         accuracy = ['Cor','Inc']
         degradation = ['Lv1','Lv2','Lv3']
         noise = ['NV','SSN']
+        # TODO remove the line above and replace by reference to constants 
 
         # creating a list of every possible combination of accuracy, noise & degradation, separated by /
         conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
-
+        # TODO remove the line above and replace by reference to constants 
+        
+        
         # This will give us a dict containing a lists for every condition, which contain evoked arrays for every subject
         evokeds = {condition : [] for condition in conditions} # Create dict with empty lists for every condition
         
