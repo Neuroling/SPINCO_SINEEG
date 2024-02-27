@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+SKETCH / TRIAL SCRIPT FOR PreStim
+===============================================================================
 Created on Fri Feb  2 09:01:21 2024
-
 @author: samuemu
+
+This script is for spaghetti code - it is for trying things out and preliminary 
+debugging before putting it in the *_functions or *_runner scripts.
+
+It is largely disorganised and messy. 
 """
 #%% Imports
 import os
@@ -11,7 +17,7 @@ from glob import glob
 import mne
 import PreStim_constants as const
 import PreStim_functions as function
-ERPManager = function.ERPManager()
+PreStimManager = function.PreStimManager()
 import statsmodels.formula.api as smf
 import pandas as pd
 import numpy as np
@@ -194,7 +200,7 @@ epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)
 
 
 ###################################################################################################################
-data_dict, metadata_dict = ERPManager.get_data(output = True)
+data_dict, metadata_dict = PreStimManager.get_data(output = True)
 
 #%% Create arrays and lists
 channels = [i for i in range(64)] # list of channels
@@ -303,8 +309,7 @@ print("saving...................................................................
 
 #%%
 # And with that we should be able to do https://neuraldatascience.io/7-eeg/erp_group_viz.html
-# get a grid of 6 plots
-# Also Topoplots
+
 
 # Define plot parameters
 roi = ['C3', 'Cz', 'C4', 
@@ -322,7 +327,10 @@ mne.viz.plot_compare_evokeds([evokeds['NV/Lv1/Cor'], evokeds['NV/Lv1/Inc']],
                             )
 plt.show()
 
-# #%% some plots
+"""
+===============================================================================
+"""
+#%% some plots
 
 # # Visualising global amplitude
 # evo_inc.plot(gfp=True, spatial_colors=True)

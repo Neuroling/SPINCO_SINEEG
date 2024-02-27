@@ -1,10 +1,37 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+RUNNER SCRIPT FOR PreStim
+===============================================================================
 Created on Fri Feb  2 09:01:21 2024
- # TODO  refer to the constants file 
- # TODO describe input and output files  
 @author: samuemu
+
+This is the runner script for the Pre-Stimulus analyses.
+
+It calls the functions from PreStim_functions. To do this, it is necessary to
+first initialize the class by calling `PreStimManager = PreStimManager()`
+
+This script and the functions script requires the PreStim_constants script,
+which contains variables used across scripts and functions, such as filepath chunks
+or condition labels.
+
+
+ # TODO describe input and output files  
+
+"""
+#%% USER INPUT 
+Runner = True 
+doPlots = False
+
+"""
+Runner : bool
+    if True, will re-run the LMM and re-compute the evokeds, and save them,
+    overwriting previously saved pickles. This will take a lot of time.
+    If False, will open previously saved pickles instead
+    
+doPlots : bool
+    if True, will run plots
+
 """
 #%% Imports ###################################################################################################################
 import os
@@ -21,44 +48,35 @@ import seaborn as sns
 import pickle
 
 import PreStim_constants as const
-from PreStim_functions import ERPManager
-ERPManager = ERPManager() #initiate ERPManager (collection of functions)
+from PreStim_functions import PreStimManager
+PreStimManager = PreStimManager() #initiate PreStimManager (collection of functions)
 
-#%% USER INPUT 
-Runner = False 
-doPlots = False
 
-"""
-Runner : bool
-    if True, will re-run the LMM and re-compute the evokeds, and save them,
-    overwriting previously saved pickles. This will take a lot of time.
-    If False, will open previously saved pickles instead
-    
-doPlots : bool
-    if True, will run plots
-
-"""
-
+#%%
 if Runner:
     #%% Run LMM and save p-Values #############################################################################################
+    
     for noise in const.noise:
-        data_dict, condition_dict = ERPManager.get_data(output = True, condition = noise)
-        ERPManager.run_LMM()
-        ERPManager.FDR_correction()
-        p_values_FDR = ERPManager.save_pValues()
+        PreStimManager.get_data(condition = noise)
+        p2, md2 = PreStimManager.run_LogitRegression()
+        # PreStimManager.FDR_correction()
+        # p_values_FDR = PreStimManager.save_pValues()
     
     #%% get evoked objects # TODO document more
-    evokeds = ERPManager.get_evokeds()
+    # TODO separate noiseType
+    # evokeds = PreStimManager.get_evokeds()
     
 else:
     #%% Open p-Values & evokeds ###############################################################################################
+    # TODO I need to change this now that we separated NoiseType and have different filenames
     with open(const.diroutput + const.pValsPickleFileEnd, 'rb') as f:
         p_values_FDR = pickle.load(f)
     
     with open(const.diroutput + const.evokedsPickleFileEnd, 'rb') as f:
         evokeds = pickle.load(f)
 
-#%% do some plots
+
+#%% do some plots =============================================================================================================
 if doPlots:
 
     pVals = p_values_FDR['p_values']     
@@ -81,6 +99,7 @@ if doPlots:
     # sns.lineplot(data=p_values_FDR[1:10,1:10,3])
 
 #%% Amplitude Comparison of Accuracy ===========================================================================
+## see https://neuraldatascience.io/7-eeg/erp_group_viz.html
     
     roi = ['C3', 'Cz', 'C4', 
            'P3', 'Pz', 'P4']
@@ -103,7 +122,7 @@ if doPlots:
                 picks=roi,
                 show_sensors='upper right',
                 title=f'ERP ({n}/{d})',
-                show = False, # !!! If plotting multiple figures in one plot with MNE, set show = False and call plt.show() at the end
+                show = False, #If plotting multiple figures in one plot with MNE, set show = False and call plt.show() at the end
                 axes=axs[i, j]  # Specify the subplot to use
             )
     
@@ -135,7 +154,7 @@ if doPlots:
 #                 picks=thisChannel,
 #                 show_sensors='upper right',
 #                 title=f'{thisChannel} ({n}/{d})',
-#                 show = False, # !!! If plotting multiple figures in one plot with MNE, set show = False and call plt.show() at the end
+#                 show = False, 
 #                 axes=axs[i, j]  # Specify the subplot to use
 #             )
     
@@ -144,7 +163,7 @@ if doPlots:
 #     plt.show()
     
 #%% topomap
-    evokeds_gAvg = ERPManager.grandaverage_evokeds(evokeds)
+    evokeds_gAvg = PreStimManager.grandaverage_evokeds(evokeds)
     
     # times_array = [-0.5, -0.4,-0.3,-0.2,-0.1,0]
     

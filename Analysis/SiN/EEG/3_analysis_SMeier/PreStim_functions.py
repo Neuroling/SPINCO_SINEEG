@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+PreStim FUNCTION SCRIPT
+===============================================================================
 Created on Fri Feb  2 09:01:21 2024
-
-- All functions in this is script belong to the class "ERPManager". 
-- In the runner script you first need to initialize this class to be able to use the functions. Do  ERPManager = ERPManager(). This is similar to importing  a module with functions. 
-- This also initializes metadata and set input directory (see def __init__ code below)
-- "self" just means the current class
-
-
 @author: samuemu
+
+- All functions in this is script belong to the class "PreStimManager". 
+- In the runner script you first need to initialize this class to be able to use the functions. 
+    Do  `PreStimManager = PreStimManager()` . This is similar to importing a module with functions. 
+- This also initializes metadata and set input directory (see `def __init__(self)` code below)
+    The metadata is used to collect information across functions
+- "self" just means the current class. Variables with the prefix `self.` (i.e. `self.SomeVariable`) 
+    can be called outside of the class by calling `PreStimManager.SomeVariable`
+
 """
 
 import os
@@ -18,20 +22,37 @@ import mne
 import PreStim_constants as const
 import statsmodels.formula.api as smf
 import statsmodels.stats.multitest as ssm
-import statsmodels.base.optimizer as smo
+# import statsmodels.base.optimizer as smo
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 import pickle
 from datetime import datetime
 
 
-# TODO Call PreStimManager
-class ERPManager: 
+
+class PreStimManager: 
     
     def __init__(self):
-        # TODO
+        """
+        INITIALIZING FUNCTION
+        =======================================================================
+        
+        This function is called automatically when initializing PreStimManager,
+        by PreStimManager = PreStimManager()
+        
+        It will set the input directory (taken from the constants) and initialize
+        the metadata dict. The metadata dict will collect information across as
+        different functions in the PreStimManager class are called. It is saved
+        with the p_Value array.
+        
+        The date when the script was run is also saved in the metadata. Together
+        with the date of when changes were pushed to github, this gives us
+        version control for outputs.
+
+        """
+        
         self.dirinput = const.dirinput
         self.metadata = {}
         self.metadata['date_run'] = str(datetime.now())
@@ -45,19 +66,27 @@ class ERPManager:
         Opens epoched data of every subject and stores it in a dict (data_dict) 
         along with trial information (condition_dict)
         
-        Automatically calls check_chans_and_times to check for equal n_channels and n_times across subj
+        Automatically calls check_chans_and_times() to check for equal n_channels and n_times across subj
         
 
         Parameters
         ----------
+        condition : str, default None
+            Only get the data from trials of this condition. 
+            Must be in the form of the event_id used to filter epochs with mne
+            with the use of epoch['SomeCondition'].
+            It is possible to set multiple conditions by separating the labels with /
+            example: `condition = 'NV/Lv1'` <-- will only get data from trials with NV and Lv1 degradation
+            
+            
         output : bool, default = False
             Whether data_dict and condition_dict should be returned. The default is False.
-            In both cases, data_dict and condition_dict will be stored in the ERPManager object.
-            The function run_LMM() will default to using the dicts from the ERPManager object.
+            In both cases, data_dict and condition_dict will be stored in the PreStimManager object.
+            The function run_LMM() will default to using the dicts from the PreStimManager object.
             Therefore, setting output to False will optimise memory usage.
             
             (If you later decide you do want them in the variable explorer, 
-             call `data_dict = ERPManager.data_dict` )
+             call `data_dict = PreStimManager.data_dict` )
 
 
         Returns
@@ -88,20 +117,22 @@ class ERPManager:
             if condition:
                 epo = epo[condition]
             
-            # TODO give option to adapt timewindow
+            # TODO give option to adapt timewindow in function parameters
             data_dict[subjID] = epo.get_data(tmax = 0) # get data as array of shape [n_epochs, n_channels, n_times]
             condition_dict[subjID] = epo.metadata # get trial information
             
             # re-code and delete unneeded data
             condition_dict[subjID]['noiseType'] = condition_dict[subjID]['block'] 
             condition_dict[subjID]['subjID'] = [subjID for i in range(len(condition_dict[subjID]))]
-            condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True) # TODO check if this is needed or if it would run with str
-            condition_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
-            condition_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
+            
+            # Re-coding is only necessary for the DV
+            # condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
+            # condition_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
+            # condition_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
             condition_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
             condition_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
-            condition_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
-            condition_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
+            # condition_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
+            # condition_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
             condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
             
             if condition:
@@ -158,8 +189,8 @@ class ERPManager:
                 formula = "accuracy ~ levels * eeg_data ", 
                 groups = "subjID"):
         """
-        # TODO BINARY dependent variable adjustments 
-# TODO save entire model output obj (mdf)
+        # TODO BINARY dependent variable adjustments (logistic regression)
+        # TODO save entire model output obj (mdf)
 
         Parameters
         ----------
@@ -190,16 +221,28 @@ class ERPManager:
         #% Create arrays and lists
         channelsIdx = [i for i in range(data_dict[self.LastSubjID].shape[1])] # list of channels
         timesIdx = [i for i in range(data_dict[self.LastSubjID].shape[2])] #list of timepoints
+        
+        
+        # This will run a first LMM, which is only used to extract the number of p-Values
+        # Which is needed to create an empty array for the p-Values
+        tmp_dict = {}
+        for subjID in const.subjIDs:    
+            tmp_dict[subjID] = condition_dict[subjID]
+            tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
+        df = pd.concat(tmp_dict.values(), axis=0)
+        pVals_n = len(smf.mixedlm(formula, df, groups = groups).fit().pvalues.index)
+        del tmp_dict, df
+        
+        # now we know the dimensions of the empty array we need to create to collect p_Values
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
 
-        # TODO Need to make sure the third axis (for the p-values) is not hardcoded and can change if the formula changes
-        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),5)) # empty array
-
+        # And here we run the LMM for every channel and every timepoint
         for thisChannel in channelsIdx:
             print('>>>> running channel',thisChannel,'of', len(channelsIdx))
             
             for tf in timesIdx:
                    
-                # the data & trial information of each subject at a given timepoint and channel
+                # extract the data & trial information of each subject at a given timepoint and channel
                 tmp_dict = {}
                 for subjID in const.subjIDs:    
                     tmp_dict[subjID] = condition_dict[subjID]
@@ -220,14 +263,90 @@ class ERPManager:
                 p_values[thisChannel,tf,:] = mdf.pvalues
         
         self.metadata['p_Values_index'] = mdf.pvalues.index
-        self.metadata['LMM_formula'] = md.formula
-        self.metadata['LMM_groups'] = groups
+        self.metadata['regression_formula'] = md.formula
+        self.metadata['regression_groups'] = groups
+        self.metadata['regression_type'] = str(mdf.model)
         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
         self.metadata['axes'] = ['channel, timeframe, p-Value']
         
         self.p_values = p_values
         return p_values
+    
+    #%%
+    def run_LogitRegression(self, 
+                data_dict= None, 
+                condition_dict = None,
+                formula = "accuracy ~ levels * eeg_data ", 
+                groups = "subjID"):
+        
+        # If no data given, use the data stored in the class object
+        if data_dict == None:
+            data_dict = self.data_dict    
+        if condition_dict == None:
+            condition_dict = self.condition_dict
+            
+        #% Create arrays and lists
+        channelsIdx = [i for i in range(data_dict[self.LastSubjID].shape[1])] # list of channels
+        timesIdx = [i for i in range(data_dict[self.LastSubjID].shape[2])] #list of timepoints
+        
+        
+        # This will run a first LMM, which is only used to extract the number of p-Values
+        # Which is needed to create an empty array for the p-Values
+        tmp_dict = {}
+        for subjID in const.subjIDs:    
+            tmp_dict[subjID] = condition_dict[subjID]
+            tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
+        df = pd.concat(tmp_dict.values(), axis=0)
+        pVals_n = len(smf.mnlogit(formula, df, groups = groups).fit().pvalues.index)
+        del tmp_dict, df
 
+        
+        # now we know the dimensions of the empty array we need to create to collect p_Values
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+
+        # And here we run the LMM for every channel and every timepoint
+        for thisChannel in channelsIdx:
+            print('>>>> running channel',thisChannel,'of', len(channelsIdx))
+            
+            for tf in timesIdx:
+                   
+                # extract the data & trial information of each subject at a given timepoint and channel
+                tmp_dict = {}
+                for subjID in const.subjIDs:    
+                    tmp_dict[subjID] = condition_dict[subjID]
+                    tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
+
+                
+                # Combine all subject's data into one dataframe so we can run the LMM on that
+                df = pd.concat(tmp_dict.values(), axis=0)
+                del tmp_dict
+                
+                # calculate LMM
+                md = smf.mnlogit(formula, df, groups = groups)  # TODO groups doesn't work >:(
+                mdf = md.fit(full_output = True) # ???
+                ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+                
+                # record p-Values
+                p_values[thisChannel,tf,:] = mdf.pvalues
+        
+        self.metadata['p_Values_index'] = mdf.pvalues.index
+        self.metadata['regression_formula'] = md.formula
+        self.metadata['regression_groups'] = "NONE"
+        self.metadata['regression_type'] = str(mdf.model)
+        self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
+        self.metadata['axes'] = ['channel, timeframe, p-Value']
+        
+        self.p_values = p_values
+        return p_values
+    
+    #%%
+    def run_logisticRegression_sklearn(self,
+                          data_dict= None, 
+                          condition_dict = None
+                          ):
+        # for a version with sklearn, see https://www.statology.org/logistic-regression-python/
+        pass
+    
 #%%
     def FDR_correction(self, p_values = None, alpha = 0.05):
         """
@@ -250,7 +369,7 @@ class ERPManager:
         rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim, alpha = alpha) # get FDR corrected p-Values
         
         
-        # TODO do not correct for the number of interaction         
+        # TODO do not correct for the number of interactions     
         # TODO run FDR corr separately for each channel  (so only correct across timepoints)
         p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
 
@@ -319,15 +438,10 @@ class ERPManager:
             
 
         """
-        # specify conditions
-        accuracy = ['Cor','Inc']
-        degradation = ['Lv1','Lv2','Lv3']
-        noise = ['NV','SSN']
-        # TODO remove the line above and replace by reference to constants 
 
-        # creating a list of every possible combination of accuracy, noise & degradation, separated by /
-        conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
-        # TODO remove the line above and replace by reference to constants 
+
+        # list of every possible combination of accuracy, noise & degradation, separated by /
+        conditions = const.conditions
         
         
         # This will give us a dict containing a lists for every condition, which contain evoked arrays for every subject
@@ -336,6 +450,7 @@ class ERPManager:
         for subjID in const.subjIDs: # for every subj, open *_epo.fif 
             epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
             epo = mne.read_epochs(epo_path)
+            
             for event_type in conditions: # create the evoked-object for every condition and append to list inside the dict
                 evo = epo[event_type]._compute_aggregate(picks=None)
                 evo.comment = event_type
