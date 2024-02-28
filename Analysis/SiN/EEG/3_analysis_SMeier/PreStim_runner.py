@@ -57,14 +57,13 @@ if Runner:
     #%% Run LMM and save p-Values #############################################################################################
     
     for noise in const.noise:
-        PreStimManager.get_data(condition = noise)
-        p2, md2 = PreStimManager.run_LogitRegression()
+        PreStimManager.get_data(condition = noise, output = True)
+        p = PreStimManager.run_LogitRegression()
         # PreStimManager.FDR_correction()
-        # p_values_FDR = PreStimManager.save_pValues()
+        p_values_FDR = PreStimManager.save_pValues()
     
     #%% get evoked objects # TODO document more
-    # TODO separate noiseType
-    # evokeds = PreStimManager.get_evokeds()
+    evokeds = PreStimManager.get_evokeds()
     
 else:
     #%% Open p-Values & evokeds ###############################################################################################
@@ -88,7 +87,7 @@ if doPlots:
     for i in range(3):
         for j in range(3):
             sns.heatmap(pVals[:, :, i * 3 + j], vmin=0, vmax=0.15, ax=axs[i, j])
-            axs[i, j].set_title(const.idx[i * 3 + j])  # Set the title
+            axs[i, j].set_title(p_values_FDR['metadata']['p_Values_index'][i * 3 + j])  # Set the title
             axs[i,j].set(xlabel="times", ylabel="electrodes")
     plt.subplots_adjust(hspace=0.5, wspace=0.5)
     plt.show()

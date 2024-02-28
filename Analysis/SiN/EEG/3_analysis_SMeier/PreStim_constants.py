@@ -21,10 +21,10 @@ pipeID = 'pipeline-01'
 
 thisDir = os.getcwd()
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data', 'SiN', 'derivatives_SM', taskID)
-diroutput = dirinput + '/ERP/'
+diroutput = dirinput + '/PreStim/'
 
 fifFileEnd = 'resampled_ICA_rej_epo.fif'
-pValsPickleFileEnd = 'LMM_p_Values_FDR.pkl'
+pValsPickleFileEnd = 'pValues.pkl'
 evokedsPickleFileEnd = 'evokeds.pkl'
 
 # Get all subjIDs
@@ -33,7 +33,7 @@ subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts
 
 accuracy = ['Cor','Inc']
 degradation = ['Lv1','Lv2','Lv3']
-noise = ['NV']
+noise = ['NV', 'SSN']
 
 # List all possible combinations of noise, degradation and accuracy, separated by /
 conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]

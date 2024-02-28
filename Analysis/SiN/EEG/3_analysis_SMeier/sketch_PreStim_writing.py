@@ -12,29 +12,37 @@ debugging before putting it in the *_functions or *_runner scripts.
 It is largely disorganised and messy. 
 """
 #%% Imports
-import os
-from glob import glob
-import mne
+
 import PreStim_constants as const
 import PreStim_functions as function
 PreStimManager = function.PreStimManager()
-import statsmodels.formula.api as smf
+
+import os
+from glob import glob
+import mne
 import pandas as pd
 import numpy as np
 import pickle
+
+import statsmodels.formula.api as smf
+
+# from sklearn.model_selection import train_test_split
+# from sklearn.linear_model import LogisticRegression
+# from sklearn import metrics
+
 import matplotlib.pyplot as plt
 
-#%% filepaths
-subjID = 's001'
 
-dirinput = os.path.join(const.thisDir[:const.thisDir.find(
-    'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched')
-epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
+
+#%% filepaths
+# subjID = 's001'
+
+# epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
 
 # pickle_path_in = os.path.join(dirinput[:dirinput.find(
 #     'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
 
-#%%
+#%% Old LMM on tfr_band
 # print('opening dict:',pickle_path_in)
 # with open(pickle_path_in, 'rb') as f:
 #     tfr_bands = pickle.load(f)
@@ -199,137 +207,88 @@ epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)
 # print(mdf2.summary())
 
 
-###################################################################################################################
-data_dict, metadata_dict = PreStimManager.get_data(output = True)
+#%%###################################################################################################################
+data_dict, condition_dict = PreStimManager.get_data(output = True)
 
-#%% Create arrays and lists
-channels = [i for i in range(64)] # list of channels
-times = [i for i in range(64)] #list of timepoints
+#%% Creating a dict of dicts
+result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}
 
-p_values = np.zeros(shape=(len(channels),len(times),9)) # empty array for the p_values
 
-#%% And now the big loop
+#%% Let's try the logistic regression
 
-for thisChannel in channels:
-    print('>>>> running channel',thisChannel,'of', len(channels))
+# We'll try this on channel 0 and timepoint 0 before we loop
+tmp_dict = {}
+for subjID in const.subjIDs:    
+    tmp_dict[subjID] = condition_dict[subjID]
+    tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
     
-    for tf in times:
-           
-        # the data & trial information of each subject at a given timepoint and channel
-        tmp_dict = {}
-        for subjID in const.subjIDs:    
-            tmp_dict[subjID] = metadata_dict[subjID]
-            tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
+# Combine all subject's data into one df so we can run the model on that
+data = pd.concat(tmp_dict.values(), axis=0)
+del tmp_dict
 
-        
-        # Combine all subject's data into one dataframe so we can run the LMM on that
-        df = pd.concat(tmp_dict.values(), axis=0)
-        del tmp_dict
-        
-        # calculate LMM
-        md = smf.mixedlm("accuracy ~ levels * eeg_data * noiseType", df, groups = "subjID")        
-        mdf = md.fit(full_output = True) # This gives the convergence warning # TODO
-        ## https://www.statsmodels.org/devel/_modules/statsmodels/regression/mixed_linear_model.html#MixedLM.fit
-        ## Fitting is first tried with bfgs, then lbfgs, then cg - see https://www.statsmodels.org/stable/generated/statsmodels.base.optimizer._fit_lbfgs.html
-        
-        # record p-Values
-        p_values[thisChannel,tf,:] = mdf.pvalues
-        
-index_p_values = mdf.pvalues.index
-formula_LMM = md.formula
+results = []
+#%% Let's first try with statsmodels...
+formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
+groups = 'subjID'
 
+md = smf.mnlogit(formula, data, groups = groups)  # TODO groups doesn't work >:(
+mdf = md.fit(full_output = True)
+mdf.summary()
+p_values = mdf.pvalues
+predicted = md.predict(mdf.params)
 
-#%% Now for the FDR correction...
-print('Time for the FDR.................................................................')
-p_values_1dim = p_values.flatten() #transforms the array into a one-dimensional array (needed for the FDR)
-rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim) # get FDR corrected p-Values
+pred_table = mdf.pred_table() 
+# pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
+# Correct predictions are along the diagonal.
+results.append(formula)
+results.append(mdf.prsquared)
 
-p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
+#%%  CREATING EVOKEDS #########################################################################################################
+# """
+# But we need the evoked separately for each condition we want to include.
+# For example, if we want to look at how degradation levels affect accuracy, 
+# we would need to create 3*2 evoked arrays. Doing this manually is a lot of work.
 
-print('done! ...........................................................................')
-###################################################################################
+# epochs.average(by_event_type) would create evoked arrays for every event type
+# but we have 288 event types and some of them don't matter, so that is not feasible.
 
-#%% Creating Evoked
-epo=mne.read_epochs(epo_path) # read Epoched .fif file
-epo = epo.crop(-0.5,0) # crop epochs to keep only pre-stimulus interval
-
-evo_inc = epo['Inc'].average() # Average data per timepoint/electrode for incorrect/correct conditions
-evo_cor = epo['Cor'].average()
-
-## Attention! Unequal numbers of trials! It may be necessary to first use 
-## epochs.equalize_event_counts() before averaging. But that depends on how much
-## data we are okay with losing.
-
-# evo_cor_df = evo_cor.to_data_frame(copy=False) # if we need the data as pd.dataframe
-#%% 
-"""
-But we need the evoked separately for each condition we want to include.
-For example, if we want to look at how degradation levels affect accuracy, 
-we would need to create 3*2 evoked arrays. Doing this manually is a lot of work.
-
-epochs.average(by_event_type) would create evoked arrays for every event type
-but we have 288 event types and some of them don't matter, so that is not feasible.
-
-But! Here is the source code for that: 
-    https://github.com/mne-tools/mne-python/blob/maint/1.6/mne/epochs.py#L1060-L1110
+# But! Here is the source code for that: 
+#     https://github.com/mne-tools/mne-python/blob/maint/1.6/mne/epochs.py#L1060-L1110
  
-    evokeds = list()
-    for event_type in epochs.event_id.keys():
-            ev = epochs[event_type]._compute_aggregate(picks=picks, mode=method)
-            ev.comment = event_type
-            evokeds.append(ev)
+#     evokeds = list()
+#     for event_type in epochs.event_id.keys():
+#             ev = epochs[event_type]._compute_aggregate(picks=picks, mode=method)
+#             ev.comment = event_type
+#             evokeds.append(ev)
     
-    Meaning basically, if I create a dict of what conditions I want to split the data into,
-    and then use that in place of epochs.event_id.keys() - that would work.
-    I can put that into a function.
+#     Meaning basically, if I create a dict of what conditions I want to split the data into,
+#     and then use that in place of epochs.event_id.keys() - that would work.
+#     I can put that into a function.
 
-"""
-accuracy = ['Cor','Inc']
-degradation = ['Lv1','Lv2','Lv3']
-noise = ['NV','SSN']
+# """
+# accuracy = ['Cor','Inc']
+# degradation = ['Lv1','Lv2','Lv3']
+# noise = ['NV','SSN']
 
-# creating a list of every possible combination of accuracy, noise & degradation, separated by /
-conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
+# # creating a list of every possible combination of accuracy, noise & degradation, separated by /
+# conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
 
-# This gives us a dict containing a lists for every condition, which contain evoked arrays for every subject
-evokeds = {condition : [] for condition in conditions}
-for subjID in const.subjIDs:
-    epo_path = glob(os.path.join(dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
-    epo = mne.read_epochs(epo_path)
-    for event_type in conditions:
-            evokeds[event_type].append(epo[event_type]._compute_aggregate(picks=None))
+# # This gives us a dict containing a lists for every condition, which contain evoked arrays for every subject
+# evokeds = {condition : [] for condition in conditions}
+# for subjID in const.subjIDs:
+#     epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
+#     epo = mne.read_epochs(epo_path)
+#     for event_type in conditions:
+#             evokeds[event_type].append(epo[event_type]._compute_aggregate(picks=None))
 
 
-with open(dirinput + '/ERP/evokeds.pkl', 'wb') as f:
-    pickle.dump(evokeds, f)
-print("saving...........................................................................")
+# with open(const.diroutput + const.evokedsPickleFileEnd, 'wb') as f:
+#     pickle.dump(evokeds, f)
+# print("saving...........................................................................")
 
 # Below: not working yet # TODO
 # n_trial_per_condition = pd.DataFrame([[i , evokeds[i].nave] for i in evokeds ])
 
-#%%
-# And with that we should be able to do https://neuraldatascience.io/7-eeg/erp_group_viz.html
-
-
-# Define plot parameters
-roi = ['C3', 'Cz', 'C4', 
-       'P3', 'Pz', 'P4']
-
-# set custom line colors and styles
-# color_dict = {'Control':'blue', 'Violation':'red'}
-# linestyle_dict = {'Control':'-', 'Violation':'--'}
-
-mne.viz.plot_compare_evokeds([evokeds['NV/Lv1/Cor'], evokeds['NV/Lv1/Inc']],
-                             combine='mean',
-                             legend='lower right',
-                             picks=roi, show_sensors='upper right',
-                             title='Violation vs. Control Waveforms'
-                            )
-plt.show()
-
-"""
-===============================================================================
-"""
 #%% some plots
 
 # # Visualising global amplitude

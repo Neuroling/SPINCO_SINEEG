@@ -123,17 +123,19 @@ class PreStimManager:
             
             # re-code and delete unneeded data
             condition_dict[subjID]['noiseType'] = condition_dict[subjID]['block'] 
+            condition_dict[subjID]['wordPosition'] = condition_dict[subjID]['stimtype'] 
             condition_dict[subjID]['subjID'] = [subjID for i in range(len(condition_dict[subjID]))]
             
             # Re-coding is only necessary for the DV
+            condition_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
+            condition_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
+            condition_dict[subjID]['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
             # condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
             # condition_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
             # condition_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
-            condition_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
-            condition_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
             # condition_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
             # condition_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
-            condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+            # condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
             
             if condition:
                 condition_dict[subjID].drop(labels=['noiseType'], axis = 1, inplace = True)
@@ -186,7 +188,7 @@ class PreStimManager:
     def run_LMM(self, 
                 data_dict= None, 
                 condition_dict = None,
-                formula = "accuracy ~ levels * eeg_data ", 
+                formula = "accuracy ~ levels * eeg_data + wordPosition", 
                 groups = "subjID"):
         """
         # TODO BINARY dependent variable adjustments (logistic regression)
@@ -276,8 +278,9 @@ class PreStimManager:
     def run_LogitRegression(self, 
                 data_dict= None, 
                 condition_dict = None,
-                formula = "accuracy ~ levels * eeg_data ", 
-                groups = "subjID"):
+                formula = "accuracy ~ levels * eeg_data + wordPosition", 
+                groups = "subjID"
+                ):
         
         # If no data given, use the data stored in the class object
         if data_dict == None:
@@ -297,12 +300,15 @@ class PreStimManager:
             tmp_dict[subjID] = condition_dict[subjID]
             tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
         df = pd.concat(tmp_dict.values(), axis=0)
-        pVals_n = len(smf.mnlogit(formula, df, groups = groups).fit().pvalues.index)
+        pVals_n = len(smf.logit(formula, df, groups = groups).fit().pvalues.index)
         del tmp_dict, df
 
-        
         # now we know the dimensions of the empty array we need to create to collect p_Values
         p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+        
+        # But gfraga also asked to save the whole model output, soooo...
+        #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
+
 
         # And here we run the LMM for every channel and every timepoint
         for thisChannel in channelsIdx:
@@ -322,8 +328,8 @@ class PreStimManager:
                 del tmp_dict
                 
                 # calculate LMM
-                md = smf.mnlogit(formula, df, groups = groups)  # TODO groups doesn't work >:(
-                mdf = md.fit(full_output = True) # ???
+                md = smf.logit(formula, df, groups = groups)  # TODO groups doesn't work >:(
+                mdf = md.fit() # ??? Convergence warning
                 ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
                 
                 # record p-Values
@@ -345,7 +351,7 @@ class PreStimManager:
                           condition_dict = None
                           ):
         # for a version with sklearn, see https://www.statology.org/logistic-regression-python/
-        pass
+        raise NotImplementedError
     
 #%%
     def FDR_correction(self, p_values = None, alpha = 0.05):
@@ -396,25 +402,39 @@ class PreStimManager:
         None.
 
         """
-        p_values = {'metadata':self.metadata}
+        p_values = {'metadata':self.metadata} # create a dict and add the metadata we collected
+        
+        # Now add the p-Values to the dict. First try to add the FDR-corrected p-Values 
+        # and if there are none, add non-FDR-corrected p-Values
         try:
             p_values['p_values'] = self.p_values_FDR
+            FDR_name = 'FDR_'
         except AttributeError:
             p_values['p_values'] = self.p_values
+            FDR_name = 'uncorrected_'
         
+        # See if there is a condition for the model, so that can be added to the filename
         try:
-            condition = self.condition
+            condition_name = str(self.metadata['condition'] + '_')
         except AttributeError:
-            condition = ''
+            condition_name = ''
+        
+        # This will take the regression model method that we got from mdf.model()
+        # Because mdf.model() gives an output like '<statsmodels.discrete.discrete_model.MNLogit object at 0x7fbf691a7b50>'
+        # We take the position of the final '.' and the first ' ' (blank space) and use the str between those two
+        regression_name = str(
+            self.metadata['regression_type'][self.metadata['regression_type'].rfind('.')+1:
+                                             self.metadata['regression_type'].find(' ')] + '_')
             
-        filepath = const.diroutput + condition + const.pValsPickleFileEnd,
+        filepath = const.diroutput +  regression_name + condition_name + FDR_name + const.pValsPickleFileEnd
         
         # TODO save under different name if not FDR correcetd (as **_uncor)
         with open(filepath, 'wb') as f:
             pickle.dump(p_values, f)
         print("saving to ",filepath)
         return p_values
-        
+ 
+#%%       
     def get_evokeds(self, save = True):
         """
         This function returns a dict containing a lists for every condition, 
