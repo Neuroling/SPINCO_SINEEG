@@ -58,7 +58,7 @@ class PreStimManager:
         self.metadata['date_run'] = str(datetime.now())
  
 #%%    
-    def get_data(self, output = False, condition = None):
+    def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE IT FOR LMM
         =======================================================================
@@ -87,11 +87,22 @@ class PreStimManager:
             
             (If you later decide you do want them in the variable explorer, 
              call `data_dict = PreStimManager.data_dict` )
+            
+        tmin : float or None, Default is None
+            The start of the timewindow of which to get the data from the epoch.
+            If None, will take the data from the start of the epoch to tmax.
+            If float, must be in seconds.
+            
+        tmax : float or None, Default is 0
+            The end of the timewindow of which to get the data from the epoch.
+            If None, will take the data from tmin to the end of the epoch.
+            If float, must be in seconds.
+            The Default `0` will get only pre-stimulus data.
 
 
         Returns
         -------
-        None if output == False (default)
+        None if output = False (default)
         
         Otherwise:
             data_dict : dict
@@ -117,8 +128,7 @@ class PreStimManager:
             if condition:
                 epo = epo[condition]
             
-            # TODO give option to adapt timewindow in function parameters
-            data_dict[subjID] = epo.get_data(tmax = 0) # get data as array of shape [n_epochs, n_channels, n_times]
+            data_dict[subjID] = epo.get_data(tmax = tmax, tmin = tmin, copy = False) # get data as array of shape [n_epochs, n_channels, n_times]
             condition_dict[subjID] = epo.metadata # get trial information
             
             # re-code and delete unneeded data
@@ -127,23 +137,16 @@ class PreStimManager:
             condition_dict[subjID]['subjID'] = [subjID for i in range(len(condition_dict[subjID]))]
             
             # Re-coding is only necessary for the DV
-            condition_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
-            condition_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
+            condition_dict[subjID]['accuracy'].replace({'inc': 0, 'cor': 1}, inplace=True)
             condition_dict[subjID]['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
-            # condition_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
-            # condition_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
-            # condition_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
-            # condition_dict[subjID]['noiseType'].replace('NV', 0, inplace=True)
-            # condition_dict[subjID]['noiseType'].replace('SSN', 1, inplace=True)
-            # condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
-            
-            if condition:
-                condition_dict[subjID].drop(labels=['noiseType'], axis = 1, inplace = True)
+            # condition_dict[subjID]['levels'].replace({'Lv1': 1, 'Lv2':2,'Lv3':3}, inplace=True)
+            # condition_dict[subjID]['noiseType'].replace({'NV': 0, 'SSN':1}, inplace=True)
+            condition_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
             
             #del epo
         if condition:
             self.metadata['condition'] = condition
-
+            
         self.LastSubjID = subjID
         self.data_dict = data_dict
         self.condition_dict = condition_dict
@@ -156,8 +159,7 @@ class PreStimManager:
         
         if output : return data_dict, condition_dict
     
-    
-#%%    
+#%%  
     def check_chans_and_times(self):
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
@@ -178,6 +180,7 @@ class PreStimManager:
         """
         chan_N = self.data_dict[self.LastSubjID].shape[1]
         tf_N = self.data_dict[self.LastSubjID].shape[2]
+        
         for subjID in const.subjIDs:
             if self.data_dict[subjID].shape[1] != chan_N:
                 raise ValueError('not all subj have the same number of channels')
@@ -354,13 +357,53 @@ class PreStimManager:
         raise NotImplementedError
     
 #%%
-    def FDR_correction(self, p_values = None, alpha = 0.05):
+    def FDR_correction(self, p_values = None, alpha = 0.05, output = False):
         """
-        # TODO
+        FDR CORRECTION
+        =======================================================================
+        
+        This function will FDR-correct p_values. The correction is separately run
+        for each channel and parameter - therefore, we only correct for repeated measures in time
+        but not for the multiple channels.
+
+
+        Parameters
+        ----------
+        p_values : array of shape [n_channels, n_timepoints, n_pValues], optional
+            The p-Values that should be FDR corrected. The default is None, in which case
+            the p-Values stored in the PreStimManager class are used (meaning `PreStimManager.p_values`).
+            Therefore, with `p_values = None`, the p-Values of the last performed regression are FDR-corrected.
+            
+        alpha : float, Default = 0.05
+            The alpha value for the FDR. The default is 0.05.
+            
+        output : bool, Default = False
+            Whether or not the FDR-corrected p-Values should be returned. The default is False.
+            In both cases, p_values_FDR will be stored in the PreStimManager object.
+            The function save_pValues() will default to using the p_values from the PreStimManager object.
+            Therefore, setting output to False will optimise memory usage.
+            
+            (If you later decide you do want them in the variable explorer, 
+             call `p_values_FDR = PreStimManager.p_values_FDR` )
+
+        Raises
+        ------
+        ValueError
+            If the p_values are already FDR-corrected, raises an error. 
+            The function uses the metadata to check if the p_values are already FDR-corrected.
+
+        Returns
+        -------
+        If output = False : Nothing
+        
+        If output = True :      
+            p_values_FDR : array of shape [n_channels, n_timepoints, n_pValues]
+                the FDR-corrected p-Values
 
         """
     
-            
+        print('Time for the FDR.................................................................')
+    
         if not p_values:
             p_values = self.p_values
             if self.metadata['FDR_correction']:
@@ -369,15 +412,15 @@ class PreStimManager:
             if p_values['metadata']['FDR_correction']:
                 raise ValueError('data is already FDR corrected')
             p_values = p_values.p_values
-            
-        print('Time for the FDR.................................................................')
-        p_values_1dim = p_values.flatten() #transforms the array into a one-dimensional array (needed for the FDR)
-        rej, p_values_FDR = ssm.fdrcorrection(p_values_1dim, alpha = alpha) # get FDR corrected p-Values
         
+        # make empty array
+        p_values_FDR = np.zeros(shape=p_values.shape) # They are of shape `p_values[thisChannel,tf,:] = mdf.pvalues`
         
-        # TODO do not correct for the number of interactions     
-        # TODO run FDR corr separately for each channel  (so only correct across timepoints)
-        p_values_FDR = p_values_FDR.reshape(p_values.shape) # transform 1D array back to 3D array of shape [channel, timeframe, p-Value]
+        #
+        for channelsIdx in range(p_values.shape[0]):
+            for pValsIdx in range(p_values.shape[2]):
+                rej, temp_pValsFDR = ssm.fdrcorrection(p_values[channelsIdx, :, pValsIdx], alpha = alpha) # get FDR corrected p-Values
+                p_values_FDR[channelsIdx, :, pValsIdx] = temp_pValsFDR
 
         print('done! ...........................................................................')
         
@@ -482,7 +525,8 @@ class PreStimManager:
             print("saving...........................................................................")
             print('saved to', const.diroutput + const.evokedsPickleFileEnd)
         return evokeds
-        
+    
+#%%        
     def grandaverage_evokeds(self, evokeds):
         evokeds_gAvg= {}
         for condition in const.conditions:

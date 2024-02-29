@@ -21,6 +21,7 @@ import os
 from glob import glob
 import mne
 import pandas as pd
+import random
 import numpy as np
 import pickle
 
@@ -210,38 +211,54 @@ import matplotlib.pyplot as plt
 #%%###################################################################################################################
 data_dict, condition_dict = PreStimManager.get_data(output = True)
 
-#%% Creating a dict of dicts
-result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}
+#%% Random/ jackknife resample
+n_iter = 10
+
+stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
+# counting total correct and incorrect
+count_cor = stacked_cond_df['accuracy'].value_counts()[1]
+count_inc = stacked_cond_df['accuracy'].value_counts()[0]
+
+idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
+idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
+
+minimum = min(count_cor, count_inc)
+tmp = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
+
+stacked_cond_df.iloc[tmp]
+
+#%% Creating a dict of dicts to store the mdf
+# result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}
 
 
 #%% Let's try the logistic regression
 
-# We'll try this on channel 0 and timepoint 0 before we loop
-tmp_dict = {}
-for subjID in const.subjIDs:    
-    tmp_dict[subjID] = condition_dict[subjID]
-    tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
+# # We'll try this on channel 0 and timepoint 0 before we loop
+# tmp_dict = {}
+# for subjID in const.subjIDs:    
+#     tmp_dict[subjID] = condition_dict[subjID]
+#     tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
     
-# Combine all subject's data into one df so we can run the model on that
-data = pd.concat(tmp_dict.values(), axis=0)
-del tmp_dict
+# # Combine all subject's data into one df so we can run the model on that
+# data = pd.concat(tmp_dict.values(), axis=0)
+# del tmp_dict
 
-results = []
-#%% Let's first try with statsmodels...
-formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
-groups = 'subjID'
+# results = []
+# #%% Let's first try with statsmodels...
+# formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
+# groups = 'subjID'
 
-md = smf.mnlogit(formula, data, groups = groups)  # TODO groups doesn't work >:(
-mdf = md.fit(full_output = True)
-mdf.summary()
-p_values = mdf.pvalues
-predicted = md.predict(mdf.params)
+# md = smf.mnlogit(formula, data, groups = groups)  # TODO groups doesn't work >:(
+# mdf = md.fit(full_output = True)
+# mdf.summary()
+# p_values = mdf.pvalues
+# predicted = md.predict(mdf.params)
 
-pred_table = mdf.pred_table() 
-# pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
-# Correct predictions are along the diagonal.
-results.append(formula)
-results.append(mdf.prsquared)
+# pred_table = mdf.pred_table() 
+# # pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
+# # Correct predictions are along the diagonal.
+# results.append(formula)
+# results.append(mdf.prsquared)
 
 #%%  CREATING EVOKEDS #########################################################################################################
 # """

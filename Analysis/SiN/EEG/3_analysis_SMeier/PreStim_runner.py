@@ -15,8 +15,24 @@ This script and the functions script requires the PreStim_constants script,
 which contains variables used across scripts and functions, such as filepath chunks
 or condition labels.
 
-
- # TODO describe input and output files  
+Input files:
+    - epoched data from MNE *epo.fif
+        Handled entirely by PreStimManager
+        The filepaths are in PreStim_constants and adpted to each subject by PreStimManager.
+        
+Output files:
+    - p-Values array as .pkl
+        p-Values are saved by calling PreStimManager.save_pValues()
+        This can be done regardless of regression type (logit or LMM) or FDR-correction.
+        The output filepath is in PreStim_constants and adapted to each case by PreStimManager.
+        
+    - evokeds dict as .pkl
+        A dict which has all possible combinations of accuracy, noiseType & degradation
+        as keys, which each have the corresponding value of a list containing the evoked arrays
+        of every subject.
+        They are created and saved by calling PreStimManager.get_evokeds().
+        The output filepath is in PreStim_constants.
+        
 
 """
 #%% USER INPUT 
@@ -25,7 +41,7 @@ doPlots = False
 
 """
 Runner : bool
-    if True, will re-run the LMM and re-compute the evokeds, and save them,
+    if True, will re-run the regression and re-compute the evokeds, and save them,
     overwriting previously saved pickles. This will take a lot of time.
     If False, will open previously saved pickles instead
     
@@ -46,23 +62,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
+from datetime import datetime
 
 import PreStim_constants as const
 from PreStim_functions import PreStimManager
 PreStimManager = PreStimManager() #initiate PreStimManager (collection of functions)
 
-
+start = datetime.now()
 #%%
 if Runner:
-    #%% Run LMM and save p-Values #############################################################################################
+    #%% Run regression and save p-Values #############################################################################################
     
-    for noise in const.noise:
-        PreStimManager.get_data(condition = noise, output = True)
-        p = PreStimManager.run_LogitRegression()
-        # PreStimManager.FDR_correction()
-        p_values_FDR = PreStimManager.save_pValues()
+    for noise in const.noise: # separately for each noiseType
+        PreStimManager.get_data(condition = noise) # Get epoched data in a format usable for the regression
+        PreStimManager.run_LogitRegression() # run the regression separately for each timepoint & channel
+        PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
+        p_values_FDR = PreStimManager.save_pValues() # save the p-Value array and return it
     
-    #%% get evoked objects # TODO document more
+    #%% get evoked objects for every subj of every possible combination of accuracy, noiseType & degradation
     evokeds = PreStimManager.get_evokeds()
     
 else:
@@ -185,6 +202,7 @@ if doPlots:
             )
         # fig.suptitle(f'Topomaps for {condition}')
         # plt.shSow()
-    
+
+end = datetime.now()    
     
 
