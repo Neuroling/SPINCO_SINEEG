@@ -17,24 +17,29 @@ or condition labels.
 
 Input files:
     - epoched data from MNE *epo.fif
-        Handled entirely by PreStimManager
-        The filepaths are in PreStim_constants and adpted to each subject by PreStimManager.
+        - Handled entirely by PreStimManager
+        - The filepaths are in PreStim_constants and adpted to each subject by PreStimManager.
         
 Output files:
     - p-Values array as .pkl
-        p-Values are saved by calling PreStimManager.save_pValues()
-        This can be done regardless of regression type (logit or LMM) or FDR-correction.
-        The output filepath is in PreStim_constants and adapted to each case by PreStimManager.
+        - A dict containing the array of p-Values as well as the metadata. 
+        - The metadata contains information on how the p-Values were computed, including the
+          type of regression (logit or LMM), regression formula, FDR-correction, etc.
+        - p-Values are saved by calling PreStimManager.save_pValues()
+        - This can be done regardless of regression type (logit or LMM) or FDR-correction.
+        - The output filepath is in PreStim_constants and adapted to each case by PreStimManager.
         
     - evokeds dict as .pkl
-        A dict which has all possible combinations of accuracy, noiseType & degradation
-        as keys, which each have the corresponding value of a list containing the evoked arrays
-        of every subject.
-        They are created and saved by calling PreStimManager.get_evokeds().
-        The output filepath is in PreStim_constants.
+        - A dict which has all possible combinations of accuracy, noiseType & degradation
+          as keys, which each have the corresponding value of a list containing the evoked arrays
+          of every subject. 
+        - In other words: A dict of evoked arrays for every combination of subjID, accuracy, noiseType & degradation
+        - They are created and saved by calling PreStimManager.get_evokeds().
+        - The output filepath is in PreStim_constants.
         
 
 """
+
 #%% USER INPUT 
 Runner = True 
 doPlots = False
@@ -43,7 +48,7 @@ doPlots = False
 Runner : bool
     if True, will re-run the regression and re-compute the evokeds, and save them,
     overwriting previously saved pickles. This will take a lot of time.
-    If False, will open previously saved pickles instead
+    If False, will open previously saved pickles instead (Not working right now, # TODO )
     
 doPlots : bool
     if True, will run plots
@@ -68,19 +73,22 @@ import PreStim_constants as const
 from PreStim_functions import PreStimManager
 PreStimManager = PreStimManager() #initiate PreStimManager (collection of functions)
 
-start = datetime.now()
+start_time = datetime.now() # recording the time when the script starts running (helpful for debugging, optimisation and control)
+
 #%%
 if Runner:
     #%% Run regression and save p-Values #############################################################################################
     
-    for noise in const.noise: # separately for each noiseType
+    # for noise in const.noise: # separately for each noiseType
+    for noise in ['NV']: # for debugging, only run one condition
         PreStimManager.get_data(condition = noise) # Get epoched data in a format usable for the regression
-        PreStimManager.run_LogitRegression() # run the regression separately for each timepoint & channel
+        regression_start_time = datetime.now()
+        p_values = PreStimManager.run_LogitRegression(n_iter = 250) # run the regression separately for each timepoint & channel
         PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
         p_values_FDR = PreStimManager.save_pValues() # save the p-Value array and return it
     
     #%% get evoked objects for every subj of every possible combination of accuracy, noiseType & degradation
-    evokeds = PreStimManager.get_evokeds()
+    # evokeds = PreStimManager.get_evokeds()
     
 else:
     #%% Open p-Values & evokeds ###############################################################################################
@@ -203,6 +211,6 @@ if doPlots:
         # fig.suptitle(f'Topomaps for {condition}')
         # plt.shSow()
 
-end = datetime.now()    
+end_time = datetime.now()    # To record the time of when the script finishes running
     
 

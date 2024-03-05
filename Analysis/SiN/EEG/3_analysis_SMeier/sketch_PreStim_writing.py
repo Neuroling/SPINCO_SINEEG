@@ -209,7 +209,7 @@ import matplotlib.pyplot as plt
 
 
 #%%###################################################################################################################
-data_dict, condition_dict = PreStimManager.get_data(output = True)
+data_dict, condition_dict = PreStimManager.get_data(output = True, condition = "NV")
 
 #%% Random/ jackknife resample
 n_iter = 10
@@ -223,9 +223,35 @@ idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
 idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
 
 minimum = min(count_cor, count_inc)
-tmp = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
+tmp_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
 
-stacked_cond_df.iloc[tmp]
+subsampled_df = stacked_cond_df.iloc[tmp_idx]
+
+#%% How to account for uneven trial numbers of levels, wordPosition, subjID as a result of the above
+stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
+
+# get all column names
+col_names = list(stacked_cond_df.columns)
+
+# this gives us the indexes of each condition
+indexes={} # empty dict
+for col in col_names: # for every column name
+    # indexes[col] = {} # create an empty dict within the indexes-dict
+    for UniqueVal in list(stacked_cond_df[col].unique()): # For each unique value, get the indexes of all trials with that value
+        indexes[str(col+ '_' + str(UniqueVal))] = list(stacked_cond_df[col].index[stacked_cond_df[col]==UniqueVal])
+   
+# next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
+# and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
+# but that's not possible since some subj are 100% correct on some of those combinations.
+# even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
+# meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
+
+newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
+tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
+max(tmp['accuracy']) 
+# 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
+# for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
+# Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
 
 #%% Creating a dict of dicts to store the mdf
 # result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}

@@ -37,3 +37,4 @@ noise = ['NV', 'SSN']
 
 # List all possible combinations of noise, degradation and accuracy, separated by /
 conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
+
