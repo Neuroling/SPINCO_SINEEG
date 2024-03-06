@@ -129,7 +129,7 @@ class PreStimManager:
             if condition:
                 epo = epo[condition]
             
-            data_dict[subjID] = epo.get_data(tmax = tmax, tmin = tmin, copy = False) # get data as array of shape [n_epochs, n_channels, n_times]
+            data_dict[subjID] = epo.get_data(tmax = tmax, tmin = tmin) # get data as array of shape [n_epochs, n_channels, n_times]
             condition_dict[subjID] = epo.metadata # get trial information
             
             # re-code and delete unneeded data
@@ -471,6 +471,7 @@ class PreStimManager:
                           condition_dict = None
                           ):
         # for a version with sklearn, see https://www.statology.org/logistic-regression-python/
+        # but this also does not account for multilevel data
         raise NotImplementedError
     
 #%%

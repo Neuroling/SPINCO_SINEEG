@@ -1,0 +1,13 @@
+library(lme4)
+setwd("Y:/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/PreStim")
+df1<-read.csv("testing_df.csv",header=T, sep=',')
+head(df1)
+str(df1)
+df1$accuracy <- factor(df1$accuracy)
+df1$levels <- factor(df1$levels)
+df1$noiseType <- factor(df1$noiseType)
+df1$wordPosition <- factor(df1$wordPosition)
+df1$subjID <- factor(df1$subjID)
+
+model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df1, family = binomial)
+summary(model)

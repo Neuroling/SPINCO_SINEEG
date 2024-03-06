@@ -19,7 +19,7 @@ PreStimManager = function.PreStimManager()
 
 import os
 from glob import glob
-import mne
+# import mne
 import pandas as pd
 import random
 import numpy as np
@@ -30,6 +30,17 @@ import statsmodels.formula.api as smf
 # from sklearn.model_selection import train_test_split
 # from sklearn.linear_model import LogisticRegression
 # from sklearn import metrics
+
+# import pymer4 
+# from pymer4 import models
+# from pymer4.models import lmer
+from rpy2.robjects.packages import importr, data
+from rpy2 import robjects
+base = importr("base")
+utils = importr("utils")
+read_csv = importr("read.csv")
+# utils.install_packages('lme4')
+lme4 = importr("lme4")
 
 import matplotlib.pyplot as plt
 
@@ -211,53 +222,121 @@ import matplotlib.pyplot as plt
 #%%###################################################################################################################
 data_dict, condition_dict = PreStimManager.get_data(output = True, condition = "NV")
 
+#%% let's try the pymer4 logistic regression!
+
+# # prepare the data
+# tmp_dict = {}
+# for subjID in const.subjIDs:    
+#     tmp_dict[subjID] = condition_dict[subjID]
+#     tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
+# df = pd.concat(tmp_dict.values(), axis=0)
+
+# # run the model
+# model = pymer4.models.lmer.lmer('accuracy ~ levels * eeg_data + wordPosition (1|subjID)', data = df, family = 'binomial')
+# ## ImportError: cannot import name 'lmer' from 'pymer4.models' >:(
+# # I don't know why it doesn't work. Circular dependency?
+# # I am going to cry :(
+
+
+#%% Try using rpy2 to use r code in python. Wish me luck. And strength.
+
+# prepare the data
+tmp_dict = {}
+for subjID in const.subjIDs:    
+    tmp_dict[subjID] = condition_dict[subjID]
+    tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
+df = pd.concat(tmp_dict.values(), axis=0)
+
+# does not work :(
+# robjects.r('''glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df, family = binomial)''')
+
+#Issue: passing a pandas df directly to R's lme4 gives an error. 
+# One (miserable) way to circumvent this is first saving the df as csv, then reading it using R's utils,
+# which reads it as an robjects.vectors.DataFrame
+df.to_csv(os.path.join(const.diroutput, str('testing_df.csv')))
+dfdir = os.path.join(const.diroutput, str('testing_df.csv'))
+df2=utils.read_csv(dfdir)
+
+# next issue: now I will need to recode the factors from chr to factor
+model = lme4.glmer('accuracy ~ levels * eeg_data + wordPosition + (1|subjID)', data = df2, family = 'binomial')
+
+df1 = df2
+# In R:
+something = robjects(
+    """
+    df1$accuracy <- factor(df1$accuracy)
+    df1$levels <- factor(df1$levels)
+    df1$noiseType <- factor(df1$noiseType)
+    df1$wordPosition <- factor(df1$wordPosition)
+    df1$subjID <- factor(df1$subjID)
+    
+    model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df1, family = binomial)
+    summary(model)
+    """)
+
+
+"""
+library(lme4)
+setwd("Y:/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/PreStim")
+df1<-read.csv("testing_df.csv",header=T, sep=',')
+head(df1)
+str(df1)
+df1$accuracy <- factor(df1$accuracy)
+df1$levels <- factor(df1$levels)
+df1$noiseType <- factor(df1$noiseType)
+df1$wordPosition <- factor(df1$wordPosition)
+df1$subjID <- factor(df1$subjID)
+
+model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df1, family = binomial)
+summary(model)
+"""
 #%% Random/ jackknife resample
-n_iter = 10
+# n_iter = 10
 
-stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
-# counting total correct and incorrect
-count_cor = stacked_cond_df['accuracy'].value_counts()[1]
-count_inc = stacked_cond_df['accuracy'].value_counts()[0]
+# stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
+# # counting total correct and incorrect
+# count_cor = stacked_cond_df['accuracy'].value_counts()[1]
+# count_inc = stacked_cond_df['accuracy'].value_counts()[0]
 
-idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
-idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
+# idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
+# idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
 
-minimum = min(count_cor, count_inc)
-tmp_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
+# minimum = min(count_cor, count_inc)
+# tmp_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
 
-subsampled_df = stacked_cond_df.iloc[tmp_idx]
+# subsampled_df = stacked_cond_df.iloc[tmp_idx]
 
 #%% How to account for uneven trial numbers of levels, wordPosition, subjID as a result of the above
-stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
+# stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
 
-# get all column names
-col_names = list(stacked_cond_df.columns)
+# # get all column names
+# col_names = list(stacked_cond_df.columns)
 
-# this gives us the indexes of each condition
-indexes={} # empty dict
-for col in col_names: # for every column name
-    # indexes[col] = {} # create an empty dict within the indexes-dict
-    for UniqueVal in list(stacked_cond_df[col].unique()): # For each unique value, get the indexes of all trials with that value
-        indexes[str(col+ '_' + str(UniqueVal))] = list(stacked_cond_df[col].index[stacked_cond_df[col]==UniqueVal])
+# # this gives us the indexes of each condition
+# indexes={} # empty dict
+# for col in col_names: # for every column name
+#     # indexes[col] = {} # create an empty dict within the indexes-dict
+#     for UniqueVal in list(stacked_cond_df[col].unique()): # For each unique value, get the indexes of all trials with that value
+#         indexes[str(col+ '_' + str(UniqueVal))] = list(stacked_cond_df[col].index[stacked_cond_df[col]==UniqueVal])
    
-# next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
-# and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
-# but that's not possible since some subj are 100% correct on some of those combinations.
-# even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
-# meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
+# # next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
+# # and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
+# # but that's not possible since some subj are 100% correct on some of those combinations.
+# # even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
+# # meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
 
-newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
-tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
-max(tmp['accuracy']) 
-# 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
-# for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
-# Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
+# newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
+# tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
+# max(tmp['accuracy']) 
+# # 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
+# # for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
+# # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
 
 #%% Creating a dict of dicts to store the mdf
 # result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}
 
 
-#%% Let's try the logistic regression
+#%% Let's try the logistic regression with statsmodels
 
 # # We'll try this on channel 0 and timepoint 0 before we loop
 # tmp_dict = {}
