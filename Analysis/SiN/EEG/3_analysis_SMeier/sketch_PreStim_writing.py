@@ -37,21 +37,21 @@ import statsmodels.formula.api as smf
 # from pymer4 import models
 # from pymer4.models import lmer
 
-from rpy2.robjects.packages import importr, data
-from rpy2 import robjects
-from rpy2.robjects import pandas2ri
-base = importr("base")
-utils = importr("utils")
-read_csv = importr("read.csv")
-# utils.install_packages('lme4') # Only need to run this the first time to install lme4 package
-lme4 = importr("lme4")
-Matrix = importr('Matrix')
+# from rpy2.robjects.packages import importr, data
+# from rpy2 import robjects
+# from rpy2.robjects import pandas2ri
+# base = importr("base")
+# utils = importr("utils")
+# read_csv = importr("read.csv")
+# # utils.install_packages('lme4') # Only need to run this the first time to install lme4 package
+# lme4 = importr("lme4")
+# Matrix = importr('Matrix')
 
-# utils.update_packages()
-oo = base.options(repos = "https://cran.r-project.org/")
-utils.install_packages('Matrix')
-utils.install_packages('lme4', type = 'source')
-base.options(oo)
+# # utils.update_packages()
+# oo = base.options(repos = "https://cran.r-project.org/")
+# utils.install_packages('Matrix')
+# utils.install_packages('lme4', type = 'source')
+# base.options(oo)
 
 #%% filepaths
 # subjID = 's001'
@@ -237,6 +237,11 @@ for subjID in const.subjIDs:
 df = pd.concat(tmp_dict.values(), axis=0, ignore_index=True)
 del tmp_dict
 
+#%% Opening a pickle
+filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_NV_FDR_pValues.pkl"
+with open(filepath, 'rb') as f:
+    some_pVals = pickle.load(f)
+    
 #%% let's try the pymer4 logistic regression!
 
 # # run the model
@@ -249,82 +254,82 @@ del tmp_dict
 #%% Try using rpy2 to use r code in python. Wish me luck. And strength.
 
 
-## Below: does not work :(
-# robjects.r('''glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df, family = binomial)''')
+# ## Below: does not work :(
+# # robjects.r('''glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df, family = binomial)''')
 
-## Issue: passing a pandas df directly to R's lme4 gives an error. I first need to convert it into an robjects.vectors.DataFrame
-with (robjects.default_converter + pandas2ri.converter).context():
-  df_r = robjects.conversion.get_conversion().py2rpy(df)
+# ## Issue: passing a pandas df directly to R's lme4 gives an error. I first need to convert it into an robjects.vectors.DataFrame
+# with (robjects.default_converter + pandas2ri.converter).context():
+#   df_r = robjects.conversion.get_conversion().py2rpy(df)
 
-with (robjects.default_converter + pandas2ri.converter).context():
-  df_summary = base.summary(df_r)
-print(df_summary)
+# with (robjects.default_converter + pandas2ri.converter).context():
+#   df_summary = base.summary(df_r)
+# print(df_summary)
 
-## next issue: now I will need to recode the factors from chr to factor
-for col_name in const.factor_variables:
-    col_index = list(df_r.colnames).index(col_name)
-    col = robjects.vectors.FactorVector(df_r.rx2(col_name))
-    df_r[col_index] = col
+# ## next issue: now I will need to recode the factors from chr to factor
+# for col_name in const.factor_variables:
+#     col_index = list(df_r.colnames).index(col_name)
+#     col = robjects.vectors.FactorVector(df_r.rx2(col_name))
+#     df_r[col_index] = col
     
-with (robjects.default_converter + pandas2ri.converter).context():
-  df_summary = base.summary(df_r)
-print(df_summary)
+# with (robjects.default_converter + pandas2ri.converter).context():
+#   df_summary = base.summary(df_r)
+# print(df_summary)
 
-#%%
-model = lme4.glmer('accuracy ~ levels * eeg_data + wordPosition + (1|subjID)', data = df_r, family = 'binomial')
-# RRuntimeError: Error in initializePtr() :   function 'chm_factor_ldetL2' not provided by package 'Matrix'
-# apparently, the Matrix package does not support binary data.
-# usually, updating lme4 to the newest version would help, but using 
-# `utils.update_packages()` does not work (see screenshot 7.3.24 10.47)
-# https://stackoverflow.com/questions/77481539/error-in-initializeptr-function-cholmod-factor-ldeta-not-provided-by-pack
-# The solution here did not help
-# I also tried to 
-#%%
-something = robjects.r(
-    """
-    head(df_r)
-    df_r$accuracy <- factor(df_r$accuracy)
-    df_r$levels <- factor(df_r$levels)
-    df_r$noiseType <- factor(df_r$noiseType)
-    df_r$wordPosition <- factor(df_r$wordPosition)
-    df_r$subjID <- factor(df_r$subjID)
+
+# model = lme4.glmer('accuracy ~ levels * eeg_data + wordPosition + (1|subjID)', data = df_r, family = 'binomial')
+# # RRuntimeError: Error in initializePtr() :   function 'chm_factor_ldetL2' not provided by package 'Matrix'
+# # apparently, the Matrix package does not support binary data.
+# # usually, updating lme4 to the newest version would help, but using 
+# # `utils.update_packages()` does not work (see screenshot 7.3.24 10.47)
+# # https://stackoverflow.com/questions/77481539/error-in-initializeptr-function-cholmod-factor-ldeta-not-provided-by-pack
+# # The solution here did not help
+# # I also tried to 
+
+# something = robjects.r(
+#     """
+#     head(df_r)
+#     df_r$accuracy <- factor(df_r$accuracy)
+#     df_r$levels <- factor(df_r$levels)
+#     df_r$noiseType <- factor(df_r$noiseType)
+#     df_r$wordPosition <- factor(df_r$wordPosition)
+#     df_r$subjID <- factor(df_r$subjID)
     
-    model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df_r, family = binomial)
-    summary(model)
-    """)
+#     model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df_r, family = binomial)
+#     summary(model)
+#     """)
 
-## This works with no problems in R
-"""
-library(lme4)
-setwd("Y:/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/PreStim")
-df_r<-read.csv("testing_df.csv",header=T, sep=',')
-head(df_r)
-str(df_r)
-df_r$accuracy <- factor(df_r$accuracy)
-df_r$levels <- factor(df_r$levels)
-df_r$noiseType <- factor(df_r$noiseType)
-df_r$wordPosition <- factor(df_r$wordPosition)
-df_r$subjID <- factor(df_r$subjID)
+# ## This works with no problems in R
+# """
+# library(lme4)
+# setwd("Y:/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/PreStim")
+# df_r<-read.csv("testing_df.csv",header=T, sep=',')
+# head(df_r)
+# str(df_r)
+# df_r$accuracy <- factor(df_r$accuracy)
+# df_r$levels <- factor(df_r$levels)
+# df_r$noiseType <- factor(df_r$noiseType)
+# df_r$wordPosition <- factor(df_r$wordPosition)
+# df_r$subjID <- factor(df_r$subjID)
 
-model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df_r, family = binomial)
-summary(model)
-"""
+# model <- glmer(accuracy ~ levels * eeg_data + wordPosition + (1|subjID), data = df_r, family = binomial)
+# summary(model)
+# """
 
 #%% Random/ jackknife resample
 # n_iter = 10
 
-# stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
-# # counting total correct and incorrect
-# count_cor = stacked_cond_df['accuracy'].value_counts()[1]
-# count_inc = stacked_cond_df['accuracy'].value_counts()[0]
+stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
+# counting total correct and incorrect
+count_cor = stacked_cond_df['accuracy'].value_counts()[1]
+count_inc = stacked_cond_df['accuracy'].value_counts()[0]
 
-# idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
-# idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
+idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
+idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
 
-# minimum = min(count_cor, count_inc)
-# tmp_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
+minimum = min(count_cor, count_inc)
+tmp_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
 
-# subsampled_df = stacked_cond_df.iloc[tmp_idx]
+subsampled_df = stacked_cond_df.iloc[tmp_idx]
 
 #%% How to account for uneven trial numbers of levels, wordPosition, subjID as a result of the above
 # stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
@@ -358,32 +363,22 @@ summary(model)
 
 #%% Let's try the logistic regression with statsmodels
 
-# # We'll try this on channel 0 and timepoint 0 before we loop
-# tmp_dict = {}
-# for subjID in const.subjIDs:    
-#     tmp_dict[subjID] = condition_dict[subjID]
-#     tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
-    
-# # Combine all subject's data into one df so we can run the model on that
-# data = pd.concat(tmp_dict.values(), axis=0)
-# del tmp_dict
+# # results = []
 
-# results = []
-# #%% Let's first try with statsmodels...
-# formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
-# groups = 'subjID'
+# # formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
+# # groups = 'subjID'
 
-# md = smf.mnlogit(formula, data, groups = groups)  # TODO groups doesn't work >:(
+# md = smf.logit(formula, subsampled_df, groups = groups)  # TODO groups doesn't work >:(
 # mdf = md.fit(full_output = True)
 # mdf.summary()
 # p_values = mdf.pvalues
 # predicted = md.predict(mdf.params)
 
 # pred_table = mdf.pred_table() 
-# # pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
-# # Correct predictions are along the diagonal.
-# results.append(formula)
-# results.append(mdf.prsquared)
+# # # pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
+# # # Correct predictions are along the diagonal.
+# # results.append(formula)
+# # results.append(mdf.prsquared)
 
 #%%  CREATING EVOKEDS #########################################################################################################
 # """

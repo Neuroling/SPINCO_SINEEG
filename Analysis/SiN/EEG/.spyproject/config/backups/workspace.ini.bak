@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['3_analysis_SMeier/PreStim_constants.py', '3_analysis_SMeier/PreStim_runner.py', '3_analysis_SMeier/PreStim_functions.py', '3_analysis_SMeier/sketch_PreStim_writing.py', '../BEH/Beh_01_summary_withinSubj.py']
+recent_files = ['3_analysis_SMeier\\PreStim_constants.py', '3_analysis_SMeier\\PreStim_runner.py', '3_analysis_SMeier\\PreStim_functions.py', '3_analysis_SMeier\\sketch_PreStim_writing.py', '..\\BEH\\Beh_01_summary_withinSubj.py', '3_analysis_SMeier\\PreStim_logitRegression.R']
 
 [main]
 version = 0.2.0

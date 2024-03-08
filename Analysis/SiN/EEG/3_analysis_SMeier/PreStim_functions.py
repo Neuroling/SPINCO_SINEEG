@@ -56,7 +56,7 @@ class PreStimManager:
         
         self.dirinput = const.dirinput
         self.metadata = {}
-        self.metadata['date_run'] = str(datetime.now())
+        self.metadata['datetime_run_start'] = str(datetime.now())
  
 #%%    
     def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
@@ -160,7 +160,47 @@ class PreStimManager:
         self.metadata['times'] = epo._raw_times[0:-1]
         
         if output : return data_dict, condition_dict
-    
+        
+        #%%
+    def get_data_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
+        
+        self.subjID = subjID
+        # get filepath
+        epo_path = glob(os.path.join(self.dirinput, subjID, str(subjID + '_' + const.taskID + "*" + const.fifFileEnd)), recursive=True)[0]
+        epo = mne.read_epochs(epo_path)
+        self.metadata['epo_path'] = epo_path
+        self.metadata['subjectID'] = subjID
+        
+        if condition:
+            epo = epo[condition]
+        
+        data_array = epo.get_data(tmax = tmax, tmin = tmin) # get data as array of shape [n_epochs, n_channels, n_times]
+        condition_df = epo.metadata # get trial information
+        
+        # re-code and delete unneeded data
+        condition_df['noiseType'] = condition_df['block'] 
+        condition_df['wordPosition'] = condition_df['stimtype'] 
+        # condition_df['subjID'] = [subjID for i in range(len(condition_df))]
+        
+        # Re-coding is only necessary for the DV
+        condition_df['accuracy'].replace({'inc': 0, 'cor': 1}, inplace=True)
+        condition_df['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
+        condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+        
+        if condition:
+            self.metadata['condition'] = condition
+            
+        self.data_array = data_array
+        self.condition_df = condition_df
+
+        
+        # add channel names and time in seconds to metadata
+        self.metadata['ch_names'] = epo.ch_names
+        self.metadata['times'] = epo._raw_times[0:-1]
+        del epo
+        
+        if output : return data_array, condition_df
+        
 #%%  
     def check_chans_and_times(self):
         """
@@ -282,7 +322,7 @@ class PreStimManager:
     def run_LogitRegression(self, 
                 data_dict= None, 
                 condition_dict = None,
-                formula = "accuracy ~ levels * eeg_data + wordPosition", 
+                formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
                 # groups = "subjID",
                 n_iter = 500, 
                 sub_sample = True
@@ -334,40 +374,47 @@ class PreStimManager:
 
         """
 
-        
         # If no data given, use the data stored in the class object
-        if data_dict == None:
+        if not data_dict:
             data_dict = self.data_dict    
-        if condition_dict == None:
+        if not condition_dict :
             condition_dict = self.condition_dict
             
         if not sub_sample: # do not iterate if no sub-sampling is performed
             n_iter = 1
-            
+        
+        # Get a list of all subj in the data_dict
+        SubjList = list(data_dict.keys())
+        self.metadata['subjects'] = SubjList
+        
+        if len(SubjList) == 1:
+            self.metadata['subject_design'] = "within_Subject"
+            self.withinSubj = True # we use this later for the filenames
+        else:
+            self.metadata['within-subject'] = "between_Subject"
+            self.withinSubj = False
+        
         #% Create arrays and lists
-        channelsIdx = [i for i in range(data_dict[self.LastSubjID].shape[1])] # list of channels
-        timesIdx = [i for i in range(data_dict[self.LastSubjID].shape[2])] #list of timepoints
+        channelsIdx = [i for i in range(data_dict[SubjList[0]].shape[1])] # list of channels
+        timesIdx = [i for i in range(data_dict[SubjList[0]].shape[2])] #list of timepoints
+        # ""data_dict[SubjList[0]].shape"" means this: Get the shape of the dict-entry of the first subj in SubjList
         
         
-        # This will run a first LMM, which is only used to extract the number of p-Values
+        # This will run a preliminary model, which is only used to extract the number of p-Values
         # Which is needed to create an empty array for the p-Values
         tmp_dict = {}
-        for subjID in const.subjIDs:    
+        for subjID in SubjList:    
             tmp_dict[subjID] = condition_dict[subjID]
             tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
         df = pd.concat(tmp_dict.values(), axis=0)
         pVals_n = len(smf.logit(formula, 
-                                df, 
-                                # groups = groups # TODO
+                                df,
                                 ).fit().pvalues.index)
         del tmp_dict, df
 
         # now we know the dimensions of the empty array we need to create to collect p_Values
         p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
         
-        # # create a dict of n_iter arrays of zeroes
-        # if sub_sample:
-        #     iter_p_values = {i:p_values for i in range(n_iter)}
         
         # But gfraga also asked to save the whole model output, soooo... # TODO
         #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
@@ -375,6 +422,8 @@ class PreStimManager:
         for i in range(n_iter):
             
             if sub_sample:
+                # we sub-sample running the function below. which will give us a set of indices (idx)
+                # and later we subset the data by idx
                 idx = self.random_subsample_accuracy(condition_dict = condition_dict)
             else: # if no sub-sampling is asked for, just get every idx
                 idx = [i for i in range(len(pd.concat(condition_dict.values(), axis=0, ignore_index=True)))]
@@ -387,14 +436,14 @@ class PreStimManager:
                        
                     # extract the data & trial information of each subject at a given timepoint and channel
                     tmp_dict = {}
-                    for subjID in const.subjIDs:    
+                    for subjID in SubjList:    
                         tmp_dict[subjID] = condition_dict[subjID]
                         tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
     
                     
-                    # Combine all subject's data into one dataframe so we can run the model on that
+                    # Combine all subject's data into one dataframe, so we can run the model on that
                     df = pd.concat(tmp_dict.values(), axis=0,ignore_index=True)
-                    df = df.iloc[idx]
+                    df = df.iloc[idx] # subset the df by idx
                     del tmp_dict
                     
                     
@@ -435,34 +484,154 @@ class PreStimManager:
         self.metadata['equalized_accuracy_sample'] = sub_sample
         
         if sub_sample:
-            self.metadata['sub_sample_size'] = len(df)
+            self.metadata['sub_sample_dataframe_length'] = len(df)
         
         
         return p_values
+    #%%
+    def run_LogitRegression_withinSubj(self, 
+                data_array = None, 
+                condition_df = None,
+                formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
+                n_iter = 500, 
+                sub_sample = True
+                ):
+ 
 
+        #  TODO check for bugs
+        # If no data given, use the data stored in the class object
+        if data_array == None:
+            data_array = self.data_array
+        else:
+            pass
+        
+        if condition_df == None:
+            condition_df = self.condition_df
+        else:
+            pass
+            
+        if not sub_sample: # do not iterate if no sub-sampling is performed
+            n_iter = 1
+
+        self.withinSubj = True # we use this later for the filenames
+
+        
+        #% Create arrays and lists
+        channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+        timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+        
+        
+        # This will run a preliminary model, which is only used to extract the number of p-Values
+        # Which is needed to create an empty array for the p-Values
+        tmp_df = pd.DataFrame()
+  
+        tmp_df = condition_df
+        tmp_df['eeg_data'] = data_array[:,0,0]
+        pVals_n = len(smf.logit(formula, 
+                                tmp_df,
+                                ).fit().pvalues.index)
+        del tmp_df
+
+        # now we know the dimensions of the empty array we need to create to collect p_Values
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+        
+        
+        # But gfraga also asked to save the whole model output, soooo... # TODO
+        #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
+        
+        for i in range(n_iter):
+            
+            if sub_sample:
+                # we sub-sample running the function below. which will give us a set of indices (idx)
+                # and later we subset the data by idx
+                idx = self.random_subsample_accuracy()
+            else: # if no sub-sampling is asked for, just get every idx
+                idx = [i for i in range(len(condition_df))]
+            
+            # And now we run the model for every channel and every timepoint
+            for thisChannel in channelsIdx:
+                print('>>>> running channel',thisChannel,'of', len(channelsIdx))
+                
+                for tf in timesIdx:
+                       
+                    # extract the data & trial information at a given timepoint and channel              
+                    df = condition_df
+                    df['eeg_data'] = data_array[:,thisChannel,tf]
+
+                    df = df.iloc[idx] # subset the df by idx
+
+                    
+                    
+                    # calculate Logit regression
+                    md = smf.logit(formula, 
+                                   df, 
+                                   )  
+                    
+                    mdf = md.fit() # ??? Convergence warning
+                    ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+                    
+                    # record p-Values 
+                    # This adds the p-values to the values already present in the array at the specified location
+                    # for the first iteration, the array only contains 0s. Then, with every iteration, 
+                    # the array contains the sum of p-values of each channel and tf
+                    # and later we will get the mean by dividing by n_iter
+                    p_values[thisChannel,tf,:] += mdf.pvalues
+ 
+        
+        if sub_sample: # get mean and sd of the p-Values across iterations
+            p_values_mean = p_values / n_iter
+            self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
+            self.p_values = p_values_mean
+
+        else:
+            self.p_values = p_values
+
+        
+        
+        self.metadata['p_Values_index'] = mdf.pvalues.index
+        self.metadata['regression_formula'] = md.formula
+        self.metadata['regression_groups'] = "NONE" # TODO
+        self.metadata['regression_type'] = str(mdf.model)
+        self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
+        self.metadata['axes'] = ['channel, timeframe, p-Value']
+        self.metadata['iterations'] = n_iter
+        self.metadata['equalized_accuracy_sample'] = sub_sample
+        
+        if sub_sample:
+            self.metadata['sub_sample_dataframe_length'] = len(df)
+        
+        
+        return p_values
 #%%
-    def random_subsample_accuracy(self, condition_dict = None):
+    def random_subsample_accuracy(self, trial_info = None):
+        # TODO document
         
         # TODO this does not currently account for uneven numbers of wordPosition, subjID, or levels that could result from this
         # (see comment in sketch_PreStim_writing)
-        if not condition_dict:
-            condition_dict = self.condition_dict
+        if not trial_info:
+            try:
+                trial_info = self.condition_dict
+                # combine all subj condition dataframes to get across-subj accuracy
+                # TODO for within-subj (see comment in sketch_PreStim_writing)
+                tmp_df = pd.concat(trial_info.values(), axis=0, ignore_index=True)
+            except AttributeError:
+                try:
+                    tmp_df = self.condition_df
+                except AttributeError:
+                    raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
         
-        # combine all subj condition dataframes to get across-subj accuracy
-        # TODO for within-subj (see comment in sketch_PreStim_writing)
-        stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
         
         # counting total correct and incorrect
-        count_cor = stacked_cond_df['accuracy'].value_counts()[1]
-        count_inc = stacked_cond_df['accuracy'].value_counts()[0]
+        count_cor = tmp_df['accuracy'].value_counts()[1]
+        count_inc = tmp_df['accuracy'].value_counts()[0]
 
-        idx_cor = stacked_cond_df.index[stacked_cond_df['accuracy'] == 1]
-        idx_inc = stacked_cond_df.index[stacked_cond_df['accuracy'] == 0]
+        idx_cor = tmp_df.index[tmp_df['accuracy'] == 1]
+        idx_inc = tmp_df.index[tmp_df['accuracy'] == 0]
 
         minimum = min(count_cor, count_inc)
         subsample_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
 
-        # subsampled_df = stacked_cond_df.iloc[subsample_idx]
+
         return subsample_idx
 
     #%%
@@ -563,6 +732,7 @@ class PreStimManager:
         None.
 
         """
+        self.metadata["datetime_run_end"] = str(datetime.now())
         p_values = {'metadata':self.metadata} # create a dict and add the metadata we collected
         
         # Now add the p-Values to the dict. First try to add the FDR-corrected p-Values 
@@ -579,15 +749,16 @@ class PreStimManager:
             condition_name = str(self.metadata['condition'] + '_')
         except AttributeError:
             condition_name = ''
-        
-        # if we have SD values of the p-Value iterations, add those as well.
-        try:
-            p_values['p_values_SD'] = self.p_values_SD
-        except AttributeError:
-            pass
-            
+
+        # check if the data is sub-sampled to add that to the filename
         if self.metadata['equalized_accuracy_sample']:
             subsample_name = 'sub-sampled_'
+            
+            # if we have SD values of the p-Value iterations, add those as well.
+            try:
+                p_values['p_values_SD'] = self.p_values_SD
+            except AttributeError:
+                pass
         else:
             subsample_name = ''
             
@@ -597,10 +768,17 @@ class PreStimManager:
         regression_name = str(
             self.metadata['regression_type'][self.metadata['regression_type'].rfind('.')+1:
                                              self.metadata['regression_type'].find(' ')] + '_')
-            
-        filepath = const.diroutput + regression_name + condition_name + subsample_name + FDR_name + const.pValsPickleFileEnd
         
-        # TODO save under different name if not FDR correcetd (as **_uncor)
+        # if there is a within subj design, get the subjID, add that to the output filepath
+        if self.withinSubj:
+            subjID = self.subjID
+            diroutput = const.dirinput + "/" + subjID + "/" + subjID + "_"
+        else: # if there is no within subj design, get output filepath from constants
+            diroutput = const.diroutput
+            
+            
+        filepath = diroutput + regression_name + condition_name + subsample_name + FDR_name + const.pValsPickleFileEnd
+        p_values['metadata']['output_filepath'] = filepath
         with open(filepath, 'wb') as f:
             pickle.dump(p_values, f)
         print("saving to ",filepath)
