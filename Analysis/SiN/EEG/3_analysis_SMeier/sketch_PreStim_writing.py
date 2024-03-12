@@ -239,22 +239,22 @@ import statsmodels.formula.api as smf
 # del tmp_dict
 
 #%%
-# N = 5000
-# import math
+N = 5000
+import math
 
-# def cube(x):
-#     return math.sqrt(x)
+def cube(x):
+    return math.sqrt(x)
 
-# if __name__ == "__main__":
-#     with Pool() as pool:
-#       result = pool.map(cube, range(10,N))
-#     print("Program finished!")
+if __name__ == "__main__":
+    with Pool() as pool:
+      result = pool.map(cube, range(10,N))
+    print("Program finished!")
 #%%
 subjID = 's001'
 noise = 'NV'
 data_array, condition_df = PreStimManager.get_data_singleSubj(subjID, condition = noise, output=True)
 formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
-n_iter = 10
+n_iter = 1
 sub_sample = True
 
 reIdx = pd.Series(range(len(condition_df)))
@@ -276,124 +276,134 @@ pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
 # now we know the dimensions of the empty array we need to create to collect p_Values
 p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
 
-
-for iteration in range(n_iter):
-    # print(str(iteration) + "---------------------------------------------")
-    
-    if sub_sample:
-        # we sub-sample running the function below. which will give us a set of indices (idx)
-        # and then we subset the df using iloc[idx]
-        idx = PreStimManager.random_subsample_accuracy()
-
-    else: # if no sub-sampling is asked for, just assign the whole df
-        df = condition_df
-    
-    # And now we run the model for every channel and every timepoint
-    for thisChannel in channelsIdx:
+#%%
+class Task:
+    def __init__(self, condition_df, data_array):
+        self.condition_df = condition_df
+        self.data_array = data_array
+        self.formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
+        self.n_iter = 1
 
         
-        for tf in timesIdx:
-            df = condition_df  
-            # extract the data & trial information at a given timepoint and channel              
-            df['eeg_data'] = data_array[:,thisChannel,tf]
-            df = df.iloc[idx]
+    def doTask(self, tf):
+        df = self.condition_df  
+        # extract the data & trial information at a given timepoint and channel              
+        df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+        df = df.iloc[self.idx]
  
-            # calculate Logit regression
-            md = smf.logit(formula, df)  
-            
-            mdf = md.fit() # ??? Convergence warning
-            ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
-            
+        # calculate Logit regression
+        md = smf.logit(self.formula, df)  
+        
+        mdf = md.fit()
+        return mdf.pvalues
+    
+    def something(self):           
+        for iteration in range(self.n_iter):
+
+            self.idx = PreStimManager.random_subsample_accuracy()
+            # And now we run the model for every channel and every timepoint
+            for self.thisChannel in channelsIdx:
+                # Task = Task(condition_df, data_array,idx, formula, thisChannel)
+                if __name__ == "__main__":
+                    with Pool() as pool:
+                        p_values = pool.map(Task.doTask, timesIdx)
+        return p_values
+
+Task = Task(condition_df, data_array)  
+result = Task.something()      
+
             # record p-Values 
             # This adds the p-values to the values already present in the array at the specified location
             # for the first iteration, the array only contains 0s. Then, with every iteration, 
             # the array contains the sum of p-values of each channel and tf
             # and later we will get the mean by dividing by n_iter
-            p_values[thisChannel,tf,:] += mdf.pvalues
- 
-#%%
-        for iteration in range(n_iter):
-            # print(str(iteration) + "---------------------------------------------")
+            # p_values[thisChannel,tf,:] += mdf.pvalues
+
+
+        
+#%% TRASH
+#         for iteration in range(n_iter):
+#             # print(str(iteration) + "---------------------------------------------")
             
-            if sub_sample:
-                # we sub-sample running the function below. which will give us a set of indices (idx)
-                # and later we subset the data by idx
-                self.idx = self.random_subsample_accuracy()
-            else: # if no sub-sampling is asked for, just get every idx
-                self.idx = [ids for ids in range(len(condition_df))]
+#             if sub_sample:
+#                 # we sub-sample running the function below. which will give us a set of indices (idx)
+#                 # and later we subset the data by idx
+#                 self.idx = self.random_subsample_accuracy()
+#             else: # if no sub-sampling is asked for, just get every idx
+#                 self.idx = [ids for ids in range(len(condition_df))]
             
-            # And now we run the model for every channel and every timepoint
-            for self.thisChannel in channelsIdx:
+#             # And now we run the model for every channel and every timepoint
+#             for self.thisChannel in channelsIdx:
                 
-                for tf in timesIdx:
+#                 for tf in timesIdx:
                     
-                    def do_regression_timewise(self,tf):
-                        # extract the data & trial information at a given timepoint and channel              
-                        df = self.condition_df # TODO need to change this in case condition_df is provided
-                        df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+#                     def do_regression_timewise(self,tf):
+#                         # extract the data & trial information at a given timepoint and channel              
+#                         df = self.condition_df # TODO need to change this in case condition_df is provided
+#                         df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
     
-                        df = df.iloc[self.idx] # subset the df by idx
+#                         df = df.iloc[self.idx] # subset the df by idx
     
                         
                         
-                        # calculate Logit regression
-                        md = smf.logit(formula, 
-                                       df, 
-                                       )  
+#                         # calculate Logit regression
+#                         md = smf.logit(formula, 
+#                                        df, 
+#                                        )  
                         
-                        mdf = md.fit() # ??? Convergence warning
-                        ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+#                         mdf = md.fit() # ??? Convergence warning
+#                         ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
                     
-                    # record p-Values 
-                    # This adds the p-values to the values already present in the array at the specified location
-                    # for the first iteration, the array only contains 0s. Then, with every iteration, 
-                    # the array contains the sum of p-values of each channel and tf
-                    # and later we will get the mean by dividing by n_iter
-                    p_values[self.thisChannel,tf,:] += mdf.pvalues
+#                     # record p-Values 
+#                     # This adds the p-values to the values already present in the array at the specified location
+#                     # for the first iteration, the array only contains 0s. Then, with every iteration, 
+#                     # the array contains the sum of p-values of each channel and tf
+#                     # and later we will get the mean by dividing by n_iter
+#                     p_values[self.thisChannel,tf,:] += mdf.pvalues
  
         
-        if sub_sample: # get mean and sd of the p-Values across iterations
-            p_values_mean = p_values / n_iter
-            self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
-            self.p_values = p_values_mean
+#         if sub_sample: # get mean and sd of the p-Values across iterations
+#             p_values_mean = p_values / n_iter
+#             self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
+#             self.p_values = p_values_mean
 
-        else:
-            self.p_values = p_values
+#         else:
+#             self.p_values = p_values
 
         
         
-        self.metadata['p_Values_index'] = mdf.pvalues.index
-        self.metadata['regression_formula'] = self.formula
-        self.metadata['regression_groups'] = "NONE" 
-        self.metadata['regression_type'] = str(mdf.model)
-        self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
-        self.metadata['axes'] = ['channel, timeframe, p-Value']
-        self.metadata['iterations'] = n_iter
-        self.metadata['equalized_accuracy_sample'] = sub_sample
+#         self.metadata['p_Values_index'] = mdf.pvalues.index
+#         self.metadata['regression_formula'] = self.formula
+#         self.metadata['regression_groups'] = "NONE" 
+#         self.metadata['regression_type'] = str(mdf.model)
+#         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
+#         self.metadata['axes'] = ['channel, timeframe, p-Value']
+#         self.metadata['iterations'] = n_iter
+#         self.metadata['equalized_accuracy_sample'] = sub_sample
         
-        if sub_sample:
-            self.metadata['sub_sample_dataframe_length'] = len(df)
+#         if sub_sample:
+#             self.metadata['sub_sample_dataframe_length'] = len(df)
         
         
-        return p_values
+#         return p_values
     
         
-    def do_regression_timewise(self,tf):
-        # extract the data & trial information at a given timepoint and channel              
-        df = self.condition_df # TODO need to change this in case condition_df is provided
-        df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+#     def do_regression_timewise(self,tf):
+#         # extract the data & trial information at a given timepoint and channel              
+#         df = self.condition_df # TODO need to change this in case condition_df is provided
+#         df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
 
-        df = df.iloc[self.idx] # subset the df by idx
+#         df = df.iloc[self.idx] # subset the df by idx
 
         
         
-        # calculate Logit regression
-        md = smf.logit(formula, 
-                       df, 
-                       )  
+#         # calculate Logit regression
+#         md = smf.logit(formula, 
+#                        df, 
+#                        )  
         
-        mdf = md.fit() # ??? Convergence warning
-        ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+#         mdf = md.fit() # ??? Convergence warning
+#         ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
 #%% Opening a pickle
 # filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_NV_FDR_pValues.pkl"
 # with open(filepath, 'rb') as f:

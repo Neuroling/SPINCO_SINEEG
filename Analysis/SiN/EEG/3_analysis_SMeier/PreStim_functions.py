@@ -30,7 +30,10 @@ import numpy as np
 import pickle
 from datetime import datetime
 import random
+import warnings
+from multiprocessing import Pool
 
+warnings.filterwarnings('ignore') 
 
 
 class PreStimManager: 
@@ -58,7 +61,7 @@ class PreStimManager:
         self.metadata = {}
         self.metadata['datetime_run_start'] = str(datetime.now())
  
-#%%    
+# =====================================================================================================================    
     def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE IT FOR REGRESSION (between subject)
@@ -166,7 +169,7 @@ class PreStimManager:
         
         if output : return data_dict, condition_dict
         
-        #%%
+# =====================================================================================================================
     def get_data_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
@@ -262,7 +265,7 @@ class PreStimManager:
         
         if output : return data_array, condition_df
         
-#%%  
+# =====================================================================================================================
     def check_chans_and_times(self):
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
@@ -290,7 +293,7 @@ class PreStimManager:
             if self.data_dict[subjID].shape[2] != tf_N:
                 raise ValueError('not all subj have the same number of timepoints')
 
-#%%
+# =====================================================================================================================
     def run_LMM(self, 
                 data_dict= None, 
                 condition_dict = None,
@@ -379,7 +382,7 @@ class PreStimManager:
         self.p_values = p_values
         return p_values
     
-    #%%
+# =====================================================================================================================
     def run_LogitRegression(self, 
                 data_dict= None, 
                 condition_dict = None,
@@ -549,15 +552,16 @@ class PreStimManager:
         
         
         return p_values
-    #%%
+# =====================================================================================================================
     def run_LogitRegression_withinSubj(self, 
                 data_array = None, 
                 condition_df = None,
                 formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
+
                 n_iter = 1000, 
                 sub_sample = True
                 ):
- 
+
 
         #  TODO check for bugs if input is not none
         # If no data given, use the data stored in the class object
@@ -573,8 +577,119 @@ class PreStimManager:
             
         if not sub_sample: # do not iterate if no sub-sampling is performed
             n_iter = 1
+        self.withinSubj = True # we use this later for the filenames
+        
+        #% Create arrays and lists
+        channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+        timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+        
+        
+        # This will run a preliminary model, which is only used to extract the number of p-Values
+        # Which is needed to create an empty array for the p-Values
+        tmp_df = pd.DataFrame()
+  
+        tmp_df = condition_df
+        tmp_df['eeg_data'] = data_array[:,0,0]
+        pVals_n = len(smf.logit(formula, 
+                                tmp_df
+                                ).fit().pvalues.index)
+        del tmp_df
+
+        # now we know the dimensions of the empty array we need to create to collect p_Values
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+        
+        
+        # But gfraga also asked to save the whole model output, soooo... # TODO
+        #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
+
+
+        for iteration in range(n_iter):
+
+            if sub_sample:
+                # we sub-sample running the function below. which will give us a set of indices (idx)
+                # and later we subset the data by idx
+                idx = self.random_subsample_accuracy()
+            else: # if no sub-sampling is asked for, just get every idx
+                idx = [ids for ids in range(len(condition_df))]
+
+            # And now we run the model for every channel and every timepoint
+            for thisChannel in channelsIdx:
+
+
+                for tf in timesIdx:
+
+                    # extract the data & trial information at a given timepoint and channel              
+                    df = condition_df
+                    df['eeg_data'] = data_array[:,thisChannel,tf]
+                    df = df.iloc[idx] # subset the df by idx
+                    
+                    
+                    # calculate Logit regression
+                    md = smf.logit(formula, 
+                                   df, 
+                                   )  
+                    
+                    mdf = md.fit() # ??? Convergence warning
+                    ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+                    
+                    # record p-Values 
+                    # This adds the p-values to the values already present in the array at the specified location
+                    # for the first iteration, the array only contains 0s. Then, with every iteration, 
+                    # the array contains the sum of p-values of each channel and tf
+                    # and later we will get the mean by dividing by n_iter
+                    p_values[thisChannel,tf,:] += mdf.pvalues
+ 
+        
+        if sub_sample: # get mean and sd of the p-Values across iterations
+            p_values_mean = p_values / n_iter
+            self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
+            self.p_values = p_values_mean
+        else:
+            self.p_values = p_values
+        
+
+        self.metadata['p_Values_index'] = mdf.pvalues.index
+        self.metadata['regression_formula'] = md.formula
+        self.metadata['regression_groups'] = "NONE" # TODO
+        self.metadata['regression_type'] = str(mdf.model)
+        self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
+        self.metadata['axes'] = ['channel, timeframe, p-Value']
+        self.metadata['iterations'] = n_iter
+        self.metadata['equalized_accuracy_sample'] = sub_sample
+        
+        if sub_sample:
+            self.metadata['sub_sample_dataframe_length'] = len(df)
+        
+        
+        return p_values
+
+# =====================================================================================================================    
+    def run_LogitRegression_withinSubj_parallel(self, 
+                data_array = None, 
+                condition_df = None,
+                formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
+                n_iter = 1000, 
+                sub_sample = True
+                ):
+ 
+
+        #  TODO check for bugs if input is not none
+        # If no data given, use the data stored in the class object
+        if data_array is None:
+            data_array = self.data_array
+        else:
+            pass
+        
+        if condition_df is None:
+            condition_df = self.condition_df
+        else:
+            pass
+            
+        if not sub_sample: # do not iterate if no sub-sampling is performed
+            n_iter = 1
 
         self.withinSubj = True # we use this later for the filenames
+        self.formula = formula
 
         
         #% Create arrays and lists
@@ -606,65 +721,87 @@ class PreStimManager:
             if sub_sample:
                 # we sub-sample running the function below. which will give us a set of indices (idx)
                 # and later we subset the data by idx
-                idx = self.random_subsample_accuracy()
+                self.idx = self.random_subsample_accuracy()
             else: # if no sub-sampling is asked for, just get every idx
-                idx = [ids for ids in range(len(condition_df))]
+                self.idx = [ids for ids in range(len(condition_df))]
             
             # And now we run the model for every channel and every timepoint
-            for thisChannel in channelsIdx:
-                print('>>>> running subject',self.subjID,', iteration',iteration,', channel',thisChannel)
+            for self.thisChannel in channelsIdx:
                 
-                for tf in timesIdx:
-                       
-                    # extract the data & trial information at a given timepoint and channel              
-                    df = condition_df
-                    df['eeg_data'] = data_array[:,thisChannel,tf]
-
-                    df = df.iloc[idx] # subset the df by idx
-
-                    
-                    
-                    # calculate Logit regression
-                    md = smf.logit(formula, 
-                                   df, 
-                                   )  
-                    
-                    mdf = md.fit() # ??? Convergence warning
-                    ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+                if __name__ == "__main__":
+                    with Pool() as pool:
+                        result = pool.map(self.do_regression_timewise, timesIdx)  
+                    # def do_regression_timewise(self,tf):
+                    #     # extract the data & trial information at a given timepoint and channel              
+                    #     df = self.condition_df # TODO need to change this in case condition_df is provided
+                    #     df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+    
+                    #     df = df.iloc[self.idx] # subset the df by idx
+    
+                        
+                        
+                    #     # calculate Logit regression
+                    #     md = smf.logit(formula, 
+                    #                    df, 
+                    #                    )  
+                        
+                    #     mdf = md.fit() # ??? Convergence warning
+                    #     ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+                    #     return mdf.pvalues
                     
                     # record p-Values 
                     # This adds the p-values to the values already present in the array at the specified location
                     # for the first iteration, the array only contains 0s. Then, with every iteration, 
                     # the array contains the sum of p-values of each channel and tf
                     # and later we will get the mean by dividing by n_iter
-                    p_values[thisChannel,tf,:] += mdf.pvalues
+    #             p_values[self.thisChannel,tf,:] += mdf.pvalues
  
         
-        if sub_sample: # get mean and sd of the p-Values across iterations
-            p_values_mean = p_values / n_iter
-            self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
-            self.p_values = p_values_mean
+    #     if sub_sample: # get mean and sd of the p-Values across iterations
+    #         p_values_mean = p_values / n_iter
+    #         self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
+    #         self.p_values = p_values_mean
 
-        else:
-            self.p_values = p_values
+    #     else:
+    #         self.p_values = p_values
 
         
         
-        self.metadata['p_Values_index'] = mdf.pvalues.index
-        self.metadata['regression_formula'] = md.formula
-        self.metadata['regression_groups'] = "NONE" 
-        self.metadata['regression_type'] = str(mdf.model)
-        self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
-        self.metadata['axes'] = ['channel, timeframe, p-Value']
-        self.metadata['iterations'] = n_iter
-        self.metadata['equalized_accuracy_sample'] = sub_sample
+    #     self.metadata['p_Values_index'] = mdf.pvalues.index
+    #     self.metadata['regression_formula'] = self.formula
+    #     self.metadata['regression_groups'] = "NONE" 
+    #     self.metadata['regression_type'] = str(mdf.model)
+    #     self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
+    #     self.metadata['axes'] = ['channel, timeframe, p-Value']
+    #     self.metadata['iterations'] = n_iter
+    #     self.metadata['equalized_accuracy_sample'] = sub_sample
         
-        if sub_sample:
-            self.metadata['sub_sample_dataframe_length'] = len(df)
+    #     if sub_sample:
+    #         self.metadata['sub_sample_dataframe_length'] = len(df)
         
         
-        return p_values
-#%%
+    #     return p_values
+    
+        
+    # def do_regression_timewise(self,tf):
+    #     # extract the data & trial information at a given timepoint and channel              
+    #     df = self.condition_df # TODO need to change this in case condition_df is provided
+    #     df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+
+    #     df = df.iloc[self.idx] # subset the df by idx
+
+        
+        
+    #     # calculate Logit regression
+    #     md = smf.logit(self.formula, 
+    #                    df, 
+    #                    )  
+        
+    #     mdf = md.fit() # ??? Convergence warning
+    #     ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+        return result
+    
+# =====================================================================================================================
     def random_subsample_accuracy(self, trial_info = None):
         """
         RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
@@ -674,7 +811,7 @@ class PreStimManager:
         It will then get the lower of those two numbers (let's call it minumum)
         and then it will randomly select [minumum] correct and incorrect trials
         and return their indices ("subsample_idx").
-        The length of subsample_idx is therefore 2*minimum.
+        The length of subsample_idx is therefore = 2*minimum.
         Half the indices are from correct, and half from incorrect trials.
 
         Parameters
@@ -704,7 +841,7 @@ class PreStimManager:
         # (see comment in sketch_PreStim_writing)
         if not trial_info: 
 # TODO account for if input is dict - 
-# maybe take the concat out of the if loop and do another if-loop outside i.e. `if trial_info.type=dict: concat`
+# maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
             try:
                 trial_info = self.condition_dict
                 # combine all subj condition dataframes to get across-subj accuracy
@@ -730,7 +867,7 @@ class PreStimManager:
 
         return subsample_idx
 
-    #%%
+# =====================================================================================================================
     def run_logisticRegression_sklearn(self,
                           data_dict= None, 
                           condition_dict = None
@@ -739,7 +876,7 @@ class PreStimManager:
         # but this also does not account for multilevel data
         raise NotImplementedError
     
-#%%
+# =====================================================================================================================
     def FDR_correction(self, p_values = None, alpha = 0.05, output = False):
         """
         FDR CORRECTION
@@ -813,21 +950,9 @@ class PreStimManager:
         
         return p_values_FDR
 
-#%%
+# =====================================================================================================================
     def save_pValues(self, addMetadata = True):
-        """
-        # TODO
-
-        Parameters
-        ----------
-        p_values : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
+# TODO
         self.metadata["datetime_run_end"] = str(datetime.now())
         p_values = {'metadata':self.metadata} # create a dict and add the metadata we collected
         
@@ -842,7 +967,7 @@ class PreStimManager:
         
         # See if there is a condition for the data, so that can be added to the filename
         try:
-            condition_name = str(self.metadata['condition'] + '_')
+            condition_name = (str(self.metadata['condition']) + '_')
         except AttributeError:
             condition_name = ''
 
@@ -880,7 +1005,7 @@ class PreStimManager:
         print("saving to ",filepath)
         return p_values
  
-#%%       
+# =====================================================================================================================      
     def get_evokeds(self, save = True):
         """
         This function returns a dict containing a lists for every condition, 
@@ -929,7 +1054,7 @@ class PreStimManager:
             print('saved to', const.diroutput + const.evokedsPickleFileEnd)
         return evokeds
     
-#%%        
+# =====================================================================================================================       
     def grandaverage_evokeds(self, evokeds):
         evokeds_gAvg= {}
         for condition in const.conditions:

@@ -68,7 +68,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 from datetime import datetime
-from multiprocessing import Pool
+from multiprocessing import Pool, Process
 import time
 import warnings
 
@@ -77,37 +77,52 @@ from PreStim_functions import PreStimManager
 PreStimManager = PreStimManager() #initiate PreStimManager (collection of functions)
 
 start_time = datetime.now() # recording the time when the script starts running (helpful for debugging, optimisation and control)
-warnings.filterwarnings('ignore') 
+
+# warnings.filterwarnings('ignore') 
 #%%
 if Runner:
     
-    def within_subj_analysis(subjID):
-        for noise in const.noise:
-            PreStimManager.get_data_singleSubj(subjID, condition = noise)
-            PreStimManager.run_LogitRegression_withinSubj(sub_sample= False, n_iter = 2)
-            PreStimManager.FDR_correction()
-            PreStimManager.save_pValues()
+    # def within_subj_analysis(subjID):
+    #     # for noise in const.noise:
+    #     for noise in ['NV']:
+    #         PreStimManager.get_data_singleSubj(subjID, condition = noise)
+    #         PreStimManager.run_LogitRegression_withinSubj(sub_sample= False, n_iter = 1)
+    #         # PreStimManager.FDR_correction()
+    #         # PreStimManager.save_pValues()
             
+   
             
-    if __name__ == "__main__":
-        with Pool() as pool:
-          pool.map(within_subj_analysis, const.subjIDs)
-        print("Program finished!")
-    # #%% Run regression and save p-Values #############################################################################################
+    # if __name__ == "__main__":
+    #     with Pool() as pool:
+    #       pool.map(within_subj_analysis, const.subjIDs)
+    #     print("Program finished!")
     
+    #%% 
+    def noise_separated_regression(noise):
+        PreStimManager.get_data_singleSubj('s001', condition = noise)
+        PreStimManager.run_LogitRegression_withinSubj(sub_sample= True, n_iter = 1000)
+        PreStimManager.FDR_correction()
+        PreStimManager.save_pValues()
+        
+    for noise in const.noise:
+        noise_separated_regression(noise)
+        
+    # if __name__ == '__main__':
+    #     with Pool() as pool:
+    #         pool.map(noise_separated_regression, const.noise)
+    
+    # #%% Run regression and save p-Values #############################################################################################
+    # time_control = []
     # for noise in const.noise: # separately for each noiseType
     # # for noise in ['NV']: # for debugging, only run one condition
-    #     data_dict, condition_dict = PreStimManager.get_data(condition = noise, output=True) # Get epoched data in a format usable for the regression
         
-    #     for subjID in const.subjIDs[0:1]:
-    #         time_control.append(subjID)
-    #         time_control.append(datetime.now())
-    #         PreStimManager.run_LogitRegression(
-    #             n_iter = 100, 
-    #             data_dict = {subjID : data_dict[subjID]},
-    #             condition_dict = {subjID: condition_dict[subjID]}
-    #             ) # run the regression separately for each timepoint & channel
-            
+    #     for subjID in const.subjIDs:
+    #         time_control.append("start " + subjID + ": " + str(datetime.now()))
+    #         PreStimManager.get_data_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
+    #         PreStimManager.run_LogitRegression_withinSubj(
+    #             sub_sample= True,
+    #             n_iter = 1000
+    #             ) # run the regression separately for each timepoint & channel            
     #         PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
     #         p_values_FDR = PreStimManager.save_pValues() # save the p-Value array and return it
     
