@@ -70,22 +70,24 @@ import pickle
 from datetime import datetime
 from multiprocessing import Pool
 import time
+import warnings
 
 import PreStim_constants as const
 from PreStim_functions import PreStimManager
 PreStimManager = PreStimManager() #initiate PreStimManager (collection of functions)
 
 start_time = datetime.now() # recording the time when the script starts running (helpful for debugging, optimisation and control)
-time_control = []
+warnings.filterwarnings('ignore') 
 #%%
 if Runner:
     
     def within_subj_analysis(subjID):
         for noise in const.noise:
             PreStimManager.get_data_singleSubj(subjID, condition = noise)
-            PreStimManager.run_LogitRegression_withinSubj(sub_sample= True, n_iter = 100)
+            PreStimManager.run_LogitRegression_withinSubj(sub_sample= False, n_iter = 2)
             PreStimManager.FDR_correction()
             PreStimManager.save_pValues()
+            
             
     if __name__ == "__main__":
         with Pool() as pool:

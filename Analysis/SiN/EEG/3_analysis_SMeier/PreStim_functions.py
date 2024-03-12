@@ -61,8 +61,13 @@ class PreStimManager:
 #%%    
     def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
         """
-        OPEN EPOCHED DATA AND RESHAPE IT FOR LMM
+        OPEN EPOCHED DATA AND RESHAPE IT FOR REGRESSION (between subject)
         =======================================================================
+        
+        NOTICE: The latest version of the code uses the within-subject data that is
+        aquired by get_data_singleSubj()
+        This function is not used at the moment (12.03.24) but may be useful again
+        in the future.
         
         Opens epoched data of every subject and stores it in a dict (data_dict) 
         along with trial information (condition_dict)
@@ -163,7 +168,57 @@ class PreStimManager:
         
         #%%
     def get_data_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
+        """
+        OPEN EPOCHED DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
+        =======================================================================
         
+        
+        Parameters
+        ----------
+        subjID : str
+            The subject ID. This will be used to get the directory of the epoched data,
+            and will be stored in the PreStimManager object for later use.
+        
+        condition : str, default None
+            Only get the data from trials of this condition. 
+            Must be in the form of the event_id used to filter epochs with mne
+            with the use of epoch['SomeCondition'].
+            It is possible to set multiple conditions by separating the labels with /
+            example: `condition = 'NV/Lv1'` <-- will only get data from trials with NV and Lv1 degradation
+                   
+        output : bool, default = False
+            Whether data_array and condition_df should be returned. The default is False.
+            In both cases, data_array and condition_df will be stored in the PreStimManager object.
+            The function run_LMM() will default to using the dicts from the PreStimManager object.
+            Therefore, setting output to False will optimise memory usage.
+            
+            (If you later decide you do want them in the variable explorer, 
+             call `data_array = PreStimManager.data_array` )
+            
+        tmin : float or None, Default is None
+            The start of the timewindow of which to get the data from the epoch.
+            If None, will take the data from the start of the epoch to tmax.
+            If float, must be in seconds.
+            
+        tmax : float or None, Default is 0
+            The end of the timewindow of which to get the data from the epoch.
+            If None, will take the data from tmin to the end of the epoch.
+            If float, must be in seconds.
+            The Default `0` will get only pre-stimulus data.
+
+
+        Returns
+        -------
+        None if output = False (default)
+        
+        Otherwise:
+            data_array : dict
+                contains [n_subj] arrays of shape [n_epochs, n_channels, n_times]
+                
+            condition_df : dict
+                contains [n_subj] dataframes, each containing accuracy, levels, noiseType and subjID for every trial
+
+        """
         self.subjID = subjID
         # get filepath
         epo_path = glob(os.path.join(self.dirinput, subjID, str(subjID + '_' + const.taskID + "*" + const.fifFileEnd)), recursive=True)[0]
@@ -177,15 +232,21 @@ class PreStimManager:
         data_array = epo.get_data(tmax = tmax, tmin = tmin) # get data as array of shape [n_epochs, n_channels, n_times]
         condition_df = epo.metadata # get trial information
         
-        # re-code and delete unneeded data
+        # re-name some columns
         condition_df['noiseType'] = condition_df['block'] 
         condition_df['wordPosition'] = condition_df['stimtype'] 
-        # condition_df['subjID'] = [subjID for i in range(len(condition_df))]
-        
-        # Re-coding is only necessary for the DV
+
+        # Re-coding is necessary for the DV (needs to be metric)
         condition_df['accuracy'].replace({'inc': 0, 'cor': 1}, inplace=True)
-        condition_df['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
+        # condition_df['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
+        
+        # drop unneeded columns
         condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+        
+        # and, lastly, re-index (because the separation of conditions leads to non-sequential index)
+        reIdx = pd.Series(range(len(condition_df)))
+        condition_df.set_index(reIdx, inplace = True)
+        
         
         if condition:
             self.metadata['condition'] = condition
@@ -493,12 +554,12 @@ class PreStimManager:
                 data_array = None, 
                 condition_df = None,
                 formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
-                n_iter = 500, 
+                n_iter = 1000, 
                 sub_sample = True
                 ):
  
 
-        #  TODO check for bugs
+        #  TODO check for bugs if input is not none
         # If no data given, use the data stored in the class object
         if data_array == None:
             data_array = self.data_array
@@ -528,7 +589,7 @@ class PreStimManager:
         tmp_df = condition_df
         tmp_df['eeg_data'] = data_array[:,0,0]
         pVals_n = len(smf.logit(formula, 
-                                tmp_df,
+                                tmp_df
                                 ).fit().pvalues.index)
         del tmp_df
 
@@ -539,18 +600,19 @@ class PreStimManager:
         # But gfraga also asked to save the whole model output, soooo... # TODO
         #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
         
-        for i in range(n_iter):
+        for iteration in range(n_iter):
+            # print(str(iteration) + "---------------------------------------------")
             
             if sub_sample:
                 # we sub-sample running the function below. which will give us a set of indices (idx)
                 # and later we subset the data by idx
                 idx = self.random_subsample_accuracy()
             else: # if no sub-sampling is asked for, just get every idx
-                idx = [i for i in range(len(condition_df))]
+                idx = [ids for ids in range(len(condition_df))]
             
             # And now we run the model for every channel and every timepoint
             for thisChannel in channelsIdx:
-                print('>>>> running channel',thisChannel,'of', len(channelsIdx))
+                print('>>>> running subject',self.subjID,', iteration',iteration,', channel',thisChannel)
                 
                 for tf in timesIdx:
                        
@@ -590,7 +652,7 @@ class PreStimManager:
         
         self.metadata['p_Values_index'] = mdf.pvalues.index
         self.metadata['regression_formula'] = md.formula
-        self.metadata['regression_groups'] = "NONE" # TODO
+        self.metadata['regression_groups'] = "NONE" 
         self.metadata['regression_type'] = str(mdf.model)
         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
         self.metadata['axes'] = ['channel, timeframe, p-Value']
@@ -604,11 +666,45 @@ class PreStimManager:
         return p_values
 #%%
     def random_subsample_accuracy(self, trial_info = None):
-        # TODO document
+        """
+        RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
+        =======================================================================
         
+        This function counts how many trials were correct and how many incorrect.
+        It will then get the lower of those two numbers (let's call it minumum)
+        and then it will randomly select [minumum] correct and incorrect trials
+        and return their indices ("subsample_idx").
+        The length of subsample_idx is therefore 2*minimum.
+        Half the indices are from correct, and half from incorrect trials.
+
+        Parameters
+        ----------
+        trial_info : dict or pandas DataFrame, optional
+            The trial information - for instance condition_dict or condition_df. 
+            The default is None, in which case the function will try to use the
+            condition-dict stored in the PreStimManager object. If there is none, it
+            will try to use the condition_df stored in the PreStimManager object.
+
+        Raises
+        ------
+        AttributeError
+            if no trial information was provided and none could be found.
+
+        Returns
+        -------
+        subsample_idx : indexes
+            the subsampled indices, which can be applied to the df by calling 
+            `df = df.iloc[subsample_idx]`
+            Note : if the df has non-sequential indices (which can happen when filtering or
+                 concatentaing), this will not work.
+
+        """
+
         # TODO this does not currently account for uneven numbers of wordPosition, subjID, or levels that could result from this
         # (see comment in sketch_PreStim_writing)
-        if not trial_info:
+        if not trial_info: 
+# TODO account for if input is dict - 
+# maybe take the concat out of the if loop and do another if-loop outside i.e. `if trial_info.type=dict: concat`
             try:
                 trial_info = self.condition_dict
                 # combine all subj condition dataframes to get across-subj accuracy
