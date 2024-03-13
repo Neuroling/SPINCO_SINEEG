@@ -30,15 +30,15 @@ import numpy as np
 import pickle
 from datetime import datetime
 import random
-import warnings
-from multiprocessing import Pool
 
-warnings.filterwarnings('ignore') 
+# from multiprocessing import Pool
 
 
+
+#%%
 class PreStimManager: 
     
-    def __init__(self):
+    def __init__(self, raiseWarnings = False):
         """
         INITIALIZING FUNCTION
         =======================================================================
@@ -54,14 +54,23 @@ class PreStimManager:
         The date when the script was run is also saved in the metadata. Together
         with the date of when changes were pushed to github, this gives us
         version control for outputs.
+        
+        Parameters
+        ----------
+        raiseWarnings : bool, Default False
+            If False, will not raise warnings
 
         """
         
         self.dirinput = const.dirinput
-        self.metadata = {}
+        self.metadata = {} # initialise empty metadata dict
         self.metadata['datetime_run_start'] = str(datetime.now())
+        
+        if not raiseWarnings:
+            import warnings
+            warnings.filterwarnings('ignore') 
  
-# =====================================================================================================================    
+#%% DEFUNCT! 
     def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE IT FOR REGRESSION (between subject)
@@ -169,7 +178,7 @@ class PreStimManager:
         
         if output : return data_dict, condition_dict
         
-# =====================================================================================================================
+#%% 
     def get_data_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
@@ -265,7 +274,7 @@ class PreStimManager:
         
         if output : return data_array, condition_df
         
-# =====================================================================================================================
+#%% OBSOLETE! 
     def check_chans_and_times(self):
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
@@ -293,7 +302,7 @@ class PreStimManager:
             if self.data_dict[subjID].shape[2] != tf_N:
                 raise ValueError('not all subj have the same number of timepoints')
 
-# =====================================================================================================================
+#%% DEFUNCT! # TODO document
     def run_LMM(self, 
                 data_dict= None, 
                 condition_dict = None,
@@ -382,7 +391,7 @@ class PreStimManager:
         self.p_values = p_values
         return p_values
     
-# =====================================================================================================================
+#%% DEFUNCT! 
     def run_LogitRegression(self, 
                 data_dict= None, 
                 condition_dict = None,
@@ -552,12 +561,11 @@ class PreStimManager:
         
         
         return p_values
-# =====================================================================================================================
+#%%
     def run_LogitRegression_withinSubj(self, 
                 data_array = None, 
                 condition_df = None,
                 formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
-
                 n_iter = 1000, 
                 sub_sample = True
                 ):
@@ -596,7 +604,9 @@ class PreStimManager:
         del tmp_df
 
         # now we know the dimensions of the empty array we need to create to collect p_Values
-        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
+        coefficients = np.zeros(shape=p_values.shape)
+        z_values = np.zeros(shape=p_values.shape)
         
         
         # But gfraga also asked to save the whole model output, soooo... # TODO
@@ -632,20 +642,21 @@ class PreStimManager:
                     mdf = md.fit() # ??? Convergence warning
                     ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
                     
-                    # record p-Values 
-                    # This adds the p-values to the values already present in the array at the specified location
-                    # for the first iteration, the array only contains 0s. Then, with every iteration, 
-                    # the array contains the sum of p-values of each channel and tf
-                    # and later we will get the mean by dividing by n_iter
-                    p_values[thisChannel,tf,:] += mdf.pvalues
+                    # record p-Values, z-Values and coefficients
+                    p_values[thisChannel,tf,:, iteration] = mdf.pvalues
+                    coefficients[thisChannel,tf,:, iteration] = mdf.params
+                    z_values[thisChannel,tf,:, iteration] = mdf.tvalues
  
         
         if sub_sample: # get mean and sd of the p-Values across iterations
-            p_values_mean = p_values / n_iter
-            self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
-            self.p_values = p_values_mean
+            self.p_values_mean = p_values.mean(axis = 3)
+            self.p_values_SD = p_values.std(axis = 3)
         else:
-            self.p_values = p_values
+            pass
+        
+        self.p_values = p_values
+        self.coefficients = coefficients
+        self.z_values = z_values
         
 
         self.metadata['p_Values_index'] = mdf.pvalues.index
@@ -661,9 +672,9 @@ class PreStimManager:
             self.metadata['sub_sample_dataframe_length'] = len(df)
         
         
-        return p_values
+        # return p_values
 
-# =====================================================================================================================    
+#%% NOT WORKING! 
     def run_LogitRegression_withinSubj_parallel(self, 
                 data_array = None, 
                 condition_df = None,
@@ -671,66 +682,66 @@ class PreStimManager:
                 n_iter = 1000, 
                 sub_sample = True
                 ):
- 
 
-        #  TODO check for bugs if input is not none
-        # If no data given, use the data stored in the class object
-        if data_array is None:
-            data_array = self.data_array
-        else:
-            pass
+
+        # #  TODO check for bugs if input is not none
+        # # If no data given, use the data stored in the class object
+        # if data_array is None:
+        #     data_array = self.data_array
+        # else:
+        #     pass
         
-        if condition_df is None:
-            condition_df = self.condition_df
-        else:
-            pass
+        # if condition_df is None:
+        #     condition_df = self.condition_df
+        # else:
+        #     pass
             
-        if not sub_sample: # do not iterate if no sub-sampling is performed
-            n_iter = 1
+        # if not sub_sample: # do not iterate if no sub-sampling is performed
+        #     n_iter = 1
 
-        self.withinSubj = True # we use this later for the filenames
-        self.formula = formula
+        # self.withinSubj = True # we use this later for the filenames
+        # self.formula = formula
 
         
-        #% Create arrays and lists
-        channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
-        timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+        # #% Create arrays and lists
+        # channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+        # timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
         
         
-        # This will run a preliminary model, which is only used to extract the number of p-Values
-        # Which is needed to create an empty array for the p-Values
-        tmp_df = pd.DataFrame()
+        # # This will run a preliminary model, which is only used to extract the number of p-Values
+        # # Which is needed to create an empty array for the p-Values
+        # tmp_df = pd.DataFrame()
   
-        tmp_df = condition_df
-        tmp_df['eeg_data'] = data_array[:,0,0]
-        pVals_n = len(smf.logit(formula, 
-                                tmp_df
-                                ).fit().pvalues.index)
-        del tmp_df
+        # tmp_df = condition_df
+        # tmp_df['eeg_data'] = data_array[:,0,0]
+        # pVals_n = len(smf.logit(formula, 
+        #                         tmp_df
+        #                         ).fit().pvalues.index)
+        # del tmp_df
 
-        # now we know the dimensions of the empty array we need to create to collect p_Values
-        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+        # # now we know the dimensions of the empty array we need to create to collect p_Values
+        # p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
         
         
-        # But gfraga also asked to save the whole model output, soooo... # TODO
-        #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
+        # # But gfraga also asked to save the whole model output, soooo... # TODO
+        # #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
         
-        for iteration in range(n_iter):
-            # print(str(iteration) + "---------------------------------------------")
+        # for iteration in range(n_iter):
+        #     # print(str(iteration) + "---------------------------------------------")
             
-            if sub_sample:
-                # we sub-sample running the function below. which will give us a set of indices (idx)
-                # and later we subset the data by idx
-                self.idx = self.random_subsample_accuracy()
-            else: # if no sub-sampling is asked for, just get every idx
-                self.idx = [ids for ids in range(len(condition_df))]
+        #     if sub_sample:
+        #         # we sub-sample running the function below. which will give us a set of indices (idx)
+        #         # and later we subset the data by idx
+        #         self.idx = self.random_subsample_accuracy()
+        #     else: # if no sub-sampling is asked for, just get every idx
+        #         self.idx = [ids for ids in range(len(condition_df))]
             
-            # And now we run the model for every channel and every timepoint
-            for self.thisChannel in channelsIdx:
+        #     # And now we run the model for every channel and every timepoint
+        #     for self.thisChannel in channelsIdx:
                 
-                if __name__ == "__main__":
-                    with Pool() as pool:
-                        result = pool.map(self.do_regression_timewise, timesIdx)  
+        #         if __name__ == "__main__":
+        #             with Pool() as pool:
+        #                 result = pool.map(self.do_regression_timewise, timesIdx)  
                     # def do_regression_timewise(self,tf):
                     #     # extract the data & trial information at a given timepoint and channel              
                     #     df = self.condition_df # TODO need to change this in case condition_df is provided
@@ -754,54 +765,57 @@ class PreStimManager:
                     # for the first iteration, the array only contains 0s. Then, with every iteration, 
                     # the array contains the sum of p-values of each channel and tf
                     # and later we will get the mean by dividing by n_iter
-    #             p_values[self.thisChannel,tf,:] += mdf.pvalues
+        #           p_values[self.thisChannel,tf,:] += mdf.pvalues
  
         
-    #     if sub_sample: # get mean and sd of the p-Values across iterations
-    #         p_values_mean = p_values / n_iter
-    #         self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
-    #         self.p_values = p_values_mean
+        # if sub_sample: # get mean and sd of the p-Values across iterations
+        #     p_values_mean = p_values / n_iter
+        #     self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
+        #     self.p_values = p_values_mean
 
-    #     else:
-    #         self.p_values = p_values
+        # else:
+        #     self.p_values = p_values
 
         
         
-    #     self.metadata['p_Values_index'] = mdf.pvalues.index
-    #     self.metadata['regression_formula'] = self.formula
-    #     self.metadata['regression_groups'] = "NONE" 
-    #     self.metadata['regression_type'] = str(mdf.model)
-    #     self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
-    #     self.metadata['axes'] = ['channel, timeframe, p-Value']
-    #     self.metadata['iterations'] = n_iter
-    #     self.metadata['equalized_accuracy_sample'] = sub_sample
+        # self.metadata['p_Values_index'] = mdf.pvalues.index
+        # self.metadata['regression_formula'] = self.formula
+        # self.metadata['regression_groups'] = "NONE" 
+        # self.metadata['regression_type'] = str(mdf.model)
+        # self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
+        # self.metadata['axes'] = ['channel, timeframe, p-Value']
+        # self.metadata['iterations'] = n_iter
+        # self.metadata['equalized_accuracy_sample'] = sub_sample
         
-    #     if sub_sample:
-    #         self.metadata['sub_sample_dataframe_length'] = len(df)
+        # if sub_sample:
+        #     self.metadata['sub_sample_dataframe_length'] = len(df)
         
         
-    #     return p_values
+        # return p_values
+        raise NotImplementedError()
+
     
-        
-    # def do_regression_timewise(self,tf):
-    #     # extract the data & trial information at a given timepoint and channel              
-    #     df = self.condition_df # TODO need to change this in case condition_df is provided
-    #     df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+#%% OBSOLETE!         
+    def do_regression_timewise(self,tf):
+        # # extract the data & trial information at a given timepoint and channel              
+        # df = self.condition_df # TODO need to change this in case condition_df is provided
+        # df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
 
-    #     df = df.iloc[self.idx] # subset the df by idx
+        # df = df.iloc[self.idx] # subset the df by idx
 
         
         
-    #     # calculate Logit regression
-    #     md = smf.logit(self.formula, 
-    #                    df, 
-    #                    )  
+        # # calculate Logit regression
+        # md = smf.logit(self.formula, 
+        #                 df, 
+        #                 )  
         
-    #     mdf = md.fit() # ??? Convergence warning
-    #     ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
-        return result
+        # mdf = md.fit() # ??? Convergence warning
+        # ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+        # # return result
+        raise NotImplementedError()
     
-# =====================================================================================================================
+#%% 
     def random_subsample_accuracy(self, trial_info = None):
         """
         RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
@@ -867,7 +881,7 @@ class PreStimManager:
 
         return subsample_idx
 
-# =====================================================================================================================
+#%% NOT IMPLEMENTED! 
     def run_logisticRegression_sklearn(self,
                           data_dict= None, 
                           condition_dict = None
@@ -876,7 +890,7 @@ class PreStimManager:
         # but this also does not account for multilevel data
         raise NotImplementedError
     
-# =====================================================================================================================
+#%% 
     def FDR_correction(self, p_values = None, alpha = 0.05, output = False):
         """
         FDR CORRECTION
@@ -950,20 +964,29 @@ class PreStimManager:
         
         return p_values_FDR
 
-# =====================================================================================================================
+#%% 
     def save_pValues(self, addMetadata = True):
 # TODO
         self.metadata["datetime_run_end"] = str(datetime.now())
-        p_values = {'metadata':self.metadata} # create a dict and add the metadata we collected
+        output_dict = {'metadata':self.metadata} # create a dict and add the metadata we collected
         
         # Now add the p-Values to the dict. First try to add the FDR-corrected p-Values 
         # and if there are none, add non-FDR-corrected p-Values
         try:
-            p_values['p_values'] = self.p_values_FDR
+            output_dict['p_values'] = self.p_values_FDR
             FDR_name = 'FDR_'
         except AttributeError:
-            p_values['p_values'] = self.p_values
+            output_dict['p_values'] = self.p_values
             FDR_name = 'uncorrected_'
+    
+        try:
+            output_dict['z_values'] = self.z_values
+            output_dict['coefficients'] = self.coefficients
+            values_name = 'allValues'
+        except AttributeError:
+            values_name = 'pValues'
+            pass
+        
         
         # See if there is a condition for the data, so that can be added to the filename
         try:
@@ -974,17 +997,18 @@ class PreStimManager:
         # check if the data is sub-sampled to add that to the filename
         if self.metadata['equalized_accuracy_sample']:
             subsample_name = 'sub-sampled_'
-            
-            # if we have SD values of the p-Value iterations, add those as well.
+            n_iter = str(self.metadata['iterations']) + "iter_"
             try:
-                p_values['p_values_SD'] = self.p_values_SD
+                output_dict['p_values_SD'] = self.p_values_SD
+                output_dict['p_values_mean'] = self.p_values_mean
             except AttributeError:
                 pass
         else:
             subsample_name = ''
+            n_iter = ''
             
         # This will take the regression model method that we got from mdf.model()
-        # Because mdf.model() gives an output like '<statsmodels.discrete.discrete_model.MNLogit object at 0x7fbf691a7b50>'
+        # Because mdf.model() gives an output like '<statsmodels.discrete.discrete_model.Logit object at 0x7fbf691a7b50>'
         # We take the position of the final '.' and the first ' ' (blank space) and use the str between those two
         regression_name = str(
             self.metadata['regression_type'][self.metadata['regression_type'].rfind('.')+1:
@@ -997,15 +1021,16 @@ class PreStimManager:
         else: # if there is no within subj design, get output filepath from constants
             diroutput = const.diroutput
             
+        
             
-        filepath = diroutput + regression_name + condition_name + subsample_name + FDR_name + const.pValsPickleFileEnd
-        p_values['metadata']['output_filepath'] = filepath
+        filepath = diroutput + regression_name + condition_name + subsample_name + n_iter + FDR_name + values_name + const.pValsPickleFileEnd
+        output_dict['metadata']['output_filepath'] = filepath
         with open(filepath, 'wb') as f:
-            pickle.dump(p_values, f)
+            pickle.dump(output_dict, f)
         print("saving to ",filepath)
-        return p_values
+        # return output_dict
  
-# =====================================================================================================================      
+#%%
     def get_evokeds(self, save = True):
         """
         This function returns a dict containing a lists for every condition, 
@@ -1054,7 +1079,7 @@ class PreStimManager:
             print('saved to', const.diroutput + const.evokedsPickleFileEnd)
         return evokeds
     
-# =====================================================================================================================       
+#%%      
     def grandaverage_evokeds(self, evokeds):
         evokeds_gAvg= {}
         for condition in const.conditions:

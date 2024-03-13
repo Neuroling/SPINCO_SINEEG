@@ -27,6 +27,7 @@ import pickle
 from multiprocessing import Pool
 
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 import statsmodels.formula.api as smf
 
@@ -238,79 +239,82 @@ import statsmodels.formula.api as smf
 # df = pd.concat(tmp_dict.values(), axis=0, ignore_index=True)
 # del tmp_dict
 
+#%% pool multiprocessing example
+# N = 5000
+# import math
+
+# def cube(x):
+#     return math.sqrt(x)
+
+# if __name__ == "__main__":
+#     with Pool() as pool:
+#       result = pool.map(cube, range(10,N))
+#     print("Program finished!")
+#%% logit regression preparation
+# subjID = 's001'
+# noise = 'NV'
+# data_array, condition_df = PreStimManager.get_data_singleSubj(subjID, condition = noise, output=True)
+# formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
+# # n_iter = 1
+# # sub_sample = True
+
+# # reIdx = pd.Series(range(len(condition_df)))
+# # condition_df.set_index(reIdx, inplace = True)
+
+# # # #% Create arrays and lists
+# # channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+# # timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+
+
+# # # This will run a preliminary model, which is only used to extract the number of p-Values
+# # # Which is needed to create an empty array for the p-Values
+
+# # tmp_df = condition_df
+# # tmp_df['eeg_data'] = data_array[:,0,0]
+# # pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
+# # # del tmp_df
+
+# # # now we know the dimensions of the empty array we need to create to collect p_Values
+# # p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+# thisChannel = 0
+# tf = 0
+# df = condition_df
+# df['eeg_data'] = data_array[:,thisChannel,tf]
 #%%
-N = 5000
-import math
-
-def cube(x):
-    return math.sqrt(x)
-
-if __name__ == "__main__":
-    with Pool() as pool:
-      result = pool.map(cube, range(10,N))
-    print("Program finished!")
-#%%
-subjID = 's001'
-noise = 'NV'
-data_array, condition_df = PreStimManager.get_data_singleSubj(subjID, condition = noise, output=True)
-formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
-n_iter = 1
-sub_sample = True
-
-reIdx = pd.Series(range(len(condition_df)))
-condition_df.set_index(reIdx, inplace = True)
-
-# #% Create arrays and lists
-channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
-timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
-
-
-# This will run a preliminary model, which is only used to extract the number of p-Values
-# Which is needed to create an empty array for the p-Values
-
-tmp_df = condition_df
-tmp_df['eeg_data'] = data_array[:,0,0]
-pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
-# del tmp_df
-
-# now we know the dimensions of the empty array we need to create to collect p_Values
-p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
-
-#%%
-class Task:
-    def __init__(self, condition_df, data_array):
-        self.condition_df = condition_df
-        self.data_array = data_array
-        self.formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
-        self.n_iter = 1
+# class Task:
+#     def __init__(self, condition_df, data_array):
+#         self.condition_df = condition_df
+#         self.data_array = data_array
+#         self.formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
+#         self.n_iter = 1
 
         
-    def doTask(self, tf):
-        df = self.condition_df  
-        # extract the data & trial information at a given timepoint and channel              
-        df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
-        df = df.iloc[self.idx]
+#     def doTask(self, tf):
+#         df = self.condition_df  
+#         # extract the data & trial information at a given timepoint and channel              
+#         df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
+#         df = df.iloc[self.idx]
  
-        # calculate Logit regression
-        md = smf.logit(self.formula, df)  
+#         # calculate Logit regression
+#         md = smf.logit(self.formula, df)  
         
-        mdf = md.fit()
-        return mdf.pvalues
+#         mdf = md.fit()
+#         return mdf.pvalues
     
-    def something(self):           
-        for iteration in range(self.n_iter):
+#     def something(self):           
+#         for iteration in range(self.n_iter):
 
-            self.idx = PreStimManager.random_subsample_accuracy()
-            # And now we run the model for every channel and every timepoint
-            for self.thisChannel in channelsIdx:
-                # Task = Task(condition_df, data_array,idx, formula, thisChannel)
-                if __name__ == "__main__":
-                    with Pool() as pool:
-                        p_values = pool.map(Task.doTask, timesIdx)
-        return p_values
+#             self.idx = PreStimManager.random_subsample_accuracy()
+#             # And now we run the model for every channel and every timepoint
+#             for self.thisChannel in channelsIdx:
+#                 # Task = Task(condition_df, data_array,idx, formula, thisChannel)
+#                 if __name__ == "__main__":
+#                     with Pool() as pool:
+#                         p_values = pool.map(Task.doTask, timesIdx)
+#         return p_values
 
-Task = Task(condition_df, data_array)  
-result = Task.something()      
+# Task = Task(condition_df, data_array)  
+# result = Task.something()      
 
             # record p-Values 
             # This adds the p-values to the values already present in the array at the specified location
@@ -405,9 +409,27 @@ result = Task.something()
 #         mdf = md.fit() # ??? Convergence warning
 #         ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
 #%% Opening a pickle
-# filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_NV_FDR_pValues.pkl"
+# filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_NV_sub-sampled_FDR_pValues.pkl"
 # with open(filepath, 'rb') as f:
 #     some_pVals = pickle.load(f)
+
+#%% heatmap plot
+# pVals = some_pVals['p_values_SD']  
+# index = some_pVals['metadata']['p_Values_index']
+    
+# # Heatmaps for the parameters
+# plt.figure()
+# f, axs = plt.subplots(3, 3, figsize=(10, 8))   
+# # Iterate over the subplots, plot the heatmaps, and set the titles
+# for i in range(3):
+#     for j in range(3):
+#         sns.heatmap(pVals[:, :, i * 3 + j], ax=axs[i, j])
+#         axs[i, j].set_title(index[i * 3 + j])  # Set the title
+#         axs[i,j].set(xlabel="times", ylabel="electrodes")
+# plt.subplots_adjust(hspace=0.5, wspace=0.5)
+# plt.show()
+    
+    
     
 #%% let's try the pymer4 logistic regression!
 

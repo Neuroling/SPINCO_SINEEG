@@ -24,7 +24,7 @@ dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data', 'SiN', 'deri
 diroutput = dirinput + '/PreStim/'
 
 fifFileEnd = 'resampled_ICA_rej_epo.fif'
-pValsPickleFileEnd = 'pValues_test.pkl'
+pValsPickleFileEnd = '.pkl'
 evokedsPickleFileEnd = 'evokeds.pkl'
 
 # Get all subjIDs
