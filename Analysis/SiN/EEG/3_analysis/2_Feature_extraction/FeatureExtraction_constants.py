@@ -23,6 +23,9 @@ fifFileEnd = '_avgRef_epo.fif'
 pickleFileEnd = '_tfr_freqbands.pkl'
 AmplitudeExtractionFileEnd = '_amplitude-epo.fif'
 
+SM_fifFileEnd = 'resampled_ICA_rej_epo.fif'
+
+
 #%% Getting a list of subject IDs
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]

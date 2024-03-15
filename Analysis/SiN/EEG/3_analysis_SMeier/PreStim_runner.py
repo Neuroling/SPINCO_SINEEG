@@ -83,10 +83,10 @@ start_time = datetime.now() # recording the time when the script starts running 
 if Runner:
     
     # def within_subj_analysis(subjID):
-    #     # for noise in const.noise:
-    #     for noise in ['NV']:
+    #     for noise in const.noise:
+    #     # for noise in ['NV']:
     #         PreStimManager.get_data_singleSubj(subjID, condition = noise)
-    #         PreStimManager.run_LogitRegression_withinSubj(sub_sample= False, n_iter = 100)
+    #         PreStimManager.run_LogitRegression_withinSubj(sub_sample= True, n_iter = 1000)
     #         # PreStimManager.FDR_correction()
     #         # PreStimManager.save_pValues()
             
@@ -98,33 +98,32 @@ if Runner:
     #     print("Program finished!")
     
     # #%% 
-    def noise_separated_regression(noise):
-        PreStimManager.get_data_singleSubj('s002', condition = noise)
-        PreStimManager.run_LogitRegression_withinSubj(sub_sample= True, n_iter = 1000)
-        # PreStimManager.FDR_correction()
-        PreStimManager.save_pValues()
-        
-    for noise in const.noise:
-        noise_separated_regression(noise)
+    # def noise_separated_regression(noise):
+    #     PreStimManager.get_data_singleSubj('s006', condition = noise)
+    #     PreStimManager.run_LogitRegression_withinSubj(sub_sample= True, n_iter = 1000)
+    #     # PreStimManager.FDR_correction()
+    #     PreStimManager.save_pValues()
+    
+    
+    # for noise in const.noise:
+    #     noise_separated_regression(noise)
         
     # # if __name__ == '__main__':
     # #     with Pool() as pool:
     # #         pool.map(noise_separated_regression, const.noise)
     
     #%% Run regression and save p-Values #############################################################################################
-    # time_control = []
-    # for noise in const.noise: # separately for each noiseType
-    # # for noise in ['NV']: # for debugging, only run one condition
+    time_control = []
+    for noise in const.noise: # separately for each noiseType
+    # for noise in ['NV']: # for debugging, only run one condition
         
-    #     for subjID in const.subjIDs:
-    #         time_control.append("start " + subjID + ": " + str(datetime.now()))
-    #         PreStimManager.get_data_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
-    #         PreStimManager.run_LogitRegression_withinSubj(
-    #             sub_sample= True,
-    #             n_iter = 2
-    #             ) # run the regression separately for each timepoint & channel            
-    #         # PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
-    #         PreStimManager.save_pValues() # save the p-Value array and return it
+        for subjID in const.subjIDs:
+            time_control.append("start " + subjID + ": " + str(datetime.now()))
+            
+            PreStimManager.get_data_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
+            PreStimManager.run_LogitRegression_withinSubj() # run the regression separately for each timepoint & channel  
+            # PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
+            PreStimManager.save_pValues() # save the p-Value array and return it
     
     #%% get evoked objects for every subj of every possible combination of accuracy, noiseType & degradation
     # evokeds = PreStimManager.get_evokeds()

@@ -116,6 +116,7 @@ class FeatureExtractionManager:
                 print('---> No frequencies and n_cycles specified for the TFR analysis...\n ',
                       'Using those defined in constants:', const.n_cycles, 'cycles and', 
                       len(const.freqs), 'log-spaced freqs from',const.freqs[0],'to',const.freqs[len(const.freqs)-1],'hz')
+                
                 self.metadata['freqs_code'] = str("np.logspace(*np.log10(["+str(const.freqs[0])+", "+str(const.freqs[len(const.freqs)-1])+"]), num="+str(len(const.freqs))+")")
                 self.metadata['freqs'] = freqs
             else:
@@ -126,7 +127,7 @@ class FeatureExtractionManager:
                              freqs=freqs, 
                              decim= const.decim, # Decimates sampling rate by this factor (to avoid freezing the kernel)
                              n_cycles=n_cycles, 
-                             average=False, 
+                              average=False, 
                              use_fft=True, 
                              return_itc=False,
                              n_jobs=const.n_jobs)

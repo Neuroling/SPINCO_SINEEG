@@ -561,12 +561,12 @@ class PreStimManager:
         
         
         return p_values
-#%%
+#%% # TODO dcoument
     def run_LogitRegression_withinSubj(self, 
                 data_array = None, 
                 condition_df = None,
-                formula = "accuracy ~ levels * eeg_data + C(wordPosition)", 
-                n_iter = 1000, 
+                formula = "accuracy ~ levels * eeg_data + wordPosition", 
+                n_iter = 100, 
                 sub_sample = True
                 ):
 
@@ -607,6 +607,7 @@ class PreStimManager:
         p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
         coefficients = np.zeros(shape=p_values.shape)
         z_values = np.zeros(shape=p_values.shape)
+        coef_CI = np.zeros(shape=p_values.shape)
         
         
         # But gfraga also asked to save the whole model output, soooo... # TODO
@@ -645,6 +646,7 @@ class PreStimManager:
                     # record p-Values, z-Values and coefficients
                     p_values[thisChannel,tf,:, iteration] = mdf.pvalues
                     coefficients[thisChannel,tf,:, iteration] = mdf.params
+                    coef_CI[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
                     z_values[thisChannel,tf,:, iteration] = mdf.tvalues
  
         
@@ -657,6 +659,7 @@ class PreStimManager:
         self.p_values = p_values
         self.coefficients = coefficients
         self.z_values = z_values
+        self.coef_CI = coef_CI
         
 
         self.metadata['p_Values_index'] = mdf.pvalues.index
@@ -670,9 +673,7 @@ class PreStimManager:
         
         if sub_sample:
             self.metadata['sub_sample_dataframe_length'] = len(df)
-        
-        
-        # return p_values
+
 
 #%% NOT WORKING! 
     def run_LogitRegression_withinSubj_parallel(self, 
@@ -964,7 +965,7 @@ class PreStimManager:
         
         return p_values_FDR
 
-#%% 
+#%%  #TODO document
     def save_pValues(self, addMetadata = True):
 # TODO
         self.metadata["datetime_run_end"] = str(datetime.now())
@@ -982,6 +983,7 @@ class PreStimManager:
         try:
             output_dict['z_values'] = self.z_values
             output_dict['coefficients'] = self.coefficients
+            output_dict['coefficients_CI'] = self.coef_CI
             values_name = 'allValues'
         except AttributeError:
             values_name = 'pValues'

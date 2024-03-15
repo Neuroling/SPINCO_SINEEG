@@ -31,6 +31,9 @@ import seaborn as sns
 
 import statsmodels.formula.api as smf
 
+from sklearn.model_selection import KFold
+
+#%% more imports
 # from sklearn.model_selection import train_test_split
 # from sklearn.linear_model import LogisticRegression
 # from sklearn import metrics
@@ -63,172 +66,12 @@ import statsmodels.formula.api as smf
 # pickle_path_in = os.path.join(dirinput[:dirinput.find(
 #     'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
 
-#%% Old LMM on tfr_band
-# print('opening dict:',pickle_path_in)
-# with open(pickle_path_in, 'rb') as f:
-#     tfr_bands = pickle.load(f)
-    
+#%% Opening a pickle
+# filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s003/s003_Logit_SSN_sub-sampled_1000iter_uncorrected_allValues.pkl"
+# with open(filepath, 'rb') as f:
+#     some_pVals = pickle.load(f)
 
-
-
-# #%% create frequency dataset to run the LMM on
-# df = tfr_bands['epoch_metadata'] # get trial information 
-# df['data'] = tfr_bands['Alpha_data'][:,0,0] # get data of all trials, at electrode 0, and at timepoint 0
-# df['subjID'] = [subjID for i in range(len(df))] # Put in a column with the subject ID
-
-
-# #%%
-# """
-# Okay so this is a first draft. A bad one.
-
-# It takes a long time to open the pickled dict. Every single analysis takes a full minute to run
-# because it takes so long to open the dict.
-
-# We need to run this analysis for every electrode and every timepoint.
-# The Theta band has the lowest number of timepoints, 136.
-# For only the theta band, this script would be complete in 145 hours (6 days).
-# And we would need to run this for every single freq band.
-
-# Which means that this script is so ridiculously badly optimised, that it is almost funny.
-
-# #%% Create arrays and lists
-# thisBand = 'Theta'
-# channels = [i for i in range(64)]
-# times = [i for i in range(len(tfr_bands[str(thisBand+"_COI_times")]))]
-
-# p_values = np.zeros(shape=(len(channels),len(times),9))
-
-# #%% And now the big loop...
-
-# for thisChannel in channels:
-#     for tf in times:
-           
-#         # Create df with the relevant data
-#         tmp = {}
-#         for subjID in const.subjIDs:
-#             pickle_path_in = os.path.join(const.thisDir[:const.thisDir.find(
-#                 'Scripts')] + 'Data', 'SiN','analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
-            
-#             print('opening dict:',pickle_path_in)
-#             with open(pickle_path_in, 'rb') as f:
-#                 tfr_bands = pickle.load(f)
-                
-#             df = tfr_bands['epoch_metadata']
-#             df['data'] = tfr_bands[str(thisBand+'_data')][:,thisChannel,tf]
-        
-#             del tfr_bands
-            
-#             # re-code and delete unneeded data
-#             df['subjID'] = [subjID for i in range(len(df))]
-#             df['levels'].replace('Lv1', 1, inplace=True)
-#             df['levels'].replace('Lv2', 2, inplace=True)
-#             df['levels'].replace('Lv3', 3, inplace=True)
-#             df['accuracy'].replace('inc', 0, inplace=True)
-#             df['accuracy'].replace('cor', 1, inplace=True)
-#             df['block'].replace('NV', 0, inplace=True)
-#             df['block'].replace('SSN', 1, inplace=True)
-#             df.drop(labels=['tf','stim_code','stimtype','stimulus','voice'], axis = 1, inplace = True)
-            
-#             tmp[subjID]=df
-#             del df
-        
-#         # Combine all subject's data to one df
-#         df = pd.concat(tmp.values(), axis=0)
-#         del tmp
-        
-#         # calculate LMM
-#         md = smf.mixedlm("accuracy ~ levels * data * block", df, groups = df["subjID"]) 
-#         del df
-        
-#         # record p-Values
-#         p_values[thisChannel,tf,:] = md.fit().pvalues
-#         del md
-  
-# """
-
-# #%% Alright! Let's optimise!
-
-# #%% Create arrays and lists
-# thisBand = 'Theta'
-# channels = [i for i in range(64)] # list of channels
-# times = [i for i in range(len(tfr_bands[str(thisBand+"_COI_times")]))] #list of timepoints
-
-# p_values = np.zeros(shape=(len(channels),len(times),9)) # empty array for the p_values
-
-# #%% First, create a dict of all subj data of thisBand to store in the memory
-# data_dict = {}
-# metadata_dict = {}
-
-# for subjID in const.subjIDs:
-#     pickle_path_in = os.path.join(const.thisDir[:const.thisDir.find(
-#         'Scripts')] + 'Data', 'SiN','analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
-    
-#     print('opening dict:',pickle_path_in)
-#     with open(pickle_path_in, 'rb') as f:
-#         tfr_bands = pickle.load(f)
-    
-#     data_dict[subjID]=tfr_bands[str(thisBand+'_data')]
-#     metadata_dict[subjID] = tfr_bands['epoch_metadata']
-    
-#     # re-code and delete unneeded data
-#     metadata_dict[subjID]['subjID'] = [subjID for i in range(len(metadata_dict[subjID]))]
-#     metadata_dict[subjID]['levels'].replace('Lv1', 1, inplace=True)
-#     metadata_dict[subjID]['levels'].replace('Lv2', 2, inplace=True)
-#     metadata_dict[subjID]['levels'].replace('Lv3', 3, inplace=True)
-#     metadata_dict[subjID]['accuracy'].replace('inc', 0, inplace=True)
-#     metadata_dict[subjID]['accuracy'].replace('cor', 1, inplace=True)
-#     metadata_dict[subjID]['block'].replace('NV', 0, inplace=True)
-#     metadata_dict[subjID]['block'].replace('SSN', 1, inplace=True)
-#     metadata_dict[subjID].drop(labels=['tf','stim_code','stimtype','stimulus','voice'], axis = 1, inplace = True)
-    
-#     del tfr_bands
-
-
-
-# #%% And now loop over that...
-
-# for thisChannel in channels:
-#     print('running channel',thisChannel,'of', len(channels))
-    
-#     for tf in times:
-           
-#         # the data & trial information of each subject at a given timepoint and channel
-#         tmp_dict = {}
-#         for subjID in const.subjIDs:    
-#             tmp_dict[subjID] = metadata_dict[subjID]
-#             tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,thisChannel,tf]
-
-        
-#         # Combine all subject's data into one dataframe so we can run the LMM on that
-#         df = pd.concat(tmp_dict.values(), axis=0)
-#         del tmp_dict
-        
-#         # calculate LMM
-#         md = smf.mixedlm("accuracy ~ levels * eeg_data * block", df, groups = df["subjID"])        
-#         mdf = md.fit()
-        
-#         # record p-Values
-#         p_values[thisChannel,tf,:] = mdf.pvalues
-        
-# index_p_values = mdf.pvalues.index
-# formula_LMM = md.formula
-
-
-# #%%
-# md = smf.mixedlm("accuracy ~ levels + eeg_data + block", df, groups = df["subjID"]) 
-# mdf = md.fit()
-# print(mdf.summary())
-# print(mdf.pvalues)
-# pvals = mdf.pvalues.index
-
-# #%%
-
-# md2 = smf.mixedlm('accuracy ~ eeg_data + levels * block', groups = 'subjID', data = df)
-# mdf2 = md2.fit()
-# print(mdf2.summary())
-
-
-#%%###################################################################################################################
+#%% get data
 # data_dict, condition_dict = PreStimManager.get_data(output = True, condition = "NV")
 
 # ## prepare the data
@@ -238,6 +81,89 @@ import statsmodels.formula.api as smf
 #     tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
 # df = pd.concat(tmp_dict.values(), axis=0, ignore_index=True)
 # del tmp_dict
+
+
+#%% logit regression preparation
+subjID = 's001'
+noise = 'NV'
+data_array, condition_df = PreStimManager.get_data_singleSubj(subjID, condition = noise, output=True)
+formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
+# n_iter = 1
+# sub_sample = True
+
+# # #% Create arrays and lists
+# channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+# timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+
+
+# # This will run a preliminary model, which is only used to extract the number of p-Values
+# # Which is needed to create an empty array for the p-Values
+
+# tmp_df = condition_df
+# tmp_df['eeg_data'] = data_array[:,0,0]
+# pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
+# # del tmp_df
+
+# # now we know the dimensions of the empty array we need to create to collect p_Values
+# p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+thisChannel = 0
+tf = 0
+df = condition_df
+df['eeg_data'] = data_array[:,thisChannel,tf]
+
+#%% Let's try the logistic regression with statsmodels
+
+# # results = []
+
+# formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
+# # # groups = 'subjID'
+
+# md = smf.logit(formula, df)
+# mdf = md.fit()
+# mdf.summary()
+# p_values = mdf.pvalues
+# predicted = md.predict(mdf.params)
+
+# pred_table = mdf.pred_table() 
+# # # pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
+# # # Correct predictions are along the diagonal.
+# # results.append(formula)
+# # results.append(mdf.prsquared)
+
+#%% k-fold crossvalidation
+
+# Folds number
+n_splits = 5
+kf = KFold(n_splits=n_splits)
+
+# List of accuracy in a specific fold
+cv_scores = []
+
+# re-index df_nv because the indices are non-sequential
+reIdx = pd.Series(range(len(df)))
+df.set_index(reIdx, inplace = True)
+
+# Splitting data 
+for train_index, test_index in kf.split(df):
+    
+    train_df = df.iloc[train_index]
+    test_df = df.iloc[test_index]
+    test_df_x = df.loc[test_index,['levels','eeg_data','wordPosition']]
+    # test_df_y = df.loc[test_index,['accuracy']]
+    
+    md_split = smf.logit(formula, train_df)
+    mdf_split = md_split.fit()
+
+    # Forecasting on test data
+    y_pred = mdf_split.predict(exog=test_df_x)
+
+    # Quality of model assessment
+    # Determination coefficient R^2 is used
+    r_squared = np.corrcoef(test_df['accuracy'], y_pred)[0, 1] ** 2
+    cv_scores.append(r_squared)
+
+# Cross-validation results printing
+print("Cross-Validation Scores:", cv_scores)
 
 #%% pool multiprocessing example
 # N = 5000
@@ -250,37 +176,7 @@ import statsmodels.formula.api as smf
 #     with Pool() as pool:
 #       result = pool.map(cube, range(10,N))
 #     print("Program finished!")
-#%% logit regression preparation
-# subjID = 's001'
-# noise = 'NV'
-# data_array, condition_df = PreStimManager.get_data_singleSubj(subjID, condition = noise, output=True)
-# formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
-# # n_iter = 1
-# # sub_sample = True
-
-# # reIdx = pd.Series(range(len(condition_df)))
-# # condition_df.set_index(reIdx, inplace = True)
-
-# # # #% Create arrays and lists
-# # channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
-# # timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
-
-
-# # # This will run a preliminary model, which is only used to extract the number of p-Values
-# # # Which is needed to create an empty array for the p-Values
-
-# # tmp_df = condition_df
-# # tmp_df['eeg_data'] = data_array[:,0,0]
-# # pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
-# # # del tmp_df
-
-# # # now we know the dimensions of the empty array we need to create to collect p_Values
-# # p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
-# thisChannel = 0
-# tf = 0
-# df = condition_df
-# df['eeg_data'] = data_array[:,thisChannel,tf]
-#%%
+#%% parallel processing trial
 # class Task:
 #     def __init__(self, condition_df, data_array):
 #         self.condition_df = condition_df
@@ -325,96 +221,9 @@ import statsmodels.formula.api as smf
 
 
         
-#%% TRASH
-#         for iteration in range(n_iter):
-#             # print(str(iteration) + "---------------------------------------------")
-            
-#             if sub_sample:
-#                 # we sub-sample running the function below. which will give us a set of indices (idx)
-#                 # and later we subset the data by idx
-#                 self.idx = self.random_subsample_accuracy()
-#             else: # if no sub-sampling is asked for, just get every idx
-#                 self.idx = [ids for ids in range(len(condition_df))]
-            
-#             # And now we run the model for every channel and every timepoint
-#             for self.thisChannel in channelsIdx:
-                
-#                 for tf in timesIdx:
-                    
-#                     def do_regression_timewise(self,tf):
-#                         # extract the data & trial information at a given timepoint and channel              
-#                         df = self.condition_df # TODO need to change this in case condition_df is provided
-#                         df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
-    
-#                         df = df.iloc[self.idx] # subset the df by idx
-    
-                        
-                        
-#                         # calculate Logit regression
-#                         md = smf.logit(formula, 
-#                                        df, 
-#                                        )  
-                        
-#                         mdf = md.fit() # ??? Convergence warning
-#                         ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
-                    
-#                     # record p-Values 
-#                     # This adds the p-values to the values already present in the array at the specified location
-#                     # for the first iteration, the array only contains 0s. Then, with every iteration, 
-#                     # the array contains the sum of p-values of each channel and tf
-#                     # and later we will get the mean by dividing by n_iter
-#                     p_values[self.thisChannel,tf,:] += mdf.pvalues
- 
-        
-#         if sub_sample: # get mean and sd of the p-Values across iterations
-#             p_values_mean = p_values / n_iter
-#             self.p_values_SD = np.sqrt(p_values_mean - np.square(p_values_mean))
-#             self.p_values = p_values_mean
-
-#         else:
-#             self.p_values = p_values
-
-        
-        
-#         self.metadata['p_Values_index'] = mdf.pvalues.index
-#         self.metadata['regression_formula'] = self.formula
-#         self.metadata['regression_groups'] = "NONE" 
-#         self.metadata['regression_type'] = str(mdf.model)
-#         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
-#         self.metadata['axes'] = ['channel, timeframe, p-Value']
-#         self.metadata['iterations'] = n_iter
-#         self.metadata['equalized_accuracy_sample'] = sub_sample
-        
-#         if sub_sample:
-#             self.metadata['sub_sample_dataframe_length'] = len(df)
-        
-        
-#         return p_values
-    
-        
-#     def do_regression_timewise(self,tf):
-#         # extract the data & trial information at a given timepoint and channel              
-#         df = self.condition_df # TODO need to change this in case condition_df is provided
-#         df['eeg_data'] = self.data_array[:,self.thisChannel,tf]
-
-#         df = df.iloc[self.idx] # subset the df by idx
-
-        
-        
-#         # calculate Logit regression
-#         md = smf.logit(formula, 
-#                        df, 
-#                        )  
-        
-#         mdf = md.fit() # ??? Convergence warning
-#         ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
-#%% Opening a pickle
-# filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_NV_sub-sampled_FDR_pValues.pkl"
-# with open(filepath, 'rb') as f:
-#     some_pVals = pickle.load(f)
 
 #%% heatmap plot
-# pVals = some_pVals['p_values_SD']  
+# pVals = some_pVals['p_values_mean']  
 # index = some_pVals['metadata']['p_Values_index']
     
 # # Heatmaps for the parameters
@@ -423,7 +232,7 @@ import statsmodels.formula.api as smf
 # # Iterate over the subplots, plot the heatmaps, and set the titles
 # for i in range(3):
 #     for j in range(3):
-#         sns.heatmap(pVals[:, :, i * 3 + j], ax=axs[i, j])
+#         sns.heatmap(pVals[:, :, i * 3 + j], vmin=0, vmax=0.3, ax=axs[i, j])
 #         axs[i, j].set_title(index[i * 3 + j])  # Set the title
 #         axs[i,j].set(xlabel="times", ylabel="electrodes")
 # plt.subplots_adjust(hspace=0.5, wspace=0.5)
@@ -550,24 +359,6 @@ import statsmodels.formula.api as smf
 # result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}
 
 
-#%% Let's try the logistic regression with statsmodels
-
-# # results = []
-
-# formula = "accuracy ~ levels * eeg_data + noiseType + wordPosition "
-# # # groups = 'subjID'
-
-# md = smf.logit(formula, df)
-# mdf = md.fit()
-# mdf.summary()
-# p_values = mdf.pvalues
-# predicted = md.predict(mdf.params)
-
-# pred_table = mdf.pred_table() 
-# # # pred_table[i,j] refers to the number of times "i" was observed and the model predicted "j". 
-# # # Correct predictions are along the diagonal.
-# # results.append(formula)
-# # results.append(mdf.prsquared)
 
 #%%  CREATING EVOKEDS #########################################################################################################
 # """
