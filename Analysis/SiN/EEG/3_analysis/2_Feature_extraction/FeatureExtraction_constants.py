@@ -62,9 +62,12 @@ In other words:
     Therefore: n_cycles determines how many cycles are in a standard deviation of the gaussian envelope
     Higher n_cycles will give a higher sigma and therefore a broader wavelet
 
+
 if << n_cycles = freqs / 2 >> then sigma will always be = 1 / (4 * np.pi) = 0.079577
+--> and that is why you don't want to make n_cycles dependent on freqs
 
 
+===== CONE OF INFLUENCE =====
 For the Cone of Influence, we use the full width at half maximum (FWHM).
 It is defined as the window between when the gaussian envelope is at 50% before and after the peak.
 
@@ -80,7 +83,8 @@ This is also called the half width at half maximum (HWHM)
 Therefore:
 With the COI, we want to exclude data outside of the HWHM on the first and last wavelet.
 Our wavelets extend to +/- 5 sigma on either side of the peak.
-So we need to exclude values before << time[0] + ((5 - 1.173) * sigma) >> and after << time[len(time)-1] - ((5 - 1.173) * sigma) >>
+So we need to exclude values before << time[0] + ((5 - 1.173) * sigma) >> and after << time[-1] - ((5 - 1.173) * sigma) >>
+(Where sigma is dependent on the frequency and n_cycles)
     
 In other words:
     n_cycles determines how many complete cycles in a given frequency, multiplied by 3.27 (= 5 - 1.173)

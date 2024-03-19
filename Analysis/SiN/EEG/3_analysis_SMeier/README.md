@@ -17,15 +17,16 @@ s003   done
 s004   done
 s005   Err1
 s006   done
-s007   running...
-s008   
-s009   
-s010   
-s011   
-s012   
-s013   
+s007   done
+s008   done
+s009   done
+s010   Err1
+s011   done
+s012   Err1
+s013   running...
 s015   
 
 Err1 refers to `LinAlgError: Singular matrix` which sometimes occurs in the function `run_LogitRegression_withinSubj()` on the line `mdf = md.fit()`
+I (samuemu) took a screenshot of the most recent calls in the console.
 I do not know why it occurs only in some subjects in some conditions, and also not during every iteration
 It may be only on some timepoints or channels? Need to test further.

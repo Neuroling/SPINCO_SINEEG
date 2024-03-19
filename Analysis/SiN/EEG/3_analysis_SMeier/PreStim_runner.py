@@ -117,7 +117,7 @@ if Runner:
     for noise in const.noise: # separately for each noiseType
     # for noise in ['NV']: # for debugging, only run one condition
         
-        for subjID in const.subjIDs[5:14]:
+        for subjID in const.subjIDs[4:5]:
             time_control.append("start " + subjID + ": " + str(datetime.now()))
             
             PreStimManager.get_data_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression

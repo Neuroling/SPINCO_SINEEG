@@ -63,6 +63,21 @@ class FeatureExtractionManager:
         Function to compute power spectrum densities (PSD) and time frequency 
         representations (TFR)
         
+        === TFR notes ===
+        We use Morlet wavelets for the TFR. Morlet wavelets is the product of a sine-wave in a given frequency,  
+        multiplied by a gaussian envelope. 
+        
+        The width of the wavelet is determined by Sigma, which is the standard deviation of the Gaussian envelope.
+        The wavelet extends to +/-5 standard deviations, so the values at tail ends are close to 0.
+        Sigma is determined by freqs and n_cycles:
+            >>> sigma = n_cycles/(2 * np.pi * freqs)
+
+        In other words:
+            (2 * np.pi * freqs) = one completed sine-wave of freqs (= one cycle)
+            Therefore: n_cycles determines how many cycles are in a standard deviation of the gaussian envelope
+            Higher n_cycles will give a higher sigma and therefore a broader wavelet, but a lower temporal resolution
+        
+        
         Parameters
         ----------
         epochs: Instance of 'Epochs'
@@ -165,17 +180,31 @@ class FeatureExtractionManager:
         Created on Tue Jan 10 11:43:56 2023
         @author: gfraga & samuemu
         
-        Extracts the cone of influence (COI) and drops values outside of it
+        Calculates the cone of influence (COI) and drops values outside of it
         
-        Wavelet width and COI are determined by full width half maximum (fwhm): 
-        The distance between 50% gain before peak to 50% gain after peak.
+        Wavelet width and COI are determined by half width half maximum (hwhm) of the gaussian envelope: 
+        The distance between 50% gain to/after the peak of the gaussian envelope
         So the edge of the COI is the point of 50% gain before/after peak (=fwhm/2)
         see Cohen (2019) https://doi.org/10.1016/j.neuroimage.2019.05.048
+        
+        See also: Notes in the constants file
      
         Parameters
         ----------
         tfr: mne EpochsTFR object
             Time-frequency power per epoch.
+            
+        tmin : float or None, Default is None
+            The start of the timewindow of which to get the COI in seconds.
+            Timepoints before tmin will be dropped.
+            If None, will take the data from the start of the epoch to tmax.
+            If float, must be in seconds.
+         
+        tmax : float or None, Default is None
+            The end of the timewindow of which to get the COI in seconds.
+            Timepoints after tmax will be dropped.
+            If None, will take the data from tmin to the end of the epoch.
+            If float, must be in seconds.
 
             
         Returns
