@@ -22,7 +22,9 @@ try one or more of these solutions
     - In the constants, set decim = 2 (or higher if necessary. This will decimate the sampling rate.)
     - Instead of looping over subjects, manually run the code for each subject. Open a new console for every subject.
 """
-SibMei = True
+SibMei = False # If we want to use the data for Sibylle's MSc
+if SibMei: print('NOTICE: processing data for the MSc of Sib. M.')
+
 #%% Set working directory #####################################################################################################
 #% This requires working with the spyder project on this directory: Y:\Projects\Spinco\SINEEG\Scripts\Analysis\SiN\EEG  # TODO
 import os
@@ -46,7 +48,8 @@ import FeatureExtraction_functions as functions
 
 
 #%% Looping over subjects #####################################################################################################
-for subjID in const.subjIDs:
+for subjID in const.subjIDs[1:-1]:
+# for subjID in ['s001']: # for debugging, only one subj
     
     print('_.~"(_.~"(_.~"(_.~"(_.~"(  now processing',subjID,'   _.~"(_.~"(_.~"(_.~"(_.~"(')
     #%% File paths ############################################################################################################
@@ -55,7 +58,7 @@ for subjID in const.subjIDs:
         dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives_SM', 
                                 const.taskID, subjID)
         epo_path = glob(os.path.join(dirinput, str("*"+ const.SM_fifFileEnd)), recursive=True)[0]
-        diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives_SM',subjID)
+        diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives_SM',const.taskID,subjID)
         
     else:   
         dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', 
@@ -64,7 +67,7 @@ for subjID in const.subjIDs:
         diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
                                 const.taskID,'features',subjID)
         
-        if not os. path.exists(diroutput): # If the output directory doesn't exist, create it
+        if not os.path.exists(diroutput): # If the output directory doesn't exist, create it
             os.makedirs(diroutput)
             print("path created: "+diroutput)
             
@@ -80,8 +83,15 @@ for subjID in const.subjIDs:
     tfr = features_dict['TFR']
     del features_dict
     
-    #%% separate pre- and post-stim
-    intervals = ['prestim','poststim']
+    #%% Get Cone of Influence #################################################################################################   
+    #% we want to run the COI separately for pre- and post-stimulus   
+    #% First: for SibMei, we only need prestim
+    if SibMei:
+        intervals = ['prestim']
+    else:
+        intervals = ['prestim','poststim']
+    
+    #% Second: loop over intervals and define where to crop the data    
     for interval in intervals:
         if interval == 'prestim':
             tmin = None
@@ -90,14 +100,11 @@ for subjID in const.subjIDs:
             tmin = 0
             tmax = None
         else:
-            raise ValueError("Not sure if pre or poststim")
+            raise ValueError("Not sure if pre- or poststim")
             
-        # epo = epo.get_data(tmax = tmax, tmin = tmin) 
-        # this but for tfr # TODO
         
-        #%% Get Cone of Influence #################################################################################################
-        tfr_df = FeatureExtractionManager.extractCOI(tfr)
-        del tfr
+        #% Last: get COI, drop values outside of it
+        tfr_df = FeatureExtractionManager.extractCOI(tfr, tmin = tmin, tmax = tmax)
         
         #%% Split into frequency bands ############################################################################################
         tfr_bands = FeatureExtractionManager.extractFreqBands(tfr_df,freqbands=const.freqbands)
@@ -117,13 +124,13 @@ for subjID in const.subjIDs:
         tfr_bands['metadata']['ch_names']=epo.ch_names
         
         #%% save dictionary (pickle it!) ##########################################################################################
-        pickle_path = os.path.join(diroutput, subjID + interval + const.pickleFileEnd)
+        pickle_path = os.path.join(diroutput, subjID + '_' + interval + const.pickleFileEnd)
         with open(pickle_path, 'wb') as f:
             pickle.dump(tfr_bands, f)
         print("pickling the dictionary")
         
         del tfr_bands
-        del FeatureExtractionManager # to make sure there is no spill-over between subjects, we delete the Manager in each loop
+    del FeatureExtractionManager # to make sure there is no spill-over between subjects, we delete the Manager in each loop
         
     
 print("All done.")

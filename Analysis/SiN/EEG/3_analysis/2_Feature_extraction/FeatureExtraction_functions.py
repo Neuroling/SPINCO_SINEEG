@@ -88,7 +88,8 @@ class FeatureExtractionManager:
         -------
         features_dict : dictionary
             A dictionary containing mne objects with the selected features
-             
+         
+            
         >> to dos...
         -----------------------
         spectroTemporalConnectivity: bool | (default True)   
@@ -158,7 +159,7 @@ class FeatureExtractionManager:
         return features_dict if features_dict else None
     
 
-    def extractCOI(self,tfr):
+    def extractCOI(self, tfr, tmin = None, tmax = None):
         """Extract Cone of Influence (COI) from TFR
         =================================================================
         Created on Tue Jan 10 11:43:56 2023
@@ -166,29 +167,31 @@ class FeatureExtractionManager:
         
         Extracts the cone of influence (COI) and drops values outside of it
         
-        Wavelet width and coi are determined by full width half maximum (fwhm): 
+        Wavelet width and COI are determined by full width half maximum (fwhm): 
         The distance between 50% gain before peak to 50% gain after peak.
         So the edge of the COI is the point of 50% gain before/after peak (=fwhm/2)
         see Cohen (2019) https://doi.org/10.1016/j.neuroimage.2019.05.048
      
         Parameters
         ----------
-        tfr: Instance of 'tfr' 
-            TFR Object from mne. Time frequency power per epoch. 
-            
+        tfr: mne EpochsTFR object
+            Time-frequency power per epoch.
+
             
         Returns
         -------
-        tfr_df : large data frame with tfr values per channel,epoch, tp, freqbin (columns: freq, time, epoch). Rows with values outside COI were dropped
+        tfr_df : pandas dataframe
+            Very large dataframe with tfr values per channel, epoch, timepoint, frequency 
+            (columns: time, freq, epoch, condition, channel). 
+            Rows with values outside COI were dropped
                      
         """    
-        # % get coi values  (times per freq bin)
+        
         print('>> Cone of influence')
         
         if not tfr.comment['n_cycles']:
-            raise ValueError("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles':XXX}")
-        
-            
+            raise ValueError("Found no n_cycles in tfr.comment. Add this info to tfr object as tfr.comment = {'n_cycles': XXX}")
+                   
         else: # if n_cycles used in EEG_extract_feat is not the default, calculate coi
             if tfr.comment['n_cycles'] == 'default: const.n_cycles':
                 sigma = const.sigma
@@ -198,14 +201,18 @@ class FeatureExtractionManager:
                 freqs = tfr.freqs
                 sigma = n_cycles/(2 * np.pi * freqs)
 
-
+        # crop data (for separate pre-/post-stim COI)
+        tfr = tfr.copy().crop(tmin = tmin, tmax = tmax)
+        
+        #% get timewindow of the data
         start = tfr.times[0]    
         end = tfr.times[len(tfr.times)-1]
-
+        print(start, end)
+        
+        #% Create a dataframe with TFR power
+        tfr_df = tfr.to_data_frame()   
         print('Creating dataframe with tfr power and filtering out values outside COI ...')
-
-        #Create a data frame with TFR power indicating frequency band
-        tfr_df = tfr.to_data_frame()         
+   
         for c,cval in enumerate(sigma):    
             #define time boundaries for each freq bin
             timeCOI_starts = start + (sigma[c]*const.hwhm_const) # COI starts at the point of 50% gain before peak
@@ -233,7 +240,8 @@ class FeatureExtractionManager:
         Parameters
         ----------
         tfr: df derived from an Instance of 'tfr' or the tfr object
-            If TFR Object from mne it will be transformed to data frame. Expected a data frame after dropping data points out of the COI
+            If TFR Object from mne it will be transformed to data frame. 
+            Expected a data frame after dropping data points out of the COI
 
             
         freqbands: dict (optional)
