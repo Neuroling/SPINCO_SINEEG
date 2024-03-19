@@ -70,7 +70,7 @@ class PreStimManager:
             import warnings
             warnings.filterwarnings('ignore') 
  
-#%% DEFUNCT! 
+#%% DEFUNCT! We are now using the single subject data
     def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE IT FOR REGRESSION (between subject)
@@ -274,7 +274,7 @@ class PreStimManager:
         
         if output : return data_array, condition_df
         
-#%% OBSOLETE! 
+#%% OBSOLETE! No longer needed since we use the single subject data
     def check_chans_and_times(self):
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
@@ -302,34 +302,13 @@ class PreStimManager:
             if self.data_dict[subjID].shape[2] != tf_N:
                 raise ValueError('not all subj have the same number of timepoints')
 
-#%% DEFUNCT! # TODO document
+#%% DEFUNCT! We now run the logit regression within subject # TODO document
     def run_LMM(self, 
                 data_dict= None, 
                 condition_dict = None,
                 formula = "accuracy ~ levels * eeg_data + wordPosition", 
                 groups = "subjID"):
-        """
-        # TODO document
-        # TODO save entire model output obj (mdf)
 
-        Parameters
-        ----------
-        data_dict : TYPE, optional
-            DESCRIPTION. The default is None.
-        condition_dict : TYPE, optional
-            DESCRIPTION. The default is None.
-        formula : TYPE, optional
-            DESCRIPTION. The default is "accuracy ~ levels * eeg_data".
-        groups : TYPE, optional
-            DESCRIPTION. The default is "subjID".
-
-        Returns
-        ------- for the p_values
-
-        p_values_FDR : TYPE
-            DESCRIPTION.
-
-        """
         
         if data_dict == None:
             data_dict = self.data_dict
@@ -374,7 +353,7 @@ class PreStimManager:
                 
                 # calculate LMM
                 md = smf.mixedlm(formula, df, groups = groups)        
-                mdf = md.fit(full_output = True) # This gives the convergence warning # TODO
+                mdf = md.fit(full_output = True) # This gives the convergence warning # ???
                 ## https://www.statsmodels.org/devel/_modules/statsmodels/regression/mixed_linear_model.html#MixedLM.fit
                 ## Fitting is first tried with bfgs, then lbfgs, then cg - see https://www.statsmodels.org/stable/generated/statsmodels.base.optimizer._fit_lbfgs.html
                 
@@ -391,7 +370,7 @@ class PreStimManager:
         self.p_values = p_values
         return p_values
     
-#%% DEFUNCT! 
+#%% DEFUNCT!  We now run the logit regression within subject. This is across subject
     def run_LogitRegression(self, 
                 data_dict= None, 
                 condition_dict = None,
@@ -664,7 +643,7 @@ class PreStimManager:
 
         self.metadata['p_Values_index'] = mdf.pvalues.index
         self.metadata['regression_formula'] = md.formula
-        self.metadata['regression_groups'] = "NONE" # TODO
+        self.metadata['regression_groups'] = "NONE"
         self.metadata['regression_type'] = str(mdf.model)
         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
         self.metadata['axes'] = ['channel, timeframe, p-Value']
@@ -1057,11 +1036,9 @@ class PreStimManager:
 
         """
 
-
         # list of every possible combination of accuracy, noise & degradation, separated by /
         conditions = const.conditions
-        
-        
+               
         # This will give us a dict containing a lists for every condition, which contain evoked arrays for every subject
         evokeds = {condition : [] for condition in conditions} # Create dict with empty lists for every condition
         
@@ -1081,7 +1058,7 @@ class PreStimManager:
             print('saved to', const.diroutput + const.evokedsPickleFileEnd)
         return evokeds
     
-#%%      
+#%% #TODO comment
     def grandaverage_evokeds(self, evokeds):
         evokeds_gAvg= {}
         for condition in const.conditions:

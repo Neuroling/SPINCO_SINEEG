@@ -117,7 +117,7 @@ if Runner:
     for noise in const.noise: # separately for each noiseType
     # for noise in ['NV']: # for debugging, only run one condition
         
-        for subjID in const.subjIDs:
+        for subjID in const.subjIDs[5:14]:
             time_control.append("start " + subjID + ": " + str(datetime.now()))
             
             PreStimManager.get_data_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
@@ -128,14 +128,14 @@ if Runner:
     #%% get evoked objects for every subj of every possible combination of accuracy, noiseType & degradation
     # evokeds = PreStimManager.get_evokeds()
     
-else:
-    #%% Open p-Values & evokeds ###############################################################################################
-    # TODO I need to change this now that we separated NoiseType and have different filenames
-    with open(const.diroutput + const.pValsPickleFileEnd, 'rb') as f:
-        p_values_FDR = pickle.load(f)
+# else:
+#     #%% Open p-Values & evokeds ###############################################################################################
+#     # TODO I need to change this now that we separated NoiseType and have different filenames
+#     with open(const.diroutput + const.pValsPickleFileEnd, 'rb') as f:
+#         p_values_FDR = pickle.load(f)
     
-    with open(const.diroutput + const.evokedsPickleFileEnd, 'rb') as f:
-        evokeds = pickle.load(f)
+#     with open(const.diroutput + const.evokedsPickleFileEnd, 'rb') as f:
+#         evokeds = pickle.load(f)
 
 
 #%% do some plots =============================================================================================================
