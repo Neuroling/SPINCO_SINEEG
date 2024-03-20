@@ -73,8 +73,8 @@ timesIdx = timesIdx[0:3]
 tmp_df = pd.DataFrame()
   
 tmp_df = condition_df
-tmp_df['eeg_data'] = data_array[:,0,0]
-pVals_n = len(smf.logit(formula, 
+tmp_df['eeg_data'] = data_array[:, 0, 0]
+pVals_n = len(smf.logit(formula,
                         tmp_df
                         ).fit().pvalues.index)
 del tmp_df

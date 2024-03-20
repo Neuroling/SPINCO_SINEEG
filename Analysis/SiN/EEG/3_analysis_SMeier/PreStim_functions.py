@@ -274,7 +274,8 @@ class PreStimManager:
         self.condition_df = condition_df
         
         return data_array, condition_df if output else None
-#%% # TODO dcoument
+    
+#%% 
     def run_LogitRegression_withinSubj(self, 
                 data_array = None, 
                 condition_df = None,
@@ -283,6 +284,91 @@ class PreStimManager:
                 sub_sample = True,
                 solver = "lbfgs"
                 ):
+        """
+        LOGIT REGRESSION WITHIN SUBJECT
+        =======================================================================
+             
+        Regression for binary DV. 
+     
+        In case of sub_sample = True, will equalise trial numbers of correct and
+        incorrect trials by calling the function PreStimManager.random_subsample_accuracy().
+        For more information, see docstring of that function.
+        
+        If sub_sample = False, n_iter will be overwritten as 1.
+        
+        Results will not be returned but stored in the PreStimManager class object.
+        If needed, they can be called by `SomeVariable = PreStimManager.DesiredResult`
+        (substituting DesiredResult by one of the results below)
+        
+        These results are collected:
+            p_values : array of shape [n_channels, n_times, n_coefficient, n_iter]
+                The p-Values of all regression coefficients for each channel, timepoint, and iteration.
+                
+            coefficients : array of shape [n_channels, n_times, n_coefficient, n_iter]
+                Each regression coefficient for each channel, timepoint, and iteration.
+                
+            coef_SD : array of shape [n_channels, n_times, n_coefficient, n_iter]
+                The standard deviation of each regression coefficient for each channel, timepoint, and iteration.
+
+                
+            z_values : array of shape [n_channels, n_times, n_coefficient, n_iter]
+                The z-Values of all regression coefficients for each channel, timepoint, and iteration.
+
+            p_values_mean : array of shape [n_channels, n_times, n_coefficient]
+                The p-Values of all regression coefficients for each channel, timepoint, but
+                averaged over the iterations.
+                Will only be calculated if sub_sample = True
+                
+            p_values_SD : array of shape [n_channels, n_times, n_coefficient]
+                The standard deviation of the p-Values across iterations
+                Will only be calculated if sub_sample = True
+            
+                 
+
+        Parameters
+        ----------
+        data_array : array of shape [n_epochs, n_channels, n_times] or None; optional
+            # !!! Notice !!! Currently not working if data_array is not None
+            The array containing the data. 
+            The default is None, in which case the data_array stored in the 
+            PreStimManager class is used (meaning, the data_array from the previous call of 
+            `PreStimManager.get_epoData_singleSubj()` or `PreStimManager.get_freqData_singleSubj()` )
+            
+        condition_df : dataFrame or None; optional
+            # !!! Notice !!! Currently not working if condition_df is not None
+            The dataframe containing the trial information such as accuracy, condition, etc.
+            The default is None, in which case the condition_df stored in the 
+            PreStimManager class is used (meaning, the condition_df from the previous call of 
+            `PreStimManager.get_epoData_singleSubj()` or `PreStimManager.get_freqData_singleSubj()` )
+
+        formula : str, optional
+            The formula to be passed to smf.logit(). 
+            The default is "accuracy ~ levels * eeg_data + wordPosition".
+        
+        sub_sample : bool, optional
+            Whether to equalise trial-number of correct and incorrect trials
+            by randomly subsampling the data. 
+            The default is True.
+
+        n_iter : int, optional
+            How many iterations of subsampling and regression should be done. 
+            This option is only available if sub_sample is set to True, otherwise,
+            n_iter will be overwritten as 1.
+            The default is 100.
+            
+        solver : str, optional
+            The solver to be used when calling `mdf = md.fit(method = solver)`.
+            For information on the solvers, see documentation on statsmodels:
+                https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.Logit.fit.html
+                https://www.statsmodels.org/stable/dev/generated/statsmodels.base.model.LikelihoodModelResults.html
+            The default is "lbfgs", which appears to be the fastest. The default by the function
+            would be "newton", which causes LinAlgError in some subjects
+
+        Returns
+        -------
+        None.
+
+        """
 
         self.metadata['fitting_solver'] = solver
         
@@ -322,7 +408,7 @@ class PreStimManager:
         p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
         coefficients = np.zeros(shape=p_values.shape)
         z_values = np.zeros(shape=p_values.shape)
-        coef_CI = np.zeros(shape=p_values.shape)
+        coef_SD = np.zeros(shape=p_values.shape)
         
         
         # But gfraga also asked to save the whole model output, soooo... # TODO
@@ -366,7 +452,7 @@ class PreStimManager:
                     # record p-Values, z-Values and coefficients
                     p_values[thisChannel,tf,:, iteration] = mdf.pvalues
                     coefficients[thisChannel,tf,:, iteration] = mdf.params
-                    coef_CI[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
+                    coef_SD[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
                     z_values[thisChannel,tf,:, iteration] = mdf.tvalues
  
         
@@ -379,7 +465,7 @@ class PreStimManager:
         self.p_values = p_values
         self.coefficients = coefficients
         self.z_values = z_values
-        self.coef_CI = coef_CI
+        self.coef_SD = coef_SD
         
 
         self.metadata['p_Values_index'] = mdf.pvalues.index
@@ -394,7 +480,7 @@ class PreStimManager:
         if sub_sample:
             self.metadata['sub_sample_dataframe_length'] = len(df)
 
-#%% # TODO organise
+#%% # TODO organise documentation
     def random_subsample_accuracy(self, trial_info = None):
         """
         RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
@@ -475,6 +561,7 @@ class PreStimManager:
         return subsample_idx
 
 #%% # TODO - not working anymore because of the higher dimension of the p-Values array
+
     def FDR_correction(self, p_values = None, alpha = 0.05, output = False):
         """
         FDR CORRECTION
@@ -566,7 +653,7 @@ class PreStimManager:
         try:
             output_dict['z_values'] = self.z_values
             output_dict['coefficients'] = self.coefficients
-            output_dict['coefficients_CI'] = self.coef_CI
+            output_dict['coefficients_SD'] = self.coef_SD
             values_name = 'allValues'
         except AttributeError:
             values_name = 'pValues'
