@@ -68,9 +68,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pickle
 from datetime import datetime
-from multiprocessing import Pool, Process
-import time
-import warnings
 
 import PreStim_constants as const
 from PreStim_functions import PreStimManager
@@ -115,12 +112,13 @@ if Runner:
     #%% Run regression and save p-Values #############################################################################################
     time_control = []
     for noise in const.noise: # separately for each noiseType
-    # for noise in ['NV']: # for debugging, only run one condition
+    # for noise in ['SSN']: # for debugging, only run one condition
+    # for noise in ['NV']:  
         
-        for subjID in const.subjIDs[4:5]:
+        for subjID in const.subjIDs:
             time_control.append("start " + subjID + ": " + str(datetime.now()))
             
-            PreStimManager.get_data_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
+            PreStimManager.get_epoData_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
             PreStimManager.run_LogitRegression_withinSubj() # run the regression separately for each timepoint & channel  
             # PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
             PreStimManager.save_pValues() # save the p-Value array and return it

@@ -24,6 +24,7 @@ dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data', 'SiN', 'deri
 diroutput = dirinput + '/PreStim/'
 
 fifFileEnd = 'resampled_ICA_rej_epo.fif'
+freqPickleFileEnd = "_prestim_tfr_freqbands.pkl"
 pValsPickleFileEnd = '.pkl'
 evokedsPickleFileEnd = 'evokeds.pkl'
 
@@ -33,7 +34,7 @@ subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts
 
 accuracy = ['Cor','Inc']
 degradation = ['Lv1','Lv2','Lv3']
-noise = ['NV', 'SSN']
+noise = ['SSN', 'NV']
 
 # List all possible combinations of noise, degradation and accuracy, separated by /
 conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]

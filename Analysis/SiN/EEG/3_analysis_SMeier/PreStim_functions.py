@@ -67,7 +67,7 @@ class PreStimManager:
             warnings.filterwarnings('ignore') 
  
 #%% 
-    def get_data_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
+    def get_epoData_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
         =======================================================================
@@ -121,7 +121,7 @@ class PreStimManager:
                 pandas dataframe, containing accuracy, levels, noiseType for every trial
 
         """
-        
+        # 
         self.subjID = subjID
         self.metadata['subjectID'] = subjID
         
@@ -137,7 +137,25 @@ class PreStimManager:
         
         # add channel names and time in seconds to metadata
         self.metadata['ch_names'] = epo.ch_names
-        self.metadata['times'] = epo._raw_times[0:-1]
+        
+        times = epo._raw_times
+        if tmin is not None:
+            if tmax is not None:
+                if tmin >= tmax:
+                    raise ValueError("tmin needs to be smaller than tmax")
+            idx_tmin = next(i for i,v in enumerate(times) if v >= tmin)
+            times = times[idx_tmin : len(times)]
+            self.metadata['tmin'] = tmin
+        else:
+            self.metadata['tmin'] = "None"
+     
+        if tmax is not None:
+            idx_tmax = next(i for i,v in enumerate(times) if v >= tmax)
+            times = times[0: idx_tmax]
+            self.metadata['tmax'] = tmax
+        else:
+            self.metadata['tmax'] = "None"     
+        self.metadata['times'] = times
         
         # extract data, then delete the epoch-object
         data_array = epo.get_data(tmax = tmax, tmin = tmin) # get data as array of shape [n_epochs, n_channels, n_times]
@@ -165,17 +183,110 @@ class PreStimManager:
         
         return data_array, condition_df if output else None
 
+#%% # TODO not yet working (wait for Sibylle)
+    def get_freqData_singleSubj(self, subjID, output = False, condition = None):
+        """
+        OPEN FREQUENCY DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
+        =======================================================================
+        # TODO document
+        
+        Parameters
+        ----------
+        subjID : str
+            The subject ID. This will be used to get the directory of the epoched data,
+            and will be stored in the PreStimManager object for later use.
+        
+        condition : str, default None
+            Only get the data from trials of this condition. 
+            Must be in the form of the event_id used to filter epochs with mne, like
+            with the use of epoch['SomeCondition'].
+            It is possible to set multiple conditions by separating the labels with /
+            Example: `condition = 'NV/Lv1'` <-- will only get data from trials with NV and Lv1 degradation
+                   
+        output : bool, default = False
+            Whether data_array and condition_df should be returned. The default is False.
+            In both cases, data_array and condition_df will be stored in the PreStimManager object.
+            The function run_LogitRegression_WithinSubj() will default to using the array/df saved
+            internally in the PreStimManager-class.
+            Therefore, setting output to False might optimise memory usage.
+            
+            (If you later decide you do want them in the variable explorer, 
+             call `data_array = PreStimManager.data_array` )
+
+
+        Returns
+        -------
+        If output == False (default):
+            None
+        
+        If output == True:
+            data_array : numpy array
+                numpy array of shape [n_epochs, n_channels, n_times]
+                
+            condition_df : pandas dataframe
+                pandas dataframe, containing accuracy, levels, noiseType for every trial
+
+        """
+        raise NotImplementedError()
+        
+        
+        self.subjID = subjID
+        self.metadata['subjectID'] = subjID
+        
+        # get filepath, read pickle
+        freq_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.freqPickleFileEnd)), recursive=True)[0]
+        with open(freq_path, 'rb') as f:
+            tfr_band = pickle.load(f)
+        self.metadata['frequency_dict_path'] = freq_path
+
+        # TODO get a way to loop over freqband without having to unpickle the dict every time
+        data_array = tfr_band['Alpha_data'] # data is an array of shape [n_epochs, n_channels, n_times]
+        condition_df = tfr_band['epoch_metadata'] # trial information
+
+        # TODO
+        # subset epochs to the desired condition
+        if condition:
+            epo = epo[condition]
+            self.metadata['condition'] = condition
+        
+        # add channel names and time in seconds to metadata
+        self.metadata['ch_names'] = tfr_band['metadata']['ch_names']
+        self.metadata['times'] = epo._raw_times[0:-1] #TODO
+        
+        
+        # re-name some columns
+        condition_df['noiseType'] = condition_df['block'] 
+        condition_df['wordPosition'] = condition_df['stimtype'] 
+
+        # Re-coding is necessary for the DV (needs to be numeric, not string)
+        condition_df['accuracy'].replace({'inc': 0, 'cor': 1}, inplace=True)
+        # condition_df['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
+        
+        # drop unneeded columns
+        condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+        
+        # and, lastly, re-index (because the separation of conditions leads to non-sequential indices, which might lead to errors later)
+        reIdx = pd.Series(range(len(condition_df)))
+        condition_df.set_index(reIdx, inplace = True)
+        
+        # Store data in the PreStimManager class
+        self.data_array = data_array
+        self.condition_df = condition_df
+        
+        return data_array, condition_df if output else None
 #%% # TODO dcoument
     def run_LogitRegression_withinSubj(self, 
                 data_array = None, 
                 condition_df = None,
                 formula = "accuracy ~ levels * eeg_data + wordPosition", 
                 n_iter = 100, 
-                sub_sample = True
+                sub_sample = True,
+                solver = "lbfgs"
                 ):
 
-
-        #  TODO cdoes not actually work if input is not none
+        self.metadata['fitting_solver'] = solver
+        
+        #  TODO does not actually work if input is not none
         # If no data given, use the data stored in the class object
         if data_array == None:
             data_array = self.data_array
@@ -216,27 +327,27 @@ class PreStimManager:
         
         # But gfraga also asked to save the whole model output, soooo... # TODO
         #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
-        self.iter_control = [0,0,0]
+        # self.iter_control = [0,0,0]
 
         for iteration in range(n_iter):
-            self.iter_control[0] = iteration
+            # self.iter_control[0] = iteration
 
             if sub_sample:
                 # we sub-sample running the function below. which will give us a set of indices (idx)
                 # and later we subset the data by idx
                 idx = self.random_subsample_accuracy()
-                self.idx = idx
+                # self.idx = idx
             else: # if no sub-sampling is asked for, just get every idx
                 idx = [ids for ids in range(len(condition_df))]
 
 
             # And now we run the model for every channel and every timepoint
             for thisChannel in channelsIdx:
-                self.iter_control[1] = thisChannel
+                # self.iter_control[1] = thisChannel
 
 
                 for tf in timesIdx:
-                    self.iter_control[2] = tf
+                    # self.iter_control[2] = tf
 
                     # extract the data & trial information at a given timepoint and channel              
                     df = condition_df
@@ -248,9 +359,9 @@ class PreStimManager:
                     md = smf.logit(formula, 
                                    df, 
                                    )  
+                    # self.md = md
                     
-                    mdf = md.fit() # ??? Convergence warning
-                    ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+                    mdf = md.fit(method = solver) # ??? don't know what the correct solver is
                     
                     # record p-Values, z-Values and coefficients
                     p_values[thisChannel,tf,:, iteration] = mdf.pvalues
@@ -283,7 +394,7 @@ class PreStimManager:
         if sub_sample:
             self.metadata['sub_sample_dataframe_length'] = len(df)
 
-#%% 
+#%% # TODO organise
     def random_subsample_accuracy(self, trial_info = None):
         """
         RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
@@ -319,8 +430,22 @@ class PreStimManager:
 
         """
 
-        # TODO this does not currently account for uneven numbers of wordPosition, subjID, or levels that could result from this
-        # (see comment in sketch_PreStim_writing)
+        # TODO this does not currently account for uneven numbers of wordPosition, or levels that could result from this
+        # (see comment below, which is copy-pasted from sketch_PreStim_writing)
+           
+# # next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
+# # and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
+# # but that's not possible since some subj are 100% correct on some of those combinations.
+# # even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
+# # meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
+
+# newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
+# tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
+# max(tmp['accuracy']) 
+# # 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
+# # for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
+# # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
+
         if not trial_info: 
 # TODO : account for if input is dict - 
 # maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
@@ -349,7 +474,7 @@ class PreStimManager:
 
         return subsample_idx
 
-#%% 
+#%% # TODO - not working anymore because of the higher dimension of the p-Values array
     def FDR_correction(self, p_values = None, alpha = 0.05, output = False):
         """
         FDR CORRECTION

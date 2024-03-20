@@ -14,8 +14,8 @@ It is largely disorganised and messy.
 #%% Imports
 
 import PreStim_constants as const
-import PreStim_functions as function
-PreStimManager = function.PreStimManager()
+# import PreStim_functions as function
+# PreStimManager = function.PreStimManager()
 
 import os
 from glob import glob
@@ -24,6 +24,7 @@ import pandas as pd
 import random
 import numpy as np
 import pickle
+from datetime import datetime
 from multiprocessing import Pool
 
 import matplotlib.pyplot as plt
@@ -60,58 +61,58 @@ from sklearn.model_selection import KFold
 
 #%% filepaths
 # subjID = 's001'
-
 # epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
+# freq_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.freqPickleFileEnd)), recursive=True)[0]
 
-# pickle_path_in = os.path.join(dirinput[:dirinput.find(
-#     'derivatives/')] + 'analysis', 'eeg', const.taskID,'features',subjID,subjID + const.inputPickleFileEnd)
 
-#%% Opening a pickle
-# filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s003/s003_Logit_SSN_sub-sampled_1000iter_uncorrected_allValues.pkl"
+#%% Opening pickles
+
+# filepath = const.dirinput + "/s003/s003_Logit_SSN_sub-sampled_1000iter_uncorrected_allValues.pkl"
 # with open(filepath, 'rb') as f:
 #     some_pVals = pickle.load(f)
 
-#%% get data
-# data_dict, condition_dict = PreStimManager.get_data(output = True, condition = "NV")
+# with open(freq_path, 'rb') as f:
+#     tfr_bands = pickle.load(f)
 
-# ## prepare the data
-# tmp_dict = {}
-# for subjID in const.subjIDs:    
-#     tmp_dict[subjID] = condition_dict[subjID]
-#     tmp_dict[subjID]['eeg_data'] = data_dict[subjID][:,0,0]
-# df = pd.concat(tmp_dict.values(), axis=0, ignore_index=True)
-# del tmp_dict
+#%% debug logs
+# debug_log_path = const.dirinput + "/debugging_log.pkl"
 
-
+# with open(debug_log_path, 'rb') as f:
+#     debug_log = pickle.load(f)
+# debug_log[str(start_time)] = {"indices":PreStimManager.idx, "iter_control":PreStimManager.iter_control, "subjID": subjID, "condition" :noise}
+    
+# with open(debug_log_path, 'wb') as f:
+#     pickle.dump(debug_log, f)
+# debug_log = {"codebook":{"indices":"the indices of the current subsample", "iter_control": "subsample_iteration, channel, timeframe"}}
 #%% logit regression preparation
-subjID = 's001'
-noise = 'NV'
-data_array, condition_df = PreStimManager.get_data_singleSubj(subjID, condition = noise, output=True)
-formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
-# n_iter = 1
-# sub_sample = True
+# subjID = 's001'
+# noise = 'NV'
+# data_array, condition_df = PreStimManager.get_epoData_singleSubj(subjID, condition = noise, output=True)
+# formula = "accuracy ~ levels * eeg_data + C(wordPosition)"
+# # n_iter = 1
+# # sub_sample = True
 
-# # #% Create arrays and lists
-# channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
-# timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+# # # #% Create arrays and lists
+# # channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+# # timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
 
 
-# # This will run a preliminary model, which is only used to extract the number of p-Values
-# # Which is needed to create an empty array for the p-Values
+# # # This will run a preliminary model, which is only used to extract the number of p-Values
+# # # Which is needed to create an empty array for the p-Values
 
-# tmp_df = condition_df
-# tmp_df['eeg_data'] = data_array[:,0,0]
-# pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
-# # del tmp_df
+# # tmp_df = condition_df
+# # tmp_df['eeg_data'] = data_array[:,0,0]
+# # pVals_n = len(smf.logit(formula, tmp_df).fit().pvalues.index)
+# # # del tmp_df
 
-# # now we know the dimensions of the empty array we need to create to collect p_Values
-# p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
-thisChannel = 0
-tf = 0
-df = condition_df
-df['eeg_data'] = data_array[:,thisChannel,tf]
+# # # now we know the dimensions of the empty array we need to create to collect p_Values
+# # p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n))
+# thisChannel = 0
+# tf = 0
+# df = condition_df
+# df['eeg_data'] = data_array[:,thisChannel,tf]
 
-#%% Let's try the logistic regression with statsmodels
+#%% logistic regression with statsmodels
 
 # # results = []
 
@@ -130,40 +131,105 @@ df['eeg_data'] = data_array[:,thisChannel,tf]
 # # results.append(formula)
 # # results.append(mdf.prsquared)
 
+#%% Most recent reproducible logistic regression (20.03.24)
+
+subjID = 's001'
+noise = 'NV'
+data_array, condition_df = PreStimManager.get_epoData_singleSubj(subjID, condition = noise, output=True)
+formula = "accuracy ~ levels * eeg_data + wordPosition" 
+n_iter = 3 
+N_chansTfs = 3
+
+#% Create arrays and lists
+channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+channelsIdx = channelsIdx[0:N_chansTfs]
+timesIdx = timesIdx[0:N_chansTfs]
+
+# This will run a preliminary model, which is only used to extract the number of p-Values
+# Which is needed to create an empty array for the p-Values
+tmp_df = pd.DataFrame()
+  
+tmp_df = condition_df
+tmp_df['eeg_data'] = data_array[:,0,0]
+pVals_n = len(smf.logit(formula, 
+                        tmp_df
+                        ).fit().pvalues.index)
+del tmp_df
+
+# now we know the dimensions of the empty array we need to create to collect p_Values
+p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
+coefficients = np.zeros(shape=p_values.shape)
+z_values = np.zeros(shape=p_values.shape)
+coef_CI = np.zeros(shape=p_values.shape)
+
+for iteration in range(n_iter):
+
+    idx = PreStimManager.random_subsample_accuracy()
+
+    # And now we run the model for every channel and every timepoint
+    for thisChannel in channelsIdx:
+
+        for tf in timesIdx:
+
+            # extract the data & trial information at a given timepoint and channel              
+            df = condition_df
+            df['eeg_data'] = data_array[:,thisChannel,tf]
+            df = df.iloc[idx] # subset the df by idx
+                    
+            # calculate Logit regression
+            md = smf.logit(formula, 
+                           df, 
+                           )  
+            
+            mdf = md.fit() # ??? Convergence warning
+            ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+            
+            # record p-Values, z-Values and coefficients
+            p_values[thisChannel,tf,:, iteration] = mdf.pvalues
+            coefficients[thisChannel,tf,:, iteration] = mdf.params
+            coef_CI[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
+            z_values[thisChannel,tf,:, iteration] = mdf.tvalues
+ 
+
+p_values_mean = p_values.mean(axis = 3)
+p_values_SD = p_values.std(axis = 3)
+
+
 #%% k-fold crossvalidation
 
-# Folds number
-n_splits = 5
-kf = KFold(n_splits=n_splits)
+# # Folds number
+# n_splits = 5
+# kf = KFold(n_splits=n_splits)
 
-# List of accuracy in a specific fold
-cv_scores = []
+# # List of accuracy in a specific fold
+# cv_scores = []
 
-# re-index df_nv because the indices are non-sequential
-reIdx = pd.Series(range(len(df)))
-df.set_index(reIdx, inplace = True)
+# # re-index df_nv because the indices are non-sequential
+# reIdx = pd.Series(range(len(df)))
+# df.set_index(reIdx, inplace = True)
 
-# Splitting data 
-for train_index, test_index in kf.split(df):
+# # Splitting data 
+# for train_index, test_index in kf.split(df):
     
-    train_df = df.iloc[train_index]
-    test_df = df.iloc[test_index]
-    test_df_x = df.loc[test_index,['levels','eeg_data','wordPosition']]
-    # test_df_y = df.loc[test_index,['accuracy']]
+#     train_df = df.iloc[train_index]
+#     test_df = df.iloc[test_index]
+#     test_df_x = df.loc[test_index,['levels','eeg_data','wordPosition']]
+#     # test_df_y = df.loc[test_index,['accuracy']]
     
-    md_split = smf.logit(formula, train_df)
-    mdf_split = md_split.fit()
+#     md_split = smf.logit(formula, train_df)
+#     mdf_split = md_split.fit()
 
-    # Forecasting on test data
-    y_pred = mdf_split.predict(exog=test_df_x)
+#     # Forecasting on test data
+#     y_pred = mdf_split.predict(exog=test_df_x)
 
-    # Quality of model assessment
-    # Determination coefficient R^2 is used
-    r_squared = np.corrcoef(test_df['accuracy'], y_pred)[0, 1] ** 2
-    cv_scores.append(r_squared)
+#     # Quality of model assessment
+#     # Determination coefficient R^2 is used
+#     r_squared = np.corrcoef(test_df['accuracy'], y_pred)[0, 1] ** 2
+#     cv_scores.append(r_squared)
 
-# Cross-validation results printing
-print("Cross-Validation Scores:", cv_scores)
+# # Cross-validation results printing
+# print("Cross-Validation Scores:", cv_scores)
 
 #%% pool multiprocessing example
 # N = 5000

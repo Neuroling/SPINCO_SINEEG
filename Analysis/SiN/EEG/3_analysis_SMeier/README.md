@@ -6,13 +6,14 @@ Scripts with suffixes
 - *_runner.py are the ones to run for performing the analyses
 - sketch_*_writing.py are scripts to try out code and debug. They are disorganised ("spaghetti code")
 
+- SibMei_PreStim_Frequency_writing.py is a script for S. Meier to adapt and experiment
 - `PreStim_logitRegression.R` is an unused R-script that has a working multilevel logit regression. It is unused because we do all analyses in python.
 
 
 # Processed subjects:
         NV   SiSSN
-s001   done
-s002   done
+s001   done  done
+s002   done  running...
 s003   done
 s004   done
 s005   Err1
@@ -23,10 +24,31 @@ s009   done
 s010   Err1
 s011   done
 s012   Err1
-s013   running...
-s015   
+s013   Err1
+s015   done  done
 
 Err1 refers to `LinAlgError: Singular matrix` which sometimes occurs in the function `run_LogitRegression_withinSubj()` on the line `mdf = md.fit()`
 I (samuemu) took a screenshot of the most recent calls in the console.
-I do not know why it occurs only in some subjects in some conditions, and also not during every iteration
-It may be only on some timepoints or channels? Need to test further.
+I do not know why it occurs only in some subjects in some conditions, and also not during every subsample/channel/timepoint
+- The error does not always occur at the same iteration/channel/timepoint
+- However, it consistently occurs in the same subjects in one or both conditions (NV/SSN)
+- The error is not due to some NaN in the data, because `np.isnan(np.min(data_array))` returns `False`
+
+UPDATE:
+- The error is due to the solver for `md.fit()` - changing it from the default (`newton`) to `bfgs` or to `lbfgs` will circumvent the issue
+- Documentation on `md.fit()` https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.Logit.fit.html
+
+## Other notes on the solvers and how fast they are:
+```
+%timeit mdf = md.fit()
+5.66 ms ± 66.2 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+%timeit mdf = md.fit(method = "bfgs")
+6.63 ms ± 25.9 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+
+%timeit mdf2 = md2.fit(method = "lbfgs")
+2.35 ms ± 43.2 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
+```
+So I'm going with the `lbfgs` solver as default for `run_LogitRegression_withinSubj()`
+
+# Codebook:
