@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-CONSTANTS SCRIPT FOR PreStim
-===============================================================================
-Created on Fri Feb  2 09:01:21 2024
-@author: samuemu
+Created on Thu Mar 21 08:42:13 2024
+
+@author: testuser
 
 This script contains variables that do not change across scripts, such as 
 filepath-chunks, subject_IDs, and condition labels
 
-These variables are called by PreStim_functions and PreStim_runner
+These variables are called by Plotting_functions and Plotting_runner
 """
 
 import os
@@ -21,7 +20,7 @@ pipeID = 'pipeline-01'
 
 thisDir = os.getcwd()
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data', 'SiN', 'derivatives_SM', taskID)
-
+diroutput = dirinput 
 
 fifFileEnd = 'resampled_ICA_rej_epo.fif'
 freqPickleFileEnd = "_prestim_tfr_freqbands.pkl"
@@ -40,3 +39,4 @@ noise = ['SSN', 'NV']
 conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
 
 factor_variables = ['accuracy', 'levels', 'noiseType', 'wordPosition', 'subjID']
+

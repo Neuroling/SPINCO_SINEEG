@@ -361,8 +361,8 @@ class PreStimManager:
             For information on the solvers, see documentation on statsmodels:
                 https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.Logit.fit.html
                 https://www.statsmodels.org/stable/dev/generated/statsmodels.base.model.LikelihoodModelResults.html
-            The default is "lbfgs", which appears to be the fastest. The default by the function
-            would be "newton", which causes LinAlgError in some subjects
+            The default is "lbfgs", which appears to be the fastest. The default of the function
+            would be "newton", which causes LinAlgError in some subjects (see comment in the README)
 
         Returns
         -------
@@ -412,28 +412,26 @@ class PreStimManager:
         
         
         # But gfraga also asked to save the whole model output, soooo... # TODO
-        #mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
-        # self.iter_control = [0,0,0]
+        # Actually, I opted not to do that because n_iter*n_times*n_channels mdf objects would be... a lot
+
 
         for iteration in range(n_iter):
-            # self.iter_control[0] = iteration
 
             if sub_sample:
                 # we sub-sample running the function below. which will give us a set of indices (idx)
                 # and later we subset the data by idx
                 idx = self.random_subsample_accuracy()
-                # self.idx = idx
+
             else: # if no sub-sampling is asked for, just get every idx
                 idx = [ids for ids in range(len(condition_df))]
 
 
             # And now we run the model for every channel and every timepoint
             for thisChannel in channelsIdx:
-                # self.iter_control[1] = thisChannel
+
 
 
                 for tf in timesIdx:
-                    # self.iter_control[2] = tf
 
                     # extract the data & trial information at a given timepoint and channel              
                     df = condition_df
@@ -445,7 +443,7 @@ class PreStimManager:
                     md = smf.logit(formula, 
                                    df, 
                                    )  
-                    # self.md = md
+
                     
                     mdf = md.fit(method = solver) # ??? don't know what the correct solver is
                     
@@ -726,7 +724,8 @@ class PreStimManager:
             
 
         """
-
+        
+        print("creating evokeds...")
         # list of every possible combination of accuracy, noise & degradation, separated by /
         conditions = const.conditions
                
@@ -741,12 +740,12 @@ class PreStimManager:
                 evo = epo[event_type]._compute_aggregate(picks=None)
                 evo.comment = event_type
                 evokeds[event_type].append(evo)
-
+                
+        filepath = os.path.join(const.dirinput,const.evokedsPickleFileEnd)
         if save:
-            with open(const.diroutput + const.evokedsPickleFileEnd, 'wb') as f:
+            with open(filepath, 'wb') as f:
                 pickle.dump(evokeds, f)
-            print("saving...........................................................................")
-            print('saved to', const.diroutput + const.evokedsPickleFileEnd)
+            print('evokeds saved to',filepath)
         return evokeds
     
 #%% #TODO comment

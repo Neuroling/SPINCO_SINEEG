@@ -133,70 +133,70 @@ from sklearn.model_selection import KFold
 
 #%% Most recent reproducible logistic regression (20.03.24)
 
-subjID = 's001'
-noise = 'NV'
-data_array, condition_df = PreStimManager.get_epoData_singleSubj(subjID, condition = noise, output=True)
-formula = "accuracy ~ levels * eeg_data + wordPosition" 
-n_iter = 3 
-N_chansTfs = 3
+# subjID = 's001'
+# noise = 'NV'
+# data_array, condition_df = PreStimManager.get_epoData_singleSubj(subjID, condition = noise, output=True)
+# formula = "accuracy ~ levels * eeg_data + wordPosition" 
+# n_iter = 3 
+# N_chansTfs = 3
 
-#% Create arrays and lists
-channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
-timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
-channelsIdx = channelsIdx[0:N_chansTfs]
-timesIdx = timesIdx[0:N_chansTfs]
+# #% Create arrays and lists
+# channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
+# timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+# channelsIdx = channelsIdx[0:N_chansTfs]
+# timesIdx = timesIdx[0:N_chansTfs]
 
-# This will run a preliminary model, which is only used to extract the number of p-Values
-# Which is needed to create an empty array for the p-Values
-tmp_df = pd.DataFrame()
+# # This will run a preliminary model, which is only used to extract the number of p-Values
+# # Which is needed to create an empty array for the p-Values
+# tmp_df = pd.DataFrame()
   
-tmp_df = condition_df
-tmp_df['eeg_data'] = data_array[:,0,0]
-pVals_n = len(smf.logit(formula, 
-                        tmp_df
-                        ).fit().pvalues.index)
-del tmp_df
+# tmp_df = condition_df
+# tmp_df['eeg_data'] = data_array[:,0,0]
+# pVals_n = len(smf.logit(formula, 
+#                         tmp_df
+#                         ).fit().pvalues.index)
+# del tmp_df
 
-# now we know the dimensions of the empty array we need to create to collect p_Values
-p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
-coefficients = np.zeros(shape=p_values.shape)
-z_values = np.zeros(shape=p_values.shape)
-coef_CI = np.zeros(shape=p_values.shape)
+# # now we know the dimensions of the empty array we need to create to collect p_Values
+# p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
+# coefficients = np.zeros(shape=p_values.shape)
+# z_values = np.zeros(shape=p_values.shape)
+# coef_CI = np.zeros(shape=p_values.shape)
 
-for iteration in range(n_iter):
+# for iteration in range(n_iter):
 
-    idx = PreStimManager.random_subsample_accuracy()
+#     idx = PreStimManager.random_subsample_accuracy()
 
-    # And now we run the model for every channel and every timepoint
-    for thisChannel in channelsIdx:
+#     # And now we run the model for every channel and every timepoint
+#     for thisChannel in channelsIdx:
 
-        for tf in timesIdx:
+#         for tf in timesIdx:
 
-            # extract the data & trial information at a given timepoint and channel              
-            df = condition_df
-            df['eeg_data'] = data_array[:,thisChannel,tf]
-            df = df.iloc[idx] # subset the df by idx
+#             # extract the data & trial information at a given timepoint and channel              
+#             df = condition_df
+#             df['eeg_data'] = data_array[:,thisChannel,tf]
+#             df = df.iloc[idx] # subset the df by idx
                     
-            # calculate Logit regression
-            md = smf.logit(formula, 
-                           df, 
-                           )  
+#             # calculate Logit regression
+#             md = smf.logit(formula, 
+#                            df, 
+#                            )  
             
-            mdf = md.fit() # ??? Convergence warning
-            ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+#             mdf = md.fit() # ??? Convergence warning
+#             ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
             
-            # record p-Values, z-Values and coefficients
-            p_values[thisChannel,tf,:, iteration] = mdf.pvalues
-            coefficients[thisChannel,tf,:, iteration] = mdf.params
-            coef_CI[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
-            z_values[thisChannel,tf,:, iteration] = mdf.tvalues
+#             # record p-Values, z-Values and coefficients
+#             p_values[thisChannel,tf,:, iteration] = mdf.pvalues
+#             coefficients[thisChannel,tf,:, iteration] = mdf.params
+#             coef_CI[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
+#             z_values[thisChannel,tf,:, iteration] = mdf.tvalues
  
 
-p_values_mean = p_values.mean(axis = 3)
-p_values_SD = p_values.std(axis = 3)
+# p_values_mean = p_values.mean(axis = 3)
+# p_values_SD = p_values.std(axis = 3)
 
 
-#%% k-fold crossvalidation
+#%% k-fold crossvalidation -- unused, finished
 
 # # Folds number
 # n_splits = 5
@@ -231,7 +231,7 @@ p_values_SD = p_values.std(axis = 3)
 # # Cross-validation results printing
 # print("Cross-Validation Scores:", cv_scores)
 
-#%% pool multiprocessing example
+#%% pool multiprocessing example -- for quick reference
 # N = 5000
 # import math
 
@@ -242,7 +242,7 @@ p_values_SD = p_values.std(axis = 3)
 #     with Pool() as pool:
 #       result = pool.map(cube, range(10,N))
 #     print("Program finished!")
-#%% parallel processing trial
+#%% parallel processing trial -- inefficient
 # class Task:
 #     def __init__(self, condition_df, data_array):
 #         self.condition_df = condition_df
@@ -306,7 +306,7 @@ p_values_SD = p_values.std(axis = 3)
     
     
     
-#%% let's try the pymer4 logistic regression!
+#%% let's try the pymer4 logistic regression! -- Does not work.
 
 # # run the model
 # model = pymer4.models.lmer.lmer('accuracy ~ levels * eeg_data + wordPosition (1|subjID)', data = df, family = 'binomial')
@@ -315,7 +315,7 @@ p_values_SD = p_values.std(axis = 3)
 # # I am going to cry :(
 
 
-#%% Try using rpy2 to use r code in python. Wish me luck. And strength.
+#%% Try using rpy2 to use r code in python. Wish me luck. And strength. -- Does not work.
 
 
 # ## Below: does not work :(
@@ -379,7 +379,7 @@ p_values_SD = p_values.std(axis = 3)
 # summary(model)
 # """
 
-#%% Random/ jackknife resample
+#%% Random/ jackknife resample -- Incorporated as PreStimManager.random_subsample_accuracy()
 # # n_iter = 10
 
 # stacked_cond_df = pd.concat(condition_df.values(), axis=0, ignore_index=True)
@@ -395,7 +395,7 @@ p_values_SD = p_values.std(axis = 3)
 
 # subsampled_df = stacked_cond_df.iloc[tmp_idx]
 
-#%% How to account for uneven trial numbers of levels, wordPosition, subjID as a result of the above
+#%% Account for uneven trial numbers of levels, wordPosition, subjID in random subsample -- Inefficient, with comment
 # stacked_cond_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
 
 # # get all column names
@@ -407,26 +407,31 @@ p_values_SD = p_values.std(axis = 3)
 #     # indexes[col] = {} # create an empty dict within the indexes-dict
 #     for UniqueVal in list(stacked_cond_df[col].unique()): # For each unique value, get the indexes of all trials with that value
 #         indexes[str(col+ '_' + str(UniqueVal))] = list(stacked_cond_df[col].index[stacked_cond_df[col]==UniqueVal])
-   
-# # next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
-# # and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
-# # but that's not possible since some subj are 100% correct on some of those combinations.
-# # even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
-# # meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
+
+"""  
+next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
+and then select that many trials from every combination of accuracy, subjID, levels and wordPosition.
+But that's not possible since some subj are 100% correct on some of those combinations.
+Even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct,
+meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
+"""
 
 # newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
 # tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
 # max(tmp['accuracy']) 
-# # 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
-# # for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
-# # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
+"""
+530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
+for a total of 1288 (46*2*14) trials per sub-sample. We would reduce the dataset by a sixth of its size.
+Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
+"""
 
-#%% Creating a dict of dicts to store the mdf
+#%% Creating a dict of dicts to store the mdf -- Unfinished
 # result_dict = {key1: {key2: None for key2 in metadata['ch_names']} for key1 in metadata['times']}
 
 
 
-#%%  CREATING EVOKEDS #########################################################################################################
+
+#%% CREATING EVOKEDS -- Incorporated as PreStimManager.get_evokeds() - with comment
 # """
 # But we need the evoked separately for each condition we want to include.
 # For example, if we want to look at how degradation levels affect accuracy, 
@@ -434,6 +439,7 @@ p_values_SD = p_values.std(axis = 3)
 
 # epochs.average(by_event_type) would create evoked arrays for every event type
 # but we have 288 event types and some of them don't matter, so that is not feasible.
+# (I.e. we do not need to create separate evoked objects for male/female voices right now)
 
 # But! Here is the source code for that: 
 #     https://github.com/mne-tools/mne-python/blob/maint/1.6/mne/epochs.py#L1060-L1110
