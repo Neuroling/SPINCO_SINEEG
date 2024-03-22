@@ -34,7 +34,8 @@ import random
 #%%
 class PreStimManager: 
     
-    def __init__(self, raiseWarnings = False):
+    def __init__(self, 
+                 raiseWarnings = False):
         """
         INITIALIZING FUNCTION
         =======================================================================
@@ -67,7 +68,12 @@ class PreStimManager:
             warnings.filterwarnings('ignore') 
  
 #%% 
-    def get_epoData_singleSubj(self, subjID, output = False, condition = None, tmin = None, tmax = 0):
+    def get_epoData_singleSubj(self, 
+                               subjID, 
+                               output = False, 
+                               condition = None, 
+                               tmin = None, 
+                               tmax = 0):
         """
         OPEN EPOCHED DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
         =======================================================================
@@ -184,7 +190,10 @@ class PreStimManager:
         return data_array, condition_df if output else None
 
 #%% # TODO not yet working (wait for Sibylle)
-    def get_freqData_singleSubj(self, subjID, output = False, condition = None):
+    def get_freqData_singleSubj(self, 
+                                subjID, 
+                                output = False, 
+                                condition = None):
         """
         OPEN FREQUENCY DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
         =======================================================================
@@ -227,7 +236,7 @@ class PreStimManager:
                 pandas dataframe, containing accuracy, levels, noiseType for every trial
 
         """
-        raise NotImplementedError()
+        raise NotImplementedError() # TODO
         
         
         self.subjID = subjID
@@ -328,14 +337,12 @@ class PreStimManager:
         Parameters
         ----------
         data_array : array of shape [n_epochs, n_channels, n_times] or None; optional
-            # !!! Notice !!! Currently not working if data_array is not None
             The array containing the data. 
             The default is None, in which case the data_array stored in the 
             PreStimManager class is used (meaning, the data_array from the previous call of 
             `PreStimManager.get_epoData_singleSubj()` or `PreStimManager.get_freqData_singleSubj()` )
             
         condition_df : dataFrame or None; optional
-            # !!! Notice !!! Currently not working if condition_df is not None
             The dataframe containing the trial information such as accuracy, condition, etc.
             The default is None, in which case the condition_df stored in the 
             PreStimManager class is used (meaning, the condition_df from the previous call of 
@@ -372,14 +379,14 @@ class PreStimManager:
 
         self.metadata['fitting_solver'] = solver
         
-        #  TODO does not actually work if input is not none
+        #  TODO bug-test
         # If no data given, use the data stored in the class object
-        if data_array == None:
+        if data_array is None:
             data_array = self.data_array
         else:
             pass
         
-        if condition_df == None:
+        if condition_df is None:
             condition_df = self.condition_df
         else:
             pass
@@ -479,7 +486,8 @@ class PreStimManager:
             self.metadata['sub_sample_dataframe_length'] = len(df)
 
 #%% # TODO organise documentation
-    def random_subsample_accuracy(self, trial_info = None):
+    def random_subsample_accuracy(self, 
+                                  trial_info = None):
         """
         RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
         =======================================================================
@@ -560,7 +568,10 @@ class PreStimManager:
 
 #%% # TODO - not working anymore because of the higher dimension of the p-Values array
 
-    def FDR_correction(self, p_values = None, alpha = 0.05, output = False):
+    def FDR_correction(self, 
+                       p_values = None, 
+                       alpha = 0.05, 
+                       output = False):
         """
         FDR CORRECTION
         =======================================================================
@@ -583,7 +594,7 @@ class PreStimManager:
         output : bool, Default = False
             Whether or not the FDR-corrected p-Values should be returned. The default is False.
             In both cases, p_values_FDR will be stored in the PreStimManager object.
-            The function save_pValues() will default to using the p_values from the PreStimManager object.
+            The function save_results() will default to using the p_values from the PreStimManager object.
             Therefore, setting output to False will optimise memory usage.
             
             (If you later decide you do want them in the variable explorer, 
@@ -634,8 +645,35 @@ class PreStimManager:
         return p_values_FDR if output else None
 
 #%%  #TODO document
-    def save_pValues(self, addMetadata = True):
-# TODO
+    def save_results(self, 
+                     addMetadata = True, 
+                     output = False):
+        """
+        SAVING THE RESULTS OF THE REGRESSIONS
+        =======================================================================
+        
+        Saves the outputs stored in the PreStimManager class object as a dictionary.
+        
+        Output filepath is 
+        
+        
+        
+
+        Parameters
+        ----------
+        addMetadata : bool, optional
+            Whether or not the accumulated metadata should be added to the dictionary. 
+            The default is True.
+            
+        output : bool, optional
+            Whether or not the output should be returned.
+            The default is False
+
+        Returns
+        -------
+        None.
+
+        """
         self.metadata["datetime_run_end"] = str(datetime.now())
         output_dict = {'metadata':self.metadata} # create a dict and add the metadata we collected
         
@@ -687,21 +725,29 @@ class PreStimManager:
         # if there is a within subj design, get the subjID, add that to the output filepath
         if self.withinSubj:
             subjID = self.subjID
-            diroutput = const.dirinput + "/" + subjID + "/" + subjID + "_"
+            diroutput = const.dirinput + "/" + subjID + "/" + subjID + "_" # TODO use os.path.join instead
         else: # if there is no within subj design, get output filepath from constants
             diroutput = const.diroutput
             
+        # construct filepath
+        filepath = (diroutput + 
+                    regression_name + 
+                    condition_name + 
+                    subsample_name + 
+                    n_iter + 
+                    FDR_name + 
+                    values_name + 
+                    const.pValsPickleFileEnd)
         
-            
-        filepath = diroutput + regression_name + condition_name + subsample_name + n_iter + FDR_name + values_name + const.pValsPickleFileEnd
-        output_dict['metadata']['output_filepath'] = filepath
+        output_dict['metadata']['output_filepath'] = filepath # add filepath to metadata
         with open(filepath, 'wb') as f:
             pickle.dump(output_dict, f)
         print("saving to ",filepath)
-        # return output_dict
+        return output_dict if output
  
 #%%
-    def get_evokeds(self, save = True):
+    def get_evokeds(self, 
+                    save = True):
         """
         This function returns a dict containing a lists for every condition, 
         which contain evoked arrays for every subject.
@@ -749,7 +795,8 @@ class PreStimManager:
         return evokeds
     
 #%% #TODO comment
-    def grandaverage_evokeds(self, evokeds):
+    def grandaverage_evokeds(self, 
+                             evokeds):
         evokeds_gAvg= {}
         for condition in const.conditions:
             evokeds_gAvg[condition] = mne.grand_average(evokeds[condition], drop_bads = False, interpolate_bads = False)

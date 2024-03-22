@@ -39,6 +39,8 @@ del tfr_band # wir löschen den dictionary mit den anderen Frequenzbändern
 # Und damit kannst du dann data_array filtern
 
 
+
+
 # Dann, lass diesen Teil laufen. Ich hab das aus der Function get_epoData_singleSubj() kopiert.        
 # re-name some columns
 condition_df['noiseType'] = condition_df['block'] 
@@ -55,7 +57,7 @@ reIdx = pd.Series(range(len(condition_df)))
 condition_df.set_index(reIdx, inplace = True)
 
 # 3. Logistische Regression ==================================================================
-# Den Code hier habe ich aus den Funktionen kopiert. Er muss noch angepasst werden.
+# Den Code hier habe ich aus den Funktionen kopiert. Er muss eventuell noch angepasst werden.
 # Im Moment loopt es nur über channels[0:3] und timepoints[0:3] - das ist nur zum Testen.
 # Ich passe es dann an, wenn wir es komplett laufen lassen.
 
@@ -71,7 +73,6 @@ timesIdx = timesIdx[0:3]
 # This will run a preliminary model, which is only used to extract the number of p-Values
 # Which is needed to create an empty array for the p-Values
 tmp_df = pd.DataFrame()
-  
 tmp_df = condition_df
 tmp_df['eeg_data'] = data_array[:, 0, 0]
 pVals_n = len(smf.logit(formula,
@@ -83,11 +84,7 @@ del tmp_df
 p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
 coefficients = np.zeros(shape=p_values.shape)
 z_values = np.zeros(shape=p_values.shape)
-coef_CI = np.zeros(shape=p_values.shape)
-
-
-# But gfraga also asked to save the whole model output, soooo... # TODO
-#mdf_dict = {key1: {key2: None for key2 in self.metadata['ch_names']} for key1 in self.metadata['times']}
+coef_SD = np.zeros(shape=p_values.shape)
 
 
 for iteration in range(n_iter):
@@ -109,13 +106,12 @@ for iteration in range(n_iter):
                            df, 
                            )  
             
-            mdf = md.fit() # ??? Convergence warning
-            ## https://www.statsmodels.org/stable/generated/statsmodels.formula.api.logit.html
+            mdf = md.fit(method = "lbgfs") 
             
             # record p-Values, z-Values and coefficients
             p_values[thisChannel,tf,:, iteration] = mdf.pvalues
             coefficients[thisChannel,tf,:, iteration] = mdf.params
-            coef_CI[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
+            coef_SD[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
             z_values[thisChannel,tf,:, iteration] = mdf.tvalues
  
 

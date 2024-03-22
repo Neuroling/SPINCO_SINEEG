@@ -74,16 +74,130 @@ from sklearn.model_selection import KFold
 # with open(freq_path, 'rb') as f:
 #     tfr_bands = pickle.load(f)
 
-#%% debug logs
-# debug_log_path = const.dirinput + "/debugging_log.pkl"
-
-# with open(debug_log_path, 'rb') as f:
-#     debug_log = pickle.load(f)
-# debug_log[str(start_time)] = {"indices":PreStimManager.idx, "iter_control":PreStimManager.iter_control, "subjID": subjID, "condition" :noise}
+#%% old code
     
-# with open(debug_log_path, 'wb') as f:
-#     pickle.dump(debug_log, f)
-# debug_log = {"codebook":{"indices":"the indices of the current subsample", "iter_control": "subsample_iteration, channel, timeframe"}}
+# else:
+#     #%% Open p-Values & evokeds ###############################################################################################
+#     # TODO I need to change this now that we separated NoiseType and have different filenames
+#     with open(const.diroutput + const.pValsPickleFileEnd, 'rb') as f:
+#         p_values_FDR = pickle.load(f)
+    
+#     with open(const.diroutput + const.evokedsPickleFileEnd, 'rb') as f:
+#         evokeds = pickle.load(f)
+
+
+#% do some plots =============================================================================================================
+# if doPlots:
+
+    # pVals = p_values_FDR['p_values']     
+    
+# # Heatmaps for the parameters
+#     plt.figure()
+#     f, axs = plt.subplots(3, 3, figsize=(10, 8))   
+#     # Iterate over the subplots, plot the heatmaps, and set the titles
+#     for i in range(3):
+#         for j in range(3):
+#             sns.heatmap(pVals[:, :, i * 3 + j], vmin=0, vmax=0.15, ax=axs[i, j])
+#             axs[i, j].set_title(p_values_FDR['metadata']['p_Values_index'][i * 3 + j])  # Set the title
+#             axs[i,j].set(xlabel="times", ylabel="electrodes")
+#     plt.subplots_adjust(hspace=0.5, wspace=0.5)
+#     plt.show()
+#     # TODO change electrode numbers in y-axis to labels like Fpz, Oz, etc
+#     # TODO change times to seconds instead of tf
+
+    
+#     # sns.lineplot(data=p_values_FDR[1:10,1:10,3])
+
+# #%% Amplitude Comparison of Accuracy ===========================================================================
+# ## see https://neuraldatascience.io/7-eeg/erp_group_viz.html
+    
+#     roi = ['C3', 'Cz', 'C4', 
+#            'P3', 'Pz', 'P4']
+    
+#     # Create a 3x2 grid of subplots
+#     plt.figure()
+#     fig, axs = plt.subplots(2,3, figsize=(20, 12))
+    
+#     # Loop through each combination of degradation and noise
+#     for i, n in enumerate(const.noise):
+#         for j, d in enumerate(const.degradation):
+#             conditions = [n + '/' + d + '/' + a for a in const.accuracy]
+#             evokeds_to_plot = [evokeds[condition] for condition in conditions]
+    
+#             # Plot the evokeds in the corresponding subplot
+#             mne.viz.plot_compare_evokeds(
+#                 evokeds_to_plot,
+#                 combine='mean',
+#                 legend='lower right',
+#                 picks=roi,
+#                 show_sensors='upper right',
+#                 title=f'ERP ({n}/{d})',
+#                 show = False, #If plotting multiple figures in one plot with MNE, set show = False and call plt.show() at the end
+#                 axes=axs[i, j]  # Specify the subplot to use
+#             )
+    
+#     # Adjust layout
+#     # plt.tight_layout()
+#     plt.show()
+
+
+
+# #%% This section would run the above plots for every single electrode ============================================
+
+# # for thisChannel in p_values_FDR['metadata']['ch_names']:
+    
+# #     # Create a 3x2 grid of subplots
+# #     plt.figure()
+# #     fig, axs = plt.subplots(2,3, figsize=(20, 12))
+    
+# #     # Loop through each combination of degradation and noise
+# #     for i, n in enumerate(const.noise):
+# #         for j, d in enumerate(const.degradation):
+# #             conditions = [n + '/' + d + '/' + a for a in const.accuracy]
+# #             evokeds_to_plot = [evokeds[condition] for condition in conditions]
+    
+# #             # Plot the evokeds in the corresponding subplot
+# #             mne.viz.plot_compare_evokeds(
+# #                 evokeds_to_plot,
+# #                 combine='mean',
+# #                 legend='lower right',
+# #                 picks=thisChannel,
+# #                 show_sensors='upper right',
+# #                 title=f'{thisChannel} ({n}/{d})',
+# #                 show = False, 
+# #                 axes=axs[i, j]  # Specify the subplot to use
+# #             )
+    
+# #     # Adjust layout
+# #     # plt.tight_layout()
+# #     plt.show()
+    
+# #%% topomap
+#     evokeds_gAvg = PreStimManager.grandaverage_evokeds(evokeds)
+    
+#     # times_array = [-0.5, -0.4,-0.3,-0.2,-0.1,0]
+    
+#     for condition in const.conditions:
+#         #f, axs = plt.subplots(1,10, figsize=(10, 8
+#         # plt.figure()
+#         fig = mne.viz.plot_evoked_topomap(
+#             evokeds_gAvg[condition],
+#             # times = times_array
+#             )
+#         # fig.suptitle(f'Topomaps for {condition}')
+#         # plt.show()
+     
+#     for condition in const.conditions:
+#         #f, axs = plt.subplots(1,10, figsize=(10, 8
+#         # plt.figure()
+#         fig = mne.viz.plot_evoked_topo(
+#             evokeds_gAvg[condition],
+#             title=f'{condition}'
+#             )
+#         # fig.suptitle(f'Topomaps for {condition}')
+#         # plt.shSow()    
+
+
 #%% logit regression preparation
 # subjID = 's001'
 # noise = 'NV'

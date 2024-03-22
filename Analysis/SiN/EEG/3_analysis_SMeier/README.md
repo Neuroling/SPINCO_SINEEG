@@ -10,22 +10,7 @@ Scripts with suffixes
 - `PreStim_logitRegression.R` is an unused R-script that has a working multilevel logit regression. It is unused because we do all analyses in python.
 
 
-# Processed subjects:
-        NV   SiSSN
-s001   done   done
-s002   done   done
-s003   done   done
-s004   done   done
-s005   done   done
-s006   done   done
-s007   done*  done
-s008   done*  done
-s009   done*  done
-s010   Err1   done
-s011   done*  done
-s012   Err1   done
-s013   Err1   done
-s015   done*  done
+# Notes
 
 `LinAlgError: Singular matrix` sometimes occurs in the function `run_LogitRegression_withinSubj()` on the line `mdf = md.fit()`
 - The error does not always occur at the same iteration/channel/timepoint
@@ -36,7 +21,7 @@ UPDATE:
 - The error is due to the solver for `md.fit()` - changing it from the default (`newton`) to `bfgs` or to `lbfgs` will circumvent the issue
 - Documentation on `md.fit()` https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.Logit.fit.html
 
-## Other notes on the solvers and how fast they are:
+## Solvers and how fast they are:
 ```
 %timeit mdf = md.fit() # default solver 'newton'
 5.66 ms ± 66.2 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
