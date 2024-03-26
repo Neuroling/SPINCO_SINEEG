@@ -21,6 +21,7 @@ pipeID = 'pipeline-01'
 
 thisDir = os.getcwd()
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data', 'SiN', 'derivatives_SM', taskID)
+diroutput = dirinput
 
 
 fifFileEnd = 'resampled_ICA_rej_epo.fif'
@@ -40,3 +41,5 @@ noise = ['SSN', 'NV']
 conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
 
 factor_variables = ['accuracy', 'levels', 'noiseType', 'wordPosition', 'subjID']
+
+freqbands = ["Alpha", 'Beta', 'Gamma', 'Theta']

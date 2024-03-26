@@ -14,8 +14,8 @@ It is largely disorganised and messy.
 #%% Imports
 
 import PreStim_constants as const
-# import PreStim_functions as function
-# PreStimManager = function.PreStimManager()
+import PreStim_functions as function
+PreStimManager = function.PreStimManager()
 
 import os
 from glob import glob
@@ -58,7 +58,13 @@ from sklearn.model_selection import KFold
 # utils.install_packages('Matrix')
 # utils.install_packages('lme4', type = 'source')
 # base.options(oo)
-
+tmp = np.zeros(shape = (10,286))
+for iteration in range(10):
+    idx = PreStimManager.random_subsample_accuracy(trial_info = condition_df)         
+    df = condition_df
+    df = df.iloc[idx] # subset the df by idx
+    tmp[iteration,:] = idx
+    print(len(df))
 #%% filepaths
 # subjID = 's001'
 # epo_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.fifFileEnd)), recursive=True)[0]
@@ -66,10 +72,10 @@ from sklearn.model_selection import KFold
 
 
 #%% Opening pickles
-
+filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_SSN_sub-sampled_100iter_uncorrected_allValues.pkl"
 # filepath = const.dirinput + "/s003/s003_Logit_SSN_sub-sampled_1000iter_uncorrected_allValues.pkl"
-# with open(filepath, 'rb') as f:
-#     some_pVals = pickle.load(f)
+with open(filepath, 'rb') as f:
+    some_pVals = pickle.load(f)
 
 # with open(freq_path, 'rb') as f:
 #     tfr_bands = pickle.load(f)

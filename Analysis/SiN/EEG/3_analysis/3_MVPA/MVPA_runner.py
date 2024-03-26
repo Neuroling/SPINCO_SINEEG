@@ -40,31 +40,32 @@ MVPAManager = functions.MVPAManager()
 conditionInclude : list of str or None
     Only trials in these conditions will be included.
     Example : conditionInclude = ['Lv3'] will perform the analysis only on 
-        trials with degradation Lv3
+        trials with degradation Lv3, and trials with degradation Lv2 and Lv1 are excluded
     
 conditionExclude : list of str or None
     All trials in these conditions will be excluded.
     Example : conditionExclude = ['Call'] will perform the analysis only on
         trials with StimulusType Col or Num
         
-prediction : str --- must be a column name from tfr_bands['epoch_metadata']
+response_variable : str --- must be a column name from tfr_bands['epoch_metadata']
     The variable we are interested in. 
     Options : accuracy, block, stimtype, stimulus, levels, voice
-    Example : prediction = 'accuracy' will do the cross-validation on how well 
+    Example : response_variable = 'accuracy' will do the cross-validation on how well 
         the frequency power encodes whether the response was correct or not
     
 
 """
 conditionInclude = ['Lv3'] 
 conditionExculde = []
-prediction = 'accuracy'
+response_variable = 'accuracy'
+timewindow = "_prestim" # other option : '_poststim'
 
 #%% setting filepaths 
 subjID = 's001'
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
                         const.taskID,'features',subjID)
-pickle_path_in = os.path.join(dirinput, subjID + const.inputPickleFileEnd)
-pickle_path_out = os.path.join(dirinput, subjID + const.outputPickleFileEnd)
+pickle_path_in = os.path.join(dirinput, subjID + timewindow + const.inputPickleFileEnd)
+pickle_path_out = os.path.join(dirinput, subjID + timewindow + const.outputPickleFileEnd)
 
 #%% Open the dict 
 print('opening dict:',pickle_path_in)
@@ -73,10 +74,12 @@ with open(pickle_path_in, 'rb') as f:
     
 #%% Filter conditions using the user inputs
 idx = list(MVPAManager.getFilteredIdx(
-    tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
+    tfr_bands['epoch_conditions'], 
+    conditionInclude=conditionInclude, 
+    conditionExclude=conditionExculde))
 
 #%% Get crossvalidation scores
-y = tfr_bands['epoch_metadata'][prediction][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
+y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
 
 for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
     print('--> now performing crossvalidation for', thisBand)
@@ -92,7 +95,7 @@ for thisBand in const.freqbands: # loop over all frequency bands # TODO use meta
 
 tfr_bands['metadata']['conditionInclude']= conditionInclude
 tfr_bands['metadata']['conditionExclude']= conditionExculde
-tfr_bands['metadata']['prediction']=prediction
+tfr_bands['metadata']['response_variable']=response_variable
 tfr_bands['metadata']['estimator']=str(clf)
 tfr_bands['metadata']['cv']=cv
 tfr_bands['metadata']['sklearn_version']= sklearn_version
@@ -100,6 +103,6 @@ tfr_bands['metadata']['scoretype']=str(scoretype)
 tfr_bands['metadata']['codebook']=const.codebook
 
 #%% Saving the dict
-print("pickling the dictionary to: /n"+pickle_path_out)
-with open(pickle_path_out, 'wb') as f:
-    pickle.dump(tfr_bands, f)
+# print("pickling the dictionary to: /n"+pickle_path_out)
+# with open(pickle_path_out, 'wb') as f:
+#     pickle.dump(tfr_bands, f)

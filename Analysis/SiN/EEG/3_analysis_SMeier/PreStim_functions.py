@@ -190,10 +190,9 @@ class PreStimManager:
         return data_array, condition_df if output else None
 
 #%% # TODO not yet working (wait for Sibylle)
-    def get_freqData_singleSubj(self, 
+    def get_allFreqData_singleSubj(self, 
                                 subjID, 
-                                output = False, 
-                                condition = None):
+                                output = False):
         """
         OPEN FREQUENCY DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
         =======================================================================
@@ -236,51 +235,66 @@ class PreStimManager:
                 pandas dataframe, containing accuracy, levels, noiseType for every trial
 
         """
-        raise NotImplementedError() # TODO
-        
-        
+
         self.subjID = subjID
-        self.metadata['subjectID'] = subjID
         
         # get filepath, read pickle
         freq_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.freqPickleFileEnd)), recursive=True)[0]
         with open(freq_path, 'rb') as f:
-            tfr_band = pickle.load(f)
-        self.metadata['frequency_dict_path'] = freq_path
-
-        # TODO get a way to loop over freqband without having to unpickle the dict every time
-        data_array = tfr_band['Alpha_data'] # data is an array of shape [n_epochs, n_channels, n_times]
-        condition_df = tfr_band['epoch_metadata'] # trial information
-
-        # TODO
-        # subset epochs to the desired condition
-        if condition:
-            epo = epo[condition]
-            self.metadata['condition'] = condition
-        
-        # add channel names and time in seconds to metadata
-        self.metadata['ch_names'] = tfr_band['metadata']['ch_names']
-        self.metadata['times'] = epo._raw_times[0:-1] #TODO
+            self.tfr_band = pickle.load(f)
         
         
-        # re-name some columns
-        condition_df['noiseType'] = condition_df['block'] 
-        condition_df['wordPosition'] = condition_df['stimtype'] 
+        # get original_condition_df
+        original_condition_df = self.tfr_band['epoch_metadata'] # trial information
+        
+        # re-name some columns - this happens inplace, so it affects tfr_band['epoch_metadata'] as well
+        original_condition_df['noiseType'] = original_condition_df['block'] 
+        original_condition_df['wordPosition'] = original_condition_df['stimtype'] 
 
         # Re-coding is necessary for the DV (needs to be numeric, not string)
-        condition_df['accuracy'].replace({'inc': 0, 'cor': 1}, inplace=True)
-        # condition_df['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
+        original_condition_df['accuracy'].replace({'inc': 0, 'cor': 1}, inplace=True)
+        # original_condition_df['wordPosition'].replace({'CallSign':'1','Colour':'2','Number':'3'},inplace=True)
         
         # drop unneeded columns
-        condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
+        original_condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
         
+        self.original_condition_df = original_condition_df
+        # TODO : maybe don't save original_condition_df since the changes are inplace and therefore 
+        # I can just call self.tfr_band['epoch_metadata'] again to get the unsplit condition_df
+
+        
+        # get the metadata
+        self.metadata['frequency_dict_path'] = freq_path
+        self.metadata['subjectID'] = subjID
+        self.metadata['ch_names'] = self.tfr_band['metadata']['ch_names']
+        self.metadata['copy_metadata_frequency_dict'] = self.tfr_band['metadata']
+
+#%% # TODO document
+    def get_freqband_data(self, freqband, condition = None, output = False):
+        
+        data_array = self.tfr_band[freqband + "_data"].copy() # data is an array of shape [n_epochs, n_channels, n_times]
+        condition_df = self.original_condition_df.copy()
+        
+        
+        # subset the data to the desired condition
+        if condition:
+            idx_split = condition_df.index[condition_df['noiseType']== condition]
+            data_array = data_array[idx_split, :,:]
+            condition_df = condition_df[condition_df['noiseType']== condition]
+            self.metadata['condition'] = condition
+        
+
+        # add time in seconds and frequency band to metadata
+        self.metadata['times'] = self.tfr_band[freqband + "_COI_times"]
+        self.metadata['frequency_band'] = freqband
+
         # and, lastly, re-index (because the separation of conditions leads to non-sequential indices, which might lead to errors later)
         reIdx = pd.Series(range(len(condition_df)))
         condition_df.set_index(reIdx, inplace = True)
         
         # Store data in the PreStimManager class
         self.data_array = data_array
-        self.condition_df = condition_df
+        self.condition_df =condition_df
         
         return data_array, condition_df if output else None
     
@@ -498,7 +512,7 @@ class PreStimManager:
         and return their indices ("subsample_idx").
         The length of subsample_idx is therefore = 2*minimum.
         Half the indices are from correct, and half from incorrect trials.
-
+        
         Parameters
         ----------
         trial_info : dict or pandas DataFrame, optional
@@ -506,12 +520,12 @@ class PreStimManager:
             The default is None, in which case the function will try to use the
             condition-dict stored in the PreStimManager object. If there is none, it
             will try to use the condition_df stored in the PreStimManager object.
-
+            
         Raises
         ------
         AttributeError
             if no trial information was provided and none could be found.
-
+            
         Returns
         -------
         subsample_idx : indexes
@@ -519,28 +533,28 @@ class PreStimManager:
             `df = df.iloc[subsample_idx]`
             Note : if the df has non-sequential indices (which can happen when filtering or
                  concatentaing), this will not work.
-
+            
         """
-
+        
         # TODO this does not currently account for uneven numbers of wordPosition, or levels that could result from this
         # (see comment below, which is copy-pasted from sketch_PreStim_writing)
            
-# # next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
-# # and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
-# # but that's not possible since some subj are 100% correct on some of those combinations.
-# # even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
-# # meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
-
-# newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
-# tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
-# max(tmp['accuracy']) 
-# # 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
-# # for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
-# # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
-
-        if not trial_info: 
-# TODO : account for if input is dict - 
-# maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
+        # # next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
+        # # and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
+        # # but that's not possible since some subj are 100% correct on some of those combinations.
+        # # even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
+        # # meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
+        
+        # newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
+        # tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
+        # max(tmp['accuracy']) 
+        # # 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
+        # # for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
+        # # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
+        
+        if trial_info is None: 
+        # TODO : account for if input is dict - 
+        # maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
             try:
                 trial_info = self.condition_dict
                 # combine all subj condition dataframes to get across-subj accuracy
@@ -551,19 +565,21 @@ class PreStimManager:
                     tmp_df = self.condition_df
                 except AttributeError:
                     raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
-        
-        
+        else:
+            tmp_df = trial_info.copy()
+            
+            
         # counting total correct and incorrect
         count_cor = tmp_df['accuracy'].value_counts()[1]
         count_inc = tmp_df['accuracy'].value_counts()[0]
-
+        
         idx_cor = tmp_df.index[tmp_df['accuracy'] == 1]
         idx_inc = tmp_df.index[tmp_df['accuracy'] == 0]
-
+        
         minimum = min(count_cor, count_inc)
         subsample_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
-
-
+        
+        
         return subsample_idx
 
 #%% # TODO - not working anymore because of the higher dimension of the p-Values array
@@ -654,9 +670,16 @@ class PreStimManager:
         
         Saves the outputs stored in the PreStimManager class object as a dictionary.
         
-        Output filepath is 
+        Output filepath is taken from the constants (const.diroutput), and adapted
+        if there is a within subject design.
         
-        
+        Filenames reflect: 
+            the type of regression, 
+            the condition used for separating the data,
+            whether the data is randomly sub-sampled, 
+            the number of iterations (if it is sub-sampled),
+            whether the p-Values are FDR-corrected, 
+            whether all values or only p-Values are saved
         
 
         Parameters
@@ -686,6 +709,7 @@ class PreStimManager:
             output_dict['p_values'] = self.p_values
             FDR_name = 'uncorrected_'
     
+        # See if anything else besides p-Values are saved and add those. 
         try:
             output_dict['z_values'] = self.z_values
             output_dict['coefficients'] = self.coefficients
@@ -696,7 +720,7 @@ class PreStimManager:
             pass
         
         
-        # See if there is a condition for the data, so that can be added to the filename
+        # See if the data is split in conditions, so that can be added to the filename
         try:
             condition_name = (str(self.metadata['condition']) + '_')
         except AttributeError:
@@ -715,6 +739,11 @@ class PreStimManager:
             subsample_name = ''
             n_iter = ''
             
+        try:
+            band_name = (str(self.metadata['frequency_band']) + '_')
+        except AttributeError:
+            band_name = ''
+            
         # This will take the regression model method that we got from mdf.model()
         # Because mdf.model() gives an output like '<statsmodels.discrete.discrete_model.Logit object at 0x7fbf691a7b50>'
         # We take the position of the final '.' and the first ' ' (blank space) and use the str between those two
@@ -732,6 +761,7 @@ class PreStimManager:
         # construct filepath
         filepath = (diroutput + 
                     regression_name + 
+                    band_name +
                     condition_name + 
                     subsample_name + 
                     n_iter + 
@@ -743,7 +773,7 @@ class PreStimManager:
         with open(filepath, 'wb') as f:
             pickle.dump(output_dict, f)
         print("saving to ",filepath)
-        return output_dict if output
+        return output_dict if output else None
  
 #%%
     def get_evokeds(self, 

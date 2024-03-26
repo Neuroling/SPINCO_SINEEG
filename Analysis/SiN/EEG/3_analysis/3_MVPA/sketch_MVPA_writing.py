@@ -13,26 +13,82 @@ import os
 import pickle
 thisDir = os.path.dirname(__file__)
 
-from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold, cross_validate  
+from sklearn.model_selection import cross_val_score, train_test_split, GridSearchCV, StratifiedKFold, cross_validate, KFold
 from sklearn import metrics
 from sklearn import svm
 import numpy as np
+import pandas as pd
 
 import MVPA_constants as const
 import MVPA_functions as functions
 MVPAManager = functions.MVPAManager()
 
-#%% filepaths 
+
+conditionInclude = ['Lv1'] 
+conditionExculde = []
+response_variable = 'accuracy'
+timewindow = "_prestim" # other option : '_poststim'
+thisBand = 'Alpha'
+
+
+#%% setting filepaths 
 subjID = 's001'
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
                         const.taskID,'features',subjID)
-pickle_path = os.path.join(dirinput, subjID + const.inputPickleFileEnd)
+pickle_path_in = os.path.join(dirinput, subjID + timewindow + const.inputPickleFileEnd)
 
-#%% Unpickle the dict
-with open(pickle_path, 'rb') as f:
+
+#%% Open the dict 
+print('opening dict:',pickle_path_in)
+with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
+    
+#%% Filter conditions using the user inputs
+idx = list(MVPAManager.getFilteredIdx(
+    tfr_bands['epoch_conditions'], 
+    conditionInclude=conditionInclude, 
+    conditionExclude=conditionExculde))
 
+#%% Get crossvalidation scores
+y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
 
+X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+    
+#%% k-fold crossvalidation -- unused, finished
+# Folds number
+n_splits = 5
+kf = KFold(n_splits=n_splits)
+
+# List of accuracy in a specific fold
+cv_scores = []
+
+# re-index df_nv because the indices are non-sequential
+reIdx = pd.Series(range(len(y)))
+y.set_index(reIdx, inplace = True)
+
+# Splitting data 
+for train_index, test_index in kf.split(y):
+    
+    train_y = y.iloc[train_index]
+    test_y = y.iloc[test_index]
+    train_x = 
+    test_x = 
+    test_df_x = df.loc[test_index,['levels','eeg_data','wordPosition']]
+    # test_df_y = df.loc[test_index,['accuracy']]
+    
+    md_split = smf.logit(formula, train_df)
+    mdf_split = md_split.fit()
+
+    # Forecasting on test data
+    y_pred = mdf_split.predict(exog=test_df_x)
+
+    # Quality of model assessment
+    # Determination coefficient R^2 is used
+    r_squared = np.corrcoef(test_df['accuracy'], y_pred)[0, 1] ** 2
+    cv_scores.append(r_squared)
+
+# Cross-validation results printing
+print("Cross-Validation Scores:", cv_scores)
 #%%
 # conditionInclude = ['Lv3'] 
 # conditionExculde = []

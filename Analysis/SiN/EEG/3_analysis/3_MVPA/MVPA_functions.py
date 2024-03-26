@@ -19,7 +19,7 @@ class MVPAManager:
     # TODO
     """
     def __init__(self):
-        self.metadata={}
+        self.metadata = {}
     
 
     def getFilteredIdx(self, event_labels, 
@@ -36,8 +36,9 @@ class MVPAManager:
         Parameters
         ----------
         event_labels : list of str
-            the event labels in str, organised like 'NV/Call/Stim4/Lv2/Inc/F'
+            the event labels as str, organised like 'NV/Call/Stim4/Lv2/Inc/F'
             given for example by tfr_bands['epoch_conditions']
+            or from the event_id/events of mne's epoch object
             
         conditionExclude : list of str, optional
             Epochs in these conditions will be excluded. The default is None.
@@ -92,12 +93,18 @@ class MVPAManager:
 
 
 #%%
-    def get_crossval_scores(self,X,y,clf=svm.SVC(C=1, kernel='linear'),cv=None,scoretype=('accuracy')):    
+    def get_crossval_scores(self,
+                            X,
+                            y,
+                            clf=svm.SVC(C=1, kernel='linear'),
+                            cv=None,
+                            scoretype=('accuracy')
+                            ):    
         """ Get classification scores with a scikit classifier 
         =================================================================
         Created on Thu Dec 22 13:44:33 2022
         @author: gfraga & samuemu
-        Ref: visit documentation in https://scikit-learn.org/stable/modules/classes.html
+        Reference: visit documentation in https://scikit-learn.org/stable/modules/classes.html
         https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
         https://scikit-learn.org/stable/modules/svm.html
         
@@ -112,7 +119,7 @@ class MVPAManager:
             # TODO I need to include an error if the 
         
         clf: str 
-           Define classifier, i.e. the object to use to fit the data. 
+           Define classifier, i.e. the object used to fit the data. 
            Default: clf = svm.SVC(C=1, kernel='linear')
         
         cv: int | cross-validation generator or an iterable | Default=None
@@ -146,8 +153,9 @@ class MVPAManager:
 
         if len(X.shape) != 3:
             raise ValueError(f'Array X needs to be 3-dimensional, not {len(X.shape)}')
-        X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
-        # self.X_2d = X_2d
+        X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]
+        # or in other words: epochs x features
+        # so every electrode and every timepoint is treated as a different feature.
         
                 
         # #[MVPA] Decoding based on entire epoch
@@ -156,12 +164,12 @@ class MVPAManager:
         
         
         #% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
-        all_scores_full = cross_validate(estimator = clf,
+        all_scores_full = cross_validate(estimator = clf, # So this basically runs clf.fit(x,y)
                                          X = X_2d, # the data to fit the model
-                                         y= y,  # target variable to predict
-                                         cv=cv, # cross-validation splitting strategy
-                                         n_jobs=const.n_jobs,
-                                         scoring=scoretype)                                    
+                                         y = y,  # target variable to predict
+                                         cv = cv, # cross-validation splitting strategy
+                                         n_jobs = const.n_jobs,
+                                         scoring = scoretype)                                    
                                       
         
         all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)

@@ -60,4 +60,4 @@ codebook={'*_COI_times':'timepoints inside the COI in frequency band *',
           'metadata.freqs':'the actual frequencies for which the TFR was performed',
           'metadata.freqs_code':'how the freqs were selected',
           'metadata.n_cycles': 'how many cycles of a given frequency are within a standard deviation of the wavelet envelope. Also determines COI boundaries.',
-          'metadata.prediciton' : 'the variable the MVPA is trying to predict'}
+          'metadata.response_variable' : 'the variable the MVPA is trying to predict'}
