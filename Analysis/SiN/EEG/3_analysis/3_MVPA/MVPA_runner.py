@@ -52,6 +52,8 @@ response_variable : str --- must be a column name from tfr_bands['epoch_metadata
     Options : accuracy, block, stimtype, stimulus, levels, voice
     Example : response_variable = 'accuracy' will do the cross-validation on how well 
         the frequency power encodes whether the response was correct or not
+        
+timewindow # TODO
     
 
 """
@@ -68,7 +70,7 @@ pickle_path_in = os.path.join(dirinput, subjID + timewindow + const.inputPickleF
 pickle_path_out = os.path.join(dirinput, subjID + timewindow + const.outputPickleFileEnd)
 
 #%% Open the dict 
-print('opening dict:',pickle_path_in)
+print('--> opening dict:',pickle_path_in)
 with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
     
@@ -83,15 +85,24 @@ y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want 
 
 for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
     print('--> now performing crossvalidation for', thisBand)
-    X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+    X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
     
-    all_scores_full, scores, std_scores, clf, cv, scoretype = MVPAManager.get_crossval_scores(X = X, y = y) # Get scores and add to the dict
-    tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full['test_score']
+    # Get scores and add to the dict
+    all_scores_full, scores, std_scores, f1, clf, cv, scoretype = MVPAManager.get_crossval_scores(X = X, 
+                                                                                              y = y, 
+                                                                                              scoretype = ('balanced_accuracy')) 
+    # TODO : do something with F1
+    
+    tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full
     tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
     tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
 # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
 # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
 # Huh. As of now (01.02.24) they are once again the same. conditionExclude Call, conditionInclude Lv3, prediciton accuracy. See screenshot (@samuemu)
+# Solved: If the classifier ALWAYS predicts "cor", it will be right in exactly as many trials as there are trials marked "cor"
+# So if the classifier always predicts "cor" for every freqband, it will always have the same score.
+# It seems that having [n_times * n_channels] features is just too much - the timewise classification (which only has [n_times] features)
+# actually differs between freqbands - so it probably doesn't simply predict "cor" across the board
 
 tfr_bands['metadata']['conditionInclude']= conditionInclude
 tfr_bands['metadata']['conditionExclude']= conditionExculde

@@ -49,12 +49,126 @@ idx = list(MVPAManager.getFilteredIdx(
     conditionInclude=conditionInclude, 
     conditionExclude=conditionExculde))
 
+#%%
+
 #%% Get crossvalidation scores
 y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
+true_accuracy = y.value_counts().iloc[0]/len(y) # percentage of correct responses by the subj. 
+# If the classifier always predicts "cor" then it will be correct in this much.
 
-X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+X_2d = X.reshape(len(X), -1)
+
+#%%
+clf = svm.SVC(C=1, kernel = 'linear')
+clf_params = clf.get_params()
+
+estim = clf.fit(X_2d, y)
+estim.score(X_2d,y)
+estim.predict(X_2d)
+
+#%% Get Crossvalidation scores
+scoretype=['accuracy','roc_auc', 'balanced_accuracy']
+cv = None
+all_scores_full = cross_validate(estimator = clf, # So this basically runs clf.fit(x, y)
+                                  X = X_2d, # the data to fit the model
+                                  y = y,  # target variable to predict
+                                  cv = cv, # cross-validation splitting strategy
+                                  n_jobs = const.n_jobs,
+                                  scoring = scoretype)  
+
+
+#%% Grid search for optimal parameters
+# param_grid = [
+#   {'C': [1, 10, 100, 1000], 'kernel': ['linear']},
+#   {'C': [1, 10, 100, 1000], 'gamma': ['auto', 'scale', 0.001, 0.0001], 'kernel': ['rbf','poly','sigmoid']},
+#  ]  
+
+# gslf = GridSearchCV(estimator = clf, param_grid = param_grid)
+# # gslf.get_params()
+# gslf = gslf.fit(X_2d, y)
+# print(gslf.best_params_)
+
+# # Now take a look at glsf.cv_results_.rank_test_score - the different options are now ranked from best to worst
+# # and in glsf.best_params_ you can find the best parameters
+# # Which... in this case was always the same across options. Weird. # TODO
+
+#%%
+idx_train = list(MVPAManager.getFilteredIdx(
+    tfr_bands['epoch_conditions'], 
+    conditionInclude=['Lv1'], 
+    conditionExclude=[]))
+
+y_train = tfr_bands['epoch_metadata'][response_variable][idx_train]
+
+X_train = tfr_bands[str(thisBand +'_data')][idx_train,:,:] # Get only the trials that are in the specified conditions (user inputs)
+X_2d_train = X_train.reshape(len(X_train), -1)
+
+idx_test = list(MVPAManager.getFilteredIdx(
+    tfr_bands['epoch_conditions'], 
+    conditionInclude=['Lv3'], 
+    conditionExclude=[]))
+
+y_test = tfr_bands['epoch_metadata'][response_variable][idx_test]
+
+X_test = tfr_bands[str(thisBand +'_data')][idx_test,:,:] # Get only the trials that are in the specified conditions (user inputs)
+X_2d_test = X_test.reshape(len(X_test), -1)
+
+#%%
+clf = svm.SVC(C=1, kernel = 'linear')
+clf.fit(X_2d_train, y_train)
+
+clf.score(X_2d_test, y_test)
+
+#%%
+y_train_pred = clf.predict(X_2d_train)
+y_test_pred = clf.predict(X_2d_test)
+
+f1_cor_train = metrics.f1_score(y_true = y_train, y_pred = y_train_pred, pos_label = 'cor')
+f1_inc_train = metrics.f1_score(y_true = y_train, y_pred = y_train_pred, pos_label = 'inc')
+
+
+f1_cor_test = metrics.f1_score(y_true = y_test, y_pred = y_test_pred, pos_label = 'cor')
+f1_inc_test = metrics.f1_score(y_true = y_test, y_pred = y_test_pred, pos_label = 'inc')
+
+#%% Confusion Matrix [[TP, FN],[FP, TN]]
+confusion_matrix_train = metrics.confusion_matrix(y_true = y_train, y_pred = y_train_pred)
+confusion_matrix_test = metrics.confusion_matrix(y_true = y_test, y_pred = y_test_pred)
+
+#%%
+
+#[MVPA] Time-resolved decoding 
+# ---------------------------------------------
+n_times = X.shape[2] # get number of timepoints
+
+#If multiple scroretypes, use dictionaries to store values for each score type
+if type(scoretype) is str:
+    scores = np.zeros(shape=(n_times,1))
+    std_scores = np.zeros(shape=(n_times,1))
+else:
+    scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
+    std_scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
+
+
+print('----> starting classification per time point....')
+for t in range(n_times): # for each timepoint...
+    Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
     
-
+    # Standardize features
+    Xt -= Xt.mean(axis=0) # subtracts the mean of the row from each value
+    Xt /= Xt.std(axis=0) # divides each value by the SD of the row
+    
+    clf = svm.SVC(C=1, kernel = 'linear')
+    clf.fit(Xt, y)
+    print(metrics.confusion_matrix(y, clf.predict(Xt)))
+    
+    #[O_O] Run cross-validation for each timepoint
+    scores_t = cross_validate(estimator=clf, 
+                              X=Xt, 
+                              y=y, 
+                              cv=cv, 
+                              n_jobs=const.n_jobs,
+                              scoring=scoretype)  
 #%%
 # conditionInclude = ['Lv3'] 
 # conditionExculde = []

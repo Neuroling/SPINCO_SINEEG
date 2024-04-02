@@ -74,7 +74,7 @@ class MVPAManager:
             for cond in conditionExclude: 
                 idx = [i for i, x in enumerate(event_labels) if cond not in x]
                 filt_idx = filt_idx & set(idx) # keep only common elements
-                print("excluding epochs in the", cond+'-condition')
+                print("--> excluding epochs in the", cond+'-condition')
 
         # For each specified condition, get the indices of the desired condition
         # and then compare them to filt_idx. From filt_idx, remove all elements not in the desired condition
@@ -82,7 +82,7 @@ class MVPAManager:
             for cond in conditionInclude:
                 idx = [i for i, x in enumerate(event_labels) if cond in x]
                 filt_idx = filt_idx & set(idx) # Keep only the common elements
-                print("excluding epochs NOT in the", cond+"-condition")
+                print("--> excluding epochs NOT in the", cond+"-condition")
                 
         return filt_idx
         
@@ -96,9 +96,9 @@ class MVPAManager:
     def get_crossval_scores(self,
                             X,
                             y,
-                            clf=svm.SVC(C=1, kernel='linear'),
-                            cv=None,
-                            scoretype=('accuracy')
+                            clf = svm.SVC(C=1, kernel='linear'),
+                            cv = StratifiedKFold(n_splits = 5),
+                            scoretype = ('accuracy')
                             ):    
         """ Get classification scores with a scikit classifier 
         =================================================================
@@ -150,6 +150,7 @@ class MVPAManager:
         
         """  
         
+        # TODO save clf.get_params()
 
         if len(X.shape) != 3:
             raise ValueError(f'Array X needs to be 3-dimensional, not {len(X.shape)}')
@@ -172,7 +173,7 @@ class MVPAManager:
                                          scoring = scoretype)                                    
                                       
         
-        all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
+        all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output
         
         # TODO get only mean and std of the 5 instead of all 5 (ask Gorka if he wants all 5)
         
@@ -190,7 +191,7 @@ class MVPAManager:
         else:
             scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
             std_scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
-        
+        f1 = np.zeros(shape = (n_times,5))
         
         print('----> starting classification per time point....')
         for t in range(n_times): # for each timepoint...
@@ -207,6 +208,14 @@ class MVPAManager:
                                       cv=cv, 
                                       n_jobs=const.n_jobs,
                                       scoring=scoretype)     
+            f1_t = []
+            for train_index, test_index in cv.split(Xt, y):
+                clf.fit(Xt[train_index], y.iloc[train_index])
+                y_pred = clf.predict(Xt[test_index])
+                f1_tmp = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='inc')
+                f1_t.append(f1_tmp)
+            f1[t] = f1_t
+                
             
             #Add CV mean and std of this time point to my output dict 
             if type(scoretype) is str:
@@ -224,9 +233,9 @@ class MVPAManager:
             scores = {key: np.array(value) for key, value in scores.items()}
             std_scores = {key: np.array(value) for key, value in std_scores.items()}
             
-        if cv is None:
-            cv = 'Default (None)'
+        if cv is None: 
+            cv = '5-fold'
           
         print('-----> Done.')
-        return all_scores_full, scores, std_scores , clf, cv, scoretype
+        return all_scores_full, scores, std_scores, f1, clf, cv, scoretype
     
