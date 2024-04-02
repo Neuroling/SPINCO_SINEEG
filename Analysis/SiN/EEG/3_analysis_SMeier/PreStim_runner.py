@@ -63,17 +63,20 @@ PreStimManager = PreStimManager() #initiate PreStimManager (collection of functi
 start_time = datetime.now() # recording the time when the script starts running (helpful for debugging, optimisation and control)
 
 #%% Run regression and save Output #############################################################################################
-# time_control = []
-
-# for noise in const.noise: # separately for each noiseType
-# # for noise in ['SSN']: # for debugging, only run one condition
-#     for subjID in const.subjIDs:
-#         time_control.append("start " + subjID + ": " + str(datetime.now()))
+time_control = []
+# control = []
+for noise in const.noise: # separately for each noiseType
+# for noise in ['SSN']: # for debugging, only run one condition
+    # control.append(noise)
+    for subjID in const.subjIDs:
+        time_control.append("start " + subjID + ": " + str(datetime.now()))
         
-#         PreStimManager.get_epoData_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
-#         PreStimManager.run_LogitRegression_withinSubj() # run the regression separately for each timepoint & channel  
-#         # PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
-#         PreStimManager.save_results() # save the output dict and return it
+        PreStimManager.get_epoData_singleSubj(subjID, condition = noise) # Get epoched data in a format usable for regression
+        PreStimManager.run_LogitRegression_withinSubj(subsample=False, method = 'powell') # run the regression separately for each timepoint & channel  
+        PreStimManager.FDR_correction() # FDR correct the p-Values (separately for each channel & parameter)
+        PreStimManager.save_results() # save the output dict and return it
+        time_control.append("end " + subjID + ": " + str(datetime.now()))
+        
 #%%        
 time_control = []
 for subjID in const.subjIDs:
@@ -83,7 +86,7 @@ for subjID in const.subjIDs:
         time_control.append("start " + thisBand + ": " + str(datetime.now()))
         for noise in const.noise:
             PreStimManager.get_freqband_data(freqband = thisBand, condition = noise)
-            PreStimManager.run_LogitRegression_withinSubj(solver = "bfgs") # run the regression separately for each timepoint & channel  
+            PreStimManager.run_LogitRegression_withinSubj(subsample=False, method = 'powell')  # run the regression separately for each timepoint & channel  
             PreStimManager.save_results() # save the output dict and return it
 
 #%% get evoked objects for every subj of every possible combination of accuracy, noiseType & degradation

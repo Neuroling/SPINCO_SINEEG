@@ -35,7 +35,8 @@ import random
 class PreStimManager: 
     
     def __init__(self, 
-                 raiseWarnings = False):
+                 # raiseWarnings = False
+                 ):
         """
         INITIALIZING FUNCTION
         =======================================================================
@@ -63,9 +64,9 @@ class PreStimManager:
         self.metadata = {} # initialise empty metadata dict
         self.metadata['datetime_run_start'] = str(datetime.now())
         
-        if not raiseWarnings:
-            import warnings
-            warnings.filterwarnings('ignore') 
+        # if not raiseWarnings:
+        #     import warnings
+        #     warnings.filterwarnings('ignore') 
  
 #%% 
     def get_epoData_singleSubj(self, 
@@ -189,7 +190,7 @@ class PreStimManager:
         
         return data_array, condition_df if output else None
 
-#%% # TODO not yet working (wait for Sibylle)
+#%% 
     def get_allFreqData_singleSubj(self, 
                                 subjID, 
                                 output = False):
@@ -304,8 +305,9 @@ class PreStimManager:
                 condition_df = None,
                 formula = "accuracy ~ levels * eeg_data + wordPosition", 
                 n_iter = 100, 
-                sub_sample = True,
-                solver = "lbfgs"
+                subsample = True,
+                method = 'newton',
+                debug = False
                 ):
         """
         LOGIT REGRESSION WITHIN SUBJECT
@@ -313,11 +315,11 @@ class PreStimManager:
              
         Regression for binary DV. 
      
-        In case of sub_sample = True, will equalise trial numbers of correct and
+        In case of subsample = True, will equalise trial numbers of correct and
         incorrect trials by calling the function PreStimManager.random_subsample_accuracy().
         For more information, see docstring of that function.
         
-        If sub_sample = False, n_iter will be overwritten as 1.
+        If subsample = False, n_iter will be overwritten as 1.
         
         Results will not be returned but stored in the PreStimManager class object.
         If needed, they can be called by `SomeVariable = PreStimManager.DesiredResult`
@@ -340,11 +342,11 @@ class PreStimManager:
             p_values_mean : array of shape [n_channels, n_times, n_coefficient]
                 The p-Values of all regression coefficients for each channel, timepoint, but
                 averaged over the iterations.
-                Will only be calculated if sub_sample = True
+                Will only be calculated if subsample = True
                 
             p_values_SD : array of shape [n_channels, n_times, n_coefficient]
                 The standard deviation of the p-Values across iterations
-                Will only be calculated if sub_sample = True
+                Will only be calculated if subsample = True
             
                  
 
@@ -366,24 +368,26 @@ class PreStimManager:
             The formula to be passed to smf.logit(). 
             The default is "accuracy ~ levels * eeg_data + wordPosition".
         
-        sub_sample : bool, optional
+        subsample : bool, optional
             Whether to equalise trial-number of correct and incorrect trials
             by randomly subsampling the data. 
             The default is True.
 
         n_iter : int, optional
             How many iterations of subsampling and regression should be done. 
-            This option is only available if sub_sample is set to True, otherwise,
+            This option is only available if subsample is set to True, otherwise,
             n_iter will be overwritten as 1.
             The default is 100.
             
-        solver : str, optional
+        method : str, optional # TODO update
             The solver to be used when calling `mdf = md.fit(method = solver)`.
             For information on the solvers, see documentation on statsmodels:
                 https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.Logit.fit.html
                 https://www.statsmodels.org/stable/dev/generated/statsmodels.base.model.LikelihoodModelResults.html
             The default is "lbfgs", which appears to be the fastest. The default of the function
             would be "newton", which causes LinAlgError in some subjects (see comment in the README)
+            
+        debug : bool # TODO
 
         Returns
         -------
@@ -391,7 +395,7 @@ class PreStimManager:
 
         """
 
-        self.metadata['fitting_solver'] = solver
+    
         
         #  TODO bug-test
         # If no data given, use the data stored in the class object
@@ -405,13 +409,16 @@ class PreStimManager:
         else:
             pass
             
-        if not sub_sample: # do not iterate if no sub-sampling is performed
+        if not subsample: # do not iterate if no sub-sampling is performed
             n_iter = 1
         self.withinSubj = True # we use this later for the filenames
         
         #% Create arrays and lists
         channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
         timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+        if debug:
+            channelsIdx = channelsIdx[0:3]
+            timesIdx = timesIdx[0:3]
         
         
         # This will run a preliminary model, which is only used to extract the number of p-Values
@@ -420,25 +427,29 @@ class PreStimManager:
   
         tmp_df = condition_df
         tmp_df['eeg_data'] = data_array[:,0,0]
-        pVals_n = len(smf.logit(formula, 
+        n_pVals = len(smf.logit(formula, 
                                 tmp_df
                                 ).fit().pvalues.index)
         del tmp_df
 
         # now we know the dimensions of the empty array we need to create to collect p_Values
-        p_values = np.zeros(shape=(len(channelsIdx),len(timesIdx),pVals_n,n_iter))
-        coefficients = np.zeros(shape=p_values.shape)
-        z_values = np.zeros(shape=p_values.shape)
-        coef_SD = np.zeros(shape=p_values.shape)
+        n_channels = len(channelsIdx)
+        n_times = len(timesIdx)
         
+        shape_1 = (n_channels, n_times, n_pVals, n_iter)
+        shape_2 = (n_channels, n_times, n_iter)
         
-        # But gfraga also asked to save the whole model output, soooo... # TODO
-        # Actually, I opted not to do that because n_iter*n_times*n_channels mdf objects would be... a lot
-
+        p_values = np.zeros(shape = shape_1)
+        coefficients = np.zeros(shape = shape_1)
+        z_values = np.zeros(shape = shape_1)
+        coef_SD = np.zeros(shape = shape_1)
+        Pseudo_Rsquared = np.zeros(shape = shape_2)
+        converged = np.zeros(shape = shape_2)
+        
 
         for iteration in range(n_iter):
 
-            if sub_sample:
+            if subsample:
                 # we sub-sample running the function below. which will give us a set of indices (idx)
                 # and later we subset the data by idx
                 idx = self.random_subsample_accuracy()
@@ -450,42 +461,57 @@ class PreStimManager:
             # And now we run the model for every channel and every timepoint
             for thisChannel in channelsIdx:
 
-
-
                 for tf in timesIdx:
 
                     # extract the data & trial information at a given timepoint and channel              
-                    df = condition_df
+                    df = condition_df.copy()
                     df['eeg_data'] = data_array[:,thisChannel,tf]
                     df = df.iloc[idx] # subset the df by idx
-                    
-                    
+                                        
                     # calculate Logit regression
                     md = smf.logit(formula, 
                                    df, 
                                    )  
-
-                    
-                    mdf = md.fit(method = solver) # ??? don't know what the correct solver is
+                   
+                    mdf = md.fit(method = method, maxiter = 100)
+                    print(mdf.converged)
                     
                     # record p-Values, z-Values and coefficients
                     p_values[thisChannel,tf,:, iteration] = mdf.pvalues
                     coefficients[thisChannel,tf,:, iteration] = mdf.params
                     coef_SD[thisChannel,tf,:, iteration] = mdf.conf_int()[1] - mdf.params
                     z_values[thisChannel,tf,:, iteration] = mdf.tvalues
- 
-        
-        if sub_sample: # get mean and sd of the p-Values across iterations
-            self.p_values_mean = p_values.mean(axis = 3)
-            self.p_values_SD = p_values.std(axis = 3)
-        else:
-            pass
+                    Pseudo_Rsquared[thisChannel,tf,iteration] = mdf.prsquared
+                    converged[thisChannel,tf,iteration]  = mdf.converged
+
+                    
+                    self.debug_control = [thisChannel, tf, iteration]
+                    self.idx = idx
+                    
+        if n_iter == 1:  
+            p_values = p_values[:,:,:,0]
+            coefficients = coefficients[:,:,:,0]
+            z_values = z_values[:,:,:,0]
+            coef_SD = coef_SD[:,:,:,0]
+            Pseudo_Rsquared = Pseudo_Rsquared[:,:,0]
+            converged = converged[:,:,0]
         
         self.p_values = p_values
         self.coefficients = coefficients
         self.z_values = z_values
         self.coef_SD = coef_SD
+        self.Pseudo_Rsquared = Pseudo_Rsquared
+        self.converged = converged
         
+        if subsample: # get mean and sd of the p-Values across iterations
+            self.p_values_mean = p_values.mean(axis = 3)
+            self.p_values_SD = p_values.std(axis = 3)
+        else:
+            pass
+        
+        count_cor = df['accuracy'].value_counts()[1]
+        count_inc = df['accuracy'].value_counts()[0]
+        self.metadata['n_correct/n_incorrect'] = (count_cor, count_inc)
 
         self.metadata['p_Values_index'] = mdf.pvalues.index
         self.metadata['regression_formula'] = md.formula
@@ -493,17 +519,24 @@ class PreStimManager:
         self.metadata['regression_type'] = str(mdf.model)
         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
         self.metadata['axes'] = ['channel, timeframe, p-Value']
-        self.metadata['iterations'] = n_iter
-        self.metadata['equalized_accuracy_sample'] = sub_sample
+        self.metadata['subsampling_iterations'] = n_iter
+        self.metadata['subsampling_performed'] = subsample
+        self.metadata['degrees_of_freedom_Model'] = mdf.df_model
+        self.metadata['degrees_of_freedom_Residuals'] = mdf.df_resid
+        self.metadata['percent_converged'] = np.mean(converged)
+        self.metadata['fitting_method'] = mdf.mle_settings['optimizer']
+        self.metadata['n_observations_per_Regression'] = len(df)
+
         
-        if sub_sample:
-            self.metadata['sub_sample_dataframe_length'] = len(df)
+        if subsample:
+            self.metadata['subsample_length'] = len(df)
+        return p_values
 
 #%% # TODO organise documentation
     def random_subsample_accuracy(self, 
                                   trial_info = None):
         """
-        RANDOMLY SUBSAMPLES TRIAL TO EQUALISE ACCURACY COUNTS
+        RANDOMLY SUBSAMPLES TRIALS TO EQUALISE ACCURACY COUNTS
         =======================================================================
         
         This function counts how many trials were correct and how many incorrect.
@@ -703,10 +736,11 @@ class PreStimManager:
         # Now add the p-Values to the dict. First try to add the FDR-corrected p-Values 
         # and if there are none, add non-FDR-corrected p-Values
         try:
-            output_dict['p_values'] = self.p_values_FDR
+            output_dict['p_values_FDR'] = self.p_values_FDR
+            output_dict['p_values_uncorrected'] = self.p_values
             FDR_name = 'FDR_'
         except AttributeError:
-            output_dict['p_values'] = self.p_values
+            output_dict['p_values_uncorrected'] = self.p_values
             FDR_name = 'uncorrected_'
     
         # See if anything else besides p-Values are saved and add those. 
@@ -714,6 +748,8 @@ class PreStimManager:
             output_dict['z_values'] = self.z_values
             output_dict['coefficients'] = self.coefficients
             output_dict['coefficients_SD'] = self.coef_SD
+            output_dict['pseudo_Rsquared'] = self.Pseudo_Rsquared
+            output_dict['converged'] = self.converged
             values_name = 'allValues'
         except AttributeError:
             values_name = 'pValues'
@@ -727,9 +763,9 @@ class PreStimManager:
             condition_name = ''
 
         # check if the data is sub-sampled to add that to the filename
-        if self.metadata['equalized_accuracy_sample']:
+        if self.metadata['subsampling_performed']:
             subsample_name = 'sub-sampled_'
-            n_iter = str(self.metadata['iterations']) + "iter_"
+            n_iter = str(self.metadata['subsampling_iterations']) + "iter_"
             try:
                 output_dict['p_values_SD'] = self.p_values_SD
                 output_dict['p_values_mean'] = self.p_values_mean
@@ -741,7 +777,7 @@ class PreStimManager:
             
         try:
             band_name = (str(self.metadata['frequency_band']) + '_')
-        except AttributeError:
+        except KeyError:
             band_name = ''
             
         # This will take the regression model method that we got from mdf.model()

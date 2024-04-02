@@ -29,7 +29,7 @@ UPDATE:
 %timeit mdf = md.fit(method = "bfgs")
 6.63 ms ± 25.9 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 
-%timeit mdf2 = md2.fit(method = "lbfgs")
+%timeit mdf = md.fit(method = "lbfgs")
 2.35 ms ± 43.2 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 ```
 So I'm going with the `lbfgs` solver as default for `run_LogitRegression_withinSubj()`
