@@ -54,41 +54,7 @@ y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want 
 
 X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
     
-#%% k-fold crossvalidation -- unused, finished
-# Folds number
-n_splits = 5
-kf = KFold(n_splits=n_splits)
 
-# List of accuracy in a specific fold
-cv_scores = []
-
-# re-index df_nv because the indices are non-sequential
-reIdx = pd.Series(range(len(y)))
-y.set_index(reIdx, inplace = True)
-
-# Splitting data 
-for train_index, test_index in kf.split(y):
-    
-    train_y = y.iloc[train_index]
-    test_y = y.iloc[test_index]
-    train_x = 
-    test_x = 
-    test_df_x = df.loc[test_index,['levels','eeg_data','wordPosition']]
-    # test_df_y = df.loc[test_index,['accuracy']]
-    
-    md_split = smf.logit(formula, train_df)
-    mdf_split = md_split.fit()
-
-    # Forecasting on test data
-    y_pred = mdf_split.predict(exog=test_df_x)
-
-    # Quality of model assessment
-    # Determination coefficient R^2 is used
-    r_squared = np.corrcoef(test_df['accuracy'], y_pred)[0, 1] ** 2
-    cv_scores.append(r_squared)
-
-# Cross-validation results printing
-print("Cross-Validation Scores:", cv_scores)
 #%%
 # conditionInclude = ['Lv3'] 
 # conditionExculde = []

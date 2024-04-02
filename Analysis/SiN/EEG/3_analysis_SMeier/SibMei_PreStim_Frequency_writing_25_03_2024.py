@@ -24,11 +24,11 @@ import random
 
 
 # 1. Datensatz öffnen =========================================================================
-#filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
+filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
 #with open(filepath, 'rb') as f:
 #    tfr_band = pickle.load(f)
 
-filepath = "//idnas12.d.uzh.ch/G_PSYNEULIN_DATA$/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
+# filepath = "//idnas12.d.uzh.ch/G_PSYNEULIN_DATA$/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
 with open(filepath, 'rb') as f:
     tfr_band = pickle.load(f)
 
@@ -42,6 +42,16 @@ del tfr_band # wir löschen den dictionary mit den anderen Frequenzbändern
 # Du musst zuerst data_array und condition_df in NV und SiSSN aufteilen
 # Tipp: finde die index-Nummern für die NV oder SiSSN mit dem condition_df
 # Und damit kannst du dann data_array filtern
+
+print()
+print("Condition dataframe")
+idx_NV = condition_df.index[condition_df['noiseType']== 'NV']
+idx_SSN = condition_df.index[condition_df['noiseType']== 'SSN']
+
+# Alles geht weg was SSN ist
+idx_Tot = idx_NV
+condition_df = condition_df [condition_df['noiseType']== 'NV']
+
 
 # Dann, lass diesen Teil laufen. Ich hab das aus der Function get_epoData_singleSubj() kopiert.        
 # re-name some columns
@@ -59,20 +69,7 @@ condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'
 reIdx = pd.Series(range(len(condition_df)))
 condition_df.set_index(reIdx, inplace = True)
 
-print()
-print("Condition dataframe")
-idx_NV = condition_df.index[condition_df['noiseType']== 'NV']
-idx_SSN = condition_df.index[condition_df['noiseType']== 'SSN']
-
-# Alles geht weg was SSN ist
-idx_Tot = idx_NV
-condition_df = condition_df [condition_df['noiseType']== 'NV']
-
-#
-reIdx=pd.Series(range(len(condition_df)))
-condition_df.set_index(reIdx, inplace =True)
-
- # counting total correct and incorrect
+  # counting total correct and incorrect
 count_cor = condition_df['accuracy'].value_counts()[1]
 count_inc = condition_df['accuracy'].value_counts()[0]
 
@@ -134,8 +131,8 @@ for iteration in range(n_iter):
                     
             # calculate Logit regression
             md = smf.logit(formula, 
-                           df, 
-                           )  
+                            df, 
+                            )  
             
             mdf = md.fit() 
             
