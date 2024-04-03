@@ -24,7 +24,7 @@ import MVPA_functions as functions
 MVPAManager = functions.MVPAManager()
 
 
-conditionInclude = ['Lv1'] 
+conditionInclude = ['Lv3', 'NV'] 
 conditionExculde = []
 response_variable = 'accuracy'
 timewindow = "_prestim" # other option : '_poststim'
@@ -57,25 +57,25 @@ true_accuracy = y.value_counts().iloc[0]/len(y) # percentage of correct response
 # If the classifier always predicts "cor" then it will be correct in this much.
 
 X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
-X_2d = X.reshape(len(X), -1)
+# X_2d = X.reshape(len(X), -1)
 
 #%%
-clf = svm.SVC(C=1, kernel = 'linear')
-clf_params = clf.get_params()
+# clf = svm.SVC(C=1, kernel = 'linear')
+# clf_params = clf.get_params()
 
-estim = clf.fit(X_2d, y)
-estim.score(X_2d,y)
-estim.predict(X_2d)
+# estim = clf.fit(X_2d, y)
+# estim.score(X_2d,y)
+# estim.predict(X_2d)
 
 #%% Get Crossvalidation scores
-scoretype=['accuracy','roc_auc', 'balanced_accuracy']
-cv = None
-all_scores_full = cross_validate(estimator = clf, # So this basically runs clf.fit(x, y)
-                                  X = X_2d, # the data to fit the model
-                                  y = y,  # target variable to predict
-                                  cv = cv, # cross-validation splitting strategy
-                                  n_jobs = const.n_jobs,
-                                  scoring = scoretype)  
+# scoretype=['accuracy','roc_auc', 'balanced_accuracy']
+# cv = None
+# all_scores_full = cross_validate(estimator = clf, # So this basically runs clf.fit(x, y)
+#                                   X = X_2d, # the data to fit the model
+#                                   y = y,  # target variable to predict
+#                                   cv = cv, # cross-validation splitting strategy
+#                                   n_jobs = const.n_jobs,
+#                                   scoring = scoretype)  
 
 
 #%% Grid search for optimal parameters
@@ -94,227 +94,77 @@ all_scores_full = cross_validate(estimator = clf, # So this basically runs clf.f
 # # Which... in this case was always the same across options. Weird. # TODO
 
 #%%
-idx_train = list(MVPAManager.getFilteredIdx(
-    tfr_bands['epoch_conditions'], 
-    conditionInclude=['Lv1'], 
-    conditionExclude=[]))
+# idx_train = list(MVPAManager.getFilteredIdx(
+#     tfr_bands['epoch_conditions'], 
+#     conditionInclude=['Lv1'], 
+#     conditionExclude=[]))
 
-y_train = tfr_bands['epoch_metadata'][response_variable][idx_train]
+# y_train = tfr_bands['epoch_metadata'][response_variable][idx_train]
 
-X_train = tfr_bands[str(thisBand +'_data')][idx_train,:,:] # Get only the trials that are in the specified conditions (user inputs)
-X_2d_train = X_train.reshape(len(X_train), -1)
+# X_train = tfr_bands[str(thisBand +'_data')][idx_train,:,:] # Get only the trials that are in the specified conditions (user inputs)
+# X_2d_train = X_train.reshape(len(X_train), -1)
 
-idx_test = list(MVPAManager.getFilteredIdx(
-    tfr_bands['epoch_conditions'], 
-    conditionInclude=['Lv3'], 
-    conditionExclude=[]))
+# idx_test = list(MVPAManager.getFilteredIdx(
+#     tfr_bands['epoch_conditions'], 
+#     conditionInclude=['Lv3'], 
+#     conditionExclude=[]))
 
-y_test = tfr_bands['epoch_metadata'][response_variable][idx_test]
+# y_test = tfr_bands['epoch_metadata'][response_variable][idx_test]
 
-X_test = tfr_bands[str(thisBand +'_data')][idx_test,:,:] # Get only the trials that are in the specified conditions (user inputs)
-X_2d_test = X_test.reshape(len(X_test), -1)
-
-#%%
-clf = svm.SVC(C=1, kernel = 'linear')
-clf.fit(X_2d_train, y_train)
-
-clf.score(X_2d_test, y_test)
+# X_test = tfr_bands[str(thisBand +'_data')][idx_test,:,:] # Get only the trials that are in the specified conditions (user inputs)
+# X_2d_test = X_test.reshape(len(X_test), -1)
 
 #%%
-y_train_pred = clf.predict(X_2d_train)
-y_test_pred = clf.predict(X_2d_test)
+# clf = svm.SVC(C=1, kernel = 'linear')
+# clf.fit(X_2d_train, y_train)
 
-f1_cor_train = metrics.f1_score(y_true = y_train, y_pred = y_train_pred, pos_label = 'cor')
-f1_inc_train = metrics.f1_score(y_true = y_train, y_pred = y_train_pred, pos_label = 'inc')
+# clf.score(X_2d_test, y_test)
+
+#%%
+# y_train_pred = clf.predict(X_2d_train)
+# y_test_pred = clf.predict(X_2d_test)
+
+# f1_cor_train = metrics.f1_score(y_true = y_train, y_pred = y_train_pred, pos_label = 'cor')
+# f1_inc_train = metrics.f1_score(y_true = y_train, y_pred = y_train_pred, pos_label = 'inc')
 
 
-f1_cor_test = metrics.f1_score(y_true = y_test, y_pred = y_test_pred, pos_label = 'cor')
-f1_inc_test = metrics.f1_score(y_true = y_test, y_pred = y_test_pred, pos_label = 'inc')
+# f1_cor_test = metrics.f1_score(y_true = y_test, y_pred = y_test_pred, pos_label = 'cor')
+# f1_inc_test = metrics.f1_score(y_true = y_test, y_pred = y_test_pred, pos_label = 'inc')
 
 #%% Confusion Matrix [[TP, FN],[FP, TN]]
-confusion_matrix_train = metrics.confusion_matrix(y_true = y_train, y_pred = y_train_pred)
-confusion_matrix_test = metrics.confusion_matrix(y_true = y_test, y_pred = y_test_pred)
+# confusion_matrix_train = metrics.confusion_matrix(y_true = y_train, y_pred = y_train_pred)
+# confusion_matrix_test = metrics.confusion_matrix(y_true = y_test, y_pred = y_test_pred)
 
-#%%
 
-#[MVPA] Time-resolved decoding 
-# ---------------------------------------------
+#%% Grid search over timepoints
+param_grid = [
+  {'kernel': ['linear'],'C': [1, 10, 100, 1000]},
+  {'kernel': ['rbf','poly','sigmoid'],'C': [1, 10, 100, 1000], 'gamma': ['auto', 'scale', 0.001, 0.0001] },
+  ]  
+
+scoretype = ('balanced_accuracy')
+clf = svm.SVC(C=1, kernel = 'linear')
+
 n_times = X.shape[2] # get number of timepoints
 
-#If multiple scroretypes, use dictionaries to store values for each score type
-if type(scoretype) is str:
-    scores = np.zeros(shape=(n_times,1))
-    std_scores = np.zeros(shape=(n_times,1))
-else:
-    scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
-    std_scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
+ranks = np.zeros(shape = (n_times, 52))
+mean_score = np.zeros(shape = (n_times, 52))
 
-
-print('----> starting classification per time point....')
 for t in range(n_times): # for each timepoint...
     Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
     
     # Standardize features
     Xt -= Xt.mean(axis=0) # subtracts the mean of the row from each value
     Xt /= Xt.std(axis=0) # divides each value by the SD of the row
-    
-    clf = svm.SVC(C=1, kernel = 'linear')
-    clf.fit(Xt, y)
-    print(metrics.confusion_matrix(y, clf.predict(Xt)))
-    
-    #[O_O] Run cross-validation for each timepoint
-    scores_t = cross_validate(estimator=clf, 
-                              X=Xt, 
-                              y=y, 
-                              cv=cv, 
-                              n_jobs=const.n_jobs,
-                              scoring=scoretype)  
-#%%
-# conditionInclude = ['Lv3'] 
-# conditionExculde = []
-# prediction = 'accuracy'
 
-# idx = list(MVPAManager.getFilteredIdx(
-#     tfr_bands['epoch_conditions'], conditionInclude=conditionInclude, conditionExclude=conditionExculde))
-# #%%
-# def get_crossval_scores(X,y,clf=svm.SVC(C=1, kernel='linear'),cv=None,scoretype=('accuracy')):    
-#     """ Get classification scores with a scikit classifier 
-#     =================================================================
-#     Created on Thu Dec 22 13:44:33 2022
-#     @author: gfraga & samuemu
-#     Ref: visit documentation in https://scikit-learn.org/stable/modules/classes.html
-#     https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
-#     https://scikit-learn.org/stable/modules/svm.html
-    
-#     Parameters
-#     ----------
-#     X: array of shape (n_epochs, n_channels, n_timepoints)
-#        feature vector (e.g., epochs x [channels x times]) 
-    
-#     y: array-like of shape (n_samples,) or (n_samples, n_outputs)
-#         The target variable to try to predict in the case of supervised learning.
-#         For instance, the accuracy labels of the epochs (y = epo.metadata['accuracy'])
-#         # TODO I need to include an error if the 
-    
-#     clf: str 
-#        Define classifier, i.e. the object to use to fit the data. 
-#        Default: clf = svm.SVC(C=1, kernel='linear')
-    
-#     cv: int | cross-validation generator or an iterable | Default=None
-#         cross validation choice. 
-#         - int to specify the number of folds.
-#         - None will use default 5-fold cross validation.
-#         - iterable yielding (train, test) splits as arrays of indices
-#         - A CV splitter, such as KFold or StratifiedKFold, ShuffleSplit.
-#           example: cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-        
-#         - If int/None input, and if clf is a classifier and y is either binary or multiclass,
-#           then StratifiedKFold is used. Otherwise, KFold is used. Both will be instantiated with
-#           shuffle=False, so splits will be the same across class.
-        
-#     scoretype: str | callable | list | tuple | dict
-#         the type of score (e.g., 'roc_auc','accuracy','f1')
-#         see https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
-#         Default= ('accuracy')
-    
-    
-#     Returns
-#     -------       
-#     scores_full: classification score for the whole epoch
-    
-#     scores: classification scores for each time point (time-resolved mvpa)
-    
-#     std_scores: std of scores
-    
-#     """  
-    
-    
-#     # #[MVPA] Decoding based on entire epoch
-#     # ---------------------------------------------
-#     if len(X.shape) != 3:
-#         raise ValueError(f'Array X needs to be 3-dimensional, not {len(X.shape)}')
-#     X_2d = X.reshape(len(X), -1) # Now it is epochs x [channels x times]   
-#     # self.X_2d = X_2d
-    
-#     #% see https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_validate.html#sklearn.model_selection.cross_validate
-#     all_scores_full = cross_validate(estimator = clf,
-#                                      X = X_2d, # the data to fit the model
-#                                      y= y,  # target variable to predict
-#                                      cv=cv, # cross-validation splitting strategy
-#                                      n_jobs=const.n_jobs,
-#                                      scoring=scoretype,
-#                                      return_estimator=True,
-#                                      return_indices=True)
-    
-#     #all_scores_full = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} #get only the scores from output (also contains times)
-#     # TODO get only mean and std instead of all 5 (ask Gorka if he wants all 5)
-#     print('---> run classification on the full epoch')
-    
-    
-    
-#     # #[MVPA] Time-resolved decoding 
-#     # # ---------------------------------------------
-#     # n_times = X.shape[2] # get number of timepoints
-    
-#     # #Use dictionaries to store values for each score type
-#     # if type(scoretype) is str:
-#     #     scores = np.zeros(shape=(n_times,1))
-#     #     std_scores = np.zeros(shape=(n_times,1))
-#     # else:
-#     #     scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
-#     #     std_scores = {name: np.zeros(shape=(n_times,1)) for name in scoretype}
-    
-#     # print('----> starting classification per time point....')
-#     # for t in range(n_times): # for each timepoint...
-#     #     Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
-        
-#     #     # Standardize features
-#     #     Xt -= Xt.mean(axis=0) # subtracts the mean of the row from each value
-#     #     Xt /= Xt.std(axis=0) # divides each value by the SD of the row
-        
-#     #     #[O_O] Run cross-validation for each timepoint
-#     #     scores_t = cross_validate(estimator=clf, 
-#     #                               X=Xt, 
-#     #                               y=y, 
-#     #                               cv=cv, 
-#     #                               n_jobs=const.n_jobs,
-#     #                               scoring=scoretype)     
-        
-#     #     #Add CV mean and std of this time point to my output dict 
-#     #     if type(scoretype) is str:
-#     #         scores[t]=scores_t['test_score'].mean()
-#     #         std_scores[t]=scores_t['test_score'].std()
+    gslf = GridSearchCV(estimator = clf, param_grid = param_grid, scoring = scoretype)
+    # gslf.get_params()
+    gslf = gslf.fit(Xt, y)
+    print(gslf.best_params_)
+    ranks[t,:] = gslf.cv_results_['rank_test_score']
+    mean_score[t, :] = gslf.cv_results_['mean_test_score']
 
-            
-#     #     else:
-#     #         for name in scoretype:
-#     #             scores[name][t]=scores_t['test_' + name].mean()
-#     #             std_scores[name][t]=scores_t['test_' + name].std()
-    
-#     # #from lists to arrays 
-#     # if type(scoretype) is not str:
-#     #     scores = {key: np.array(value) for key, value in scores.items()}
-#     #     std_scores = {key: np.array(value) for key, value in std_scores.items()}
-      
-#     # print('-----> Done.')
-#     return all_scores_full #, scores, std_scores 
-
-
-
-
-# #%% Get crossvalidation scores
-# y = tfr_bands['epoch_metadata'][prediction][idx] # What variable we want to predict (set in the user inputs)
-
-# thisBand = 'Alpha'
-# # for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
-# print('--> now performing crossvalidation for', thisBand)
-# X=tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
-
-# all_scores_full = get_crossval_scores(X = X, y = y) # Get scores and add to the dict
-# tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full['test_score']
-# # tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
-# # tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
-
-# #%%
-# n_test = sum(len(sub_array) for sub_array in all_scores_full['indices']['test'])/len(all_scores_full['indices']['test'])
-# n_train = sum(len(sub_array) for sub_array in all_scores_full['indices']['train'])/len(all_scores_full['indices']['train'])
+last_results = gslf.cv_results_
+params = [ str(item) for item in gslf.cv_results_['params']]
+data = { 'mean_rank' : ranks.mean(axis = 0), 'mean_score' : mean_score.mean(axis = 0)}
+df = pd.DataFrame(data, index = params)

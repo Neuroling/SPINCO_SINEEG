@@ -322,7 +322,7 @@ class PreStimManager:
         If subsample = False, n_iter will be overwritten as 1.
         
         Results will not be returned but stored in the PreStimManager class object.
-        If needed, they can be called by `SomeVariable = PreStimManager.DesiredResult`
+        If needed, they can be called by `VariableName = PreStimManager.DesiredResult`
         (substituting DesiredResult by one of the results below)
         
         These results are collected:
@@ -334,7 +334,6 @@ class PreStimManager:
                 
             coef_SD : array of shape [n_channels, n_times, n_coefficient, n_iter]
                 The standard deviation of each regression coefficient for each channel, timepoint, and iteration.
-
                 
             z_values : array of shape [n_channels, n_times, n_coefficient, n_iter]
                 The z-Values of all regression coefficients for each channel, timepoint, and iteration.
@@ -453,7 +452,6 @@ class PreStimManager:
                 # we sub-sample running the function below. which will give us a set of indices (idx)
                 # and later we subset the data by idx
                 idx = self.random_subsample_accuracy()
-
             else: # if no sub-sampling is asked for, just get every idx
                 idx = [ids for ids in range(len(condition_df))]
 
@@ -488,7 +486,7 @@ class PreStimManager:
                     self.debug_control = [thisChannel, tf, iteration]
                     self.idx = idx
                     
-        if n_iter == 1:  
+        if n_iter == 1:  # reduce dimensions of output if no subsampling was performed
             p_values = p_values[:,:,:,0]
             coefficients = coefficients[:,:,:,0]
             z_values = z_values[:,:,:,0]

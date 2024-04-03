@@ -57,7 +57,7 @@ timewindow # TODO
     
 
 """
-conditionInclude = ['Lv3'] 
+conditionInclude = ['Lv3', 'NV'] 
 conditionExculde = []
 response_variable = 'accuracy'
 timewindow = "_prestim" # other option : '_poststim'
@@ -82,20 +82,19 @@ idx = list(MVPAManager.getFilteredIdx(
 
 #%% Get crossvalidation scores
 y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
+true_accuracy = y.value_counts().iloc[0]/len(y)
 
 for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
     print('--> now performing crossvalidation for', thisBand)
     X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
     
-    # Get scores and add to the dict
-    all_scores_full, scores, std_scores, f1, clf, cv, scoretype = MVPAManager.get_crossval_scores(X = X, 
-                                                                                              y = y, 
-                                                                                              scoretype = ('balanced_accuracy')) 
-    # TODO : do something with F1
-    
-    tfr_bands[thisBand+'_crossval_FullEpoch'] = all_scores_full
-    tfr_bands[thisBand+'_crossval_timewise_mean'] = scores
-    tfr_bands[thisBand+'_crossval_timewise_std'] = std_scores
+    # Get scores and add to the dict 
+    output_dict = MVPAManager.get_crossval_scores(X = X, y = y, scoretype = ['accuracy', 'balanced_accuracy', 'roc_auc']) 
+
+    # TODO
+    tfr_bands[thisBand+'_crossval_FullEpoch'] = output_dict['crossval_score_FullEpoch']
+    tfr_bands[thisBand+'_crossval_timewise_mean'] = {key: output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('mean')}
+    tfr_bands[thisBand+'_crossval_timewise_std'] = {key: output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('std')}
 # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
 # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
 # Huh. As of now (01.02.24) they are once again the same. conditionExclude Call, conditionInclude Lv3, prediciton accuracy. See screenshot (@samuemu)
@@ -104,14 +103,10 @@ for thisBand in const.freqbands: # loop over all frequency bands # TODO use meta
 # It seems that having [n_times * n_channels] features is just too much - the timewise classification (which only has [n_times] features)
 # actually differs between freqbands - so it probably doesn't simply predict "cor" across the board
 
-tfr_bands['metadata']['conditionInclude']= conditionInclude
-tfr_bands['metadata']['conditionExclude']= conditionExculde
-tfr_bands['metadata']['response_variable']=response_variable
-tfr_bands['metadata']['estimator']=str(clf)
-tfr_bands['metadata']['cv']=cv
-tfr_bands['metadata']['sklearn_version']= sklearn_version
-tfr_bands['metadata']['scoretype']=str(scoretype)
-tfr_bands['metadata']['codebook']=const.codebook
+# TODO
+# tfr_bands['metadata']['response_variable']=response_variable
+# tfr_bands['metadata']['sklearn_version']= sklearn_version
+# tfr_bands['metadata']['codebook']=const.codebook
 
 #%% Saving the dict
 # print("pickling the dictionary to: /n"+pickle_path_out)

@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['3_analysis_SMeier/sketch_PreStim_writing.py', '3_analysis_SMeier/PreStim_functions.py', '3_analysis_SMeier/PreStim_runner.py', '3_analysis_SMeier/README.md', '../../../../../../../../../home/testuser/miniconda3/envs/mne/lib/python3.11/site-packages/statsmodels/base/model.py']
+recent_files = ['3_analysis/3_MVPA/MVPA_runner.py', '3_analysis/3_MVPA/MVPA_constants.py', '3_analysis/3_MVPA/MVPA_functions.py', '3_analysis/3_MVPA/sketch_MVPA_writing.py', '../BEH/analysis_SMeier/linear-mixed_model_nv.py', '../../../../../../../../../home/testuser/miniconda3/envs/mne/lib/python3.11/site-packages/sklearn/svm/_base.py']
 
 [main]
 version = 0.2.0
