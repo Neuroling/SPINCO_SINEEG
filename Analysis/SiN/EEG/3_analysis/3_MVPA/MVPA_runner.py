@@ -18,7 +18,6 @@ Prerequisites:
     - The MVPA_functions.py script
     
 TO DO:
-    - Check if the output is correct
     - Loop over subjects
 
 """
@@ -75,7 +74,7 @@ with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
     
 #%% Filter conditions using the user inputs
-idx = list(MVPAManager.getFilteredIdx(
+idx = list(MVPAManager.getSubsetIdx(
     tfr_bands['epoch_conditions'], 
     conditionInclude=conditionInclude, 
     conditionExclude=conditionExculde))

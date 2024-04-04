@@ -44,7 +44,7 @@ with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
     
 #%% Filter conditions using the user inputs
-idx = list(MVPAManager.getFilteredIdx(
+idx = list(MVPAManager.getSubsetIdx(
     tfr_bands['epoch_conditions'], 
     conditionInclude=conditionInclude, 
     conditionExclude=conditionExculde))
@@ -94,7 +94,7 @@ X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in
 # # Which... in this case was always the same across options. Weird. # TODO
 
 #%%
-# idx_train = list(MVPAManager.getFilteredIdx(
+# idx_train = list(MVPAManager.getSubsetIdx(
 #     tfr_bands['epoch_conditions'], 
 #     conditionInclude=['Lv1'], 
 #     conditionExclude=[]))
@@ -104,7 +104,7 @@ X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in
 # X_train = tfr_bands[str(thisBand +'_data')][idx_train,:,:] # Get only the trials that are in the specified conditions (user inputs)
 # X_2d_train = X_train.reshape(len(X_train), -1)
 
-# idx_test = list(MVPAManager.getFilteredIdx(
+# idx_test = list(MVPAManager.getSubsetIdx(
 #     tfr_bands['epoch_conditions'], 
 #     conditionInclude=['Lv3'], 
 #     conditionExclude=[]))
@@ -168,3 +168,4 @@ last_results = gslf.cv_results_
 params = [ str(item) for item in gslf.cv_results_['params']]
 data = { 'mean_rank' : ranks.mean(axis = 0), 'mean_score' : mean_score.mean(axis = 0)}
 df = pd.DataFrame(data, index = params)
+df.to_csv(dirinput+'_thisBand_gridsearch_MVPA_params.csv')

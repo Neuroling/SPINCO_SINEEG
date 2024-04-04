@@ -7,9 +7,7 @@ CONSTANTS FOR MVPA SCRIPTS
 Created on Fri Dec  8 12:23:55 2023
 
 This script contains constants that are used across functions and scripts.
-It is called by MVPA_functions and MVèA_runner
-
-
+It is called by MVPA_functions and MVPA_runner
 
 """
 
@@ -40,7 +38,7 @@ freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
                  Beta= [13,25],
                  Gamma =[25,48])
 
-
+# TODO update
 codebook={'*_COI_times':'timepoints inside the COI in frequency band *',
           '*_crossval_FullEpoch':'The crossvalidation scrores on the whole epoch for frequency band *. There are 5 because the crossvalidation is repeated 5 times',
           '*_crossval_timewise_mean':'The mean of the 5 crossvalidation scores for each timepoint in frequency band *',

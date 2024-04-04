@@ -6,7 +6,7 @@ PreStim FUNCTION SCRIPT
 Created on Fri Feb  2 09:01:21 2024
 @author: samuemu
 
-- All functions in this is script belong to the class "PreStimManager". 
+- All functions in this is script belong to the class `PreStimManager`. 
 - In the runner script you first need to initialize this class to be able to use the functions. 
     Do  `PreStimManager = PreStimManager()` . This is similar to importing a module with functions. 
 - This also initializes metadata and set input directory (see `def __init__(self)` code below)
@@ -31,44 +31,32 @@ from datetime import datetime
 import random
 
 
-#%%
+
 class PreStimManager: 
     
-    def __init__(self, 
-                 # raiseWarnings = False
-                 ):
+    def __init__(self):
         """
         INITIALIZING FUNCTION
         =======================================================================
         
-        This function is called automatically when initializing PreStimManager,
-        by PreStimManager = PreStimManager()
+        This function is called automatically when initializing `PreStimManager`,
+        i.e. by `PreStimManager = PreStimManager()`
         
         It will set the input directory (taken from the constants) and initialize
-        the metadata dict. The metadata dict will collect information across as
+        the metadata dict. The metadata dict will collect information as
         different functions in the PreStimManager class are called. It is saved
-        with the p_Value array.
+        with other outputs when calling `PreStimManager.save_results()`
         
-        The date when the script was run is also saved in the metadata. Together
+        The date when the class is initialised is also saved in the metadata. Together
         with the date of when changes were pushed to github, this gives us
         version control for outputs.
-        
-        Parameters
-        ----------
-        raiseWarnings : bool, Default False
-            If False, will not raise warnings
-
         """
         
         self.dirinput = const.dirinput
         self.metadata = {} # initialise empty metadata dict
         self.metadata['datetime_run_start'] = str(datetime.now())
-        
-        # if not raiseWarnings:
-        #     import warnings
-        #     warnings.filterwarnings('ignore') 
- 
-#%% 
+
+             
     def get_epoData_singleSubj(self, 
                                subjID, 
                                output = False, 
@@ -79,26 +67,35 @@ class PreStimManager:
         OPEN EPOCHED DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
         =======================================================================
         
+        This function reads the epoched .fif file of a single subject.
+        
+        Information on conditions/trials is taken from the resulting `mne.Epochs` object's metadata dataframe,
+        which is slightly reshaped to make it compatible with the Regression functions
+        (i.e. recoding the DV to int instead of str, and, for convenience, also dropping unneeded columns
+         and relabelling other columns)
+        
+        If desired, this function will also trim the epochs to a specific timewindow
+        and/or subset the data to a given condition.        
         
         Parameters
         ----------
         subjID : str
             The subject ID. This will be used to get the directory of the epoched data,
-            and will be stored in the PreStimManager object for later use.
+            and will be stored in `PreStimManager.metadata` for later use.
         
         condition : str, default None
             Only get the data from trials of this condition. 
             Must be in the form of the event_id used to filter epochs with mne, like
-            with the use of epoch['SomeCondition'].
+            with the use of `epoch['SomeCondition']`.
             It is possible to set multiple conditions by separating the labels with /
             Example: `condition = 'NV/Lv1'` <-- will only get data from trials with NV and Lv1 degradation
                    
         output : bool, default = False
             Whether data_array and condition_df should be returned. The default is False.
-            In both cases, data_array and condition_df will be stored in the PreStimManager object.
-            The function run_LogitRegression_WithinSubj() will default to using the array/df saved
-            internally in the PreStimManager-class.
-            Therefore, setting output to False might optimise memory usage.
+            In both cases, data_array and condition_df will be stored in the `PreStimManager` object.
+            The function `run_LogitRegression_WithinSubj()` will default to using the array/df saved
+            internally in the `PreStimManager`-class.
+            Therefore, setting `output = False` might optimise memory usage.
             
             (If you later decide you do want them in the variable explorer, 
              call `data_array = PreStimManager.data_array` )
@@ -123,9 +120,11 @@ class PreStimManager:
         If output == True:
             data_array : numpy array
                 numpy array of shape [n_epochs, n_channels, n_times]
+                Taken from the subject's epoched data (`mne.Epochs`, saved as *epo.fif)
                 
             condition_df : pandas dataframe
                 pandas dataframe, containing accuracy, levels, noiseType for every trial
+                Taken from the metadata dataframe of the subject's epoched data (`mne.Epochs`, saved as *epo.fif)
 
         """
         # 
@@ -190,50 +189,37 @@ class PreStimManager:
         
         return data_array, condition_df if output else None
 
-#%% 
+ 
     def get_allFreqData_singleSubj(self, 
                                 subjID, 
                                 output = False):
         """
-        OPEN FREQUENCY DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
+        OPEN ALL FREQUENCY DATA AND RESHAPE FOR THE REGRESSION (SINGLE SUBJECT)
         =======================================================================
-        # TODO document
+        
+        This function opens the pickled dict containing the data of all frequency bands
+        for a single subject. The pickled dict can be created by the FeatureExtraction - scripts
+        found here: https://github.com/Neuroling/SPINCO_SINEEG/tree/main/Analysis/SiN/EEG/3_analysis/2_Feature_extraction
+         
+        The dict is not returned but stored internally in the `PreStimManager` object.
+        
+        Since the dict contains separate arrays for all freqbands, this function only 
+        opens the dict to avoid having to unpickle it when looping over freqbands.
+        To get the data from a single freqband, call `PreStimManager.get_freqband_data(freqband = desiredFreqband)`
+        
+        Additionally, the trial-information is taken from the dict and slightly reshaped to make it compatible 
+        with the Regression functions (i.e. recoding the DV to int instead of str, and, for convenience, 
+        also dropping unneeded columns and relabelling other columns)
         
         Parameters
         ----------
         subjID : str
-            The subject ID. This will be used to get the directory of the epoched data,
-            and will be stored in the PreStimManager object for later use.
-        
-        condition : str, default None
-            Only get the data from trials of this condition. 
-            Must be in the form of the event_id used to filter epochs with mne, like
-            with the use of epoch['SomeCondition'].
-            It is possible to set multiple conditions by separating the labels with /
-            Example: `condition = 'NV/Lv1'` <-- will only get data from trials with NV and Lv1 degradation
-                   
-        output : bool, default = False
-            Whether data_array and condition_df should be returned. The default is False.
-            In both cases, data_array and condition_df will be stored in the PreStimManager object.
-            The function run_LogitRegression_WithinSubj() will default to using the array/df saved
-            internally in the PreStimManager-class.
-            Therefore, setting output to False might optimise memory usage.
-            
-            (If you later decide you do want them in the variable explorer, 
-             call `data_array = PreStimManager.data_array` )
-
+            The subject ID. This will be used to get the directory of the data,
+            and will be stored in `PreStimManager.metadata` for later use
 
         Returns
         -------
-        If output == False (default):
-            None
-        
-        If output == True:
-            data_array : numpy array
-                numpy array of shape [n_epochs, n_channels, n_times]
-                
-            condition_df : pandas dataframe
-                pandas dataframe, containing accuracy, levels, noiseType for every trial
+        None
 
         """
 
@@ -241,6 +227,7 @@ class PreStimManager:
         
         # get filepath, read pickle
         freq_path = glob(os.path.join(const.dirinput, subjID, str("*" + const.freqPickleFileEnd)), recursive=True)[0]
+        print('--> unpickling dict from ', freq_path)
         with open(freq_path, 'rb') as f:
             self.tfr_band = pickle.load(f)
         
@@ -260,22 +247,72 @@ class PreStimManager:
         original_condition_df.drop(labels=['tf','stim_code','stimtype','stimulus','voice','block'], axis = 1, inplace = True)
         
         self.original_condition_df = original_condition_df
-        # TODO : maybe don't save original_condition_df since the changes are inplace and therefore 
+        # Theoretically I don't need to save original_condition_df, since all the changes are inplace and therefore 
         # I can just call self.tfr_band['epoch_metadata'] again to get the unsplit condition_df
+        # But I'm doing it anyways out of convenience
 
-        
         # get the metadata
         self.metadata['frequency_dict_path'] = freq_path
         self.metadata['subjectID'] = subjID
         self.metadata['ch_names'] = self.tfr_band['metadata']['ch_names']
         self.metadata['copy_metadata_frequency_dict'] = self.tfr_band['metadata']
 
-#%% # TODO document
+
     def get_freqband_data(self, freqband, condition = None, output = False):
+        """
+        GET FREQUENCY BAND DATA FROM THE DICTIONARY
+        =======================================================================
+        
+        This function depends on previous execution of `PreStimManager.get_allFreqData_singleSubj()`
+        
+        It takes the dicts containing the separate arrays for each freqband
+        and extracts the data array for a single freqband.
+        
+        If desired, this function will also subset the data to a given condition. 
+
+        Parameters
+        ----------
+        freqband : str
+            The frequency band that should be extracted. Must be named in accordance 
+            with the names of the data-arrays in the dicts, i.e. in a way that
+            `dict[freqband + "_data"]` can find the relevant data
+   
+        condition : str, default None
+            Only get the data from trials of this condition. 
+            At present, it is only possible to subset the data by `NoiseType`
+            So the options are 'NV' and 'SSN'
+                       
+        output : bool, default = False
+            Whether data_array and condition_df should be returned. The default is False.
+            In both cases, data_array and condition_df will be stored in the `PreStimManager` object.
+            The function `run_LogitRegression_WithinSubj()` will default to using the array/df saved
+            internally in the `PreStimManager`-class.
+            Therefore, setting `output = False` might optimise memory usage.
+            
+            (If you later decide you do want them in the variable explorer, 
+            call `data_array = PreStimManager.data_array` )
+
+        Returns
+        -------
+        If output == False (default):
+            None
+        
+        If output == True:
+            data_array : numpy array
+                numpy array of shape [n_epochs, n_channels, n_times]
+                Taken from the subject's freqband-dict, i.e. as created by the FeatureExtraction script
+                
+            condition_df : pandas dataframe
+                pandas dataframe, containing accuracy, levels, noiseType for every trial
+                Taken from the subject's freqband-dict, i.e. as created by the FeatureExtraction script
+                (which, in turn, takes it from the metadata dataframe of the 
+                subject's epoched data (`mne.Epochs`, saved as *epo.fif))
+
+        """
+        print('--> extracting ', freqband, ' from the data of ', self.subjID)
         
         data_array = self.tfr_band[freqband + "_data"].copy() # data is an array of shape [n_epochs, n_channels, n_times]
         condition_df = self.original_condition_df.copy()
-        
         
         # subset the data to the desired condition
         if condition:
@@ -295,7 +332,7 @@ class PreStimManager:
         
         # Store data in the PreStimManager class
         self.data_array = data_array
-        self.condition_df =condition_df
+        self.condition_df = condition_df
         
         return data_array, condition_df if output else None
     
@@ -315,28 +352,33 @@ class PreStimManager:
              
         Regression for binary DV. 
      
-        In case of subsample = True, will equalise trial numbers of correct and
-        incorrect trials by calling the function PreStimManager.random_subsample_accuracy().
+        In case of `subsample = True`, will equalise trial numbers of correct and
+        incorrect trials by calling the function `PreStimManager.random_subsample_accuracy()`
         For more information, see docstring of that function.
         
-        If subsample = False, n_iter will be overwritten as 1.
+        If `subsample = False`, n_iter will be overwritten as 1.
         
-        Results will not be returned but stored in the PreStimManager class object.
+        Results will not be returned but stored in the `PreStimManager` class object.
+        They are collected and saved by calling `PreStimManager.save_results()`
         If needed, they can be called by `VariableName = PreStimManager.DesiredResult`
         (substituting DesiredResult by one of the results below)
         
         These results are collected:
             p_values : array of shape [n_channels, n_times, n_coefficient, n_iter]
                 The p-Values of all regression coefficients for each channel, timepoint, and iteration.
+                If `n_iter = 1`, it will omit the fourth dimension
                 
             coefficients : array of shape [n_channels, n_times, n_coefficient, n_iter]
                 Each regression coefficient for each channel, timepoint, and iteration.
+                If `n_iter = 1`, it will omit the fourth dimension
                 
             coef_SD : array of shape [n_channels, n_times, n_coefficient, n_iter]
                 The standard deviation of each regression coefficient for each channel, timepoint, and iteration.
+                If `n_iter = 1`, it will omit the fourth dimension
                 
             z_values : array of shape [n_channels, n_times, n_coefficient, n_iter]
                 The z-Values of all regression coefficients for each channel, timepoint, and iteration.
+                If `n_iter = 1`, it will omit the fourth dimension
 
             p_values_mean : array of shape [n_channels, n_times, n_coefficient]
                 The p-Values of all regression coefficients for each channel, timepoint, but
@@ -354,17 +396,17 @@ class PreStimManager:
         data_array : array of shape [n_epochs, n_channels, n_times] or None; optional
             The array containing the data. 
             The default is None, in which case the data_array stored in the 
-            PreStimManager class is used (meaning, the data_array from the previous call of 
+            `PreStimManager` class is used (meaning, the data_array from the previous call of 
             `PreStimManager.get_epoData_singleSubj()` or `PreStimManager.get_freqData_singleSubj()` )
             
         condition_df : dataFrame or None; optional
             The dataframe containing the trial information such as accuracy, condition, etc.
             The default is None, in which case the condition_df stored in the 
-            PreStimManager class is used (meaning, the condition_df from the previous call of 
+            `PreStimManager` class is used (meaning, the condition_df from the previous call of 
             `PreStimManager.get_epoData_singleSubj()` or `PreStimManager.get_freqData_singleSubj()` )
 
         formula : str, optional
-            The formula to be passed to smf.logit(). 
+            The formula to be passed to `smf.logit()`. 
             The default is "accuracy ~ levels * eeg_data + wordPosition".
         
         subsample : bool, optional
@@ -378,15 +420,19 @@ class PreStimManager:
             n_iter will be overwritten as 1.
             The default is 100.
             
-        method : str, optional # TODO update
-            The solver to be used when calling `mdf = md.fit(method = solver)`.
-            For information on the solvers, see documentation on statsmodels:
+        method : str, optional
+            The fitting method to be used when calling `mdf = md.fit(method = method)`.
+            For information on the different methods, see documentation on statsmodels:
                 https://www.statsmodels.org/stable/generated/statsmodels.discrete.discrete_model.Logit.fit.html
                 https://www.statsmodels.org/stable/dev/generated/statsmodels.base.model.LikelihoodModelResults.html
-            The default is "lbfgs", which appears to be the fastest. The default of the function
-            would be "newton", which causes LinAlgError in some subjects (see comment in the README)
+            This parameter is the source of some ongoing (04.04.24) issues. For documentation, see:
+                https://github.com/Neuroling/SPINCO_SINEEG/issues/5#issue-2213560520
+                https://github.com/Neuroling/SPINCO_SINEEG/blob/main/Analysis/SiN/EEG/3_analysis_SMeier/README.md  
+            The default is 'newton' (which is the default set by statsmodels)
             
-        debug : bool # TODO
+        debug : bool, optional
+            For debugging. If True, will only run 3 channels and 3 timepoints. 
+            The default is False.
 
         Returns
         -------
@@ -396,7 +442,7 @@ class PreStimManager:
 
     
         
-        #  TODO bug-test
+        #  TODO bug-test if input is given
         # If no data given, use the data stored in the class object
         if data_array is None:
             data_array = self.data_array
@@ -415,6 +461,7 @@ class PreStimManager:
         #% Create arrays and lists
         channelsIdx = [i for i in range(data_array.shape[1])] # list of channels
         timesIdx = [i for i in range(data_array.shape[2])] #list of timepoints
+        
         if debug:
             channelsIdx = channelsIdx[0:3]
             timesIdx = timesIdx[0:3]
@@ -483,7 +530,7 @@ class PreStimManager:
                     converged[thisChannel,tf,iteration]  = mdf.converged
 
                     
-                    self.debug_control = [thisChannel, tf, iteration]
+                    self.currentChannelTimeIter = [thisChannel, tf, iteration]
                     self.idx = idx
                     
         if n_iter == 1:  # reduce dimensions of output if no subsampling was performed
@@ -613,7 +660,6 @@ class PreStimManager:
         
         return subsample_idx
 
-#%% # TODO - not working anymore because of the higher dimension of the p-Values array
 
     def FDR_correction(self, 
                        p_values = None, 
@@ -632,17 +678,19 @@ class PreStimManager:
         ----------
         p_values : array of shape [n_channels, n_timepoints, n_pValues], optional
             The p-Values that should be FDR corrected. The default is None, in which case
-            the p-Values stored in the PreStimManager class are used (meaning `PreStimManager.p_values`).
+            the p-Values stored in the `PreStimManager` class are used (meaning `PreStimManager.p_values`).
             Therefore, with `p_values = None`, the p-Values of the last performed regression are FDR-corrected.
             
         alpha : float, Default = 0.05
-            The alpha value for the FDR. The default is 0.05.
+            The alpha value for the FDR. 
+            The default is 0.05.
             
         output : bool, Default = False
-            Whether or not the FDR-corrected p-Values should be returned. The default is False.
+            Whether or not the FDR-corrected p-Values should be returned. 
             In both cases, p_values_FDR will be stored in the PreStimManager object.
             The function save_results() will default to using the p_values from the PreStimManager object.
             Therefore, setting output to False will optimise memory usage.
+            The default is False.
             
             (If you later decide you do want them in the variable explorer, 
              call `p_values_FDR = PreStimManager.p_values_FDR` )
@@ -809,7 +857,7 @@ class PreStimManager:
         print("saving to ",filepath)
         return output_dict if output else None
  
-#%%
+
     def get_evokeds(self, 
                     save = True):
         """
@@ -831,7 +879,6 @@ class PreStimManager:
         Returns
         -------
         evokeds : dict of lists containing MNE evoked objects
-            
 
         """
         

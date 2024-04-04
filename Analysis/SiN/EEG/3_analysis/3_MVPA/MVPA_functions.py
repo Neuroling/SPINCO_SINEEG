@@ -5,29 +5,39 @@ Functions used in the MVPA_runner.py script
 @author : samuemu
 Created on Tue Jan 16 15:48:30 2024
 
+# TODO
+
 """
 
-from sklearn.model_selection import  StratifiedKFold, cross_validate  
+from sklearn.model_selection import  StratifiedKFold, cross_validate, GridSearchCV
 from sklearn import svm, metrics
 from sklearn import __version__ as sklearn_version
 import numpy as np
-# import pandas as pd
+import pandas as pd
+from functools import reduce
 
 import MVPA_constants as const
     
 class MVPAManager:
     """
-    # TODO
+    CLASS OBJECT FOR HANDLING MVPA
+    ===========================================================================
+    MVPAManager contains functions needed to perform an MVPA.
+    It also collects metadata while the functions are run, which is stored in
+    MVPAManager.metadata
     """
     
     def __init__(self):
         self.metadata = {}
         self.metadata['sklearn_version'] = sklearn_version
 
-    def getFilteredIdx(self, event_labels, 
+    def getSubsetIdx(self, event_labels, 
                         conditionExclude = None,
                         conditionInclude = None):
         """
+        SUBSETTING THE DATA BY CONDITION & RETURN INDEXES
+        =======================================================================
+        
         This function will return the indices of all epochs in a specified set of 
         conditions. This can then be used to filter the data.
         
@@ -92,6 +102,88 @@ class MVPAManager:
                 
         return filt_idx
         
+    
+    
+    def gridSearch_classifierParams(self,
+                                    X,
+                                    y,
+                                    param_grid,
+                                    scoretype = ('balanced_accuracy'),
+                                    clf = svm.SVC(C=1, kernel = 'linear')
+                                    ):
+        """
+        # TODO
+        see https://scikit-learn.org/stable/modules/grid_search.html#grid-search
+        
+
+        Parameters
+        ----------
+        X : TYPE
+            DESCRIPTION.
+            
+        y : TYPE
+            DESCRIPTION.
+            
+        param_grid : TYPE
+            DESCRIPTION.
+            example:
+                param_grid = [
+                  {'kernel': ['linear'],'C': [1, 10, 100, 1000]},
+                  {'kernel': ['rbf','poly','sigmoid'],'C': [1, 10, 100, 1000], 
+                   'gamma': ['auto', 'scale', 0.001, 0.0001] },
+                  ]  
+
+        scoretype : str, optional
+            DESCRIPTION. The default is ('balanced_accuracy').
+            
+        clf : TYPE, optional
+            DESCRIPTION. The default is svm.SVC(C=1, kernel = 'linear').
+
+        Raises
+        ------
+        ValueError
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Get number of possible combinations of params to check for
+        if type(param_grid) is list:
+            n_param_combinations = 0
+            for i, entry in enumerate(param_grid):
+               n_param_combinations += reduce(lambda x, y: x * y, [len(values) for values in param_grid[i].values()])
+        elif type(param_grid) is dict:
+            n_param_combinations = reduce(lambda x, y: x * y, [len(values) for values in param_grid.values()])
+        else:
+            raise ValueError('param_grid needs to be list of dicts or dict')
+            
+        n_times = X.shape[2] # get number of timepoints
+
+        ranks = np.zeros(shape = (n_times, 52))
+        mean_score = np.zeros(shape = (n_times, 52))
+
+        for t in range(n_times): # for each timepoint...
+            Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
+            
+            # Standardize features
+            Xt -= Xt.mean(axis=0) # subtracts the mean of the row from each value
+            Xt /= Xt.std(axis=0) # divides each value by the SD of the row
+
+            gslf = GridSearchCV(estimator = clf, param_grid = param_grid, scoring = scoretype)
+            # gslf.get_params()
+            gslf = gslf.fit(Xt, y)
+            print(gslf.best_params_)
+            ranks[t,:] = gslf.cv_results_['rank_test_score']
+            mean_score[t, :] = gslf.cv_results_['mean_test_score']
+
+        params = [ str(item) for item in gslf.cv_results_['params']]
+        data = { 'mean_rank' : ranks.mean(axis = 0), 'mean_score' : mean_score.mean(axis = 0)}
+        df = pd.DataFrame(data, index = params)
+        # df.to_csv(dirinput+'_thisBand_gridsearch_MVPA_params.csv') # TODO
+        return df
+    
         
     def get_crossval_scores(self,
                             X,
@@ -251,6 +343,8 @@ class MVPAManager:
     def random_subsample_accuracy(self, 
                                   trial_info = None):
         """
+        # !!! copied straight from PreStim_functions, needs to be adapted to be usable
+        
         RANDOMLY SUBSAMPLES TRIALS TO EQUALISE ACCURACY COUNTS
         =======================================================================
         
@@ -283,23 +377,8 @@ class MVPAManager:
                  concatentaing), this will not work.
             
         """
-        
-        # TODO this does not currently account for uneven numbers of wordPosition, or levels that could result from this
-        # (see comment below, which is copy-pasted from sketch_PreStim_writing)
-           
-        # # next we would need to get the minimum number of cor & inc of each combination of subjID, levels, wordPosition
-        # # and then select that many trials from every combination of accuracy, subjID, levels and wordPosition
-        # # but that's not possible since some subj are 100% correct on some of those combinations.
-        # # even when not accounting for word position, and only for subjID and levels - roughly a fourth of combinations are >90% correct
-        # # meaning that accounting for accuracy, subjID and levels for the sub-sampling will give us only about 10% of the data for each sample
-        
-        # newdf = stacked_cond_df.drop(labels=['wordPosition','noiseType', 'levels'], axis = 1, inplace = False)
-        # tmp = newdf.groupby(['subjID']).sum() # when only accounting for subjID
-        # max(tmp['accuracy']) 
-        # # 530 correct out of 576. Which would mean we would sub-sample 46 correct and incorrect trials of every subj
-        # # for a total of 1288 trials per sub-sample. We would reduce the dataset by a sixth of its size.
-        # # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
-        
+        raise NotImplementedError
+
         if trial_info is None: 
         # TODO : account for if input is dict - 
         # maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
