@@ -38,6 +38,10 @@ freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
                  Beta= [13,25],
                  Gamma =[25,48])
 
+degradationType = ['NV', 'SSN']
+degradationLevel = ['Lv1', 'Lv2', 'Lv3']
+wordPosition = ['Call', 'Col', 'Num']
+
 # TODO update
 codebook={'*_COI_times':'timepoints inside the COI in frequency band *',
           '*_crossval_FullEpoch':'The crossvalidation scrores on the whole epoch for frequency band *. There are 5 because the crossvalidation is repeated 5 times',

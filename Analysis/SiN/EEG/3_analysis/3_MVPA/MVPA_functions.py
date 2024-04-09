@@ -294,8 +294,8 @@ class MVPAManager:
         scores = {name: np.zeros(shape = (n_times, 5)) for name in scoretype}
         
         
-        f1_cor = np.zeros(shape = (n_times, 5))
-        f1_inc = np.zeros(shape = (n_times, 5))
+        # f1_cor = np.zeros(shape = (n_times, 5))
+        # f1_inc = np.zeros(shape = (n_times, 5))
 
         
         print('----> starting classification per time point....')
@@ -319,16 +319,17 @@ class MVPAManager:
                 scores[name][t,:]=scores_t['test_' + name]
                 # std_scores[name][t,:]=scores_t['test_' + name].std()
                 
-            i = 0
-            for train_index, test_index in cv.split(Xt, y):
-                clf.fit(Xt[train_index], y.iloc[train_index])
-                y_pred = clf.predict(Xt[test_index])
-                f1_cor[t,i] = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='cor')
-                f1_inc[t,i] = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='inc')
-                i += 1
+            # i = 0
+            # for train_index, test_index in cv.split(Xt, y):
+            #     clf.fit(Xt[train_index], y.iloc[train_index])
+            #     y_pred = clf.predict(Xt[test_index])
+            #     f1_cor[t,i] = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='cor')
+            #     f1_inc[t,i] = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='inc')
+            #     i += 1
 
-        scores['f1_cor'] = f1_cor
-        scores['f1_inc'] = f1_inc
+        # scores['f1_cor'] = f1_cor
+        # scores['f1_inc'] = f1_inc
+        # TODO
         
         keys = [key for key in scores]
         for key in keys:
@@ -339,6 +340,7 @@ class MVPAManager:
 
         print('-----> Done.')
         return output_dict
+    
     
     def random_subsample_accuracy(self, 
                                   trial_info = None):

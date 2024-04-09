@@ -25,7 +25,6 @@ import random
 import numpy as np
 import pickle
 from datetime import datetime
-from multiprocessing import Pool
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -33,6 +32,10 @@ import seaborn as sns
 import statsmodels.formula.api as smf
 
 from sklearn.model_selection import KFold
+
+import pymer4 
+from pymer4 import models
+from pymer4.models import Lmer
 
 #%% Run regression and save Output #############################################################################################
 # """
@@ -135,23 +138,23 @@ for iteration in range(n_iter):
 
 #%% compare fitting methods
 
-methods = ['newton','nm','bfgs','lbfgs','cg','ncg','powell','basinhopping','minimize']
-index=list(mdf.pvalues.index)
-index.append('converged')
-temp_pVal_df = pd.DataFrame(index=index)
-temp_coef_df = temp_pVal_df.copy()
-temp_converged = []
-for method in methods:
-    mdf = md.fit(method = method, maxiter = 500)
-    pVals = list(mdf.pvalues)
-    coef = list(mdf.params)
-    pVals.append(int(mdf.converged))
-    coef.append(int(mdf.converged))
-    temp_pVal_df[method] = pVals
-    temp_coef_df[method] = coef
-    temp_converged.append(mdf.converged)
-    # print(method)
-    # mdf.summary()
+# methods = ['newton','nm','bfgs','lbfgs','cg','ncg','powell','basinhopping','minimize']
+# index=list(mdf.pvalues.index)
+# index.append('converged')
+# temp_pVal_df = pd.DataFrame(index=index)
+# temp_coef_df = temp_pVal_df.copy()
+# temp_converged = []
+# for method in methods:
+#     mdf = md.fit(method = method, maxiter = 500)
+#     pVals = list(mdf.pvalues)
+#     coef = list(mdf.params)
+#     pVals.append(int(mdf.converged))
+#     coef.append(int(mdf.converged))
+#     temp_pVal_df[method] = pVals
+#     temp_coef_df[method] = coef
+#     temp_converged.append(mdf.converged)
+#     # print(method)
+#     # mdf.summary()
 
 #%% Opening pickles
 # filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_Logit_Alpha_SSN_sub-sampled_10iter_uncorrected_allValues.pkl"

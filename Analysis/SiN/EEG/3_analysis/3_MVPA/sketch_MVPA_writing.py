@@ -24,40 +24,40 @@ import MVPA_functions as functions
 MVPAManager = functions.MVPAManager()
 
 
-conditionInclude = ['Lv3', 'NV'] 
-conditionExculde = []
-response_variable = 'accuracy'
-timewindow = "_prestim" # other option : '_poststim'
-thisBand = 'Alpha'
+# conditionInclude = ['Lv3', 'NV'] 
+# conditionExculde = []
+# response_variable = 'accuracy'
+# timewindow = "_prestim" # other option : '_poststim'
+# thisBand = 'Alpha'
 
 
-#%% setting filepaths 
-subjID = 's001'
-dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
-                        const.taskID,'features',subjID)
-pickle_path_in = os.path.join(dirinput, subjID + timewindow + const.inputPickleFileEnd)
+# #%% setting filepaths 
+# subjID = 's001'
+# dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
+#                         const.taskID,'features',subjID)
+# pickle_path_in = os.path.join(dirinput, subjID + timewindow + const.inputPickleFileEnd)
 
 
-#%% Open the dict 
-print('opening dict:',pickle_path_in)
-with open(pickle_path_in, 'rb') as f:
-    tfr_bands = pickle.load(f)
+# #%% Open the dict 
+# print('opening dict:',pickle_path_in)
+# with open(pickle_path_in, 'rb') as f:
+#     tfr_bands = pickle.load(f)
     
-#%% Filter conditions using the user inputs
-idx = list(MVPAManager.getSubsetIdx(
-    tfr_bands['epoch_conditions'], 
-    conditionInclude=conditionInclude, 
-    conditionExclude=conditionExculde))
+# #%% Filter conditions using the user inputs
+# idx = list(MVPAManager.getSubsetIdx(
+#     tfr_bands['epoch_conditions'], 
+#     conditionInclude=conditionInclude, 
+#     conditionExclude=conditionExculde))
 
-#%%
+# #%%
 
-#%% Get crossvalidation scores
-y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
-true_accuracy = y.value_counts().iloc[0]/len(y) # percentage of correct responses by the subj. 
-# If the classifier always predicts "cor" then it will be correct in this much.
+# #%% Get crossvalidation scores
+# y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
+# true_accuracy = y.value_counts().iloc[0]/len(y) # percentage of correct responses by the subj. 
+# # If the classifier always predicts "cor" then it will be correct in this much.
 
-X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
-# X_2d = X.reshape(len(X), -1)
+# X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
+# # X_2d = X.reshape(len(X), -1)
 
 #%%
 # clf = svm.SVC(C=1, kernel = 'linear')
@@ -137,35 +137,61 @@ X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in
 
 
 #%% Grid search over timepoints
-param_grid = [
-  {'kernel': ['linear'],'C': [1, 10, 100, 1000]},
-  {'kernel': ['rbf','poly','sigmoid'],'C': [1, 10, 100, 1000], 'gamma': ['auto', 'scale', 0.001, 0.0001] },
-  ]  
+# param_grid = [
+#   {'kernel': ['linear'],'C': [1, 10, 100, 1000]},
+#   {'kernel': ['rbf','poly','sigmoid'],'C': [1, 10, 100, 1000], 'gamma': ['auto', 'scale', 0.001, 0.0001] },
+#   ]  
 
-scoretype = ('balanced_accuracy')
-clf = svm.SVC(C=1, kernel = 'linear')
+# scoretype = ('balanced_accuracy')
+# clf = svm.SVC(C=1, kernel = 'linear')
 
-n_times = X.shape[2] # get number of timepoints
+# n_times = X.shape[2] # get number of timepoints
 
-ranks = np.zeros(shape = (n_times, 52))
-mean_score = np.zeros(shape = (n_times, 52))
+# ranks = np.zeros(shape = (n_times, 52))
+# mean_score = np.zeros(shape = (n_times, 52))
 
-for t in range(n_times): # for each timepoint...
-    Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
+# for t in range(n_times): # for each timepoint...
+#     Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
     
-    # Standardize features
-    Xt -= Xt.mean(axis=0) # subtracts the mean of the row from each value
-    Xt /= Xt.std(axis=0) # divides each value by the SD of the row
+#     # Standardize features
+#     Xt -= Xt.mean(axis=0) # subtracts the mean of the row from each value
+#     Xt /= Xt.std(axis=0) # divides each value by the SD of the row
 
-    gslf = GridSearchCV(estimator = clf, param_grid = param_grid, scoring = scoretype)
-    # gslf.get_params()
-    gslf = gslf.fit(Xt, y)
-    print(gslf.best_params_)
-    ranks[t,:] = gslf.cv_results_['rank_test_score']
-    mean_score[t, :] = gslf.cv_results_['mean_test_score']
+#     gslf = GridSearchCV(estimator = clf, param_grid = param_grid, scoring = scoretype)
+#     # gslf.get_params()
+#     gslf = gslf.fit(Xt, y)
+#     print(gslf.best_params_)
+#     ranks[t,:] = gslf.cv_results_['rank_test_score']
+#     mean_score[t, :] = gslf.cv_results_['mean_test_score']
 
-last_results = gslf.cv_results_
-params = [ str(item) for item in gslf.cv_results_['params']]
-data = { 'mean_rank' : ranks.mean(axis = 0), 'mean_score' : mean_score.mean(axis = 0)}
-df = pd.DataFrame(data, index = params)
-df.to_csv(dirinput+'_thisBand_gridsearch_MVPA_params.csv')
+# last_results = gslf.cv_results_
+# params = [ str(item) for item in gslf.cv_results_['params']]
+# data = { 'mean_rank' : ranks.mean(axis = 0), 'mean_score' : mean_score.mean(axis = 0)}
+# df = pd.DataFrame(data, index = params)
+# df.to_csv(dirinput+'_thisBand_gridsearch_MVPA_params.csv')
+
+#%%
+
+# data = {'a': [1,2,3,4], 'b': [10,20,30,40],'c': [100,200,300,400]}
+
+# df = pd.concat({"Estimates": pd.DataFrame(data)}, axis=1, names=["l1", "l2"])
+
+
+# d = {('a','b'):[1,2,3,4], ('a','c'):[5,6,7,8]}
+# df = pd.DataFrame(d, index=['r1','r2','r3','r4'])
+# df.columns.names = ('l1','l2')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -141,9 +141,10 @@ class PreStimManager:
             epo = epo[condition]
             self.metadata['condition'] = condition
         
-        # add channel names and time in seconds to metadata
+        # add channel names to metadata
         self.metadata['ch_names'] = epo.ch_names
         
+        # add times in seconds and tmin/tmax to metadata
         times = epo._raw_times
         if tmin is not None:
             if tmax is not None:
@@ -336,7 +337,8 @@ class PreStimManager:
         
         return data_array, condition_df if output else None
     
-#%% 
+
+
     def run_LogitRegression_withinSubj(self, 
                 data_array = None, 
                 condition_df = None,
@@ -631,21 +633,23 @@ class PreStimManager:
         # # Only accounting for accuracy results in a sub-sample of 2924 trials - reducing the dataset by a third of its size
         
         if trial_info is None: 
-        # TODO : account for if input is dict - 
-        # maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
             try:
-                trial_info = self.condition_dict
-                # combine all subj condition dataframes to get across-subj accuracy
-                # TODO for within-subj (see comment in sketch_PreStim_writing)
-                tmp_df = pd.concat(trial_info.values(), axis=0, ignore_index=True)
+                tmp_df = self.condition_dict.copy()
             except AttributeError:
                 try:
-                    tmp_df = self.condition_df
+                    tmp_df = self.condition_df.copy()
                 except AttributeError:
                     raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
         else:
             tmp_df = trial_info.copy()
             
+        # combine all subj condition dataframes to get across-subj accuracy
+        if type(tmp_df) is dict: 
+            tmp_df = pd.concat(trial_info.values(), axis=0, ignore_index=True)
+            
+            # re-Index because after combination the idx will be non-sequential
+            reIdx = pd.Series(range(len(tmp_df)))
+            tmp_df.set_index(reIdx, inplace = True)
             
         # counting total correct and incorrect
         count_cor = tmp_df['accuracy'].value_counts()[1]
@@ -656,7 +660,6 @@ class PreStimManager:
         
         minimum = min(count_cor, count_inc)
         subsample_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
-        
         
         return subsample_idx
 
