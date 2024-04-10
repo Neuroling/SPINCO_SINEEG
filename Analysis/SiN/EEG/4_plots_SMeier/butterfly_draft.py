@@ -6,9 +6,8 @@ Created on Tue Apr  2 14:48:30 2024
 
 import pickle
 import pandas as pd
-import numpy as np
-import random
 import statsmodels.formula.api as smf
+import numpy as np
 import mne
 import matplotlib.pyplot as plt
 import os
@@ -17,23 +16,24 @@ taskID = 'task-sin'
 subjID = 's001'
 
 thisDir = os.getcwd()
-dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data', 'SiN', 'derivatives_SM', taskID, subjID)
+dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'G','Data', 'SiN', 'derivatives_SM', taskID, subjID)
 
 
-#noise = "NV"
-noise = "SSN"
+noise = "NV"
+#noise = "SSN"
 
-filepath = os.path.join(dirinput, subjID +"_Logit_Alpha_" + noise + "_FDR_allValues.pkl")
+filepath = os.path.join(dirinput, subjID +"_Logit_Theta_" + noise + "_FDR_allValues.pkl")
 with open(filepath, 'rb') as f:
     logit_alpha = pickle.load(f)
 
+import random
 keysList = list(logit_alpha.keys())
 # print(keysList)
 
 p_values = logit_alpha['p_values_uncorrected']
 # print(p_values.shape)
 
-# times = np.arange(-0.5, 0.5 + 1/26, 1/26) # Wofür brauchst du das? Unten definierst du "times" ja neu?
+# times = np.arange(-0.5, 0.5 + 1/26, 1/26) # Wofür brauchst man das? Unten definierst man "times" ja neu?
 
 metad = logit_alpha['metadata']
 # print(metad.keys())
@@ -42,7 +42,7 @@ fitting_method = metad['fitting_method']
 # print(fitting_method)
 
 times = list(metad['times'])
-# print(times)
+#print(times)
 # print(metad['tmin'])
 # print(metad['tmax'])
 
@@ -67,12 +67,32 @@ variable = metad['p_Values_index']
 units = dict(eeg='p-values')
 scalings = dict(eeg=1)
 
+ylim = dict(eeg=[0, 1])
+
+#for ind in range(0,8):
+#    data = p_values[:,:,ind]
+#    titles = dict(eeg="Noise: " + noise + ", variable: " + variable[ind])
+#    evoked_array = mne.EvokedArray(data, info, tmin=times[0])
+#   evoked_array.set_montage("biosemi64")
+#    evoked_array.plot(units=units,scalings=scalings,titles=titles)
+#    plt.show()
+
+
+
 for ind in range(0,8):
     data = p_values[:,:,ind]
     titles = dict(eeg="Noise: " + noise + ", variable: " + variable[ind])
     evoked_array = mne.EvokedArray(data, info, tmin=times[0])
     evoked_array.set_montage("biosemi64")
-    evoked_array.plot(units=units,scalings=scalings,titles=titles)
+    #evoked_array.plot(units=units,scalings=scalings,ylim=ylim,titles=titles)
+    #evoked_array.plot_topomap(scalings=scalings,show_names=True)
+    #evoked_array.plot_sensors(ch_groups = a, show_names=True)
+    mask = evoked_array.data < 0.05
+    mask_params = dict(markersize=10, markerfacecolor="y")
+    dict1 = dict(units=units, scalings=scalings, ylim=ylim,titles=titles)
+    dict2 = dict(scalings=scalings, mask=mask, mask_params=mask_params)
+    evoked_array.plot_joint(times = [-0.245,-0.240,-0.235], ts_args=dict1, topomap_args=dict2)
     plt.show()
 
-
+#%%
+print(times)

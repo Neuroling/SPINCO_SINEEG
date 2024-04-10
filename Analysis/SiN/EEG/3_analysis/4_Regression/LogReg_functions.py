@@ -45,7 +45,7 @@ class LogRegManager:
         output : bool, default = False
             Whether data_dict and condition_dict should be returned. The default is False.
             In both cases, data_dict and condition_dict will be stored in the PreStimManager object.
-            The function run_LMM() will default to using the dicts from the PreStimManager object.
+            The function run_LogitRegression() will default to using the dicts from the PreStimManager object.
             Therefore, setting output to False will optimise memory usage.
             
             (If you later decide you do want them in the variable explorer, 
@@ -146,8 +146,8 @@ class LogRegManager:
         
         if output : return data_dict, condition_dict
 
-#%%        # TODO
-    def check_chans_and_times(self): # TODO docs update
+
+    def check_chans_and_times(self): 
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
         =======================================================================
@@ -176,6 +176,30 @@ class LogRegManager:
 
 #%% # TODO document    
     def binTimes(self, n_bins):
+        """
+        CREATE TIME BINS IN PLACE
+        =======================================================================
+
+        Parameters
+        ----------
+        n_bins : int
+            How many bins the data should be split into. The data's n_times must be
+            divisible by n_bins without remainder
+
+        Raises
+        ------
+        ValueError
+            DESCRIPTION.
+
+        Returns
+        -------
+        TYPE
+            DESCRIPTION.
+
+        """
+        times = self.metadata['times']
+        if len(times) % n_bins != 0:
+            raise ValueError('number of timepoints must be divisible by number of bins without remainder.')
         
         # Only do this if there are at least twice as many timepoints as n_bins
         if self.data_dict[self.LastSubjID].shape[2] > 2*n_bins:   
@@ -189,16 +213,18 @@ class LogRegManager:
                 # Take the mean along the axis 3 to compute averages for each bin
                 self.data_dict[subjID] = np.mean(data_tmp, axis=3)
                 
-            times = self.metadata['times']
             self.metadata['times_bins'] = np.array_split(times, n_bins)
             self.metadata['n_times_bins'] = n_bins
         else: 
-            print('not enough timepoints to bin')
+            raise ValueError('not enough timepoints to bin') # TODO raise error instead
+            
+        return self.data_dict
 
  
         
                 
 #%% # TODO update documentation
+# TODO do this within subj
     def random_subsample_accuracy(self, 
                                   trial_info = None):
         """
@@ -248,7 +274,7 @@ class LogRegManager:
             
         # combine all subj condition dataframes to get across-subj accuracy
         if type(tmp_df) is dict: 
-            tmp_df = pd.concat(trial_info.values(), axis=0, ignore_index=True)
+            tmp_df = pd.concat(tmp_df.values(), axis=0, ignore_index=True)
             
             # re-Index because after combination the idx will be non-sequential
             reIdx = pd.Series(range(len(tmp_df)))
@@ -266,7 +292,7 @@ class LogRegManager:
         
         return subsample_idx
 
-#%% TODO : update documentation    
+
     def run_LogitRegression(self, 
             data_dict= None, 
             condition_dict = None,
@@ -283,7 +309,10 @@ class LogRegManager:
         Regression for binary DV. 
         
         In case of equalise_accuracy = True, will equalise trial numbers of correct and
-        incorrect trials by calling the function PreStimManager.random_subsample_accuracy()
+        incorrect trials by calling the function LogRegManager.random_subsample_accuracy()
+        
+        If time_bins is not None, will group the data into bins along the time-axis
+        and average measurement values within the bin. The number of bins is = time_bins
         
     
         Parameters
@@ -299,14 +328,20 @@ class LogRegManager:
     
         formula : str, optional
             The formula to be passed to smf.logit(). 
-            The default is "accuracy ~ levels * eeg_data + wordPosition".
+            The default is "accuracy ~ levels * eeg_data + wordPosition + (1|subjID)".
+            
+        family : str, optional
+            The family for the regression. Used in the same way as with the R lmer package.
+            The default is "binomial" for a logit regression
             
         equalise_accuracy : bool, optional
             Whether to equalise trial-number of correct and incorrect trials
             by randomly subsampling the data. The default is True.
             
-        time_bis : int, optional
-            How many bins there should be made (timewise) # TODO
+        time_bins : int, optional
+            How many bins there should be made (timewise). Will split the data into time_bins
+            groups on the axis of time and average timepoints inside the bin.
+            The default is None, in which case it will not bin the data.
     
         n_iter : int, optional
             How many iterations of subsampling and regression should be done. 
@@ -314,11 +349,7 @@ class LogRegManager:
             n_iter will be overwritten with 1.
             The default is 500.
             
-        Returns
-        -------
-        p_values : array of shape [n_channels, n_times, n_p-Values]
-            The p-Values from the regression. If there are multiple iterations, will return the mean.
-    
+
         """
     
         
@@ -389,24 +420,29 @@ class LogRegManager:
                     
                     # Combine all subject's data into one dataframe so we can run the model on that
                     df = pd.concat(tmp_dict.values(), axis=0,ignore_index=True)
+                    del tmp_dict
+
                     # re-Index because after combination the idx will be non-sequential
                     reIdx = pd.Series(range(len(df)))
                     df.set_index(reIdx, inplace = True)
+                    
+                    # use the idx we got previously to subsample the data
                     df = df.iloc[idx]
-                    del tmp_dict
                     
 
                     # calculate Logit regression
-                    mdf = Lmer(formula, data = df, family = family).coefs
+                    md = Lmer(formula, data = df, family = family)
+                    md.fit()
                     
-                    # TODO find out if I need anything else (i.e. random effects)
+                    # TODO save AIC
+
                     
                     # record p-Values, z-Values and coefficients
-                    p_values[thisChannel,tf,:, iteration] = mdf['P-val']
-                    coefficients[thisChannel,tf,:, iteration] = mdf['Estimate']
-                    coef_SD[thisChannel,tf,:, iteration] = mdf['SE']
-                    z_values[thisChannel,tf,:, iteration] = mdf['Z-stat']
-                    OR[thisChannel,tf,iteration] = mdf['OR']
+                    p_values[thisChannel,tf,:, iteration] = md.coefs['P-val']
+                    coefficients[thisChannel,tf,:, iteration] = md.coefs['Estimate']
+                    coef_SD[thisChannel,tf,:, iteration] = md.coefs['SE']
+                    z_values[thisChannel,tf,:, iteration] = md.coefs['Z-stat']
+                    OR[thisChannel,tf,:,iteration] = md.coefs['OR']
 
                     
                     self.currentChannelTimeIter = [thisChannel, tf, iteration]
@@ -435,15 +471,15 @@ class LogRegManager:
         count_inc = df['accuracy'].value_counts()[0]
         self.metadata['n_correct/n_incorrect'] = (count_cor, count_inc)
 
-        self.metadata['p_Values_index'] = mdf.index
+        self.metadata['p_Values_index'] = md.coefs.index
         self.metadata['regression_formula'] = formula
         self.metadata['regression_type'] = family
         self.metadata['FDR_correction'] = False # This will change to True once the FDR is run
         self.metadata['axes'] = ['channel, timeframe, (coefficients), iteration']
         self.metadata['subsampling_iterations'] = n_iter
         self.metadata['subsampling_performed'] = equalise_accuracy
-        self.metadata['degrees_of_freedom_Model'] = mdf.df_model
-        # self.metadata['degrees_of_freedom_Residuals'] = mdf.df_resid # TODO
+        # self.metadata['degrees_of_freedom_Model'] = md.coefs.df_model # TODO
+        # self.metadata['degrees_of_freedom_Residuals'] = md.coefs.df_resid # TODO
         self.metadata['n_observations_per_Regression'] = len(df)
 
         
