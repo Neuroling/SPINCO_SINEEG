@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import random
 from pymer4.models import Lmer
+from warnings import warn
 
 
 class LogRegManager:
@@ -147,6 +148,7 @@ class LogRegManager:
         if output : return data_dict, condition_dict
 
 
+
     def check_chans_and_times(self): 
         """
         CHECK FOR EQUAL CHANNEL AND TIMESAMPLE COUNT
@@ -174,7 +176,101 @@ class LogRegManager:
             if self.data_dict[subjID].shape[2] != tf_N:
                 raise ValueError('not all subj have the same number of timepoints')
 
-#%% # TODO document    
+    
+    def get_condition_df(self):
+        """
+        Just a quick function to call to create condition_df from condition_dict.
+        condition_df is the aggregate of all dfs in condition_dict.
+        
+        This also re-indexes condition_df, because the indices are messed up after
+        concatenating.
+        """
+        self.condition_df = pd.concat(self.condition_dict.values(), axis=0, ignore_index=True)
+        reIdx = pd.Series(range(len(self.condition_df)))
+        self.condition_df.set_index(reIdx, inplace = True)
+ 
+        
+    def CheckCompleteSeparation(self, trial_info = None):
+        """
+        CHECK CASES OF COMPLETE SEPARATION
+        =======================================================================
+        Complete or perfect separation in a logit regression refers to a situation 
+        where one or more combinations of the categorical predictors completely 
+        separates the outcome variable (i.e. for a combination of predictors, 
+        all trials are correct). This causes an issue for the regression. 
+        
+        This function will check if any combination of 'levels', 'subjID', and
+        'wordPosition' has a 100% accuracy.
+        If this is the case, will return check_df.
+
+        Returns
+        -------
+        check_df : dataframe
+            All combinations of 'levels', 'subjID', & 'wordPosition' that are 100% accurate.
+
+        """
+        if trial_info is not None:
+            try:
+                trial_info = self.condition_df 
+            except AttributeError:
+                self.get_condition_df
+                trial_info = self.condition_df 
+            
+        check_df = trial_info.groupby(['levels', 'subjID', 'wordPosition'])['accuracy'].mean().reset_index()
+        idx = check_df.index[check_df['accuracy'] == 1.0].tolist()
+        check_df = check_df.iloc[idx] # Now we know which combinations of levels, subjID and wordPosition are 100% correct
+        if len(idx) != 0:
+            warn('Complete Separation in at least one combination of predictors. Adding additional info to metadata.')
+            self.metadata['completeSeparation'] = check_df
+            return check_df
+      
+        
+    def FixCompleteSeparation(self, trial_info = None):
+        """
+        FIX CASES OF COMPLETE SEPARATION IN PLACE
+        =======================================================================
+        Complete or perfect separation in a logit regression refers to a situation 
+        where one or more combinations of the categorical predictors completely 
+        separates the outcome variable (i.e. for a combination of predictors, 
+        all trials are correct). This causes an issue for the regression. 
+        
+        This function calls CheckCompleteSeparation to check if any combination of 
+        'levels', 'subjID', & 'wordPosition' has a 100% accuracy.
+        If this is the case, will change the accuracy label to incorrect in 
+        a single random trial for each condition in which it was previously 
+        100% correct.
+        
+        This procedure was suggested by the statistics consultant I talked to.
+        I could also find it listed as an option for dealing with this issue 
+        here:     
+        https://stats.stackexchange.com/a/68917
+        
+        # TODO I also need to check if I cannot do this another way
+        (see link above for options)   
+                
+        """
+        if trial_info is not None:
+            try:
+                trial_info = self.condition_df 
+            except AttributeError:
+                self.get_condition_df
+                trial_info = self.condition_df 
+                
+        check_df = self.CheckCompleteSeparation()
+        
+        
+        if check_df is not None:
+            idx_changed_accuracy = []
+            for index, row in check_df.iterrows():
+                # Filter the original DataFrame to get rows with the same levels, subjID, wordPosition values
+                filtered_rows = trial_info[(trial_info['levels'] == row['levels']) & (trial_info['subjID'] == row['subjID']) & (trial_info['wordPosition'] == row['wordPosition'])]
+                # Randomly choose one row from the filtered rows and update the accuracy value to 0
+                idx_changed_accuracy.append(filtered_rows.sample(n=1).index[0])
+                
+            trial_info.loc[idx_changed_accuracy, 'accuracy'] = 0
+            self.metadata['changed_accuracy'] = idx_changed_accuracy
+
+#%% binTimes # TODO document    
     def binTimes(self, n_bins):
         """
         CREATE TIME BINS IN PLACE
@@ -225,7 +321,7 @@ class LogRegManager:
                 
 #%% # TODO update documentation
 # TODO do this within subj
-    def random_subsample_accuracy(self, 
+    def random_subsample_accuracy_equalise(self, 
                                   trial_info = None):
         """
         RANDOMLY SUBSAMPLES TRIALS TO EQUALISE ACCURACY COUNTS
@@ -237,6 +333,7 @@ class LogRegManager:
         and return their indices ("subsample_idx").
         The length of subsample_idx is therefore = 2*minimum.
         Half the indices are from correct, and half from incorrect trials.
+        
         
         Parameters
         ----------
@@ -263,9 +360,72 @@ class LogRegManager:
         
         if trial_info is None: 
             try:
-                tmp_df = self.condition_dict.copy()
+                tmp_df = self.condition_df.copy()
             except AttributeError:
                 try:
+                    self.get_condition_df
+                    tmp_df = self.condition_df.copy()
+                except AttributeError:
+                    raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
+        else:
+            tmp_df = trial_info.copy()
+            
+        # combine all subj condition dataframes to get across-subj accuracy
+        if type(tmp_df) is dict: 
+            tmp_df = pd.concat(tmp_df.values(), axis=0, ignore_index=True)
+            # re-Index because after combination the idx will be non-sequential
+            reIdx = pd.Series(range(len(tmp_df)))
+            tmp_df.set_index(reIdx, inplace = True)
+         
+        # counting total correct and incorrect
+        count_cor = tmp_df['accuracy'].value_counts()[1]
+        count_inc = tmp_df['accuracy'].value_counts()[0]
+        
+        idx_cor = tmp_df.index[tmp_df['accuracy'] == 1]
+        idx_inc = tmp_df.index[tmp_df['accuracy'] == 0]
+        
+        minimum = min(count_cor, count_inc)
+        subsample_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
+        
+        return subsample_idx
+    
+    def random_subsample_accuracy_decimate(self, 
+                                  trial_info = None,
+                                  decimation_factor = 10):
+        """
+        RANDOMLY SUBSAMPLES TRIALS 
+        =======================================================================
+        # TODO document
+        
+        Parameters
+        ----------
+        trial_info : dict or pandas DataFrame, optional
+            The trial information - for instance condition_dict or condition_df. 
+            The default is None, in which case the function will try to use the
+            condition-dict stored in the PreStimManager object. If there is none, it
+            will try to use the condition_df stored in the PreStimManager object.
+            
+        Raises
+        ------
+        AttributeError
+            if no trial information was provided and none could be found.
+            
+        Returns
+        -------
+        subsample_idx : indexes
+            the subsampled indices, which can be applied to the df by calling 
+            `df = df.iloc[subsample_idx]`
+            Note : if the df has non-sequential indices (which can happen when filtering or
+                 concatentaing), this will not work.
+            
+        """
+        
+        if trial_info is None: 
+            try:
+                tmp_df = self.condition_df.copy()
+            except AttributeError:
+                try:
+                    self.get_condition_df
                     tmp_df = self.condition_df.copy()
                 except AttributeError:
                     raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
@@ -279,19 +439,24 @@ class LogRegManager:
             # re-Index because after combination the idx will be non-sequential
             reIdx = pd.Series(range(len(tmp_df)))
             tmp_df.set_index(reIdx, inplace = True)
-            
-        # counting total correct and incorrect
-        count_cor = tmp_df['accuracy'].value_counts()[1]
-        count_inc = tmp_df['accuracy'].value_counts()[0]
         
-        idx_cor = tmp_df.index[tmp_df['accuracy'] == 1]
-        idx_inc = tmp_df.index[tmp_df['accuracy'] == 0]
         
-        minimum = min(count_cor, count_inc)
-        subsample_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
+        # get n_combinations, n_trials per combination, and the n_trials remaining after decimation
+        n_trials_per_condition = tmp_df.groupby(['levels', 'subjID', 'wordPosition'])['accuracy'].size().reset_index()
+        n_trials_per_condition = round(n_trials_per_condition['accuracy'].mean())
+        n_decim_trials = n_trials_per_condition // decimation_factor
         
-        return subsample_idx
+        conditions = tmp_df.groupby(['levels', 'subjID', 'wordPosition','accuracy']).indices
+        
+        subsample_idx = []
+        for indices in conditions.values():
+            if n_decim_trials >= len(indices):
+                subsample_idx += list(indices)
+            else:
+                subsample_idx += list(random.sample(list(indices), n_decim_trials))
+                        
 
+        return subsample_idx
 
     def run_LogitRegression(self, 
             data_dict= None, 

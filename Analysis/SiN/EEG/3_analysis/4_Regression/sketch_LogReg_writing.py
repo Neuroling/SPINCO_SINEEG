@@ -11,13 +11,14 @@ from pymer4.models import Lmer
 import pandas as pd
 import numpy as np
 import random
+from datetime import datetime
 
 import LogReg_functions as functions
 import LogReg_constants as const
 LogRegManager = functions.LogRegManager()
 
 #%%
-# data_dict, condition_dict = LogRegManager.get_data(output = True, condition = "NV")
+data_dict, condition_dict = LogRegManager.get_data(output = True, condition = "NV")
 # LogRegManager.run_LogitRegression(equalise_accuracy = False, time_bins = 8)
  
 #%%
@@ -168,7 +169,7 @@ LogRegManager = functions.LogRegManager()
 # if equalise_accuracy:
 #     metadata['subsample_length'] = len(df)
 
-#%%
+#%% two ways to reshape the data to use electrodes or timebins as predictors
 
 # idx = LogRegManager.random_subsample_accuracy()
 # ch_names = LogRegManager.metadata['ch_names']
@@ -181,21 +182,33 @@ LogRegManager = functions.LogRegManager()
 # long_df.columns = [f'timeBin{i}' for i in range(reshaped_array.shape[-1])]
 # long_df['label'] = reshaped_labels
 
-#%% Run the model with
-n_bins = 8
-data_dict, condition_dict = LogRegManager.get_data(output = True, condition = "NV")
-data_dict = LogRegManager.binTimes(n_bins = n_bins)
+#%% check complete separation, place random 0 if 100% correct
+LogRegManager.FixCompleteSeparation()
 
+#%% Run the model with both time and electrode as predictors
+n_bins = 8
+data_dict = LogRegManager.binTimes(n_bins = n_bins)
 ch_names = LogRegManager.metadata['ch_names']
 
-# And this will aggregate the df with time and electrode as a variable
+
+
+#%% And this will aggregate the df with time and electrode as a variable
 dfs = []
+idx = []
 for subjID in const.subjIDs:
+    
+    # get data
     eeg_data = data_dict[subjID]
-    condition_data = condition_dict[subjID].copy()
+    condition_df = LogRegManager.condition_df
+    condition_data = condition_df[condition_df['subjID'] == subjID]
+    
+    # re-index
     reIdx = pd.Series(range(len(condition_data)))
     condition_data.set_index(reIdx, inplace = True)
-    idx = LogRegManager.random_subsample_accuracy(trial_info=condition_data)
+    
+    # subsample to equalise accuracy
+    idx = (LogRegManager.random_subsample_accuracy_decimate(trial_info=condition_data))
+    
     for timepoint in range(n_bins):
         for i, thisChannel in enumerate(ch_names):
             df = condition_data.copy()
@@ -204,11 +217,18 @@ for subjID in const.subjIDs:
             df['channel'] = thisChannel
             df['timeBin'] = str(timepoint)
             dfs.append(df)
+            
 aggregated_df = pd.concat(dfs, ignore_index=True)   
 
-#To check if any combination of subjID, wordPosition and levels has 100% correct:
-check_complete_separation = aggregated_df.groupby(['levels', 'subjID', 'wordPosition'])['accuracy'].mean().reset_index()
-
-            
+#%%
+start = datetime.now()
 model = Lmer('accuracy ~ levels + eeg_data + (eeg_data|channel) + (eeg_data|timeBin) + wordPosition + (1|subjID)', data = aggregated_df, family = 'binomial')
 model.fit()
+
+model2 = Lmer('accuracy ~ levels + (1+eeg_data|channel) + (1+eeg_data|timeBin) + wordPosition + (1|subjID)', data = aggregated_df, family = 'binomial')
+model2.fit() # 53min on 4cpu 16ram hpcv3
+end = datetime.now()
+#%%
+# # tmp_idx = LogRegManager.random_subsample_accuracy(trial_info=tmp_df)
+# tmp_df = pd.concat(condition_dict.values(), axis=0, ignore_index=True)
+# tmp = tmp_df.value_counts() # get n of trials in every combination of predictiors

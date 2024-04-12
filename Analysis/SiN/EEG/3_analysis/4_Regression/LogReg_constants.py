@@ -25,11 +25,9 @@ evokedsPickleFileEnd = 'evokeds_allSubj_condition-separated.pkl'
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 accuracy = ['Cor','Inc']
-degradation = ['Lv1','Lv2','Lv3']
-noise = ['SSN', 'NV']
-
-# List all possible combinations of noise, degradation and accuracy, separated by /
-conditions = [x + '/' + y + '/' + z for x in noise for y in degradation for z in accuracy]
+levels = ['Lv1','Lv2','Lv3']
+noiseType = ['SSN', 'NV']
+wordPosition = ['CallSign', 'Colour', 'Number']
 
 
 freqbands = ['Alpha', 'Beta', 'Gamma', 'Theta']
