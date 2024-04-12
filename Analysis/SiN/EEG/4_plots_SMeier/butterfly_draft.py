@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import os
 
 taskID = 'task-sin'
-subjID = 's001'
+subjID = 's015'
 
 thisDir = os.getcwd()
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'G','Data', 'SiN', 'derivatives_SM', taskID, subjID)
@@ -22,7 +22,7 @@ dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'G','Data', 'SiN', '
 noise = "NV"
 #noise = "SSN"
 
-filepath = os.path.join(dirinput, subjID +"_Logit_Theta_" + noise + "_FDR_allValues.pkl")
+filepath = os.path.join(dirinput, subjID +"_Logit_Alpha_" + noise + "_FDR_allValues.pkl")
 with open(filepath, 'rb') as f:
     logit_alpha = pickle.load(f)
 
@@ -91,7 +91,7 @@ for ind in range(0,8):
     mask_params = dict(markersize=10, markerfacecolor="y")
     dict1 = dict(units=units, scalings=scalings, ylim=ylim,titles=titles)
     dict2 = dict(scalings=scalings, mask=mask, mask_params=mask_params)
-    evoked_array.plot_joint(times = [-0.245,-0.240,-0.235], ts_args=dict1, topomap_args=dict2)
+    evoked_array.plot_joint(times = [-0.200,-0.175,-0.150], ts_args=dict1, topomap_args=dict2)
     plt.show()
 
 #%%

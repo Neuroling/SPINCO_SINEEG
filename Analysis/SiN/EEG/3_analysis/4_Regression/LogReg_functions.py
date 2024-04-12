@@ -209,11 +209,11 @@ class LogRegManager:
             All combinations of 'levels', 'subjID', & 'wordPosition' that are 100% accurate.
 
         """
-        if trial_info is not None:
+        if trial_info is None:
             try:
                 trial_info = self.condition_df 
             except AttributeError:
-                self.get_condition_df
+                self.get_condition_df()
                 trial_info = self.condition_df 
             
         check_df = trial_info.groupby(['levels', 'subjID', 'wordPosition'])['accuracy'].mean().reset_index()
@@ -249,11 +249,11 @@ class LogRegManager:
         (see link above for options)   
                 
         """
-        if trial_info is not None:
+        if trial_info is None:
             try:
                 trial_info = self.condition_df 
             except AttributeError:
-                self.get_condition_df
+                self.get_condition_df()
                 trial_info = self.condition_df 
                 
         check_df = self.CheckCompleteSeparation()
@@ -363,7 +363,7 @@ class LogRegManager:
                 tmp_df = self.condition_df.copy()
             except AttributeError:
                 try:
-                    self.get_condition_df
+                    self.get_condition_df()
                     tmp_df = self.condition_df.copy()
                 except AttributeError:
                     raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
