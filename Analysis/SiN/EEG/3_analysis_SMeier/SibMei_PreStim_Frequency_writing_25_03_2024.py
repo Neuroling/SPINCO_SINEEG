@@ -24,11 +24,11 @@ import random
 
 
 # 1. Datensatz öffnen =========================================================================
-filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
+#filepath = "/mnt/smbdir/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
 #with open(filepath, 'rb') as f:
 #    tfr_band = pickle.load(f)
 
-# filepath = "//idnas12.d.uzh.ch/G_PSYNEULIN_DATA$/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
+filepath = "//idnas12.d.uzh.ch/G_PSYNEULIN_DATA$/Projects/Spinco/SINEEG/Data/SiN/derivatives_SM/task-sin/s001/s001_prestim_tfr_freqbands.pkl"
 with open(filepath, 'rb') as f:
     tfr_band = pickle.load(f)
 

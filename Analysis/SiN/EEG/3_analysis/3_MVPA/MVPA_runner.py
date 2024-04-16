@@ -36,32 +36,21 @@ MVPAManager = functions.MVPAManager()
 """ USER INPUTS
 ===============================================================================
 
-conditionInclude : list of str or None
-    Only trials in these conditions will be included.
-    Example : conditionInclude = ['Lv3'] will perform the analysis only on 
-        trials with degradation Lv3, and trials with degradation Lv2 and Lv1 are excluded
-    
-conditionExclude : list of str or None
-    All trials in these conditions will be excluded.
-    Example : conditionExclude = ['Call'] will perform the analysis only on
-        trials with StimulusType Col or Num
-        
+     
 response_variable : str --- must be a column name from tfr_bands['epoch_metadata']
     The variable we are interested in. 
     Options : accuracy, block, stimtype, stimulus, levels, voice
     Example : response_variable = 'accuracy' will do the cross-validation on how well 
         the frequency power encodes whether the response was correct or not
         
-timewindow # TODO
-
-  
-
+timewindow : either "_prestim" or "_poststim"
+    This will affect which file will be opened to get the data. 
+    
 """
-degradationType = 'NV'
-degradationLevel = 'Lv3'
-wordPosition = 'Call'
+
 response_variable = 'accuracy'
 timewindow = "_prestim" # other option : '_poststim'
+scoretype =  ['balanced_accuracy'] # ['accuracy', 'balanced_accuracy', 'roc_auc']
 
 #%% setting filepaths 
 subjID = 's001'
@@ -74,11 +63,14 @@ pickle_path_out = os.path.join(dirinput, subjID + timewindow + const.outputPickl
 print('--> opening dict:',pickle_path_in)
 with open(pickle_path_in, 'rb') as f:
     tfr_bands = pickle.load(f)
+    
+# TODO subsample data
 
+#%% start with the loops - we run an MVPA for every combination of wordPosition, degradationType and degradationLevel
 
-#%% start with the loops
-
-data_list = []
+data_dict = {}
+for thisBand in const.freqbands:
+    data_dict[thisBand] = []
 true_accuracy = []
 column_idx = ['degradationType', 'degradationLevel', 'wordPosition', 'freqband', 'score']
 
@@ -87,18 +79,21 @@ for degradationType in const.degradationType:
         for wordPosition in const.wordPosition:
             conditionInclude = [degradationType, degradationLevel, wordPosition] 
             conditionExculde = []
-            #%% Filter conditions using the user inputs
+            
+            #%% Filter conditions for each loop
             idx = list(MVPAManager.getSubsetIdx(
                 tfr_bands['epoch_conditions'], 
                 conditionInclude=conditionInclude, 
                 conditionExclude=conditionExculde))
             
-            #%% Get crossvalidation scores
+            #%% Get true accuracy
             y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
             
             n_cor = y.value_counts().iloc[0]
             n_inc = y.value_counts().iloc[1]
             true_response_accuracy = y.value_counts().iloc[0]/len(y)
+            
+            # TODO make this as rows instead of columns, set index as n_inc, n_cor, true_response_accuracy
             dict_tmp = {'n_cor':n_cor, 'n_inc' : n_inc, 'true_response_accuracy': true_response_accuracy}
             accu_data_tmp = pd.DataFrame({(degradationType, degradationLevel, wordPosition, key): dict_tmp[key] for key in dict_tmp}, index =[1])
             
@@ -109,7 +104,7 @@ for degradationType in const.degradationType:
                 X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
                 
                 # Get scores and add to the dict 
-                output_dict = MVPAManager.get_crossval_scores(X = X, y = y, scoretype = ['accuracy', 'balanced_accuracy', 'roc_auc']) 
+                output_dict = MVPAManager.get_crossval_scores(X = X, y = y, scoretype = scoretype) 
                 
                 # Create dataframe
                 columns = (degradationType, degradationLevel, wordPosition, thisBand) 
@@ -117,15 +112,9 @@ for degradationType in const.degradationType:
                 # The line above means: get every array whose name is ending in '_mean' from the 'timewise' dict of the output_dict
                 # and put the values in a dataframe. The column indexes of the dataframe should be 'columns' and the name of the array
                 # ... hence the `columns + (key,)` - the key is transformed into tuple and added to columns
-                data_list.append(data_tmp)
+                data_dict[thisBand].append(data_tmp)
             
-                # break
-                # # TODO
-                # tfr_bands[thisBand+'_crossval_FullEpoch'] = output_dict['crossval_score_FullEpoch']
-                # tfr_bands[thisBand+'_crossval_timewise_mean'] = {key: output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('mean')}
-                # tfr_bands[thisBand+'_crossval_timewise_std'] = {key: output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('std')}
-            
-            # df = pd.concat({columns : data_tmp}, axis = 1, names = column_idx)
+
             
             # # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
             # # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
@@ -135,15 +124,19 @@ for degradationType in const.degradationType:
             # # It seems that having [n_times * n_channels] features is just too much - the timewise classification (which only has [n_times] features)
             # # actually differs between freqbands - so it probably doesn't simply predict "cor" across the board
             
-            # # TODO
+            # # TODO save this somehow
             # tfr_bands['metadata']['response_variable']=response_variable
             # tfr_bands['metadata']['sklearn_version']= sklearn_version
             # tfr_bands['metadata']['codebook']=const.codebook
 
-df = pd.concat(data_list, axis = 1, names = column_idx)
-df_accuracy = pd.concat(true_accuracy, axis = 1, names = ['degradationType', 'degradationLevel', 'wordPosition'])
-#%% Saving the dict
 
-# print("pickling the dictionary to: /n"+pickle_path_out)
-# with open(pickle_path_out, 'wb') as f:
-#     pickle.dump(tfr_bands, f)
+# create a df for each freqband            
+for key, data_list in data_dict.items():
+    concat_df = pd.concat(data_list, axis=1,  names = column_idx)
+    index = tfr_bands[key+'_COI_times']
+    concat_df.set_index(index, inplace = True)
+    globals()['df_' + key] = concat_df
+
+df_accuracy = pd.concat(true_accuracy, axis = 1, names = ['degradationType', 'degradationLevel', 'wordPosition'])
+
+# TODO save it
