@@ -46,14 +46,17 @@ response_variable : str --- must be a column name from tfr_bands['epoch_metadata
 timewindow : either "_prestim" or "_poststim"
     This will affect which file will be opened to get the data. 
     
+scoretype : # TODO
+    
 """
 
 response_variable = 'accuracy'
 timewindow = "_prestim" # other option : '_poststim'
-scoretype =  ['balanced_accuracy'] # ['accuracy', 'balanced_accuracy', 'roc_auc']
+scoretype =  ['roc_auc'] # ['accuracy', 'balanced_accuracy', 'roc_auc']
+# separate = {'degradationType' : const.degradationType, 'degradationLevel' : const.degradationLevel, 'wordPosition' : const.wordPosition}
+subjID = 's003'
 
 #%% setting filepaths 
-subjID = 's001'
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
                         const.taskID,'features',subjID)
 pickle_path_in = os.path.join(dirinput, subjID + timewindow + const.inputPickleFileEnd)
@@ -72,6 +75,8 @@ data_dict = {}
 for thisBand in const.freqbands:
     data_dict[thisBand] = []
 true_accuracy = []
+
+# TODO use the combine_lists function to separate conditions
 column_idx = ['degradationType', 'degradationLevel', 'wordPosition', 'freqband', 'score']
 
 for degradationType in const.degradationType:
@@ -109,9 +114,10 @@ for degradationType in const.degradationType:
                 # Create dataframe
                 columns = (degradationType, degradationLevel, wordPosition, thisBand) 
                 data_tmp = pd.DataFrame({columns + (key,): output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('mean')})
-                # The line above means: get every array whose name is ending in '_mean' from the 'timewise' dict of the output_dict
-                # and put the values in a dataframe. The column indexes of the dataframe should be 'columns' and the name of the array
+                # The line above means: get every array whose key is ending in '_mean' from the 'timewise' dict of the output_dict
+                # and put the values in a dataframe. The column indexes of the dataframe should be 'columns' and the key (=what score)
                 # ... hence the `columns + (key,)` - the key is transformed into tuple and added to columns
+                
                 data_dict[thisBand].append(data_tmp)
             
 
@@ -136,7 +142,7 @@ for key, data_list in data_dict.items():
     index = tfr_bands[key+'_COI_times']
     concat_df.set_index(index, inplace = True)
     globals()['df_' + key] = concat_df
-
+df_tmp = pd.MultiIndex.from_frame(concat_df)
 df_accuracy = pd.concat(true_accuracy, axis = 1, names = ['degradationType', 'degradationLevel', 'wordPosition'])
 
 # TODO save it

@@ -34,9 +34,9 @@ n_jobs = -1
 
 freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
                  Theta = [4,8],
-                 Alpha=[8,13], 
-                 Beta= [13,25],
-                 Gamma =[25,48])
+                 Alpha = [8,13], 
+                 Beta  = [13,25],
+                 Gamma = [25,48])
 
 degradationType = ['NV', 'SSN']
 degradationLevel = ['Lv1', 'Lv2', 'Lv3']

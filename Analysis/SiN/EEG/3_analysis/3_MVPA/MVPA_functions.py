@@ -15,6 +15,8 @@ from sklearn import __version__ as sklearn_version
 import numpy as np
 import pandas as pd
 from functools import reduce
+from itertools import product
+
 
 import MVPA_constants as const
     
@@ -341,6 +343,32 @@ class MVPAManager:
         print('-----> Done.')
         return output_dict
     
+    def combine_lists(*lists):
+        """
+        GET LIST OF EVERY POSSIBLE COMBINATION OF VALUES OF LISTS
+        =======================================================================
+        
+        This serves as a way to get every possible combination of values of several lists.
+        
+        This function is copied straight from chatGPT 3.5
+
+        Parameters
+        ----------
+        *lists : multiple lists
+
+
+        Returns
+        -------
+        combinations_strings : list of lists
+
+        """
+        # Use itertools.product to generate all combinations
+        all_combinations = product(*lists)
+        
+        # Join each combination into a list
+        combinations_lists = [list(combination) for combination in all_combinations]
+        
+        return combinations_lists
     
     def random_subsample_accuracy(self, 
                                   trial_info = None):
@@ -410,15 +438,3 @@ class MVPAManager:
         
         
         return subsample_idx
-
-
-
-
-
-
-
-
-
-
-
-

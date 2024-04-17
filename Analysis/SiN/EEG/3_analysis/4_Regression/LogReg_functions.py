@@ -18,9 +18,10 @@ from warnings import warn
 
 
 class LogRegManager:
-    def __init__(self):
+    def __init__(self, verbose = False):
         self.metadata = {}
         self.dirinput = const.dirinput
+        self.verbose = verbose
     
     def get_data(self, output = False, condition = None, tmin = None, tmax = 0):
         """
@@ -167,6 +168,8 @@ class LogRegManager:
         ValueError
 
         """
+        if self.verbose:
+            print('>>> checking if all subjects have the same number of channels and times...')
         chan_N = self.data_dict[self.LastSubjID].shape[1]
         tf_N = self.data_dict[self.LastSubjID].shape[2]
         
@@ -177,18 +180,47 @@ class LogRegManager:
                 raise ValueError('not all subj have the same number of timepoints')
 
     
-    def get_condition_df(self):
+    def get_condition_df(self, overwrite = False):
         """
-        Just a quick function to call to create condition_df from condition_dict.
+        CREATING AND RETURNING condition_df FROM condition_dict
+        =======================================================================
+        A quick function to call to create condition_df from condition_dict.
         condition_df is the aggregate of all dfs in condition_dict.
         
         This also re-indexes condition_df, because the indices are messed up after
         concatenating.
+        
+        Unless overwrite = True, will first check if a condition_df is already stored
+        in the LogRegManager class object and return that.
+        
+        Parameters
+        ----------
+        overwrite : bool, default false
+            If True, will create a new condition_df without checking if one
+            already exists in the LogRegManager class object. This will overwrite
+            the previously stored condition_df.
         """
-        self.condition_df = pd.concat(self.condition_dict.values(), axis=0, ignore_index=True)
-        reIdx = pd.Series(range(len(self.condition_df)))
-        self.condition_df.set_index(reIdx, inplace = True)
- 
+        
+        if overwrite:
+            if self.verbose:
+                print('>>> creating condition_df from condition_dict, overwriting previous condition_df if it exists')
+            self.condition_df = pd.concat(self.condition_dict.values(), axis=0, ignore_index=True)
+            reIdx = pd.Series(range(len(self.condition_df)))
+            self.condition_df.set_index(reIdx, inplace = True)
+        else:    
+            try: 
+                tmp = self.condition_df
+                if self.verbose: 
+                    print('>>> returning condition_df already stored in the LogRegManager class object. /n Set overwrite = True if new condition_df should be created instead.')    
+            except AttributeError:
+                if self.verbose:
+                    print('>>> creating condition_df from condition_dict')
+                self.condition_df = pd.concat(self.condition_dict.values(), axis=0, ignore_index=True)
+                reIdx = pd.Series(range(len(self.condition_df)))
+                self.condition_df.set_index(reIdx, inplace = True)
+            
+        return self.condition_df
+     
         
     def CheckCompleteSeparation(self, trial_info = None):
         """
@@ -213,8 +245,10 @@ class LogRegManager:
             try:
                 trial_info = self.condition_df 
             except AttributeError:
-                self.get_condition_df()
-                trial_info = self.condition_df 
+                trial_info = self.get_condition_df()
+
+        if self.verbose:
+            print('>>> checking for complete separation...')
             
         check_df = trial_info.groupby(['levels', 'subjID', 'wordPosition'])['accuracy'].mean().reset_index()
         idx = check_df.index[check_df['accuracy'] == 1.0].tolist()
@@ -229,13 +263,14 @@ class LogRegManager:
         """
         FIX CASES OF COMPLETE SEPARATION IN PLACE
         =======================================================================
+        
         Complete or perfect separation in a logit regression refers to a situation 
         where one or more combinations of the categorical predictors completely 
         separates the outcome variable (i.e. for a combination of predictors, 
         all trials are correct). This causes an issue for the regression. 
         
-        This function calls CheckCompleteSeparation to check if any combination of 
-        'levels', 'subjID', & 'wordPosition' has a 100% accuracy.
+        This function calls `CheckCompleteSeparation()` to check if any combination of 
+        `levels`, `subjID`, & `wordPosition` has a 100% accuracy.
         If this is the case, will change the accuracy label to incorrect in 
         a single random trial for each condition in which it was previously 
         100% correct.
@@ -244,9 +279,9 @@ class LogRegManager:
         I could also find it listed as an option for dealing with this issue 
         here:     
         https://stats.stackexchange.com/a/68917
-        
-        # TODO I also need to check if I cannot do this another way
-        (see link above for options)   
+        However, as the comment above points out, while this procedure provides 
+        a surface-level the fix for complete separation, it does not adress the
+        underlying issue of the data.
                 
         """
         if trial_info is None:
@@ -260,6 +295,9 @@ class LogRegManager:
         
         
         if check_df is not None:
+            if self.verbose:
+                print('>>> fixing complete separation by placing random 0s...')
+                
             idx_changed_accuracy = []
             for index, row in check_df.iterrows():
                 # Filter the original DataFrame to get rows with the same levels, subjID, wordPosition values
@@ -270,49 +308,55 @@ class LogRegManager:
             trial_info.loc[idx_changed_accuracy, 'accuracy'] = 0
             self.metadata['changed_accuracy'] = idx_changed_accuracy
 
-#%% binTimes # TODO document    
+  
     def binTimes(self, n_bins):
         """
         CREATE TIME BINS IN PLACE
         =======================================================================
+        
+        # TODO document 
 
         Parameters
         ----------
         n_bins : int
-            How many bins the data should be split into. The data's n_times must be
+            How many bins the data should be split into. The datas n_times must be
             divisible by n_bins without remainder
-
-        Raises
-        ------
-        ValueError
-            DESCRIPTION.
 
         Returns
         -------
-        TYPE
-            DESCRIPTION.
+        data_dict : dict
+            The new data_dict. This dict also overwrites the previous LogRegManager.data_dict
 
         """
+        
         times = self.metadata['times']
         if len(times) % n_bins != 0:
             raise ValueError('number of timepoints must be divisible by number of bins without remainder.')
         
-        # Only do this if there are at least twice as many timepoints as n_bins
-        if self.data_dict[self.LastSubjID].shape[2] > 2*n_bins:   
-            for subjID in const.subjIDs:
-                data_tmp = self.data_dict[subjID].copy()
-                bin_size = data_tmp.shape[2] // n_bins
-                
-                # reshape data to [:,:, n_bins, bin_size]
-                data_tmp = data_tmp.reshape(data_tmp.shape[0], data_tmp.shape[1], n_bins, bin_size)
-                
-                # Take the mean along the axis 3 to compute averages for each bin
-                self.data_dict[subjID] = np.mean(data_tmp, axis=3)
-                
-            self.metadata['times_bins'] = np.array_split(times, n_bins)
-            self.metadata['n_times_bins'] = n_bins
-        else: 
-            raise ValueError('not enough timepoints to bin') # TODO raise error instead
+        try: # check if data is already in bins
+            tmp = self.metadata['n_times_bins']
+            warn('time is already binned into', tmp, 'bins. Will not create new bins.')
+            
+        except KeyError:
+            
+            # Only do this if there are at least twice as many timepoints as n_bins
+            if self.data_dict[self.LastSubjID].shape[2] > 2*n_bins:               
+                if self.verbose:
+                    print('>>> Creating', n_bins, 'timeBins')
+                for subjID in const.subjIDs:
+                    data_tmp = self.data_dict[subjID].copy()
+                    bin_size = data_tmp.shape[2] // n_bins
+                    
+                    # reshape data to [:,:, n_bins, bin_size]
+                    data_tmp = data_tmp.reshape(data_tmp.shape[0], data_tmp.shape[1], n_bins, bin_size)
+                    
+                    # Take the mean along the axis 3 to compute averages for each bin
+                    self.data_dict[subjID] = np.mean(data_tmp, axis=3)
+                    
+                self.metadata['times_bins'] = np.array_split(times, n_bins)
+                self.metadata['n_times_bins'] = n_bins
+            else: 
+                raise ValueError('not enough timepoints to bin') 
             
         return self.data_dict
 
@@ -320,7 +364,7 @@ class LogRegManager:
         
                 
 #%% # TODO update documentation
-# TODO do this within subj
+
     def random_subsample_accuracy_equalise(self, 
                                   trial_info = None):
         """
@@ -328,11 +372,15 @@ class LogRegManager:
         =======================================================================
         
         This function counts how many trials were correct and how many incorrect.
-        It will then get the lower of those two numbers (let's call it minumum)
-        and then it will randomly select [minumum] correct and incorrect trials
-        and return their indices ("subsample_idx").
-        The length of subsample_idx is therefore = 2*minimum.
+        It will then get the lower of those two numbers (let's call it `minumum`)
+        and then it will randomly select `minumum` correct and incorrect trials
+        and return their indices (`subsample_idx`).
+        The length of subsample_idx is therefore = `2*minimum`.
         Half the indices are from correct, and half from incorrect trials.
+        
+        This does not account for wordPosition or levels or any other grouping variables,
+        because if any combination of grouping variables has 100% correct (or 100% incorrect)
+        trials, then it would theoretically include no trials of that combination (`minimum` is 0)
         
         
         Parameters
@@ -501,7 +549,7 @@ class LogRegManager:
             
         equalise_accuracy : bool, optional
             Whether to equalise trial-number of correct and incorrect trials
-            by randomly subsampling the data. The default is True.
+            by randomly subsampling the data. The default is True. # TODO update doc
             
         time_bins : int, optional
             How many bins there should be made (timewise). Will split the data into time_bins
