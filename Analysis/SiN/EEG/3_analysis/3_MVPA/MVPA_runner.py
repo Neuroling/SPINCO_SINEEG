@@ -26,6 +26,9 @@ import os
 import pickle
 thisDir = os.path.dirname(__file__)
 import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 import MVPA_constants as const
 import MVPA_functions as functions
@@ -52,9 +55,10 @@ scoretype : # TODO
 
 response_variable = 'accuracy'
 timewindow = "_prestim" # other option : '_poststim'
-scoretype =  ['roc_auc'] # ['accuracy', 'balanced_accuracy', 'roc_auc']
+scoretype =  ['balanced_accuracy'] # ['accuracy', 'balanced_accuracy', 'roc_auc']
 # separate = {'degradationType' : const.degradationType, 'degradationLevel' : const.degradationLevel, 'wordPosition' : const.wordPosition}
 subjID = 's003'
+verbose = True
 
 #%% setting filepaths 
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
@@ -74,7 +78,7 @@ with open(pickle_path_in, 'rb') as f:
 data_dict = {}
 for thisBand in const.freqbands:
     data_dict[thisBand] = []
-true_accuracy = []
+true_accuracy_list = []
 
 # TODO use the combine_lists function to separate conditions
 column_idx = ['degradationType', 'degradationLevel', 'wordPosition', 'freqband', 'score']
@@ -96,16 +100,15 @@ for degradationType in const.degradationType:
             
             n_cor = y.value_counts().iloc[0]
             n_inc = y.value_counts().iloc[1]
-            true_response_accuracy = y.value_counts().iloc[0]/len(y)
+            true_accuracy = y.value_counts().iloc[0]/len(y)
             
-            # TODO make this as rows instead of columns, set index as n_inc, n_cor, true_response_accuracy
-            dict_tmp = {'n_cor':n_cor, 'n_inc' : n_inc, 'true_response_accuracy': true_response_accuracy}
-            accu_data_tmp = pd.DataFrame({(degradationType, degradationLevel, wordPosition, key): dict_tmp[key] for key in dict_tmp}, index =[1])
+
+            accu_data_tmp = pd.DataFrame({(degradationType, degradationLevel, wordPosition):  [n_inc, n_cor, true_accuracy]}, index=['n_inc', 'n_cor', 'true_accuracy'])
             
-            true_accuracy.append(accu_data_tmp)
+            true_accuracy_list.append(accu_data_tmp)
             
             for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
-                print('--> now performing crossvalidation for', thisBand)
+                if verbose: print('--> now performing crossvalidation for', thisBand)
                 X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
                 
                 # Get scores and add to the dict 
@@ -119,30 +122,105 @@ for degradationType in const.degradationType:
                 # ... hence the `columns + (key,)` - the key is transformed into tuple and added to columns
                 
                 data_dict[thisBand].append(data_tmp)
-            
-
-            
-            # # TODO - Hm. all [band]_crossval_fullepoch  are the same value. Check if there's an error somewhere
-            # # Not anymore (as of 18.01.24) even though I didn't change anything but the filtering. Best to pay attention.
-            # # Huh. As of now (01.02.24) they are once again the same. conditionExclude Call, conditionInclude Lv3, prediciton accuracy. See screenshot (@samuemu)
-            # # Solved: If the classifier ALWAYS predicts "cor", it will be right in exactly as many trials as there are trials marked "cor"
-            # # So if the classifier always predicts "cor" for every freqband, it will always have the same score.
-            # # It seems that having [n_times * n_channels] features is just too much - the timewise classification (which only has [n_times] features)
-            # # actually differs between freqbands - so it probably doesn't simply predict "cor" across the board
-            
+                     
             # # TODO save this somehow
             # tfr_bands['metadata']['response_variable']=response_variable
             # tfr_bands['metadata']['sklearn_version']= sklearn_version
-            # tfr_bands['metadata']['codebook']=const.codebook
+            # tfr_bands['metadata']['codebook']=const.codebook   
+
+"""
+# TODO - Hm. all [band]_crossval_fullepoch are the same value. Check if there's an error somewhere
+
+(18.01.24)
+Not anymore  even though I didn't change anything but the filtering. Best to pay attention.
+
+(01.02.24)
+Huh. As of now they are once again the same. 
+conditionExclude Call, conditionInclude Lv3, prediciton accuracy. 
+See screenshot (@samuemu)
+    
+(02.04.24)
+Solved: If the classifier ALWAYS predicts "cor", it will be right in exactly as 
+many trials as there are trials marked "cor".
+
+So if the classifier always predicts "cor" for every freqband, it will always 
+have the same score in every freqband, and that score will always be equal to
+the true accuracy of responses.
+
+It seems that having [n_times * n_channels] features is just too much (overfitting).
+The timewise classification (which only has [n_channels] features) actually differs 
+between freqbands - so it probably doesn't simply predict "cor" across the board.
+
+(18.04.24)        
+Either way, with unbalanced data like this it actually makes way more sense to use
+the balanced_accuracy. It is defined as [ (TPR + TNR) / 2 ]
+Where TPR is the True Positive Rate, synonymous with Sensitivity, Recall, Hit Rate, Power,
+and is defined as [ n_truePositives / (n_truePositives + n_falseNegatives)].
+And where TNR is the True Negative Rate, synonymous with Specificity, Selectivity, and
+is defined as [ n_trueNegatives / (n_trueNegatives + n_falsePositives)]
+"""
+
+            
 
 
-# create a df for each freqband            
+#%% create a df for each freqband    
+dfs_dict = {}
 for key, data_list in data_dict.items():
     concat_df = pd.concat(data_list, axis=1,  names = column_idx)
-    index = tfr_bands[key+'_COI_times']
+    index =  tfr_bands[key+'_COI_times']
     concat_df.set_index(index, inplace = True)
-    globals()['df_' + key] = concat_df
-df_tmp = pd.MultiIndex.from_frame(concat_df)
-df_accuracy = pd.concat(true_accuracy, axis = 1, names = ['degradationType', 'degradationLevel', 'wordPosition'])
+    # globals()['df_' + key] = concat_df # this creates a df for every freqband but 
+    # # everytime the script references the dfs created this way, there will be a red X next to
+    # # the line number, saying e.g. "undefined name 'df_Alpha'" - because it only checks the
+    # # variables explicitly assigned in the script.
+    # # So instead I am going with this, less cool solution:
+    dfs_dict['df_' + key] = concat_df
+    
+df_accuracy = pd.concat(true_accuracy_list, axis = 1, names = ['degradationType', 'degradationLevel', 'wordPosition'])
 
-# TODO save it
+# TODO save dfs as .csv
+# TODO also put df_accuracy into dfs_dict and save as .pkl
+
+#%% just to check for consistency in the time indexes (they should be the same but it's good to check)
+# # TODO put in functions
+# for thisBand in const.freqbands:
+#     index =  tfr_bands[thisBand+'_COI_times']
+#     globals()['times_' + thisBand] = set([float("%.3f" % x) for x in list(index)])
+
+# freqbands_list = list(const.freqbands.keys())
+# for i, thisBand in enumerate(freqbands_list[0:-1]):
+#     length = len(globals()['times_' + thisBand])
+#     overlap = len( (globals()['times_' + thisBand]) & (globals()['times_' + freqbands_list[i+1]]) )
+#     if overlap != length:
+#         raise ValueError('ERROR: not all timepoints of', thisBand, 'contained in', freqbands_list[i+1])
+#     elif verbose:
+#         print('--> all timepoints of', thisBand, 'contained in', freqbands_list[i+1])
+
+#%% Lineplot of the mean score of each freqband across all conditions
+
+if len(scoretype) != 1: # TODO
+    raise NotImplementedError('Not yet implemented for multiple scoretypes')
+
+means_tmp = []
+for key in dfs_dict.keys():
+    legend_str = str(key)[str(key).find('_')+1:]
+    tmp = pd.DataFrame({legend_str : dfs_dict[key].mean(axis=1)})
+    means_tmp.append(tmp)
+
+all_means = pd.concat(means_tmp, axis = 1)
+sns.lineplot(data = all_means, palette = const.palette[0:4], dashes=False)
+plt.title(subjID + ' - ' + scoretype[0] + ' - mean across conditions')
+plt.show()
+
+#%% And now if I want the mean within degradationType...
+for degradationType in const.degradationType:
+    means_tmp = []
+    for key in dfs_dict.keys():
+        legend_str = str(key)[str(key).find('_')+1:]
+        tmp = pd.DataFrame({legend_str : dfs_dict[key][degradationType].mean(axis=1)})
+        means_tmp.append(tmp)
+    
+    all_means = pd.concat(means_tmp, axis = 1)
+    sns.lineplot(data = all_means, palette = const.palette[0:4], dashes=False)
+    plt.title(subjID + ' - ' + scoretype[0] + ' - mean of ' + degradationType)
+    plt.show()

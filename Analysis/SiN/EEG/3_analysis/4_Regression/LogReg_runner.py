@@ -73,7 +73,6 @@ for subjID in const.subjIDs:
             df_tmp['eeg_data'] = eeg_data[idx,i,timepoint]
             df_tmp['channel'] = thisChannel
             df_tmp['timeBin'] = str(timepoint)
-            df_tmp['timeBin_channel'] = str(timepoint) + '_' + thisChannel
             dfs.append(df_tmp)
             
 total_df = pd.concat(dfs, ignore_index=True)   
@@ -84,20 +83,20 @@ del ch_names, timepoint, thisChannel, n_bins, subjID
 
 #%% Formulas to run
 formulas = [
-    'accuracy ~ 1 + (1|timeBin_channel)  + (1|subjID)',
-    'accuracy ~ eeg_data + (eeg_data|timeBin_channel)  + (1|subjID)',
+    'accuracy ~ 1 + (1|timeBin:channel)  + (1|subjID)',
+    'accuracy ~ eeg_data + (eeg_data|timeBin:channel)  + (1|subjID)',
     # 'accuracy ~ eeg_data + (eeg_data|timeBin/channel)  + (1|subjID)',
     # 'accuracy ~ eeg_data + (eeg_data|channel/timeBin)  + (1|subjID)',
-    'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|timeBin_channel) + (1|subjID)',
+    'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|timeBin:channel) + (1|subjID)',
     # 'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|timeBin/channel) + (1|subjID)',
     # 'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|channel/timeBin) + (1|subjID)',    
-    'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|timeBin_channel) + (1|subjID)',
+    'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|timeBin:channel) + (1|subjID)',
     # 'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|timeBin/channel) + (1|subjID)',
     # 'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|channel/timeBin) + (1|subjID)',    
     ]
 
 saved_variables = ["AIC","coefs", "conf_int", "permute", "family", "fixef", "formula", "logLike", "ranef", "ranef_corr", "ranef_var", "sig_type", "warnings"]
-pickle_path_out = const.diroutput + "_LogitRegression_noSubsample_profileLikelihood_permutationPVal.pkl"
+pickle_path_out = const.diroutput + "_LogitRegression_noSubsample_profileLikelihood.pkl"
 
 #%%  run models and save output
 timecontrol = []
@@ -109,18 +108,14 @@ for formula in formulas:
     timecontrol.append([formula, str(datetime.now())])
     model = Lmer(formula, data = total_df, family = 'binomial')
 
-    # the permutation test for significance relies on the grouping variable (which is saved in the dict model.grps)
-    # But if you have a timeBin:channel it will look for the column timeBin:channel in the data
-    # So we overwrite model.grps by our own dict for the fitting
-    model.grps = grps_new
-    model.fit(conf_int = 'profile', permute = 100, verbose = verbose)
+    model.fit(conf_int = 'profile',  verbose = verbose)
     
     tmp_dict = {}
     for variable in saved_variables:
         variable_value = getattr(model, variable)
         tmp_dict[variable] = variable_value
     output_dict[formula] = tmp_dict
-    del model
+    # del model
     
     # We save this at every step so we don't lose everything if/when the kernel dies
     with open(pickle_path_out, 'wb') as f:
@@ -137,3 +132,10 @@ with open(pickle_path_out, 'wb') as f:
 for key in output_dict.keys():
     if '~' in key:
         print( "%.3f" % output_dict[key]['AIC'], 'for model', key)
+
+#%%
+# grp_vars = model.grps
+# dv_var = formula.split("~")[0].strip()
+# perm_dat = total_df.copy()
+# tmp = perm_dat.groupby('subjID')[dv_var].transform(lambda x: x.sample(frac=1))
+# # perm_dat[dv_var] = perm_dat.groupby(grp_vars)[dv_var].transform(lambda x: x.sample(frac=1))

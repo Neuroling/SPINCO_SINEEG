@@ -38,6 +38,8 @@ freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
                  Beta  = [13,25],
                  Gamma = [25,48])
 
+palette = ['#648fff', '#8068f1', '#dc267f', '#fe6100', '#ffb000']
+
 degradationType = ['NV', 'SSN']
 degradationLevel = ['Lv1', 'Lv2', 'Lv3']
 wordPosition = ['Call', 'Col', 'Num']
