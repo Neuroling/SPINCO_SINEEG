@@ -73,6 +73,7 @@ for subjID in const.subjIDs:
             df_tmp['eeg_data'] = eeg_data[idx,i,timepoint]
             df_tmp['channel'] = thisChannel
             df_tmp['timeBin'] = str(timepoint)
+            df_tmp['timeBin_channel'] = str(timepoint) + '_' + thisChannel
             dfs.append(df_tmp)
             
 total_df = pd.concat(dfs, ignore_index=True)   
@@ -83,14 +84,14 @@ del ch_names, timepoint, thisChannel, n_bins, subjID
 
 #%% Formulas to run
 formulas = [
-    'accuracy ~ 1 + (1|timeBin:channel)  + (1|subjID)',
-    'accuracy ~ eeg_data + (eeg_data|timeBin:channel)  + (1|subjID)',
+    'accuracy ~ 1 + (1|timeBin_channel)  + (1|subjID)',
+    'accuracy ~ eeg_data + (eeg_data|timeBin_channel)  + (1|subjID)',
     # 'accuracy ~ eeg_data + (eeg_data|timeBin/channel)  + (1|subjID)',
     # 'accuracy ~ eeg_data + (eeg_data|channel/timeBin)  + (1|subjID)',
-    'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|timeBin:channel) + (1|subjID)',
+    'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|timeBin_channel) + (1|subjID)',
     # 'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|timeBin/channel) + (1|subjID)',
     # 'accuracy ~ levels + wordPosition + eeg_data + (eeg_data|channel/timeBin) + (1|subjID)',    
-    'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|timeBin:channel) + (1|subjID)',
+    'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|timeBin_channel) + (1|subjID)',
     # 'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|timeBin/channel) + (1|subjID)',
     # 'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|channel/timeBin) + (1|subjID)',    
     ]
