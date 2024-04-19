@@ -20,8 +20,8 @@ import LogReg_constants as const
 
 #%% User Inputs
 n_bins = 8
-subsample = False
-FixCompleteSeparation = False
+subsample = True
+FixCompleteSeparation = True
 verbose = True
 
 LogRegManager = functions.LogRegManager(verbose=verbose)
@@ -95,8 +95,8 @@ formulas = [
     # 'accuracy ~ wordPosition + levels * eeg_data + (eeg_data|channel/timeBin) + (1|subjID)',    
     ]
 
-saved_variables = ["AIC","coefs", "conf_int", "permute", "family", "fixef", "formula", "logLike", "ranef", "ranef_corr", "ranef_var", "sig_type", "warnings"]
-pickle_path_out = const.diroutput + "_LogitRegression_noSubsample_profileLikelihood.pkl"
+saved_variables = ["AIC","coefs", "_conf_int", "family", "fixef", "formula", "logLike", "ranef", "ranef_corr", "ranef_var", "sig_type", "warnings"]
+pickle_path_out = const.diroutput + "_LogitRegression_noSubsample.pkl"
 
 #%%  run models and save output
 timecontrol = []
@@ -108,7 +108,7 @@ for formula in formulas:
     timecontrol.append([formula, str(datetime.now())])
     model = Lmer(formula, data = total_df, family = 'binomial')
 
-    model.fit(conf_int = 'profile',  verbose = verbose)
+    model.fit()
     
     tmp_dict = {}
     for variable in saved_variables:
@@ -116,6 +116,7 @@ for formula in formulas:
         tmp_dict[variable] = variable_value
     output_dict[formula] = tmp_dict
     # del model
+
     
     # We save this at every step so we don't lose everything if/when the kernel dies
     with open(pickle_path_out, 'wb') as f:

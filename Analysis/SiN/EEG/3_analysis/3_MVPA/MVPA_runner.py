@@ -53,9 +53,13 @@ scoretype : # TODO
     
 """
 
-response_variable = 'accuracy'
-timewindow = "_prestim" # other option : '_poststim'
-scoretype =  ['balanced_accuracy'] # ['accuracy', 'balanced_accuracy', 'roc_auc']
+response_variable = 'stimtype'
+timewindow = "_poststim" # other option : '_poststim'
+scoretype =  [
+    'accuracy', 
+    'balanced_accuracy', 
+    # 'roc_auc'
+    ]
 # separate = {'degradationType' : const.degradationType, 'degradationLevel' : const.degradationLevel, 'wordPosition' : const.wordPosition}
 subjID = 's003'
 verbose = True
@@ -73,20 +77,25 @@ with open(pickle_path_in, 'rb') as f:
     
 # TODO subsample data
 
-#%% start with the loops - we run an MVPA for every combination of wordPosition, degradationType and degradationLevel
-
-data_dict = {}
+#%% create empty dicts and lists to collect data
+crossval_mean_dict = {}
+full_epoch_crossval_mean = {}
 for thisBand in const.freqbands:
-    data_dict[thisBand] = []
+    crossval_mean_dict[thisBand] = []
+    full_epoch_crossval_mean[thisBand] = []
 true_accuracy_list = []
+all_results_dicts = {}
 
 # TODO use the combine_lists function to separate conditions
-column_idx = ['degradationType', 'degradationLevel', 'wordPosition', 'freqband', 'score']
+column_idx = ['degradationType', 'degradationLevel', 'freqband', 'score']
+
+
+#%% start with the loops - we run an MVPA for every combination of degradationType and degradationLevel
 
 for degradationType in const.degradationType:
     for degradationLevel in const.degradationLevel:
-        for wordPosition in const.wordPosition:
-            conditionInclude = [degradationType, degradationLevel, wordPosition] 
+
+            conditionInclude = [degradationType, degradationLevel] 
             conditionExculde = []
             
             #%% Filter conditions for each loop
@@ -98,30 +107,34 @@ for degradationType in const.degradationType:
             #%% Get true accuracy
             y = tfr_bands['epoch_metadata'][response_variable][idx] # What variable we want to predict (set in the user inputs) - these are the class labels
             
-            n_cor = y.value_counts().iloc[0]
-            n_inc = y.value_counts().iloc[1]
-            true_accuracy = y.value_counts().iloc[0]/len(y)
+            if response_variable == 'accuracy': # TODO option for this for other response_variables?
+                n_cor = y.value_counts().iloc[0]
+                n_inc = y.value_counts().iloc[1]
+                true_accuracy = y.value_counts().iloc[0]/len(y)
+                accu_df_tmp = pd.DataFrame({(degradationType, degradationLevel):  [n_inc, n_cor, true_accuracy]}, index=['n_inc', 'n_cor', 'true_accuracy'])            
+                true_accuracy_list.append(accu_df_tmp)
             
-
-            accu_data_tmp = pd.DataFrame({(degradationType, degradationLevel, wordPosition):  [n_inc, n_cor, true_accuracy]}, index=['n_inc', 'n_cor', 'true_accuracy'])
-            
-            true_accuracy_list.append(accu_data_tmp)
-            
+            list_tmp = []
             for thisBand in const.freqbands: # loop over all frequency bands # TODO use metadata instead of constants
                 if verbose: print('--> now performing crossvalidation for', thisBand)
                 X = tfr_bands[str(thisBand +'_data')][idx,:,:] # Get only the trials that are in the specified conditions (user inputs)
                 
-                # Get scores and add to the dict 
+                # Get scores and add to the dict collecting all outputs
                 output_dict = MVPAManager.get_crossval_scores(X = X, y = y, scoretype = scoretype) 
+                all_results_dicts[thisBand, degradationType, degradationLevel] = output_dict
                 
                 # Create dataframe
-                columns = (degradationType, degradationLevel, wordPosition, thisBand) 
-                data_tmp = pd.DataFrame({columns + (key,): output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('mean')})
+                columns = (degradationType, degradationLevel,  thisBand) 
+                df_tmp = pd.DataFrame({columns + (key,): output_dict['crossval_scores_timewise'][key] for key in output_dict['crossval_scores_timewise'] if key.endswith('mean')})
                 # The line above means: get every array whose key is ending in '_mean' from the 'timewise' dict of the output_dict
                 # and put the values in a dataframe. The column indexes of the dataframe should be 'columns' and the key (=what score)
                 # ... hence the `columns + (key,)` - the key is transformed into tuple and added to columns
+                crossval_mean_dict[thisBand].append(df_tmp)
                 
-                data_dict[thisBand].append(data_tmp)
+                columns = (degradationType, degradationLevel) 
+                df_tmp = pd.DataFrame({columns + (key,): output_dict['crossval_score_FullEpoch'][key] for key in output_dict['crossval_score_FullEpoch'] if key.endswith('mean')}, index = [thisBand])
+                full_epoch_crossval_mean[thisBand].append(df_tmp)
+                del df_tmp
                      
             # # TODO save this somehow
             # tfr_bands['metadata']['response_variable']=response_variable
@@ -165,7 +178,7 @@ is defined as [ n_trueNegatives / (n_trueNegatives + n_falsePositives)]
 
 #%% create a df for each freqband    
 dfs_dict = {}
-for key, data_list in data_dict.items():
+for key, data_list in crossval_mean_dict.items():
     concat_df = pd.concat(data_list, axis=1,  names = column_idx)
     index =  tfr_bands[key+'_COI_times']
     concat_df.set_index(index, inplace = True)
@@ -175,9 +188,24 @@ for key, data_list in data_dict.items():
     # # variables explicitly assigned in the script.
     # # So instead I am going with this, less cool solution:
     dfs_dict['df_' + key] = concat_df
-    
-df_accuracy = pd.concat(true_accuracy_list, axis = 1, names = ['degradationType', 'degradationLevel', 'wordPosition'])
 
+if response_variable == 'accuracy':
+    df_accuracy = pd.concat(true_accuracy_list, axis = 1, 
+                            names = ['degradationType', 'degradationLevel'])
+
+#%%
+dfs_list_full = []
+for key, data_list in full_epoch_crossval_mean.items():
+    concat_df = pd.concat(data_list, axis=1,  names = column_idx)
+
+    # globals()['df_' + key] = concat_df # this creates a df for every freqband but 
+    # # everytime the script references the dfs created this way, there will be a red X next to
+    # # the line number, saying e.g. "undefined name 'df_Alpha'" - because it only checks the
+    # # variables explicitly assigned in the script.
+    # # So instead I am going with this, less cool solution:
+    dfs_list_full.append(concat_df)
+full_epoch_crossval_mean = pd.concat(dfs_list_full, axis = 0)
+    
 # TODO save dfs as .csv
 # TODO also put df_accuracy into dfs_dict and save as .pkl
 
@@ -197,30 +225,58 @@ df_accuracy = pd.concat(true_accuracy_list, axis = 1, names = ['degradationType'
 #         print('--> all timepoints of', thisBand, 'contained in', freqbands_list[i+1])
 
 #%% Lineplot of the mean score of each freqband across all conditions
+y_lim = [0.2, 0.6]
+horizontal_line = 0.33
 
-if len(scoretype) != 1: # TODO
-    raise NotImplementedError('Not yet implemented for multiple scoretypes')
-
-means_tmp = []
-for key in dfs_dict.keys():
-    legend_str = str(key)[str(key).find('_')+1:]
-    tmp = pd.DataFrame({legend_str : dfs_dict[key].mean(axis=1)})
-    means_tmp.append(tmp)
-
-all_means = pd.concat(means_tmp, axis = 1)
-sns.lineplot(data = all_means, palette = const.palette[0:4], dashes=False)
-plt.title(subjID + ' - ' + scoretype[0] + ' - mean across conditions')
-plt.show()
-
-#%% And now if I want the mean within degradationType...
-for degradationType in const.degradationType:
+for score in scoretype:
+    score = score + '_mean'
     means_tmp = []
     for key in dfs_dict.keys():
         legend_str = str(key)[str(key).find('_')+1:]
-        tmp = pd.DataFrame({legend_str : dfs_dict[key][degradationType].mean(axis=1)})
+        df_tmp = dfs_dict[key]
+        df_tmp = df_tmp.xs(score,axis = 1, level = 3)
+        tmp = pd.DataFrame({legend_str : df_tmp.mean(axis=1)})
         means_tmp.append(tmp)
     
     all_means = pd.concat(means_tmp, axis = 1)
     sns.lineplot(data = all_means, palette = const.palette[0:4], dashes=False)
-    plt.title(subjID + ' - ' + scoretype[0] + ' - mean of ' + degradationType)
+    plt.ylim(y_lim)
+    plt.axhline(y = horizontal_line, color = '#999999', linestyle = ':')
+    plt.title(subjID + ' - ' + score + ' - mean across conditions')
     plt.show()
+    
+    #%% And now if I want the mean within degradationType...
+    for degradationType in const.degradationType:
+        means_tmp = []
+        for key in dfs_dict.keys():
+            legend_str = str(key)[str(key).find('_')+1:]
+            df_tmp = dfs_dict[key]
+            df_tmp = df_tmp.xs(score,axis = 1, level = 3)
+            tmp = pd.DataFrame({legend_str : df_tmp[degradationType].mean(axis=1)})
+            means_tmp.append(tmp)
+        
+        all_means = pd.concat(means_tmp, axis = 1)
+        sns.lineplot(data = all_means, palette = const.palette[0:4], dashes=False)
+        plt.ylim(y_lim)
+        plt.axhline(y = horizontal_line, color = '#999999', linestyle = ':')
+        plt.title(subjID + ' - ' + score + ' - mean of ' + degradationType)
+        plt.show()
+    
+    #%% And now if I want the mean within degradationType...
+    for degradationType in const.degradationType:
+        for degradationLevel in const.degradationLevel:
+            means_tmp = []
+            for key in dfs_dict.keys():
+                legend_str = str(key)[str(key).find('_')+1:]
+                df_tmp = dfs_dict[key]
+                df_tmp = df_tmp.xs(score,axis = 1, level = 3)
+                tmp = pd.DataFrame({legend_str : df_tmp[degradationType, degradationLevel].mean(axis=1)})
+                means_tmp.append(tmp)
+            
+            all_means = pd.concat(means_tmp, axis = 1)
+            sns.lineplot(data = all_means, palette = const.palette[0:4], dashes=False)
+            plt.ylim(y_lim)
+            plt.axhline(y = horizontal_line, color = '#999999', linestyle = ':')
+            plt.title(subjID + ' - ' + score+ ' - ' + degradationType + '/' + degradationLevel)
+            plt.show()
+        

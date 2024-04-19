@@ -284,8 +284,16 @@ class MVPAManager:
                                          scoring = scoretype)                                    
                                       
         #get only the scores from output ( not the fitting times)
-        output_dict['crossval_score_FullEpoch'] = {key: all_scores_full[key] for key in all_scores_full if key.startswith('test')} 
+        scores_full = {}
+        for name in scoretype:
+            scores_full[name] = all_scores_full['test_' + name]
         
+        keys = [key for key in scores_full]
+        for key in keys:
+            scores_full[key + '_mean'] = scores_full[key].mean()
+            scores_full[key + '_std'] = scores_full[key].std()
+            
+        output_dict['crossval_score_FullEpoch'] = scores_full
         
         
         #[MVPA] Time-resolved decoding ----------------------------------------
@@ -350,7 +358,7 @@ class MVPAManager:
         
         This serves as a way to get every possible combination of values of several lists.
         
-        This function is copied straight from chatGPT 3.5
+        This function is copied from chat-GPT 3.5 with minor changes
 
         Parameters
         ----------
