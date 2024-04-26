@@ -8,43 +8,65 @@ clear all ;
 %  (...)
 %
 %-------------------------------------------------------------------------
+
+%% User inputs
+
+% Parameters for Vocoding function 
+exc =     'noise'; 
+mapping =     'n'; 
+smooth =      30 ; 
+nCh =          16;   %originally 16
+MinFreq =      70;
+MaxFreq =    5000;
+
+% Degradation levels
+target_proportions = [0, 0.05, 0.1, 0.15, 0.2, 0.3]
+% target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
+% target_proportions = [0.1];
+% target_proportions = [1];
+
+makeplots = 0;
+
+%% Directories
+
 % Find the index of the "script" folder
 folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
 scriptPathIdx = find(strcmp(folders, 'Scripts'), 1);
-baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep];
+baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep]
+
  % add paths of associated functions and toolbox TSM required by function 
 addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise','functions')])
 %addpath('C:\Program Files\MATLAB\R2021a\toolbox\MATLAB_TSM-Toolbox_2.03')
 %addpath('C:\Users\gfraga\Documents\MATLAB\')
-%% Inputs 
-makeplots = 0;
- % paths and files 
-dirinput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected')] ;
-diroutput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected-NV_v2-1')];
-mkdir(diroutput)
 
-% save a 'last run' copy of script 
+
+% paths and files 
+dirinput =   [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected')];
+diroutput =  [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz',['tts-golang-selected-NV_Experiment2'])];
+
+if exist(diroutput) ~= 7
+    mkdir(diroutput);
+    disp(['New folder created: ', diroutput]);
+else
+    disp(diroutput)
+    warntext = 'Output directory already exists. Existing files may be overwritten. You have 3 seconds to abort the script after clicking OK.'
+    mydlg = warndlg(warntext, 'WARNING: output directory exists');
+    waitfor(mydlg);
+    pause(3)
+end
+
+% give write permission to diroutput
+fileattrib(diroutput, '+w')
+
+%% save a 'last run' copy of script 
 [filepath,name,ext] = fileparts(matlab.desktop.editor.getActiveFilename);
 copyfile(matlab.desktop.editor.getActiveFilename,[diroutput,filesep,name,'_',datestr(now,'yymmdd-HHMMSS'),'.txt'])
 
-cd (dirinput)
+% cd (dirinput)
 audiofiles =      dir([dirinput, filesep,'*.wav']);
 audiofiles =      fullfile(dirinput, {audiofiles.name});
-mkdir(diroutput)
+% mkdir(diroutput)
 
-% Parameters for Vocoding function 
-exc =           'noise' ; 
-mapping=        'n'; 
-smooth=          30 ; 
-nCh =            1 %originally 16
-MinFreq =       70;
-MaxFreq =        5000;
-% Degradation levels
-target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
-target_proportions = [0.1];
-target_proportions = [1];
- 
- 
 %% Call vocoder function (save in structure array)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % read signals
@@ -85,7 +107,7 @@ end
 srate =freqs{1};
 %% Saving vododed audio 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- cd (diroutput)
+%  cd (diroutput)
 
 % Audio
 for i = 1:length(nvStimuli)

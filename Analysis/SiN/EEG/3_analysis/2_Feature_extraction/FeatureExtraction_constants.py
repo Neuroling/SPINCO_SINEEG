@@ -39,7 +39,8 @@ n_jobs = None
 decim = 1 # When doing the TFR, decimates sampling rate by this factor 
 # If RAM is an issue: choose 2 or higher to avoid freezing the kernel
 
-freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48
+# Define frequency bands 
+freqbands = dict(#Delta = [1,4], # Our TFR covers frequencies from 6-48 Hz, so no delta
                  Theta = [4,8],
                  Alpha=[8,13], 
                  Beta= [13,25],

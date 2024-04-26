@@ -27,8 +27,12 @@ thisDir = os.getcwd()
 class EpochManager:
     """
     EpochManager is an object to handle reading & saving epochs and related things like metadata and event_ids.
-    Calling this object requires a SubjID as an input, which will be used to determine file paths.
+    Initialising this object requires a SubjID as an input, which will be used to determine file paths.
     It must therefore be called seperately for each subject.
+    
+    Additionally, when initialising EpochManager, you can specify if the .set files from the pipeline used in
+    S. Meier's MSc thesis shall be used (SM = True) or not. This is optional. Default is False. 
+    See help(EpochManager.__init__) for more information
 
     """
 
@@ -39,10 +43,11 @@ class EpochManager:
 
         Parameters
         ----------
-        subjID : subject ID
+        subjID : str
+            subject ID
         
         SM : bool
-            If true, will use the derivatives_SM data. Default false
+            If true, will use the derivatives_SM data. Default is False.
 
         """
         self.subjID = subjID
@@ -80,13 +85,22 @@ class EpochManager:
 
     def readEpo(self, fileinput=None):
         """
+        READ EPOCHED MNE .fif FILE
+        =======================================================================
+        
         reads the epoched .fif file using the filepaths set by EpochManager
+        Alternatively, filepaths can be provided manually with the fileinput parameter
+        
+        This obviously necessitates the existence of epoched .fif files.
+        To create epoched .fif files from .set files, call EpochManager.set2fif()
 
-        Parameters:
+        Parameters
+        ----------
             fileinput : str | None
                 Filepath to the epoched .fif file. If = None, will use the filepaths set by EpochManager
 
-        returns :
+        returns
+        -------
             epo : mne.Epochs instance
         """
         if fileinput is None:
@@ -103,31 +117,44 @@ class EpochManager:
                 addMetadata=True,
                 relabelEvents=True,
                 ):
-        """ takes the epoched .set file from EEGLAB and saves it as .fif file from MNE
+        """ 
+        CONVERT .set FILE TO .fif FILE
+        =======================================================================
+        takes the epoched .set file from EEGLAB and saves it as .fif file from MNE
 
-        Parameters: 
+        Parameters
+        ----------
             fileinput : str | None
-                eeglab epoch file ending in .set (default is None, which will use the set_path from EpochManager.__init__)
+                filepath for the eeglab epoch file ending in .set 
+                default is None, which will use the set_path from EpochManager.__init__
 
             fileoutput : str | None
-                where the mne file ending in .fif will be saved (default is None, which will use the epo_path from EpochManager.__init__)
+                where the mne file ending in .fif will be saved 
+                default is None, which will use the epo_path from EpochManager.__init__
 
             applyAverageReference : bool | Default False
-                if = True, will re-reference the data to average reference. Default is false.
+                if = True, will re-reference the data to average reference. 
+                Default is False.
 
             addMetadata : bool | Default True
-                if metadata should be constructed and added (default is True)
+                if metadata should be constructed and added
+                The metadata contains trial information
+                It is added with the function EpochManager.addMetadata()
 
             relabelEvents: bool | Default True
-                if events should be relabelled (default is True)
-
-        returns:
+                if events should be relabelled 
+                Relabelled events will allow easier sorting and filtering of data.
+                The function EpochManager.relabelEvents() will be used for this.
+                For more information, see help(EpochManager.relabelEvents)
+                
+        returns
+        -------
             Nothing. To open the freshly saved epoch, call EpochManager.readEpo()
         """
 
         if relabelEvents == True and addMetadata == False:
             print(
-                'WARNING: metadata will be constructed to relabel events but will not be added')
+                '---> metadata will be constructed to relabel events but will not be added')
 
         if fileinput is None:
             fileinput = self.set_path
@@ -156,11 +183,20 @@ class EpochManager:
 
     def addMetadata(self, epochs):
         """
-        adds metadata to the epochs
-        metadata is constructed by calling constructMetadata
+        ADDING METADATA TO EPOCHS
+        =======================================================================
+        
+        Adds metadata to the epochs.
+        Metadata stores trial information (like condition, accuracy, etc.) for each epoch.
+        It is constructed with EpochManager.constructMetadata()
+        For more information, see docsting of that function
 
-        This function is called by set2fif (optional)
-
+        This function is called by EpochManager.set2fif (optional)
+        
+        Parameters
+        ----------
+        epochs : MNE.EpochsFIF object
+            the epoched data
         """
         self.constructMetadata()
         epochs.metadata = self.metadata
@@ -168,7 +204,14 @@ class EpochManager:
         return epochs
 
     def constructMetadata(self):
-        """ constructs some metadata for the epochs, using the accu.tsv file and the behavioural output .csv file. 
+        """ 
+        CONSTRUCT METADATA 
+        =======================================================================
+        
+        Using the accu.tsv file and the behavioural output .csv file, this function compiles
+        metadata ( = trial information for each epoch).
+        As part of this, stimulus triggers will be translated into human-readable labels
+        
         Filepaths are handled by EpochManager.__init__
 
         This function is called by:
@@ -292,19 +335,11 @@ class EpochManager:
         """
 
         if metadata == None:  # use the specified metadata or construct new one
-
-            # This option below is a bit more efficient but prone to error (if metadata from
-            # a previous subject is still saved, it might carry that over to the new subject)
-
-            # try: # if there is already a metadata saved in the workspace, use that.
-            #     mtdat= self.metadata
-            # except NameError: # if you get an error saying that self.metadata doesn't exist, construct new one
-            #     self.constructMetadata()
-            #     mtdat = self.metadata
-
-            # This method is a bit less efficient since it constructs metadata again but does not risk that error
-            mtdat = self.constructMetadata()
-
+            try: # if there is already a metadata saved in the workspace, use that.
+                mtdat= self.metadata
+            except NameError: # if you get an error saying that self.metadata doesn't exist, construct new one
+                self.constructMetadata()
+                mtdat = self.metadata
         else:
             mtdat = metadata
         
@@ -350,8 +385,8 @@ class EpochManager:
 
         If the events are not first relabelled (using relabelEvents), it give an error
 
-        Currently, this function only returns the frequency table but does not save it.
-        This function is not called by any other function.
+        This function only returns the frequency table but does not save it.
+        
         This function calls createEmptyFrequencyDict (see more info on why in the documentation for that function)
 
 
@@ -364,7 +399,7 @@ class EpochManager:
         df : pandas dataframe
 
         """
-        if epochs is None:  # if no epoch structure is given, then first read the epoch file
+        if epochs is None:  # if no epoch object is given, then first read the epoch file
             epochs = self.readEpo()
 
         # create empty dict (see docstring of createEmptyFrequencyDict() for more information)

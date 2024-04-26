@@ -37,9 +37,7 @@ thisDir = os.getcwd()
 
 #%% Imports ###################################################################################################################
 import mne
-# from mne.time_frequency import tfr_morlet
-# import matplotlib.pyplot as plt
-# import numpy as np
+
 import pickle
 from datetime import datetime
 
@@ -48,7 +46,7 @@ import FeatureExtraction_functions as functions
 
 
 #%% Looping over subjects #####################################################################################################
-for subjID in const.subjIDs[1:-1]:
+for subjID in const.subjIDs:
 # for subjID in ['s001']: # for debugging, only one subj
     
     print('_.~"(_.~"(_.~"(_.~"(_.~"(  now processing',subjID,'   _.~"(_.~"(_.~"(_.~"(_.~"(')
@@ -130,7 +128,9 @@ for subjID in const.subjIDs[1:-1]:
         print("pickling the dictionary")
         
         del tfr_bands
-    del FeatureExtractionManager # to make sure there is no spill-over between subjects, we delete the Manager in each loop
+        
+    # to make sure there is no spill-over between subjects, we delete & initialise the manager in each loop    
+    del FeatureExtractionManager 
         
     
 print("All done.")

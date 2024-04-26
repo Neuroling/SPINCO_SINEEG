@@ -10,20 +10,17 @@ This script reads eeglab epochs and handles them with MNE
 It takes the constants, such as subject ID, from EPO_constants,
 and the functions from EPO_functions
 
-"""
+USER INPUTS:
+CreateFreqTable : bool
+    If a table with the frequency of occurrence of each event_id should be created or not.
 
+"""
+CreateFreqTable = False
 
 import os
-# from glob import glob
-# import scipy.io as sio
 thisDir = os.getcwd()
-# import numpy as np
-# import mne 
-# import pandas as pd
 import EPO_functions as functions
 import EPO_constants as const
-
-CreateFreqTable = False
 
 #%% ============== EEGLAB .set TO MNE .fif =============================================================================
 # Looping over subj, will read epoched .set files, add metadata, and then save them to .fif files

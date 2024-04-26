@@ -4,16 +4,18 @@ import os
 
 # Sentence variations 
 sentence = 'Vorsicht xnamex, geh sofort zum xcolorx Faeld von der Spalte xnumberx'
-names = ['Adler','Drossel','Tiger','Kröte']
-colors = ['gelben','gruenen','roten','weissen']
-numbers = ['Eins','Zwei','Drei','Vier']
+names = ['Adler','Rabe','Eule', 'Tiger','Ratte', 'Ziege', 'Kaefer', 'Spinne', 'Biene']  
+# Other ideas: Esel, Fliege, Otter, Schnecke, Rabe,  Falke,'Hase', 'Ente', 'Katze', 'Löwe', 'Krabbe', 'Käfer'
+colors = ['gelben','gruenen','roten','weissen', 'blauen', 'schwarzen', 'pinken', 'braunen', 'grauen']
+numbers = ['Eins','Zwei','Drei','Vier', 'Fuenf', 'Sechs', 'Acht', 'Neun']
 
 
 sentence_version = [sentence.replace("xnamex", name).replace("xcolorx", color).replace("xnumberx", number)         
            for name in names for color in colors for number in numbers]
 
 lang_voice_speaker = ['de-DE-Neural2-D',
-            'de-DE-Neural2-F']
+            # 'de-DE-Neural2-F'
+            ]
 #lang_voice_speaker = ['de-DE-Wavenet-F']
  
 
@@ -33,13 +35,14 @@ def text_to_wav(voice_name: str, text: str, outputname: str):
 for i,text in enumerate(sentence_version):
     for voice_name in lang_voice_speaker:
         #Make informative outputname 
-        variationLabel = "-".join([text.split()[j][:2] for j in [1, 5, 10]])        # Code which from the changing words were contained in the sentence (e.g., Ad-ge-Ei ) 
+        variationLabel = "-".join([text.split()[j][:3] for j in [1, 5, 10]]) 
+        # Code which from the changing words were contained in the sentence (e.g., Ad-ge-Ei ) 
         voiceLabel  = voice_name.replace('de-DE-','DE_')
         outputname = voiceLabel + '_' +  variationLabel
         
-        #print(outputname)
+        # print(outputname)
         text_to_wav(voice_name,text,outputname)
         with open(outputname+".txt", "w") as file:
-                 file.write(text)
+                  file.write(text)
         
         

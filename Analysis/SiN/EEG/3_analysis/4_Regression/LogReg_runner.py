@@ -20,15 +20,19 @@ import LogReg_constants as const
 
 #%% User Inputs
 n_bins = 8
-subsample = True
+subsample = False
 FixCompleteSeparation = True
 verbose = True
 
 LogRegManager = functions.LogRegManager(verbose=verbose)
+
 #%% get data 
 LogRegManager.get_data(condition = "NV")
 
 #%% check complete separation. If FixCompleteSeparation = True place random 0 if 100% correct
+# for more information:
+# help(LogRegManager.CheckCompleteSeparation)
+# help(LogRegManager.FixCompleteSeparation)
 if FixCompleteSeparation: 
     LogRegManager.FixCompleteSeparation()
 else:

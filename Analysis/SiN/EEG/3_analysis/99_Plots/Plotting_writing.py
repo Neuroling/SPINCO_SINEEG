@@ -147,6 +147,7 @@ But the topomaps look much less nice than they do with report.add_evokeds().
 So, if you want the good looking topomaps with slider, you have to go through the source code
 and use report._add_evoked_topomap_slider() - this is inconvenient because none of the 
 parameters are optional (since they should be given by report.add_evokeds() )
+but it works. 
 
 https://github.com/mne-tools/mne-python/blob/maint/1.6/mne/report/report.py#L3495
 source code for report._add_evoked_topomap_slider()

@@ -303,11 +303,7 @@ class MVPAManager:
         # Use dictionaries to store values for each score type
         scores = {name: np.zeros(shape = (n_times, 5)) for name in scoretype}
         
-        
-        # f1_cor = np.zeros(shape = (n_times, 5))
-        # f1_inc = np.zeros(shape = (n_times, 5))
 
-        
         print('----> starting classification per time point....')
         for t in range(n_times): # for each timepoint...
             Xt = X[:, :, t] # get array of shape (n_epochs, n_channels) for this timepoint
@@ -327,19 +323,7 @@ class MVPAManager:
             #Add CV mean and std of this time point to my output dict 
             for name in scoretype:
                 scores[name][t,:]=scores_t['test_' + name]
-                # std_scores[name][t,:]=scores_t['test_' + name].std()
-                
-            # i = 0
-            # for train_index, test_index in cv.split(Xt, y):
-            #     clf.fit(Xt[train_index], y.iloc[train_index])
-            #     y_pred = clf.predict(Xt[test_index])
-            #     f1_cor[t,i] = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='cor')
-            #     f1_inc[t,i] = metrics.f1_score(y.iloc[test_index], y_pred, pos_label='inc')
-            #     i += 1
 
-        # scores['f1_cor'] = f1_cor
-        # scores['f1_inc'] = f1_inc
-        # TODO
         
         keys = [key for key in scores]
         for key in keys:
@@ -378,71 +362,4 @@ class MVPAManager:
         
         return combinations_lists
     
-    def random_subsample_accuracy(self, 
-                                  trial_info = None):
-        """
-        # !!! copied straight from PreStim_functions, needs to be adapted to be usable
-        
-        RANDOMLY SUBSAMPLES TRIALS TO EQUALISE ACCURACY COUNTS
-        =======================================================================
-        
-        This function counts how many trials were correct and how many incorrect.
-        It will then get the lower of those two numbers (let's call it minumum)
-        and then it will randomly select [minumum] correct and incorrect trials
-        and return their indices ("subsample_idx").
-        The length of subsample_idx is therefore = 2*minimum.
-        Half the indices are from correct, and half from incorrect trials.
-        
-        Parameters
-        ----------
-        trial_info : dict or pandas DataFrame, optional
-            The trial information - for instance condition_dict or condition_df. 
-            The default is None, in which case the function will try to use the
-            condition-dict stored in the PreStimManager object. If there is none, it
-            will try to use the condition_df stored in the PreStimManager object.
-            
-        Raises
-        ------
-        AttributeError
-            if no trial information was provided and none could be found.
-            
-        Returns
-        -------
-        subsample_idx : indexes
-            the subsampled indices, which can be applied to the df by calling 
-            `df = df.iloc[subsample_idx]`
-            Note : if the df has non-sequential indices (which can happen when filtering or
-                 concatentaing), this will not work.
-            
-        """
-        raise NotImplementedError
-
-        if trial_info is None: 
-        # TODO : account for if input is dict - 
-        # maybe take the concat out of the if loop and do another if-loop outside, i.e. `if trial_info.type=dict: concat`
-            try:
-                trial_info = self.condition_dict
-                # combine all subj condition dataframes to get across-subj accuracy
-                # TODO for within-subj (see comment in sketch_PreStim_writing)
-                tmp_df = pd.concat(trial_info.values(), axis=0, ignore_index=True)
-            except AttributeError:
-                try:
-                    tmp_df = self.condition_df
-                except AttributeError:
-                    raise AttributeError("cannot subsample data - no trial information (condition_dict or condition_df) found")
-        else:
-            tmp_df = trial_info.copy()
-            
-            
-        # counting total correct and incorrect
-        count_cor = tmp_df['accuracy'].value_counts()[1]
-        count_inc = tmp_df['accuracy'].value_counts()[0]
-        
-        idx_cor = tmp_df.index[tmp_df['accuracy'] == 1]
-        idx_inc = tmp_df.index[tmp_df['accuracy'] == 0]
-        
-        minimum = min(count_cor, count_inc)
-        subsample_idx = random.sample(list(idx_cor), minimum) + random.sample(list(idx_inc), minimum)
-        
-        
-        return subsample_idx
+ 

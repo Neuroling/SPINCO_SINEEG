@@ -47,7 +47,6 @@ metadata=EpoManager.constructMetadata() # constructing metadata
 
 epo = EpoManager.relabelEvents(epo) # relabelling events
 
-epo2=epo.set_eeg_reference(ch_type='eeg') # re-referencing to average reference
 
 #%%
 

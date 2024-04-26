@@ -7,16 +7,17 @@ author: samuemu
 Created on Fri Nov  3 11:47:21 2023
 
 This script contains variables that do not change across scripts, such as 
-filepath-chunks, subject_IDs, and event_id
+filepath-chunks, subject_IDs, and event_ids
 
 These variables are called by EPO_functions and EPO_runner
 
 """
 
 import os
-# from glob import glob
+
 import pandas as pd
 
+# filepath chunks
 taskID = 'task-sin'
 pipeID = 'pipeline-01'
 setFileEnd = '_avgRef_epo.set'
