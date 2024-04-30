@@ -36,7 +36,7 @@ in the message and activate your project.
 
 After all this is done, while still in the console and with the environment active, 
 navigate to the folder where this script is saved and run it with the line
-`python3 tts_stimulusGenerator_Exp2.py`
+`python3 tts_SingleStimulusGenerator.py`
 
 Unfortunately, it will save all outputs in the same folder as the script is saved. 
 Drag them over into the folder you want them in afterwards.
@@ -81,7 +81,7 @@ def text_to_wav(voice_name: str, text: str, outputname: str):
         outputname = outputname + ".wav"
         with open(outputname, "wb") as out:
             out.write(response.audio_content)
-            print("Generated speech saved to " + outputname + ".wav")
+            print("Generated speech saved to " + outputname)
 		
 for i,text in enumerate(stimuli):
     for voice_name in lang_voice_speaker:

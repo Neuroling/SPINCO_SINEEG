@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+Combining stimulus words into a sentence
+------------------------------------------------------------------------------
 Created on Fri Apr 26 12:26:24 2024
+@author: samuemu
 
-@author: testuser
+In natural speech, the coarticulation imposes a difference on the non-target
+words. I.e. the non-target word "Vorsicht" will sound slightly different depending 
+on the next word, meaning the "standardised" non-target words are not truly standardised.
+
+Therefore, Alexis asked me to create the target words and non-target sentence parts
+separately and then combine the audiofiles into a sentence.
 """
+
 import wave
+
+from pydub import AudioSegment
+# https://github.com/jiaaro/pydub#installation
 
 import os
 from glob import glob
@@ -28,7 +40,7 @@ commonWords = ['Vorsicht', 'gehe sofort zum', 'Feld der Spalte']
 lang_voice_speaker = 'DE_Neural2-F'
 
 # use those to create lists of filepaths
-# Yes this could be done easier, more efficiently, and with less possibility for human error. 
+# Yes this could be done more elegant, more efficiently, and with less possibility for human error. 
 # (i.e. with itertools.product)
 # But I have not had lunch, it is 16.30 on a Friday, and this works, so we're going with this :)
 combinations = []
@@ -61,42 +73,34 @@ for idx, combination in enumerate(combinations):
     # Create a unique filename for each combination
     output_file = os.path.join(diroutput, lang_voice_speaker + '_' +  combination_name[idx] + '.wav')
     
-    # Stitch the files in the current combination together
-    # Open the output file in write mode
-    with wave.open('output_file', mode = 'wb') as output_wav:
-        print('1')
-        # Initialize variables for the output file parameters
-        num_channels = 0
-        sample_width = 0
-        frame_rate = 0
-        num_frames = 0
-        
+    #%% Version 1: https://stackoverflow.com/a/2900266 - No error, but output corrupted
+    # #%% Stitch the files in the current combination together
+    # data = []
+    # for input_file in combination:
+    #     w = wave.open(input_file, 'rb')
+    #     data.append( [w.getparams(), w.readframes(w.getnframes())] )
+    #     w.close()
     
-        for input_file in combination:
-            # Open each input file
-            
-            with wave.open(input_file, 'rb') as input_wav:
-                # If this is the first file, set the output parameters
-                if num_channels == 0:
-                    num_channels = input_wav.getnchannels()
-                    sample_width = input_wav.getsampwidth()
-                    frame_rate = input_wav.getframerate()
+    # with wave.open('output_file', mode = 'wb') as output:
+    #     # output = wave.open(output_file, 'wb')
+    #     output.setparams(data[0][0])
+    #     for params,frames in data:
+    #         output.writeframes(frames)
+    #     output.close()
+         
     
-                # Read frames from input file and write to output file
-                frames = input_wav.readframes(input_wav.getnframes())
-                output_wav.writeframes(frames)
-                num_frames += input_wav.getnframes()
-        print('2')
-        # Update the output file parameters
-        output_wav.setnchannels(num_channels)
-        output_wav.setsampwidth(sample_width)
-        output_wav.setframerate(frame_rate)
-        output_wav.setnframes(num_frames)
-        print('3')
-        # Close the output file
-        output_wav.close()
-
+    #%% Version 2: https://stackoverflow.com/a/13384198 - working, but inelegant
+    s1 = AudioSegment.from_wav(combination[0])
+    s2 = AudioSegment.from_wav(combination[1])
+    s3 = AudioSegment.from_wav(combination[2])
+    s4 = AudioSegment.from_wav(combination[3])
+    s5 = AudioSegment.from_wav(combination[4])
+    s6 = AudioSegment.from_wav(combination[5])
+    
+    combined = s1 + s2 + s3 + s4 + s5 + s6
+    combined.export(output_file, format = 'wav')
 
     print(f"Combination {idx} created: {output_file}")            
+
             
      
