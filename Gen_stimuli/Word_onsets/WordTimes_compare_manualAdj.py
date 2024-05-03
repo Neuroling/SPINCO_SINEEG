@@ -63,8 +63,9 @@ ynames = df.filter(regex='^token|.*Sound.*').columns
 colormap= ['red','blue','green','black'] # color map for each rater 
 
 for n,file in enumerate(df.file.unique()):
-    rate, data = wavfile.read(diraudio + '/' + file.replace('TextGrid', 'wav'))
-    time = np.arange(len(data)) / rate
+    
+    rate, data = wavfile.read(diraudio + '/' + file.replace('TextGrid', 'wav')) # read wav file
+    time = np.arange(len(data)) / rate # time in seconds
     print(n)
     fig, axes = plt.subplots(nrows=len(df.rater.unique()), ncols=1, figsize=(8, 4*len(df.rater.unique())), sharex=True)
     

@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['Gen_stimuli/Gen_speech/tts_singleStimuli2sentence.py', 'Gen_stimuli/Word_onsets/Gather_webmaus_wordTimes.py', 'Gen_stimuli/Gen_speech/tts_stimulusGenerator_Exp2.py', 'Gen_stimuli/Word_onsets/compare_amplitude_envelope.py']
+recent_files = ['Gen_stimuli/Gen_speech_noise_sequences/Generate_spreadsheet_Exp2.py', 'Gen_stimuli/Word_onsets/compare_amplitude_envelope.py', 'Gen_stimuli/Gen_speech_noise_sequences/Generate_spreadsheet.py', 'Gen_stimuli/Word_onsets/Gather_webmaus_wordTimes.py']
 
 [main]
 version = 0.2.0

@@ -17,28 +17,29 @@ import textgrids
 thisDir = os.getcwd()
 scripts_index = thisDir.find('Scripts')
 
-dirinput = os.path.join(thisDir[:scripts_index] + 'Stimuli', 'AudioGens','tts-golang-44100hz','tts-golang-selected_Experiment2', 'original_webmaus-textgrids')
+dirinput = os.path.join(thisDir[:scripts_index] + 'Stimuli', 'AudioGens','Experiment2','tts-golang-44100hz','tts-golang-textGrid')
 
-#dirinput = basedir + 'spinco_data/AudioGens/tts-golang-selected' # folder with .wav files
-#diroutput = basedir + 'spinco_data/AudioGens/'
+# dirinput = basedir + 'spinco_data/AudioGens/tts-golang-selected' # folder with .wav files
+# diroutput = basedir + 'spinco_data/AudioGens/'
 
-diroutput = dirinput + '/'
+diroutput = os.path.join(thisDir[:scripts_index] + 'Stimuli', 'AudioGens','Experiment2','tts-golang-44100hz','word-times')
 ratername= 'automatic'
 
-os.chdir(dirinput)
-os.getcwd()
 
 # %%  Praat files
 header = ['file','rater','firstSound_tmin','lastSound_tmax','token_1_tmin','token_1_tmax','token_2_tmin','token_2_tmax','token_3_tmin','token_3_tmax']
 
-files = glob('*.TextGrid')
+files = glob(os.path.join(dirinput, '*.TextGrid'))
 gathertimes = []
 
 for fileinput in files:
     praatDict = textgrids.TextGrid(fileinput)    
-    
+    filename = fileinput[fileinput.rfind(os.sep)+1:]
+    if len(praatDict['ORT-MAU']) != 14:
+        raise ValueError(f'Error! {filename} has different number of segments than the rest')
+        
     times= \
-    [fileinput] + \
+    [filename] + \
     [ratername] + \
     [str(praatDict['ORT-MAU'][1].xmin)] + \
     [str(praatDict['ORT-MAU'][-1].xmin)]  + \
@@ -54,4 +55,4 @@ for fileinput in files:
 gathertimes = pd.concat(gathertimes)
 
 
-gathertimes.to_csv(diroutput+ ratername + '_tts-golang-selected_wordTimes.csv', index= False)
+gathertimes.to_csv(os.path.join(diroutput, ratername + '_tts-golang_wordTimes.csv'), index= False)

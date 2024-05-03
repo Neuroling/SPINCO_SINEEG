@@ -20,9 +20,9 @@ MinFreq =      70;
 MaxFreq =    5000;
 
 % Degradation levels
-target_proportions = [0, 0.05, 0.1, 0.15, 0.2, 0.3]
+% target_proportions = [ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
 % target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
-% target_proportions = [0.1];
+target_proportions = [0.4, 0.5, 0.6];
 % target_proportions = [1];
 
 makeplots = 0;
@@ -41,18 +41,16 @@ addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise','functions
 
 
 % paths and files 
-dirinput =   [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-selected')];
-diroutput =  [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz',['tts-golang-selected-NV_Experiment2'])];
+dirinput =   [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang')];
+diroutput =  [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz',['tts-golang-NV'])];
 
 if exist(diroutput) ~= 7
     mkdir(diroutput);
     disp(['New folder created: ', diroutput]);
 else
     disp(diroutput)
-    warntext = 'Output directory already exists. Existing files may be overwritten. You have 3 seconds to abort the script after clicking OK.'
-    mydlg = warndlg(warntext, 'WARNING: output directory exists');
-    waitfor(mydlg);
-    pause(3)
+    warntext = 'Output directory already exists. Existing files may be overwritten. You have 5 seconds to abort the script.'
+    pause(5)
 end
 
 % give write permission to diroutput
