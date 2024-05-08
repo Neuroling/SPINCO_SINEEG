@@ -18,11 +18,11 @@ import os
 #import shutil
 import pandas as pd 
 
-#import matplotlib.pyplot as plt 
-#import matplotlib.collections as clt
-#import ptitprince as pt
-#import numpy as np
-#import seaborn as sns
+import matplotlib.pyplot as plt 
+# import matplotlib.collections as clt
+import ptitprince as pt
+# import numpy as np
+import seaborn as sns
 
 # User inputs
 copyraw = 0

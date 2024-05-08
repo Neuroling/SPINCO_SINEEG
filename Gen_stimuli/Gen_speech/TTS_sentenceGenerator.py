@@ -52,14 +52,14 @@ import os
 # Sentence variations 
 sentence = 'Vorsicht xnamex, geh sofort zum xcolourx Faeld von der Spalte xnumberx'
 
-callSigns = ['Messer', 'Gabel', 'Teller', 'Loeffel', 'Fahrrad']
-# callSigns = ['Adler','Eule', 'Tiger','Ratte', 
-#          'Hammer',  'Schraube', 'Flugzeug', 'Auto']
+callSigns = ['Messer', 'Gabel', 'Teller', 'Loeffel', 'Velo','Adler','Eule', 'Tiger','Ratte', 'Hammer',  'Schraube', 'Flugzeug', 'Auto', 'Fahrrad']
+# callSigns = ['Adler','Eule', 'Tiger','Ratte', 'Hammer',  'Schraube', 'Flugzeug', 'Auto']
 
 colours = ['gelben','gruenen','roten','weissen', 'blauen', 
          'schwarzen', 'pinken', 'braunen']
 
-numbers = ['Eins','Zwei','Drei','Vier', 'Fuenf', 'Sechs', 'Acht', 'Neun']
+# numbers = ['Eins','Zwei','Drei','Vier', 'Fuenf', 'Sechs', 'Acht', 'Neun']
+numbers = ['Null','Eins','Zwei','Drei','Vier', 'Fuenf', 'Sechs', 'Acht', 'Neun']
 
 sentence_version = [sentence.replace("xnamex", callSign).replace("xcolourx", colour).replace("xnumberx", number)         
            for callSign in callSigns for colour in colours for number in numbers]

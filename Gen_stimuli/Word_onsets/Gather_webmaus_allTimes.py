@@ -24,7 +24,7 @@ import textgrids
 thisDir = os.getcwd()
 scripts_index = thisDir.find('Scripts')
 
-dirinput = os.path.join(thisDir[:scripts_index] + 'Stimuli', 'AudioGens','Experiment2','tts-golang-44100hz','tts-golang-textGrid')
+dirinput = os.path.join(thisDir[:scripts_index] + 'Stimuli', 'AudioGens','Experiment2','tts-golang-44100hz','tts-golang-equalisedDuration')
 
 diroutput = os.path.join(thisDir[:scripts_index] + 'Stimuli', 'AudioGens','Experiment2','tts-golang-44100hz','word-times')
 
@@ -44,7 +44,7 @@ gathertimes = []
 
 for fileinput in files:
     praatDict = textgrids.TextGrid(fileinput)    
-    filename = fileinput[fileinput.rfind(os.sep)+1:]
+    filename = fileinput[fileinput.rfind(os.sep)+1:fileinput.rfind('.')]
     times_tmin = [str(item.xmin) for item in praatDict['ORT-MAU']]
     times_tmax = [str(item.xmax) for item in praatDict['ORT-MAU']]
     callSign = praatDict['ORT-MAU'][2].text
@@ -62,4 +62,4 @@ gathertimes = pd.DataFrame(gathertimes, columns = header)
 # find out which one by looking at the `gathertimes` list and sort it by size. You'll find the ones that deviate that way.
 # Then edit the textGrid files in praat. 
 
-gathertimes.to_csv(os.path.join(diroutput, 'Full_tts-golang_allTimes.csv'), index= False)
+gathertimes.to_csv(os.path.join(diroutput, 'equalised_Full_tts-golang_allTimes.csv'), index= False)

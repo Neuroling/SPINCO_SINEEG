@@ -15,12 +15,13 @@ import textgrids
 from scipy.io import wavfile
 import librosa
 import numpy as np
+import shutil
 
 #%% filepaths
 thisDir = os.getcwd()
 baseDir = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Stimuli', 'AudioGens','Experiment2','tts-golang-44100hz')
-audiodir = os.path.join(baseDir, 'tts-golang') + os.sep
-diroutput = os.path.join(baseDir, 'tts-golang-equalisedDuration') + os.sep
+audiodir = os.path.join(baseDir, 'tts-golang')
+diroutput = os.path.join(baseDir, 'tts-golang-equalisedDuration')
 
 #%% Get word onset time dataframe
 df = pd.read_csv(os.path.join(baseDir, 'word-times','Full_tts-golang_allTimes.csv'))
@@ -44,9 +45,17 @@ std_durations.columns = sentence
 #%% standardise duration - loop to process each audio file
 
 for filename in df['file']:
+    
+    # get actual filepath (without file extension)
+    filepath = os.path.join(audiodir, filename)
+    
+    
+    # copy .txt file to the new folder and rename it to start with "equalised_"
+    shutil.copy(filepath + '.txt', os.path.join(diroutput, filename + '.txt'))
+    os.rename(os.path.join(diroutput, filename + '.txt'), os.path.join(diroutput,'equalised_' + filename + '.txt'))
 
     # Load audio file
-    y, sr = librosa.load((audiodir + filename[:filename.rfind('.')] + '.wav'), sr=None)
+    y, sr = librosa.load(filepath + '.wav', sr=None)
 
     segments = []
     for segment in sentence:
@@ -69,6 +78,5 @@ for filename in df['file']:
     y_processed = np.concatenate(segments)
 
     
-    output_file = diroutput + 'equalised_' + filename[:filename.rfind('.')] + '.wav'
+    output_file = os.path.join(diroutput, 'equalised_' + filename + '.wav')
     wavfile.write(output_file, sr, y_processed)
-    
