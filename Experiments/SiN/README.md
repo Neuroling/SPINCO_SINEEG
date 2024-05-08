@@ -31,4 +31,17 @@ Analysis aims
 ### Task 
 Response screen with 4 choices
 
+### Response images
+CallSign images from [MultiPic](https://doi.org/10.1080/17470218.2017.1310261)
 
+CallSign and MultiPic Number:
+- Tiger - Nr. 98
+- Adler - Nr. 703
+- Drossel - Nr. 430
+- Kröte - Nr. 612 (For future reference, Nr. 584 would be better)
+- Ratte - Nr. 137
+- Eule - Nr. 323
+- Hammer - Nr. 216
+- Schraube
+- Flugzeug - Nr. 297
+- Auto - Nr. 302 / Nr. 358 / Nr. 364

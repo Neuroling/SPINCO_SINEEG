@@ -52,11 +52,12 @@ import os
 # Sentence variations 
 sentence = 'Vorsicht xnamex, geh sofort zum xcolourx Faeld von der Spalte xnumberx'
 
-callSigns = ['Adler','Eule', 'Tiger','Ratte', 
-         'Hammer',  'Schraube', 'Flugzeug', 'Auto']
+callSigns = ['Messer', 'Gabel', 'Teller', 'Loeffel', 'Fahrrad']
+# callSigns = ['Adler','Eule', 'Tiger','Ratte', 
+#          'Hammer',  'Schraube', 'Flugzeug', 'Auto']
 
 colours = ['gelben','gruenen','roten','weissen', 'blauen', 
-         'schwarzen', 'pinken', 'braunen', 'grauen']
+         'schwarzen', 'pinken', 'braunen']
 
 numbers = ['Eins','Zwei','Drei','Vier', 'Fuenf', 'Sechs', 'Acht', 'Neun']
 

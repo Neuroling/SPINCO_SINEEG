@@ -23,6 +23,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy.signal import hilbert
+import pandas as pd
 import os
 from glob import glob
 
@@ -91,7 +92,62 @@ for i, audiofile  in enumerate(audiofiles):
 
     title = audiofile[audiofile.rfind(lang_voice_speaker):audiofile.rfind('.wav')]   
     
-    # get the texgrid file with the same 
+    # get the texgrid file with the same #%% Get word onset time dataframe
+    df = pd.read_csv(os.path.join(dirinput, 'word-times','Full_tts-golang_allTimes.csv'))
+
+
+    #%% get mean & std of durations of each segment
+    sentence = ['Start', 'Vorsicht', 'CallSign', 'Break', 'Geh', 'Sofort', 'Zum', 'Colour', 'Feld', 'Von', 'Der', 'Spalte', 'Number', 'End']
+
+    mean_segment = []
+    std_segment = []
+    for segment in sentence:
+        mean_segment.append((df[segment + '_tmax'] - df[segment + '_tmin']).mean())
+        std_segment.append((df[segment + '_tmax'] - df[segment + '_tmin']).std())
+    mean_durations = pd.DataFrame(mean_segment).transpose()
+    mean_durations.columns = sentence
+
+    std_durations = pd.DataFrame(std_segment).transpose()
+    std_durations.columns = sentence
+
+    #%%
+
+    stimuli = ['Adler','Eule', 'Tiger','Ratte', 
+                'Hammer',  'Schraube', 'Flugzeug', 'Auto',
+                'gelben','gruenen','roten','weissen', 
+                'blauen', 'schwarzen', 'pinken', 'braunen',
+                'Eins','Zwei','Drei','Vier', 'Fuenf', 'Sechs', 'Acht', 'Neun']
+
+
+    rownames_mean = ['overall_mean']
+    rownames_std = ['overall_std']
+    duration_info_mean = [mean_durations]
+    duration_info_std =  [std_durations]
+
+    for stim in stimuli:
+        tmp_df = df[df['file'].str.contains(stim[:3])]
+        rownames_mean.append(stim + '_mean')
+        rownames_std.append(stim + '_std')
+        
+        mean_segment = []
+        std_segment = []
+        for segment in sentence:
+            mean_segment.append((tmp_df[segment + '_tmax'] - tmp_df[segment + '_tmin']).mean())
+            std_segment.append((tmp_df[segment + '_tmax'] - tmp_df[segment + '_tmin']).std())
+        mean_durations = pd.DataFrame(mean_segment).transpose()
+        mean_durations.columns = sentence
+        std_durations = pd.DataFrame(std_segment).transpose()
+        std_durations.columns = sentence
+        
+        duration_info_mean.append(mean_durations)
+        duration_info_std.append(std_durations)
+        
+    duration_info_mean = pd.concat(duration_info_mean)
+    duration_info_std = pd.concat(duration_info_std)   
+
+    duration_info_mean.index = rownames_mean
+    duration_info_std.index = rownames_std
+
     for fs in textgridfiles:
         if title in fs:
             textgridfile = textgridfiles[textgridfiles.index(fs)]
