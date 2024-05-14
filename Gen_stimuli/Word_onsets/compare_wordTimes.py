@@ -9,6 +9,11 @@ This will give you various tables of mean durations of segments (segmented by we
 
 
 """
+
+save_plots = False
+inlcuding_old = False
+
+#%% imports
 import numpy as np
 
 import pandas as pd
@@ -27,6 +32,7 @@ baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens',
 #%% Get word onset time dataframe
 df = pd.read_csv(os.path.join(baseDir, 'Full_tts-golang_allTimes.csv'))
 
+if inlcuding_old: df = pd.concat([df,pd.read_csv(os.path.join(baseDir, 'old_Full_tts-golang_allTimes.csv'))])
 
 #%% 
 sentence = ['Start', 'Vorsicht', 'CallSign', 'Break', 'Geh', 'Sofort', 'Zum', 
@@ -43,56 +49,55 @@ stimType = ['CallSign', 'Colour', 'Number']
 stimAll = callSigns + colours + numbers
 stimLists = [callSigns] + [colours] + [numbers]
 
-for i in stimType:
-    df[i + '_duration'] = (df[i + '_tmax'] - df[i + '_tmin'])
 
 #%% get mean & std of durations of each segment
 
-# mean_segment = []
-# std_segment = []
-# for segment in sentence:
-#     mean_segment.append((df[segment + '_tmax'] - df[segment + '_tmin']).mean())
-#     std_segment.append((df[segment + '_tmax'] - df[segment + '_tmin']).std())
-# mean_durations = pd.DataFrame(mean_segment).transpose()
-# mean_durations.columns = sentence
+mean_segment = []
+std_segment = []
+for segment in sentence:
+    mean_segment.append((df[segment + '_tmax'] - df[segment + '_tmin']).mean())
+    std_segment.append((df[segment + '_tmax'] - df[segment + '_tmin']).std())
+mean_durations = pd.DataFrame(mean_segment).transpose()
+mean_durations.columns = sentence
 
-# std_durations = pd.DataFrame(std_segment).transpose()
-# std_durations.columns = sentence
+std_durations = pd.DataFrame(std_segment).transpose()
+std_durations.columns = sentence
 
-# del segment, std_segment, mean_segment
+del segment, std_segment, mean_segment
+
 #%% get mean & std of durations of each segment within target words
 
-# rownames_mean = ['overall_mean']
-# rownames_std = ['overall_std']
-# duration_info_mean = [mean_durations]
-# duration_info_std =  [std_durations]
+rownames_mean = ['overall_mean']
+rownames_std = ['overall_std']
+duration_info_mean = [mean_durations]
+duration_info_std =  [std_durations]
 
-# for stim in stimAll:
-#     tmp_df = df[df['file'].str.contains(stim[:3])]
-#     rownames_mean.append(stim + '_mean')
-#     rownames_std.append(stim + '_std')
+for stim in stimAll:
+    tmp_df = df[df['file'].str.contains(stim[:3])]
+    rownames_mean.append(stim + '_mean')
+    rownames_std.append(stim + '_std')
     
-#     mean_segment = []
-#     std_segment = []
-#     for segment in sentence:
-#         mean_segment.append((tmp_df[segment + '_tmax'] - tmp_df[segment + '_tmin']).mean())
-#         std_segment.append((tmp_df[segment + '_tmax'] - tmp_df[segment + '_tmin']).std())
-#     mean_durations = pd.DataFrame(mean_segment).transpose()
-#     mean_durations.columns = sentence
-#     std_durations = pd.DataFrame(std_segment).transpose()
-#     std_durations.columns = sentence
+    mean_segment = []
+    std_segment = []
+    for segment in sentence:
+        mean_segment.append((tmp_df[segment + '_tmax'] - tmp_df[segment + '_tmin']).mean())
+        std_segment.append((tmp_df[segment + '_tmax'] - tmp_df[segment + '_tmin']).std())
+    mean_durations = pd.DataFrame(mean_segment).transpose()
+    mean_durations.columns = sentence
+    std_durations = pd.DataFrame(std_segment).transpose()
+    std_durations.columns = sentence
     
-#     duration_info_mean.append(mean_durations)
-#     duration_info_std.append(std_durations)
+    duration_info_mean.append(mean_durations)
+    duration_info_std.append(std_durations)
     
-# duration_info_mean = pd.concat(duration_info_mean)
-# duration_info_std = pd.concat(duration_info_std)   
+duration_info_mean = pd.concat(duration_info_mean)
+duration_info_std = pd.concat(duration_info_std)   
 
-# duration_info_mean.index = rownames_mean
-# duration_info_std.index = rownames_std
+duration_info_mean.index = rownames_mean
+duration_info_std.index = rownames_std
 
-# del rownames_mean, rownames_std, tmp_df, mean_durations, std_durations
-# del segment, std_segment, mean_segment
+del rownames_mean, rownames_std, tmp_df, mean_durations, std_durations
+del segment, std_segment, mean_segment
 
 #%%
 maxLen = max([len(callSigns),len(colours),len(numbers)])
@@ -128,6 +133,7 @@ std_targetWord.index = rownames
 # del rownames, maxLen, targetList, targetWord, i, ii, stim, mean, std, tmp_df
 
 #%%
+
 output_path = baseDir + os.sep + 'plot_wordDuration_'
 output_end = '_' + str(datetime.now())[:-10].replace(':','') + '.png'
 df_lf = []
@@ -140,7 +146,7 @@ for i in stimType:
     ax=sns.violinplot(data=df_tmp, x='value', y='variable', hue = 'Stimulus',linewidth=(0), dodge = True, saturation = 0.3, palette = ['lightgrey'], legend = False)
     sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
     plt.xlabel('original duration of word')
-    plt.savefig((output_path + i + output_end), bbox_inches = "tight")
+    if save_plots: plt.savefig((output_path + i + output_end), bbox_inches = "tight")
     
     df_lf.append(df_tmp)
 df_lf = pd.concat(df_lf)
@@ -151,4 +157,4 @@ ax=sns.stripplot(data=df_lf, x='value', y='variable', hue = 'Stimulus',linewidth
 ax=sns.violinplot(data=df_lf, x='value', y='variable',linewidth=(0), saturation = 0.3, color = 'lightgrey')
 sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
 plt.xlabel('original duration of word')
-plt.savefig((output_path + 'allTargets' + output_end), bbox_inches = "tight")
+if save_plots: plt.savefig((output_path + 'allTargets' + output_end), bbox_inches = "tight")

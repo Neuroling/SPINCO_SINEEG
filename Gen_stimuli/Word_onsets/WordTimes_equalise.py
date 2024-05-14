@@ -40,7 +40,9 @@ mean_durations.columns = sentence
 
 std_durations = pd.DataFrame(std_segment).transpose()
 std_durations.columns = sentence
-
+df_to_save = pd.concat([mean_durations, std_durations])
+df_to_save.index = ['mean_durations','std_durations']
+df_to_save.to_csv(os.path.join(baseDir, 'word-times', 'equalised_tts-golang_wordTimes.csv'), index= True)
     
 #%% standardise duration - loop to process each audio file
 
@@ -72,7 +74,7 @@ for filename in df['file']:
         
         segments.append(y_segment_stretched)
         if len(y_segment_stretched) != round(segment_mean):
-            raise ValueError('WARNING! Segment length could not be equalised. This could be due to a change in how librosa uses rate to calculate the length of the new segment. ')
+            raise ValueError('WARNING! Segment length could not be equalised. This could be due to a change in how librosa uses rate to calculate the length of the new segment. ') # e.g. previous versions calculated the new length by multiplying with rate, whereas this version divides by rate. Look at the source code of the function.
         
     # Concatenate segments
     y_processed = np.concatenate(segments)

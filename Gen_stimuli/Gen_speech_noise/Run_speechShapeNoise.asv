@@ -23,10 +23,9 @@ addpath([baseDir, fullfile('Scripts','Gen_stimuli','Gen_speech_noise')])
 
 % Inputs 
  % paths and files 
-dirinput =      [baseDir,fullfile('Stimuli','AudioGens','Experiment2','tts-golang-44100hz','tts-golang-equalisedDuration')] ;
-diroutput =      [baseDir,fullfile('Stimuli','AudioGens','Experiment2','tts-golang-44100hz','tts-golang-equalisedDuration-SiSSN')];
-
-
+dirinput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-equalisedDuration')] ;
+diroutput =      [baseDir,fullfile('Stimuli','AudioGens','tts-golang-44100hz','tts-golang-equalisedDuration-SiSSN')];
+%mkdir(diroutput)
 
 % save a 'last run' copy of script 
 [filepath,name,ext] = fileparts(matlab.desktop.editor.getActiveFilename);
@@ -34,7 +33,7 @@ copyfile(matlab.desktop.editor.getActiveFilename,[diroutput,filesep,name,'_lastR
 
 
 % find files
-% cd (dirinput)
+cd (dirinput)
 audiofiles =      dir([dirinput,filesep,'*.wav']); % must be more than one 
 audiofiles =      fullfile(dirinput, {audiofiles.name}); 
  
