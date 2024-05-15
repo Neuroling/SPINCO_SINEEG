@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['Gen_stimuli/Word_onsets/WordTimes_equalise.py', 'Gen_stimuli/Word_onsets/compare_wordTimes.py', 'Gen_stimuli/Word_onsets/Gather_webmaus_allTimes.py', 'utils/copy_files.py']
+recent_files = ['Gen_stimuli/Word_onsets/README.md', 'Gen_stimuli/Gen_speech_noise_sequences/Generate_spreadsheet_Exp2.py', 'Gen_stimuli/Gen_speech_noise_sequences/Generate_spreadsheet.py']
 
 [main]
 version = 0.2.0

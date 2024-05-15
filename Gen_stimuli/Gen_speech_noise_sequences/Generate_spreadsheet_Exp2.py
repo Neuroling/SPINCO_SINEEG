@@ -15,22 +15,22 @@ Created on Thu Feb  9 10:37:20 2023
 @author: gfraga & samuemu
 """
 import os
-import sys
 from glob import glob
 import pandas as pd
 import numpy as np
 import wave
+import random
 
 #%% User Inputs
 # Dictionaries with trigger codes: 1st digit = noise, 2nd digit=position (1-call,2-col,3-num), 3rd digit = item (see below)
-triggerDict_noise = {'NV':1}
+triggerDict_noise = {'NV':1, 'SiSSN':2, 'clear':3}
 
 triggerDict_call = {'Adl':1, 'Eul':2, 'Rat':3, 'Tig':4, 
-                    'Flu':5, 'Aut':6, 'Ham':7, 'Sch':8}
+                    'Vel':5, 'Aut':6, 'Mes':7, 'Gab':8}
 triggerDict_col  = {'gel':1, 'gru':2, 'rot':3, 'wei':4,
                     'bla':5, 'bra':6, 'pin':7, 'sch':8}
 triggerDict_num  = {'Ein':1, 'Zwe':2, 'Dre':3, 'Vie':4,
-                    'Fue':5, 'Sec':6, 'Ach':8, 'Neu':9}
+                    'Fue':5, 'Sec':6, 'Neu':7, 'Nul':8}
 
 # which degradation levels should be included? If empty, will include all.
 degradation_levels = []
@@ -42,8 +42,8 @@ baseDir = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Stimuli', 'AudioGens
 
 diroutput = os.path.join(baseDir, 'flow')
 
-audioDir = os.path.join(baseDir, 'tts-golang-44100hz','tts-golang-NV-click')
-praatSummaryFile = os.path.join(baseDir, 'tts-golang-44100hz','word-times','automatic_tts-golang_wordTimes.csv')
+audioDir = os.path.join(baseDir ,'selected_audio_psychoPy_click')
+praatSummaryFile = os.path.join(baseDir,'tts-golang-44100hz', 'word-times','equalised_tts-golang_wordTimes.csv')
 
 # get files
 audiofiles = glob(os.path.join(audioDir,'*.wav'))
@@ -52,8 +52,8 @@ praatTimes = pd.read_csv(praatSummaryFile)
 
 #%%
 # Create dict summarizing audiofiles, add times from praat 
-fileDict = {'audiofile':[],'duration':[],'noise':[],'voice':[],'words':[],'callSign':[],'colour':[],'number':[],'levels':[],\
-            'NV_nChannels':[],'trigger_start':[],'trigger_end':[],'trigger_call':[],'trigger_col':[],'trigger_num':[],\
+fileDict = {'audiofile':[],'duration':[],'noise':[],'voice':[],'words':[],'callSign':[],'colour':[],'number':[],'levels':[],
+            'trigger_start':[],'trigger_end':[],'trigger_call':[],'trigger_col':[],'trigger_num':[],
                 'trigger_call_end': [],'trigger_col_end':[],'trigger_num_end':[]}
     
 times=[] # appending to list and then concatenating to a df is always cheaper
@@ -66,39 +66,41 @@ for i, fileinput in enumerate(audiofiles):
     
     # for readability and convenience, we do this here instead of repeating the fileinput.split('_')[n] over and over
     filename = fileinput[fileinput.rfind(os.sep)+1:]
-    _noise_ = filename.split('_')[0]
-    _voice_ = filename.split('_')[2]
-    _words_ = filename.split('_')[3]
+    noise_ = filename.split('_')[0]
+    voice_ = '_'.join(filename.split('_')[2:4])
+    words_ = filename.split('_')[4]
     
-    _callSign_ = _words_.split('-')[0]
-    _colour_ = _words_.split('-')[1]
-    _number_ = _words_.split('-')[2]
+    callSign_ = words_.split('-')[0]
+    colour_ = words_.split('-')[1]
+    number_ = words_.split('-')[2]
     
-    _level_ = filename.split('_')[4] 
-    _nCh_ = filename.split('_')[5].split('.wav')[0]
-    
+    level_ = '.'.join(filename.split('_')[5:])
+    level_ = level_[:level_.rfind('.')]
+    if len(level_) > 5:
+        level_ = level_[:level_.rfind('.')]
+
+
     #if degradation_levels is not empty, only include audiofiles in with specified levels
     if degradation_levels: # lists are implicitly boolean: they are False if empty and True if not empty           
-        if not any(_level_ in x  for x in degradation_levels):
+        if not any(level_ in x  for x in degradation_levels):
             continue # Will skip this iteration and continue with next file
 
         
     # Extract file info
     fileDict['audiofile'].append('audio/'+filename)
-    fileDict['noise'].append(_noise_)
-    fileDict['voice'].append(_voice_)
+    fileDict['noise'].append(noise_)
+    fileDict['voice'].append(voice_)
     
     # info about sentence content
-    fileDict['words'].append(_words_)
-    fileDict['callSign'].append(_callSign_)
-    fileDict['colour'].append(_colour_)
-    fileDict['number'].append(_number_)
+    fileDict['words'].append(words_)
+    fileDict['callSign'].append(callSign_)
+    fileDict['colour'].append(colour_)
+    fileDict['number'].append(number_)
     
     # degradation/noise levels
-    fileDict['levels'].append(_level_)
+    fileDict['levels'].append(level_)
     
-    # number of channels
-    fileDict['NV_nChannels'].append(_nCh_)
+
          
     #add file duration         
     with wave.open(fileinput, 'r') as wav_file:
@@ -109,21 +111,21 @@ for i, fileinput in enumerate(audiofiles):
     fileDict['duration'].append(length)
     
     # Add trigger codes, defined by parts in the filename 
-    tmpcode  = [triggerDict_noise[_noise_], 0, 0]
+    tmpcode  = [triggerDict_noise[noise_], 0, 0]
     fileDict['trigger_start'].append(''.join(map(str,tmpcode)))
     
-    tmpcode  = [triggerDict_noise[_noise_], 0, 1]
+    tmpcode  = [triggerDict_noise[noise_], 0, 1]
     fileDict['trigger_end'].append(''.join(map(str,tmpcode)))
     
-    tmpcode  = [triggerDict_noise[_noise_], 1, triggerDict_call[_callSign_]]
+    tmpcode  = [triggerDict_noise[noise_], 1, triggerDict_call[callSign_]]
     fileDict['trigger_call'].append(''.join(map(str,tmpcode)))
     fileDict['trigger_call_end'].append(''.join(map(str,tmpcode[0:2])) + '0')
     
-    tmpcode  = [triggerDict_noise[_noise_], 2,triggerDict_col[_colour_]]
+    tmpcode  = [triggerDict_noise[noise_], 2,triggerDict_col[colour_]]
     fileDict['trigger_col'].append(''.join(map(str,tmpcode)))
     fileDict['trigger_col_end'].append(''.join(map(str,tmpcode[0:2])) + '0')
     
-    tmpcode  = [triggerDict_noise[_noise_], 3, triggerDict_num[_number_]]
+    tmpcode  = [triggerDict_noise[noise_], 3, triggerDict_num[number_]]
     fileDict['trigger_num'].append(''.join(map(str,tmpcode)))
     fileDict['trigger_num_end'].append(''.join(map(str,tmpcode[0:2])) + '0')
     
@@ -132,7 +134,7 @@ for i, fileinput in enumerate(audiofiles):
     #Get praat info of onsets/offsets
     praatTimes.file = praatTimes.file.str.replace('-man.','.')
     names2match = praatTimes['file'].str.split('.TextGrid').str[0]
-    rowidx = np.where('_'.join(fileinput.split('_')[1:4])==names2match)[0]
+    rowidx = np.where('_'.join(filename.split('_')[2:5])==names2match)[0]
     times.append(praatTimes.iloc[rowidx])       
     
 times = pd.concat(times) # concatenating dfs from the list into one df
@@ -147,49 +149,126 @@ else:
     print('~~~~~~~~~~~~ d[O_o]b. Could not find times for all audiofiles. Revise your praat summary!')
 
 
-# %%    
-# Add index by noise , voice and Level (to use for block assignment)
-tab2save = tab.groupby(['noise','voice','levels']).sample(frac=1) 
-#tab2save = tab.groupby(['noise','voice','levels'])
-#tab2save['newidx'] = tab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
-tab2save['newidx'] = tab2save.groupby(['noise','voice','levels']).cumcount(ascending=True)
+# %%  ----- GENERATING ALL UNIQUE LISTS OF 32 TRIALS -----  
+call = list(triggerDict_call.keys())
+col = list(triggerDict_col.keys())
+num = list(triggerDict_num.keys())
+random.shuffle(call)
+random.shuffle(col)
+random.shuffle(num)
 
-# # assign blocks: only 16 trials per Level are taken 
-# tab2save['block'] = 0
-# tab2save.block[(tab2save['noise']=='SiSSN') & (tab2save['newidx'].between(0, 15, inclusive='both'))] = 'SSN1' 
-# tab2save.block[(tab2save['noise']=='SiSSN') & (tab2save['newidx'].between(16, 31, inclusive='both'))] = 'SSN2'
-# tab2save.block[(tab2save['noise']=='NV') & (tab2save['newidx'].between(0, 15, inclusive='both'))] = 'NV1'
-# tab2save.block[(tab2save['noise']=='NV') & (tab2save['newidx'].between(16, 31, inclusive='both'))] = 'NV2'
-# tab2save = tab2save.groupby('block').sample(frac=1)
+num = num+num
 
-# # Discard excess trials
-# tab2save = tab2save[tab2save['block']!= 0];
+def generate_lists(list1, n):
+    list2 = []
+    x = len(list1)
+    for i in range(x):
+        sublist = list1[i:i+n]
+        if len(sublist) == n: # if i+n2 <= n
+            list2.append(sublist)
+        else: # if i+n2 > n then sublist will have the final items of list1, so add the n2-len(sublist) items of list1
+            sublist += list1[:n-len(sublist)]
+            list2.append(sublist)
+    return list2
 
-# #overview 
-# print(tab2save.groupby(['noise','block','voice','levels'])['block'].count())
-# overview = tab2save.groupby(['noise','block','voice','levels'])['words'].count().reset_index()
+# 'circling' through the lists
+iterate_col = generate_lists(col, 4)
 
-# stimOverview = pd.concat([tab2save.groupby(['noise','block','voice','levels'])['words'].count().reset_index(),\
-#                           tab2save.groupby(['noise','block','voice','levels'])['callSign'].count().reset_index(),\
-#                               tab2save.groupby(['noise','block','voice','levels'])['colour'].count().reset_index(),\
-#                                   tab2save.groupby(['noise','block','voice','levels'])['number'].count().reset_index()])
+
+#%% create unique lists of 32 trials which do not overlap
+designation_lists = {key: [] for key in range(16)}
+
+allocation_list = np.arange(8)
+random.shuffle(allocation_list) # This is so the allocation lists are not sequential
+
+for x in allocation_list:
+    designation = []
+    # designation2 = []
+    
+    for i, call_ in enumerate(call): 
+        
+        for z, col_ in enumerate(iterate_col[i]):
+            
+            designation_lists[x].append('-'.join([call_,col_, num[z]]))
+            designation_lists[x+8].append('-'.join([call_,col_, num[z+4]]))
+            
+    iterate_col = np.roll(iterate_col, -1) # putting the first item in the last position
+
+# check if the lists are actually unique
+for i in range(len(designation_lists)):
+    for j in range(i+1, len(designation_lists)):
+        if any(item in designation_lists[i] for item in designation_lists[j]):
+            print('True', i, j)
+
+
+#%%
+"""
+Now, I need to create the blocks...
+
+We do 3 blocks per noise type, so 6 blocks in total.
+Each block has 32 degraded trials, and 16 clear trials (total 48).
+Therefore, I will use 9 unique lists for each participant:
+    - each block has a unique list for the degraded stimuli
+    - for clear stimuli, additional 3 lists which are divided in two
+
+So, for participant 1, it needs to be 
+NV:    allocation list 0, 1, 2
+SiSSN: allocation list 3, 4, 5
+clear: allocation list 6, 7, 8
+
+Block designations: 
+    NVx means the NV stimuli of allocation list x
+    SSNx means the SSN stimuli of allocation list x+3
+
+For the clear stimuli:
+    the clear stimuli of allocation list x+6 are assigned to NVx and SSNx in alternating order
+    
+Note: We have 16 allocation lists. If x+3 or x+6 is over 15, it will wrap around to 0
+"""
+# Function to find the key for a given value in the dictionary of lists
+def find_key(value):
+    for key, value_list in designation_lists.items():
+        if value in value_list:
+            return key
+    return None
+
+# Adding a new column to the DataFrame with the key from the dictionary of lists
+tab['allocation_list'] = tab['words'].apply(find_key)
+
+tab['block'] = tab['allocation_list'].apply(lambda x: str(x)) # cast to str
+tab.loc[tab['noise'] == 'NV', 'block'] = tab.loc[tab['noise'] == 'NV', 'block'].apply(lambda x: 'NV'+x)
+
+# create the block designations for SiSSN - first we need a list that is shifted by 3 (3,4,5,...,15,0,1,2)
+numbers_list = np.arange(16)
+numbers_list = np.roll(numbers_list, -3)
+
+for i in range(16): # iterate over the 16 blocks
+
+    # Create designation for current block
+    block_designation = 'SSN' + str(i) 
+    
+    #subset df by SiSSN and allocation_list i+3
+    tmp_df = tab[tab['noise'] == 'SiSSN']
+    tmp_df = tmp_df[tmp_df['allocation_list'] == numbers_list[i]]
+    
+    # Replace the values in 'block' for SiSSN and allocation_list i+3 by 'SSN(i)'
+    tab.loc[tmp_df.index, 'block'] = block_designation
+    
+    # subset df by clear stimuli and allocation list i+6
+    tmp_df = tab[tab['noise'] == 'clear']
+    tmp_df = tmp_df[tmp_df['allocation_list'] == np.roll(numbers_list,-3)[i]]
+    
+    # Replace the values in 'block' for clear stimuli and allocation_list i+6 by 'NV(i)'
+    tab.loc[tmp_df.index, 'block'] = 'NV' + str(i)
+    # Same as the last line, but only replace every second value (so half are SSNi and half are NVi)
+    tab.loc[tmp_df.index[1::2], 'block'] = 'SSN' + str(i)
+
 
 # %% save to file
-# with open(os.path.join(diroutput,'tts-golang-selected_PsyPySEQ.csv'),'w', newline='') as csvfile:
-#     tab2save.to_csv(csvfile,index=False)
+with open(os.path.join(diroutput,'tts-golang-selected_PsyPySEQ.csv'),'w', newline='') as csvfile:
+    tab.to_csv(csvfile,index=False)
     
-# # %% save per block    
-# for block_value in tab2save['block'].unique():    
-#     block_df = tab2save[tab2save['block'] == block_value]    
-#     block_df.to_csv(os.path.join(diroutput, 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv'), index=False)
-
-# #%%
-# with open(os.path.join(diroutput, 'tts-golang-selected_seqOverview.csv'),'w', newline='') as csvfile:
-#         overview.to_csv(csvfile,index=False)
-
-# #%%
-
-# with open(os.path.join(diroutput , 'tts-golang-selected_stimOverview.csv'),'w', newline='') as csvfile:
-#         stimOverview.to_csv(csvfile,index=False)
-                
-  
+# %% save per block    
+for block_value in tab['block'].unique():    
+    block_df = tab[tab['block'] == block_value]    
+    block_df.to_csv(os.path.join(diroutput, 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv'), index=False)

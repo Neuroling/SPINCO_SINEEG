@@ -13,8 +13,8 @@ baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep]
 % 
 
 % paths and files 
-dirinput =   [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang-NV')];
-diroutput =  [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang-NV-click')];
+dirinput =   [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang-equalisedDuration')];
+diroutput =  [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang-equalisedDuration-selected-click')];
 
 if exist(diroutput) ~= 7
     mkdir(diroutput);
@@ -34,7 +34,7 @@ files = dir([dirinput,'/*.wav']);
 files = {files.name};
 %% 
 for f= 1:length(files);
-    fileinput= files{f}
+    fileinput= files{f};
     [sig, fs] = audioread([dirinput,'/',fileinput]);
     
     %% Create a second channel with a click 
