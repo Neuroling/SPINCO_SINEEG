@@ -5,7 +5,7 @@
 
 Created on Tue Mar 21 08:32:28 2023
 
-@author: gfraga
+@author: gfraga & samuemu
 """
 
 import pandas as pd
@@ -37,49 +37,18 @@ def swap_pairs(order):
 
 all_orders = []
 
-for i in range(8):
+# create lists of block orders
+# range(N) will create N*2 block orders. 
+# The biggest value for N before the orders start repeating is N=len(files)/2
+for i in range(8): 
     order1_tmp = blocks[0:6]
     order2_tmp = swap_pairs(order1_tmp)
     blocks = np.roll(blocks,-9)
     all_orders.append(order1_tmp)
     all_orders.append(order2_tmp)
     
-
-
 for i, thisOrder in enumerate(all_orders):
-    for ii, item in enumerate(thisOrder):
+    for ii, item in enumerate(thisOrder): # replace block designations (e.g. NV1) by filepath to csv file
         thisOrder[ii] = os.path.join('flow','tts-golang-selected_PsyPySEQ_' + item + '.csv')
     tab = pd.DataFrame({'condsFile':thisOrder})
     tab.to_csv(os.path.join(diroutput,'order' + str(i) + '.csv'),index=False)
-
-#%%
-# NV1 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV1.csv')
-# NV2 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV2.csv')
-# NV3 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV3.csv')
-# NV4 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV4.csv')
-# NV5 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV5.csv')
-# NV6 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV6.csv')
-# NV7 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV7.csv')
-# NV8 = os.path.join(diroutput,'tts-golang-selected_PsyPySEQ_NV8.csv')
-
-# list1 = [NV1, NV2, NV3, NV4, NV5, NV6, NV7, NV8]
-# #%% Orders 
-
-# order1 = list1
-# # allOrders = list(itertools.permutations(list1))
-# # order1 = [NV1,NV2,NV3,NV4]
-# order2 = np.roll(order1, 1)
-# # order3 = [NV2,SS1,NV1,SS2]
-# # order4 = np.roll(order3, 1)
-# # order5 = [NV1,SS2,NV2,SS1]
-# # order6 = np.roll(order5, 1)
-# # order7 = [NV2,SS2,NV1,SS1]
-# # order8 = np.roll(order7, 1)
-
-# # tables 
-# os.chdir(diroutput)
-# for i in range(1,9):
-#     print(i)
-#     tab = pd.DataFrame({'condsFile':globals()['order'+str(i)]})
-#     tab.to_csv('order' + str(i) + '.csv',index=False)
-    

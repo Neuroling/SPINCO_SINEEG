@@ -13,11 +13,13 @@ import shutil
 
 
 thisDir = os.getcwd()
-baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens','Experiment2')
+# baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens','Experiment2')
+# dirinput = os.path.join(baseDir, 'tts-golang-44100hz', 'tts-golang-equalisedDuration-selected-click')
+# diroutput = os.path.join(baseDir, 'selected_audio_psychoPy_click')
 
-dirinput = os.path.join(baseDir, 'tts-golang-44100hz', 'tts-golang-equalisedDuration-selected-click')
-
-diroutput = os.path.join(baseDir, 'selected_audio_psychoPy_click')
+baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], )
+dirinput = os.path.join(baseDir,'Stimuli','AudioGens','Experiment2','flow')
+diroutput = os.path.join(baseDir,'Scripts', 'Experiments','SiN','Experiment2','SiN_task','flow')
 
 if not os.path.exists(diroutput):
     os.mkdir(diroutput)

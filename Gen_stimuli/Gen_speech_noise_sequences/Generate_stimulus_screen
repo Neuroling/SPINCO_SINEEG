@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu May 16 06:49:45 2024
+
+@author: samuemu
+
+Because we now have 8 stimuli for each target (callSign, colour, number) we cannot
+go with the same static 4-by-3 grid of stimulus selection screens. We need to create a
+grid that updates with every trial.
+
+For each trial, we need to have the correct targets, and random other target
+So we need to choose 3 random callSign, colour and number images for each trial
+and we need to randomise the row in which the correct response is.
+
+--- Actually, we decided to have all 8 options on screen. So consider this script ~*°*~trash~*°*~
+"""
+
+import os
+from glob import glob
+import pandas as pd
+import numpy as np
+import wave
+import random
+
+#%% paths 
+_thisDir = os.getcwd()
+
+_baseDir = os.path.join(_thisDir[:_thisDir.find('Scripts')] + 'Stimuli', 'AudioGens', 'Experiment2')
+_dirinput = os.path.join(_baseDir, 'flow')
+
+files = glob(os.path.join(_dirinput,'tts-golang-selected_PsyPySEQ_*'))
+
+#%%
+targets = [['Adl', 'Eul', 'Rat', 'Tig', 'Vel', 'Aut', 'Mes', 'Gab'],
+           ['gel', 'gru', 'rot', 'wei', 'bla', 'bra', 'pin', 'sch'],
+           ['Ein', 'Zwe', 'Dre', 'Vie', 'Fue', 'Sec', 'Neu', 'Nul']]
+
+#%% create column names to index the location of each image in the 4-by-3 grid
+colnames = []
+for row in range(4):
+    for col in range(3):
+        colnames.append('row' + str(row) + '-col' + str(col))
+del row, col
+#%%
+# loop over blocks (flow csv files)
+for file in files:
+    df = pd.read_csv(file)
+    
+    image_selection = []
+    # loop over trials (rows in the csv files)
+    for row in range(len(df)):
+        words = df.loc[row, 'words']
+        
+        image_selection.append([])
+        
+        # loop over targets (call, col, num)
+        for ii, target in enumerate(targets):
+            thisTarget = words.split('-')[ii]
+
+            choice_target = random.sample([_ for _ in target if _ != thisTarget], k=3) + [thisTarget]
+            random.shuffle(choice_target)
+            
+            image_selection[row].extend(choice_target)
+        image_selection[row] = ['images/'+ _ + '.png' for _ in image_selection[row]]
+    image_selection = pd.DataFrame(image_selection, columns = colnames)
+    
+    df = pd.concat([df, image_selection], axis = 1)
+    df.to_csv(file, index = False)   
+    

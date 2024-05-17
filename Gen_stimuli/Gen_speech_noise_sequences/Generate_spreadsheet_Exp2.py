@@ -4,11 +4,13 @@
 
 - Extract info from wav filename (tokens in sentence, voice, type of noise)
 - Read wav durations
-- Gather onset and offset of targets (inspected with Praat & Webmaus)
-- Assign blocks splitting noise type: NV1, NV2:
-- Select 1 voice and 3 degradation levels
-- Equal number of trials for each level
-- 32 trials x 2 voices x 3 levels = 192 trials per block (~20 min)
+- Gather onset and offset of targets (inspected with Webmaus)
+- Assign blocks splitting noise type: NV1, NV2,... and same for SSN
+    - In each block, every unique callSign, colour and number will occur 4 times exactly
+      as degraded stimuli (32 trials of degraded stimuli) and 2 times as clear/non-degraded
+      stimuli (16 trials of non-degraded stimuli).
+    - No combination of callSign, colour or number is repeated
+    
 - Save the full table and a table per block   
 
 Created on Thu Feb  9 10:37:20 2023
@@ -20,6 +22,7 @@ import pandas as pd
 import numpy as np
 import wave
 import random
+import itertools
 
 #%% User Inputs
 # Dictionaries with trigger codes: 1st digit = noise, 2nd digit=position (1-call,2-col,3-num), 3rd digit = item (see below)
@@ -157,48 +160,101 @@ random.shuffle(call)
 random.shuffle(col)
 random.shuffle(num)
 
-num = num+num
+# # num = num+num
 
-def generate_lists(list1, n):
-    list2 = []
-    x = len(list1)
-    for i in range(x):
-        sublist = list1[i:i+n]
-        if len(sublist) == n: # if i+n2 <= n
-            list2.append(sublist)
-        else: # if i+n2 > n then sublist will have the final items of list1, so add the n2-len(sublist) items of list1
-            sublist += list1[:n-len(sublist)]
-            list2.append(sublist)
-    return list2
+# # def generate_lists(list1, n):
+# #     list2 = []
+# #     x = len(list1)
+# #     for i in range(x):
+# #         sublist = list1[i:i+n]
+# #         if len(sublist) == n: # if i+n2 <= n
+# #             list2.append(sublist)
+# #         else: # if i+n2 > n then sublist will have the final items of list1, so add the n2-len(sublist) items of list1
+# #             sublist += list1[:n-len(sublist)]
+# #             list2.append(sublist)
+# #     return list2
 
-# 'circling' through the lists
-iterate_col = generate_lists(col, 4)
+# # # 8 lists of 4 colours, "rolling" through the colours
+# # # call[N] needs to be combined with each item in iterate_col[N]
+# # iterate_col = generate_lists(col, 4)
 
 
-#%% create unique lists of 32 trials which do not overlap
-designation_lists = {key: [] for key in range(16)}
+# #%% create unique lists of 32 trials which do not overlap
 
-allocation_list = np.arange(8)
-random.shuffle(allocation_list) # This is so the allocation lists are not sequential
+# # dict with 16 empty lists, numbered 0-15
+# designation_lists = {key: [] for key in range(16)}
 
-for x in allocation_list:
-    designation = []
-    # designation2 = []
+# # the numbers [0:8] in random order (this will be the key of designation_dict)
+# allocation_list = np.arange(16)
+# # random.shuffle(allocation_list) # This is so the allocation lists are not sequential
+
+# # # Now we create the unique lists
+# # for allocation in allocation_list: # for every allocation
+# #     designation = []
     
-    for i, call_ in enumerate(call): 
+# #     for i_call, call_ in enumerate(call): 
         
-        for z, col_ in enumerate(iterate_col[i]):
+# #         for z, col_ in enumerate(iterate_col[i_call]):
             
-            designation_lists[x].append('-'.join([call_,col_, num[z]]))
-            designation_lists[x+8].append('-'.join([call_,col_, num[z+4]]))
+# #             designation_lists[allocation].append('-'.join([call_, col_, num[z]]))
+# #             designation_lists[allocation+8].append('-'.join([call_, col_, num[z+4]]))
             
-    iterate_col = np.roll(iterate_col, -1) # putting the first item in the last position
+# #     iterate_col = np.roll(iterate_col, -1) # putting the first item in the last position
 
-# check if the lists are actually unique
+# #%%
+# allCombinations = list(itertools.product(*[call,col,num]))
+# allCombinations = ['-'.join(i) for i in allCombinations]
+
+# items_per_list = 32
+# n_allocations = len(allCombinations)//items_per_list
+
+# # ii = 0
+# # for i in range(8): # iterate over every number
+# #     idx = i*8+ii
+# #     print(allCombinations[idx])
+# #     ii += 1
+#%% create the unique lists
+ColNum = list(itertools.product(*[col,num]))
+ColNum = ['-'.join(i) for i in ColNum]
+
+n_targets = len(col)
+n_allocations = 16
+allocation_list = np.arange(n_allocations//2)
+random.shuffle(allocation_list)
+designation_lists = {key: [] for key in range(n_allocations//1)}
+
+for y in allocation_list:
+    tmp_list = []
+    for i, call_ in enumerate(call):
+        
+        for x in range(n_targets):
+            CallColNum = '-'.join([call_, ColNum[x*n_targets+x]])
+            tmp_list.append(CallColNum)   
+        ColNum = np.roll(ColNum, -n_targets)
+        
+    designation_lists[y] = tmp_list[::2]
+    designation_lists[y+8] = tmp_list[1::2]
+    
+    call = np.roll(call, -1)
+
+
+     
+#%%
+# check_unique if the lists are actually unique
+check_unique = []
+check_duplicates = []
 for i in range(len(designation_lists)):
+    if len(set(designation_lists[i])) != len(designation_lists[i]):
+        check_duplicates.append[i]
     for j in range(i+1, len(designation_lists)):
-        if any(item in designation_lists[i] for item in designation_lists[j]):
-            print('True', i, j)
+        if any(item in designation_lists[i] for item in designation_lists[j]):   
+            ch_count = [item in designation_lists[i] for item in designation_lists[j]].count(True)
+            print('True', i, j, 'overlap:', ch_count)
+            check_unique.append([i,j,ch_count])
+if check_unique: raise ValueError('lists are not unique')
+if check_duplicates: raise ValueError('at least one list contains duplicates')
+
+
 
 
 #%%
