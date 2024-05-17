@@ -160,59 +160,7 @@ random.shuffle(call)
 random.shuffle(col)
 random.shuffle(num)
 
-# # num = num+num
 
-# # def generate_lists(list1, n):
-# #     list2 = []
-# #     x = len(list1)
-# #     for i in range(x):
-# #         sublist = list1[i:i+n]
-# #         if len(sublist) == n: # if i+n2 <= n
-# #             list2.append(sublist)
-# #         else: # if i+n2 > n then sublist will have the final items of list1, so add the n2-len(sublist) items of list1
-# #             sublist += list1[:n-len(sublist)]
-# #             list2.append(sublist)
-# #     return list2
-
-# # # 8 lists of 4 colours, "rolling" through the colours
-# # # call[N] needs to be combined with each item in iterate_col[N]
-# # iterate_col = generate_lists(col, 4)
-
-
-# #%% create unique lists of 32 trials which do not overlap
-
-# # dict with 16 empty lists, numbered 0-15
-# designation_lists = {key: [] for key in range(16)}
-
-# # the numbers [0:8] in random order (this will be the key of designation_dict)
-# allocation_list = np.arange(16)
-# # random.shuffle(allocation_list) # This is so the allocation lists are not sequential
-
-# # # Now we create the unique lists
-# # for allocation in allocation_list: # for every allocation
-# #     designation = []
-    
-# #     for i_call, call_ in enumerate(call): 
-        
-# #         for z, col_ in enumerate(iterate_col[i_call]):
-            
-# #             designation_lists[allocation].append('-'.join([call_, col_, num[z]]))
-# #             designation_lists[allocation+8].append('-'.join([call_, col_, num[z+4]]))
-            
-# #     iterate_col = np.roll(iterate_col, -1) # putting the first item in the last position
-
-# #%%
-# allCombinations = list(itertools.product(*[call,col,num]))
-# allCombinations = ['-'.join(i) for i in allCombinations]
-
-# items_per_list = 32
-# n_allocations = len(allCombinations)//items_per_list
-
-# # ii = 0
-# # for i in range(8): # iterate over every number
-# #     idx = i*8+ii
-# #     print(allCombinations[idx])
-# #     ii += 1
 #%% create the unique lists
 ColNum = list(itertools.product(*[col,num]))
 ColNum = ['-'.join(i) for i in ColNum]
