@@ -14,8 +14,7 @@ import os
 thisDir = os.getcwd()
 diroutput = os.path.join(thisDir[:thisDir.find('Gen_stimuli')], 'Experiments','SiN','Experiment2','SiN_task','images')
 
-num  = {'Ein':1, 'Zwe':2, 'Dre':3, 'Vie':4,
-                    'Fue':5, 'Sec':6, 'Neu':9, 'Nul':0}
+num  = {'Ein':1, 'Zwe':2, 'Dre':3, 'Vie':4,'Fue':5, 'Sec':6, 'Neu':9, 'Nul':0}
 
 
 for key, value in num.items():
@@ -26,9 +25,9 @@ for key, value in num.items():
     draw = ImageDraw.Draw(image)
     
     # Define the properties of the square borders
-    square_size = 200
+    square_size = 310
     border_width = 5
-    top_left = ((image_size[0] - square_size) // 2, (image_size[1] - square_size) // 2)
+    top_left = (0,0)
     bottom_right = (top_left[0] + square_size, top_left[1] + square_size)
     
     # Draw the square with a border and transparent fill
@@ -36,14 +35,14 @@ for key, value in num.items():
         
     # Define the text properties
     text = str(value)
-    font_size = 100
+    font_size = square_size//2
     
     # Use DejaVu Sans font, commonly available on Linux
     font_path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
     font = ImageFont.truetype(font_path, font_size)
     
     # Calculate text width and height using textbbox
-    bbox = draw.textbbox((0, 0), text, font=font, align = 'center')
+    bbox = draw.textbbox((0, 0), text, font=font, align = 'mm')
     # returns [left, top, right, bottom] for the boundary box
     
     text_width = bbox[2] - bbox[0]
@@ -52,10 +51,12 @@ for key, value in num.items():
     
     # Calculate the position to center the text
     text_position = ((image_size[0] - text_width) // 2, (image_size[1] - text_height) // 2)
-    # text_position = (0,0)
+    # text_position = (155,155)
     
     # Draw the text
-    draw.text(text_position, text, fill='black', font=font, align = 'center')
+    draw.text(text_position, text, fill='black', font=font, align = 'mm')
     
+
     # Save the image
     image.save((diroutput + os.sep + key + '.png'))
+    

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-""" Generate tables defining block order 
+""" 
+Generate tables defining block order 
 ----------------------------------------------
 - Tables for PsychoPy block organization 
 
@@ -11,7 +12,6 @@ Created on Tue Mar 21 08:32:28 2023
 import pandas as pd
 import numpy as np 
 import os 
-import itertools
 from glob import glob
 
 
@@ -48,7 +48,7 @@ for i in range(8):
     all_orders.append(order2_tmp)
     
 for i, thisOrder in enumerate(all_orders):
-    for ii, item in enumerate(thisOrder): # replace block designations (e.g. NV1) by filepath to csv file
+    for ii, item in enumerate(thisOrder): # replace block designations (e.g. NV1) by filepath to csv file of the block
         thisOrder[ii] = os.path.join('flow','tts-golang-selected_PsyPySEQ_' + item + '.csv')
     tab = pd.DataFrame({'condsFile':thisOrder})
-    tab.to_csv(os.path.join(diroutput,'order' + str(i) + '.csv'),index=False)
+    tab.to_csv(os.path.join(diroutput,'order' + str(i+1) + '.csv'),index=False)

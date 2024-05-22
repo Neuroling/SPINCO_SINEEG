@@ -1,20 +1,11 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-""" GENERATE SPREADSHEETS FOR PSYCHOPY WITH LISTS OF TRIALS
----------------------------------------------------------------------
+"""
+Created on Wed May 22 06:47:27 2024
 
-- Extract info from wav filename (tokens in sentence, voice, type of noise)
-- Read wav durations
-- Gather onset and offset of targets (inspected with Webmaus)
-- Assign blocks splitting noise type: NV1, NV2,... and same for SSN
-    - In each block, every unique callSign, colour and number will occur 4 times exactly
-      as degraded stimuli (32 trials of degraded stimuli) and 2 times as clear/non-degraded
-      stimuli (16 trials of non-degraded stimuli).
-    - No combination of callSign, colour or number is repeated
-    
-- Save the full table and a table per block   
+@author: samuemu
 
-Created on Thu Feb  9 10:37:20 2023
-@author: gfraga & samuemu
+This is copied and adapted from Generate_spreadsheet_Exp2.py
 """
 import os
 from glob import glob
@@ -43,13 +34,13 @@ thisDir = os.getcwd()
 
 baseDir = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Stimuli', 'AudioGens', 'Experiment2')
 
-diroutput = os.path.join(baseDir, 'flow')
+diroutput = os.path.join(thisDir[:thisDir.find('Scripts')], 'Scripts', 'Experiments','SiN','Experiment2','SiN_practice')
 
 audioDir = os.path.join(baseDir ,'selected_audio_psychoPy_click')
 praatSummaryFile = os.path.join(baseDir,'tts-golang-44100hz', 'word-times','equalised_tts-golang_wordTimes.csv')
 
 # get files
-audiofiles = glob(os.path.join(audioDir,'*.wav'))
+audiofiles = glob(os.path.join(audioDir,'*clear.wav'))
 praatTimes = pd.read_csv(praatSummaryFile) 
 
 
@@ -188,7 +179,7 @@ for y in allocation_list:
 
      
 #%%
-# check_unique if the lists are actually unique
+# check if the lists are actually unique
 check_unique = []
 check_duplicates = []
 for i in range(len(designation_lists)):
@@ -206,29 +197,7 @@ if check_duplicates: raise ValueError('at least one list contains duplicates')
 
 
 #%%
-"""
-Now, I need to create the blocks...
 
-We do 3 blocks per noise type, so 6 blocks in total.
-Each block has 32 degraded trials, and 16 clear trials (total 48).
-Therefore, I will use 9 unique lists for each participant:
-    - each block has a unique list for the degraded stimuli
-    - for clear stimuli, additional 3 lists which are divided in two
-
-So, for participant 1, it needs to be 
-NV:    allocation list 0, 1, 2
-SiSSN: allocation list 3, 4, 5
-clear: allocation list 6, 7, 8
-
-Block designations: 
-    NVx means the NV stimuli of allocation list x
-    SSNx means the SSN stimuli of allocation list x+3
-
-For the clear stimuli:
-    the clear stimuli of allocation list x+6 are assigned to NVx and SSNx in alternating order
-    
-Note: We have 16 allocation lists. If x+3 or x+6 is over 15, it will wrap around to 0
-"""
 # Function to find the key for a given value in the dictionary of lists
 def find_key(value):
     for key, value_list in designation_lists.items():
@@ -241,39 +210,15 @@ tab['allocation_list'] = tab['words'].apply(find_key)
 
 # Add a new column with the block designation for NV
 tab['block'] = tab['allocation_list'].apply(lambda x: str(x)) # cast to str
-tab.loc[tab['noise'] == 'NV', 'block'] = tab.loc[tab['noise'] == 'NV', 'block'].apply(lambda x: 'NV'+x)
+tab.loc[tab['noise'] == 'clear', 'block'] = tab.loc[tab['noise'] == 'clear', 'block'].apply(lambda x: 'block'+x)
 
-# create the block designations for SiSSN - first we need a list that is shifted by 3 (3,4,5,...,15,0,1,2)
-numbers_list = np.arange(16)
-numbers_list = np.roll(numbers_list, -3)
-
-for i in range(16): # iterate over the 16 blocks
-
-    # Create designation for current block
-    block_designation = 'SSN' + str(i) 
-    
-    #subset df by SiSSN and allocation_list i+3
-    tmp_df = tab[tab['noise'] == 'SiSSN']
-    tmp_df = tmp_df[tmp_df['allocation_list'] == numbers_list[i]]
-    
-    # Replace the values in 'block' for SiSSN and allocation_list i+3 by 'SSN(i)'
-    tab.loc[tmp_df.index, 'block'] = block_designation
-    
-    # subset df by clear stimuli and allocation list i+6
-    tmp_df = tab[tab['noise'] == 'clear']
-    tmp_df = tmp_df[tmp_df['allocation_list'] == np.roll(numbers_list,-3)[i]]
-    
-    # Replace the values in 'block' for clear stimuli and allocation_list i+6 by 'NV(i)'
-    tab.loc[tmp_df.index, 'block'] = 'NV' + str(i)
-    # Same as the last line, but only replace every second value (so half are SSNi and half are NVi)
-    tab.loc[tmp_df.index[1::2], 'block'] = 'SSN' + str(i)
-
+tab2save = tab.loc[tab['block'] == 'block1']
 
 # %% save to file
-with open(os.path.join(diroutput,'tts-golang-selected_PsyPySEQ.csv'),'w', newline='') as csvfile:
-    tab.to_csv(csvfile,index=False)
+outputname = 'flow' + os.sep + 'tts-golang-selected_PsyPySEQ.csv'
+with open(os.path.join(diroutput,outputname),'w', newline='') as csvfile:
+    tab2save.to_csv(csvfile,index=False)
+
     
-# %% save per block    
-for block_value in tab['block'].unique():    
-    block_df = tab[tab['block'] == block_value]    
-    block_df.to_csv(os.path.join(diroutput, 'tts-golang-selected_PsyPySEQ_' + block_value + '.csv'), index=False)
+orderTab = pd.DataFrame({'condsFile':outputname}, index = [0])
+orderTab.to_csv(os.path.join(diroutput,'order1.csv'),index=False)

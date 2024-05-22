@@ -13,8 +13,8 @@ baseDir = [fullfile(folders{1:(scriptPathIdx-1)}),filesep]
 % 
 
 % paths and files 
-dirinput =   [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang-equalisedDuration')];
-diroutput =  [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','tts-golang-equalisedDuration-selected-click')];
+dirinput =   [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'selected_audio_psychoPy')];
+diroutput =  [baseDir,fullfile('Stimuli','AudioGens','Experiment2', 'selected_audio_psychoPy_click')];
 
 if exist(diroutput) ~= 7
     mkdir(diroutput);

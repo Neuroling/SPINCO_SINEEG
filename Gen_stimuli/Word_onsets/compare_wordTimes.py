@@ -10,7 +10,7 @@ This will give you various tables of mean durations of segments (segmented by we
 
 """
 
-save_plots = False
+save_plots = True
 inlcuding_old = False
 
 #%% imports
@@ -135,7 +135,10 @@ std_targetWord.index = rownames
 #%%
 
 output_path = baseDir + os.sep + 'plot_wordDuration_'
-output_end = '_' + str(datetime.now())[:-10].replace(':','') + '.png'
+# output_end = '_' + str(datetime.now())[:-10].replace(':','') + '.png'
+output_end = '.png'
+if inlcuding_old: output_end = '_old.png'
+
 df_lf = []
 for i in stimType:
     df_tmp = pd.melt(df, id_vars=[i], value_vars=[i + '_duration'])

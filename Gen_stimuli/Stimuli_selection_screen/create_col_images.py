@@ -26,7 +26,7 @@ for key, value in col.items():
     draw = ImageDraw.Draw(image)
     
     # Define the properties of the square borders
-    square_size = 200
+    square_size = 310
     border_width = 5
     top_left = ((image_size[0] - square_size) // 2, (image_size[1] - square_size) // 2)
     bottom_right = (top_left[0] + square_size, top_left[1] + square_size)

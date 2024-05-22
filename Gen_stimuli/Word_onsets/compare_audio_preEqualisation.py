@@ -10,12 +10,13 @@ Created on Tue Apr 30 11:29:26 2024
 lang_voice_speaker = 'DE_Neural2-F'
 
 # Specify which target stimulus to plot or use '*' to plot every stimulus
-callSign = 'Flugzeug'
-colour   = 'gelben'
+callSign = '*'
+colour   = '*'
 number   = '*'
 
-plot_audio_overlay = False
+plot_audio_overlay = True
 plot_webmaus_comparison = False
+save_plots = True
 
 #%% Imports
 import numpy as np
@@ -35,6 +36,8 @@ import textgrids
 #%% Filepaths
 thisDir = os.getcwd()
 dirinput = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz')
+diroutput = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz', 'word-times')
+
 
 designation = callSign[:3] + '-' + colour[:3] + '-' + number[:3]
 sentence = str("Vorsicht " + callSign + '. Gehe sofort zum ' + colour + ' Feld der Spalte ' + number)
@@ -60,9 +63,9 @@ if plot_audio_overlay:
         # axes.plot(amplitude_envelope, label='envelope', linewidth = 0.1, alpha = 0.1, color = 'black')
         
     plt.title(sentence)
+    if save_plots: plt.savefig((diroutput + os.sep + 'plot_amplitudeOverlay_originalStimuli.png'), bbox_inches = "tight")
     plt.show()
-
-#%% and here to compare the webmaus metrics
+#%% and here to compare the webmaus metrics for each file
 if plot_webmaus_comparison:
     colormap= ['red','blue','green','black'] 
     for i, audiofile  in enumerate(audiofiles):
@@ -85,6 +88,7 @@ if plot_webmaus_comparison:
                 
         # plt.title(title)
         plt.show()
+
 
 #%% And this is just to plot the speech signal and the ORT-MAU segmentation times
 
