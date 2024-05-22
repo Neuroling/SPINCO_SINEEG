@@ -1,15 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed May  8 09:59:37 2024
-
+DELETE FILES FROM DIRECTORY
+===============================================================================
+Created on 08.05.2024
 @author: samuemu
+
+This script will delete files from a directory.
+
+If you instead want to move files into another directory, use files_move.py
+If you instead want to copy files into another directory, use files_copy.py
+
+
 """
 
 create_backup = True
 
 import os 
-import glob
+from glob import glob
 import re 
 import shutil 
 from datetime import datetime
@@ -27,8 +35,8 @@ if not os.path.isdir(diroutput):
     os.makedirs(diroutput)
 
 #%% find target files
-files = [files for files in glob.glob(os.path.join(dirinput,'*'), recursive=True) if re.findall('Ham|Sch|Tel|Loe',files)]
-# files = glob.glob(os.path.join(dirinput,'*.TextGrid'), recursive=True)
+files = [files for files in glob(os.path.join(dirinput,'*'), recursive=True) if re.findall('Ham|Sch|Tel|Loe',files)]
+# files = glob(os.path.join(dirinput,'*.TextGrid'), recursive=True)
 
 
 #%%
