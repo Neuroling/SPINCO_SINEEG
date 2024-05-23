@@ -15,8 +15,8 @@ import shutil
 
 thisDir = os.getcwd()
 baseDir = os.path.join(thisDir[:thisDir.find('Scripts')])
-dirinput = os.path.join(baseDir, 'Stimuli','AudioGens','Experiment2','block_order')
-diroutput = os.path.join(baseDir,'Scripts', 'Experiments','SiN','Experiment2','SiN_task')
+dirinput = os.path.join(baseDir, 'Stimuli','AudioGens','Experiment2','flow')
+diroutput = os.path.join(baseDir,'Scripts', 'Experiments','SiN','Experiment2','SiN_task', 'flow')
 
 # baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], )
 # dirinput = os.path.join(baseDir,'Scripts', 'Experiments','SiN','Experiment2','SiN_task','images')
