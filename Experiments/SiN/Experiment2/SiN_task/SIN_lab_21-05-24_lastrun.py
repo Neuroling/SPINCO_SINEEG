@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on May 22, 2024, at 15:54
+    on May 23, 2024, at 11:33
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -799,7 +799,7 @@ def run(expInfo, thisExp, win, globalClock=None, thisSession=None):
     number8 = visual.ImageStim(
         win=win,
         name='number8', 
-        image='images/Nul.png', mask=None, anchor='center',
+        image='images/Zer.png', mask=None, anchor='center',
         ori=0, pos=(0.4, -0.4375), size=(0.1, 0.1),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
