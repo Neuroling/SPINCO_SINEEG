@@ -18,7 +18,7 @@ allCallSign = ['Adl', 'Eul', 'Rat', 'Tig', 'Vel', 'Aut', 'Mes', 'Gab']
 allColour = ['gel', 'gru', 'rot', 'wei', 'bla', 'bra', 'pin', 'sch']
 allNumber = ['Ein', 'Zwe', 'Dre', 'Vie', 'Fue', 'Sec', 'Neu', 'Nul']
 
-save_plots = True
+save_plots = False
 
 
 #%% Imports
@@ -79,7 +79,7 @@ if save_plots: plt.savefig((diroutput + os.sep + 'plot_amplitudeOverlay_equalise
 nrows = max(len(allCallSign), len(allColour), len(allNumber))
 
 
-fig, axes = plt.subplots(nrows=nrows, ncols=3, figsize=(15, 15), sharex=True)
+fig, axes = plt.subplots(nrows=nrows, ncols=3, figsize=(20,20), sharex=True)
 
 for col, allTarget in enumerate([allCallSign, allColour, allNumber]):
     # get onset and offset times

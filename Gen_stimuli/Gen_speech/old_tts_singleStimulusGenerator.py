@@ -10,6 +10,9 @@ This will create the stimuli as single words, and also "Vorsicht", "gehe sofot z
 These will then be stitched together in "tts_singleStimuli2sentence.py" into the
 stimulus sentences. This is done to keep the coarticulation of the common parts constant.
 
+Update: Since the generated sentences sound really unnatural, we decided not to do that.
+This script is no longer used and will be deleted in the future.
+
 INSTRUCTIONS:
 -------------
 Read the instructions fully before starting.

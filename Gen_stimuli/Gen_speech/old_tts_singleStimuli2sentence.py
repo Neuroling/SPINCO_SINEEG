@@ -12,6 +12,9 @@ on the next word, meaning the "standardised" non-target words are not truly stan
 
 Therefore, Alexis asked me to create the target words and non-target sentence parts
 separately and then combine the audiofiles into a sentence.
+
+Update: Since the generated sentences sound really unnatural, we decided not to do that.
+This script is no longer used and will be deleted in the future.
 """
 
 import wave

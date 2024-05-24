@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri May 17 08:44:00 2024
-
 @author: samuemu
+
+Note: "Nul.png" is a bad filename and will lead to problems. Therefore, the image
+of the number Zero ("Null" in german) is called "Zer.png"
 
 Package: [Pillow](https://pypi.org/project/pillow/) - `python3 -m pip install --upgrade Pillow`
 """
@@ -14,7 +16,7 @@ import os
 thisDir = os.getcwd()
 diroutput = os.path.join(thisDir[:thisDir.find('Gen_stimuli')], 'Experiments','SiN','Experiment2','SiN_task','images')
 
-num  = {'Ein':1, 'Zwe':2, 'Dre':3, 'Vie':4,'Fue':5, 'Sec':6, 'Neu':9, 'Nul':0}
+num  = {'Ein':1, 'Zwe':2, 'Dre':3, 'Vie':4,'Fue':5, 'Sec':6, 'Neu':9, 'Zer':0}
 
 
 for key, value in num.items():

@@ -6,11 +6,15 @@ Created on Tue May  7 12:10:47 2024
 @author: samuemu
 
 This will give you various tables of mean durations of segments (segmented by webmaus)
+as well as plots of the durations of the target words (callSign, colour, number)
 
 
+# !!! None of the tables are saved. Should they be saved somewhere? If yes, which ones?
+
+# TODO create plots of the durations of the non-target segments.
 """
 
-save_plots = True
+save_plots = False
 inlcuding_old = False
 
 #%% imports
@@ -25,14 +29,17 @@ from datetime import datetime
 
 #%%
 thisDir = os.getcwd()
-baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens','Experiment2', 'tts-golang-44100hz','word-times')
+baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli', 'AudioGens', 'Experiment2', 'tts-golang-44100hz', 'word-times')
 
-
+output_filepath = baseDir + os.sep + 'plot_wordDuration_'
+# output_fileend = '_' + str(datetime.now())[:-10].replace(':', '') + '.png'
+output_fileend = '.png'
+if inlcuding_old: output_fileend = '_old.png'
 
 #%% Get word onset time dataframe
 df = pd.read_csv(os.path.join(baseDir, 'Full_tts-golang_allTimes.csv'))
 
-if inlcuding_old: df = pd.concat([df,pd.read_csv(os.path.join(baseDir, 'old_Full_tts-golang_allTimes.csv'))])
+if inlcuding_old: df = pd.concat([df, pd.read_csv(os.path.join(baseDir, 'old_Full_tts-golang_allTimes.csv'))])
 
 #%% 
 sentence = ['Start', 'Vorsicht', 'CallSign', 'Break', 'Geh', 'Sofort', 'Zum', 
@@ -49,6 +56,34 @@ stimType = ['CallSign', 'Colour', 'Number']
 stimAll = callSigns + colours + numbers
 stimLists = [callSigns] + [colours] + [numbers]
 
+#%% Create plots
+
+df_longForm = []
+
+for i in stimType: # separately for callSign, colour, number
+    df_tmp = pd.melt(df, id_vars = [i], value_vars = [i + '_duration'])
+    df_tmp.columns = ['Stimulus', 'variable', 'value']
+    
+    plt.figure()
+    ax = sns.stripplot(data = df_tmp, x = 'value', y = 'variable', hue = 'Stimulus', linewidth = (0.5), dodge = True)
+    ax = sns.violinplot(data = df_tmp, x = 'value', y = 'variable', hue = 'Stimulus', linewidth = (0), dodge = True, saturation = 0.3, palette = ['lightgrey'], legend = False)
+    sns.move_legend(ax, "upper left", bbox_to_anchor = (1, 1))
+    plt.xlabel('original duration of word')
+    if save_plots: 
+        plt.savefig((output_filepath + i + output_fileend), bbox_inches = "tight")
+    
+    df_longForm.append(df_tmp)
+df_longForm = pd.concat(df_longForm)
+del df_tmp
+
+plt.figure(figsize = [10, 7])
+ax = sns.stripplot(data = df_longForm, x = 'value', y = 'variable', hue = 'Stimulus', linewidth = (0.5))
+ax = sns.violinplot(data = df_longForm, x = 'value', y = 'variable', linewidth = (0), saturation = 0.3, color = 'lightgrey')
+sns.move_legend(ax, "upper left", bbox_to_anchor = (1, 1))
+plt.xlabel('original duration of word')
+
+if save_plots: 
+    plt.savefig((output_filepath + 'allTargets' + output_fileend), bbox_inches = "tight")
 
 #%% get mean & std of durations of each segment
 
@@ -65,7 +100,7 @@ std_durations.columns = sentence
 
 del segment, std_segment, mean_segment
 
-#%% get mean & std of durations of each segment within target words
+#%% get mean & std of durations of each segment within target words (i.e. separately for "adler", "tiger", ...)
 
 rownames_mean = ['overall_mean']
 rownames_std = ['overall_std']
@@ -96,17 +131,21 @@ duration_info_std = pd.concat(duration_info_std)
 duration_info_mean.index = rownames_mean
 duration_info_std.index = rownames_std
 
-del rownames_mean, rownames_std, tmp_df, mean_durations, std_durations
+del rownames_mean, rownames_std, tmp_df, 
+del mean_durations, std_durations
 del segment, std_segment, mean_segment
 
-#%%
-maxLen = max([len(callSigns),len(colours),len(numbers)])
+#%% Get mean and std of duration of each unique target word
+
+# get maximum length of the 3 lists (in case they are not equal)
+maxLen = max([len(callSigns), len(colours), len(numbers)])
+rownames = list(range(maxLen))
+del maxLen
 
 mean_targetWord = []
 std_targetWord = []
-rownames = list(range(maxLen))
 
-# iterate over the three lists
+# iterate over the three lists (callSign, colour, number)
 for i, targetList in enumerate(stimLists):
     targetWord = stimType[i]
     mean = []
@@ -124,40 +163,11 @@ for i, targetList in enumerate(stimLists):
     mean_targetWord.append(pd.Series(mean))
     std_targetWord.append(pd.Series(std))
     
+del i, ii, stim, mean, std, tmp_df
 
 mean_targetWord = pd.DataFrame(mean_targetWord).transpose()
 std_targetWord = pd.DataFrame(std_targetWord).transpose()
 mean_targetWord.index = rownames
 std_targetWord.index = rownames 
 
-# del rownames, maxLen, targetList, targetWord, i, ii, stim, mean, std, tmp_df
-
-#%%
-
-output_path = baseDir + os.sep + 'plot_wordDuration_'
-# output_end = '_' + str(datetime.now())[:-10].replace(':','') + '.png'
-output_end = '.png'
-if inlcuding_old: output_end = '_old.png'
-
-df_lf = []
-for i in stimType:
-    df_tmp = pd.melt(df, id_vars=[i], value_vars=[i + '_duration'])
-    df_tmp.columns = ['Stimulus', 'variable','value']
-    
-    plt.figure()
-    ax=sns.stripplot(data=df_tmp, x='value', y='variable', hue = 'Stimulus',linewidth=(0.5), dodge = True)
-    ax=sns.violinplot(data=df_tmp, x='value', y='variable', hue = 'Stimulus',linewidth=(0), dodge = True, saturation = 0.3, palette = ['lightgrey'], legend = False)
-    sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
-    plt.xlabel('original duration of word')
-    if save_plots: plt.savefig((output_path + i + output_end), bbox_inches = "tight")
-    
-    df_lf.append(df_tmp)
-df_lf = pd.concat(df_lf)
-del df_tmp
-
-plt.figure(figsize=[10,7])
-ax=sns.stripplot(data=df_lf, x='value', y='variable', hue = 'Stimulus',linewidth=(0.5))
-ax=sns.violinplot(data=df_lf, x='value', y='variable',linewidth=(0), saturation = 0.3, color = 'lightgrey')
-sns.move_legend(ax, "upper left", bbox_to_anchor=(1, 1))
-plt.xlabel('original duration of word')
-if save_plots: plt.savefig((output_path + 'allTargets' + output_end), bbox_inches = "tight")
+del rownames, targetList, targetWord

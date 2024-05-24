@@ -17,40 +17,20 @@ diroutput = os.path.join(thisDir[:thisDir.find('Gen_stimuli')], 'Experiments','S
 call = ['Adl', 'Eul', 'Rat', 'Tig', 'Vel', 'Aut', 'Mes', 'Gab']
 call = [i + '.png' for i in call]
 
+# border parameters
+border_size = 5
+border_color = 'black'
 
 for i_call in call:
-    # Parameters
-    input_image_path = (thisDir + os.sep + i_call)  # Path to your existing image
-
-    border_size = 5
-    border_color = 'black'
-
-        # Open the original image
+    
+    # open the original image
+    input_image_path = (thisDir + os.sep + i_call)  # Path to the existing image
     img = Image.open(input_image_path)
-
-    # Add the border
+    
+    # Add the border - Note: The new image will be of size <size original image> + (border_size * 2)
     img_with_border = ImageOps.expand(img, border=border_size, fill=border_color)
 
     # Save the new image
     img_with_border.save((diroutput + os.sep + i_call))
     
-    
-    # # Create a new image with a transparent background
-    # image_size = (300, 300)
-    # image = Image.new('RGBA', image_size, (255, 255, 255, 0))
-    
-    # draw = ImageDraw.Draw(image)
-    
-    # # Define the properties of the square borders
-    # square_size = 200
-    # border_width = 5
-    # top_left = ((image_size[0] - square_size) // 2, (image_size[1] - square_size) // 2)
-    # bottom_right = (top_left[0] + square_size, top_left[1] + square_size)
-    
-    # # Draw the square with a border and transparent fill
-    # draw.rectangle([top_left, bottom_right], fill=value, outline='black', width=border_width)
-        
-
-    # # Save the image
-    # image.save((diroutput + os.sep + key + '.png'))
     

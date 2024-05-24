@@ -1,8 +1,9 @@
 ## Response images
-CallSign images from [MultiPic](https://doi.org/10.1080/17470218.2017.1310261)
 
-The .png files
+The .png files are created with the package [Pillow](https://pypi.org/project/pillow/) . Install it with `python3 -m pip install --upgrade Pillow`
 
+Original *CallSign* images from [MultiPic](https://doi.org/10.1080/17470218.2017.1310261)  
+All non-modified callSign images must be copied into the directory of the script `create_call_images.py`. The script will create a square black frame around the image and save them in the relevant folder of the experiment.
 
 ### CallSign and MultiPic Number:
 Experiment 1:
