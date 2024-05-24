@@ -28,6 +28,7 @@ diroutput =      [baseDir,fullfile('Stimuli','AudioGens','Experiment2','tts-gola
 
 
 
+
 % save a 'last run' copy of script 
 [filepath,name,ext] = fileparts(matlab.desktop.editor.getActiveFilename);
 copyfile(matlab.desktop.editor.getActiveFilename,[diroutput,filesep,name,'_lastRun.txt'])
@@ -51,7 +52,7 @@ nfft =          1000;
 noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which the bandwidth of the smoothing window is a constant percentage of the center frequency).
 
 % SNR levels
- target_dB_snr = [-11,-9,-7,];%15db used for 'clean condition catch trials
+ target_dB_snr = [-11] %,-9,-7,];%15db used for 'clean condition catch trials
 %  target_dB_snr = [-12,-13];
 
 %% Generate noise from concatenated data
