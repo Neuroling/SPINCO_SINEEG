@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2024.1.1),
-    on May 23, 2024, at 11:37
+    on May 23, 2024, at 11:33
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -133,7 +133,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='Y:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\Experiment2\\SiN_alphaVersion\\SIN_lab_21-05-24_lastrun.py',
+        originPath='Y:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\Experiment2\\SiN_task\\SIN_lab_21-05-24_lastrun.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
