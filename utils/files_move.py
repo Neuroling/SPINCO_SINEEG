@@ -29,8 +29,6 @@ import sys
 #%% directories
 thisDir = os.getcwd()
 
-
-
 baseDir = os.path.join(thisDir[:thisDir.find('Scripts')], 'Stimuli','AudioGens','Experiment2')
 dirinput = os.path.join(baseDir, 'tts-golang-44100hz', 'tts-golang-equalisedDuration-selected')
 diroutput = os.path.join(baseDir, 'selected_audio_psychoPy')
@@ -52,7 +50,7 @@ if not os.path.isdir(diroutput):
         print('----> please create destination directory and try again.')
         sys.exit()
 
-#%% Move files.
+#%% Move files
 for file in files:
     file_name = os.path.basename(file)
     destination = os.path.join(diroutput, file_name)

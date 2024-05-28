@@ -18,7 +18,7 @@ allCallSign = ['Adl', 'Eul', 'Rat', 'Tig', 'Vel', 'Aut', 'Mes', 'Gab']
 allColour = ['gel', 'gru', 'rot', 'wei', 'bla', 'bra', 'pin', 'sch']
 allNumber = ['Ein', 'Zwe', 'Dre', 'Vie', 'Fue', 'Sec', 'Neu', 'Nul']
 
-save_plots = False
+save_plots = True
 
 
 #%% Imports

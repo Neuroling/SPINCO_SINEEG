@@ -20,9 +20,9 @@ MinFreq =      70;
 MaxFreq =    5000;
 
 % Degradation levels
-% target_proportions = [0.4]
+target_proportions = [0.2]
 % target_proportions = [0.2, 0.4, 0.6, 0.75, 0.8, 0.85, 0.9, 0.95, 1];
-target_proportions = [0.2, 0.3, 0.4, 0.5];
+% target_proportions = [0.2, 0.3, 0.4, 0.5];
 % target_proportions = [1];
 
 makeplots = 0;

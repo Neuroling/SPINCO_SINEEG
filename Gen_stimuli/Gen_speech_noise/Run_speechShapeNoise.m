@@ -4,7 +4,8 @@ clear all ;
 % ========================================================================
 % Author: G.FragaGonzalez 2022(based on snippets from T.Houweling)
 % Description
-%   - Reads list of .wav files 
+%   - Reads list of .wav
+files 
 %   - Filters signal (butterworth), 
 %   - Normalize 
 %   - Concatenate 
