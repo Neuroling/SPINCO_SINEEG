@@ -69,7 +69,7 @@
     <Param val="1000" valType="num" updates="None" name="plPupilRemoteTimeoutMs"/>
     <Param val="False" valType="bool" updates="None" name="plPupillometryOnly"/>
     <Param val="psychopy_iohub_surface" valType="str" updates="None" name="plSurfaceName"/>
-    <Param val="0" valType="code" updates="None" name="runMode"/>
+    <Param val="1" valType="code" updates="None" name="runMode"/>
     <Param val="False" valType="bool" updates="None" name="rush"/>
     <Param val="time" valType="str" updates="None" name="sortColumns"/>
     <Param val="" valType="str" updates="None" name="tbLicenseFile"/>
@@ -3181,7 +3181,7 @@
       <Param name="conditionsFile" updates="None" val="$orderFile" valType="file"/>
       <Param name="endPoints" updates="None" val="[0, 1]" valType="num"/>
       <Param name="isTrials" updates="None" val="False" valType="bool"/>
-      <Param name="loopType" updates="None" val="sequential" valType="str"/>
+      <Param name="loopType" updates="None" val="random" valType="str"/>
       <Param name="nReps" updates="None" val="1" valType="num"/>
       <Param name="name" updates="None" val="blocks" valType="code"/>
       <Param name="random seed" updates="None" val="" valType="code"/>

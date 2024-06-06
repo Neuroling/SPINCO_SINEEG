@@ -17,7 +17,6 @@ import pandas as pd
 import numpy as np
 
 # User inputs
-copyraw = 0;
 taskID = 'task-sin'
 
 # PATHS

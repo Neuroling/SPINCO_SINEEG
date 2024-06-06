@@ -49,6 +49,7 @@ if not os.path.isdir(diroutput):
     else:
         print('----> please create destination directory and try again.')
         sys.exit()
+        
 
 #%% Move files
 for file in files:

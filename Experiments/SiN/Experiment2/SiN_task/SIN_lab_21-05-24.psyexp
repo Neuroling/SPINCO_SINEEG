@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" ?>
-<PsychoPy2experiment encoding="utf-8" version="2024.1.1">
+<PsychoPy2experiment encoding="utf-8" version="2023.2.3">
   <Settings>
-    <Param val="use prefs" valType="str" updates="None" name="Audio latency priority"/>
-    <Param val="use prefs" valType="str" updates="None" name="Audio lib"/>
+    <Param val="4" valType="str" updates="None" name="Audio latency priority"/>
+    <Param val="ptb" valType="str" updates="None" name="Audio lib"/>
     <Param val="" valType="str" updates="None" name="Completed URL"/>
     <Param val="auto" valType="str" updates="None" name="Data file delimiter"/>
     <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
@@ -27,7 +27,7 @@
     <Param val="False" valType="bool" updates="None" name="Show mouse"/>
     <Param val="height" valType="str" updates="None" name="Units"/>
     <Param val="" valType="str" updates="None" name="Use version"/>
-    <Param val="[2560, 1440]" valType="code" updates="None" name="Window size (pixels)"/>
+    <Param val="[1280, 1024]" valType="code" updates="None" name="Window size (pixels)"/>
     <Param val="none" valType="str" updates="None" name="backgroundFit"/>
     <Param val="" valType="str" updates="None" name="backgroundImg"/>
     <Param val="avg" valType="str" updates="None" name="blendMode"/>
@@ -59,6 +59,7 @@
     <Param val="CONTINUOUS" valType="str" updates="None" name="mgMove"/>
     <Param val="0.5" valType="num" updates="None" name="mgSaccade"/>
     <Param val="neon.local" valType="str" updates="None" name="plCompanionAddress"/>
+    <Param val="scene_camera.json" valType="file" updates="None" name="plCompanionCameraCalibration"/>
     <Param val="8080" valType="num" updates="None" name="plCompanionPort"/>
     <Param val="True" valType="bool" updates="None" name="plCompanionRecordingEnabled"/>
     <Param val="0.6" valType="num" updates="None" name="plConfidenceThreshold"/>
@@ -2683,7 +2684,7 @@
         <Param val="frame N" valType="str" updates="None" name="startType"/>
         <Param val="0" valType="code" updates="None" name="startVal"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="2" valType="code" updates="constant" name="stopVal"/>
+        <Param val="300" valType="code" updates="constant" name="stopVal"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
         <Param val="from exp settings" valType="str" updates="None" name="units"/>
         <Param val="" valType="code" updates="None" name="validator"/>
