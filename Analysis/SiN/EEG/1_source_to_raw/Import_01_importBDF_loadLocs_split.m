@@ -15,7 +15,7 @@ thisDir = mfilename('fullpath');
 addpath([fileparts(thisDir),filesep,'functions'])
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 % user inputs
-subjectlist = {'s202'};
+subjectlist = {'s201'};
 
 %%
 for s = 1:length(subjectlist)
@@ -50,11 +50,11 @@ for s = 1:length(subjectlist)
         pop_editoptions( 'option_storedisk', 0); % Change option to process multiple datasets
         EEG = pop_biosig(fullFileInput,'rmeventchan','off', 'importannot','off','ref', 48, 'refoptions',{ 'keepref' 'on' } ); % Problems reading events when importing with pop_readbdf
         %%
-        EEG2 = pop_readbdf(fullFileInput);
-        event_chan = pop_select(EEG2, 'channel',73);
+%         EEG2 = pop_readbdf(fullFileInput);
+%         event_chan = pop_select(EEG2, 'channel',73);
         %% Remove external channels 71 & 72  (were not recorded)
         
-        EEG = pop_select (EEG, 'channel', [1:70, 73]); 
+        EEG = pop_select (EEG, 'channel', [1:70]); 
 
         % load channel locations
         EEG = pop_chanedit(EEG,'load',chanLocsFile);  
@@ -73,21 +73,47 @@ for s = 1:length(subjectlist)
 % 
 %         end
 
+        %% Recoding triggers to correct bit-overflow
+        % Because event triggers are for some reason stored as a single byte,
+        % numbers above 256 overflow back to 1. So triggers 300-339 (which we use
+        % for clear trials) are now coded as 44-83. This means that triggers
+        % 55 (end of instruction screen) and 60 (end of block) are now the same as
+        % the codes that originally were 311 and 316
+        %
+        % This loop recodes triggers that should be 300-339 by adding +256 to 
+        % the triggers between 44 and 83. For codes 55 and 60, it will only recode
+        % them to 311 and 316 if they were immediately preceded by code 300.
+        % Since 311 and 316 refer to onset of callSign (token_1_tmin), they always 
+        % have to follow 300, which refers to audio onset (firstSound_tmin)
+
+        triggers = (cell2mat({EEG.event.type}));
+        for i = 1:length(triggers)
+            if triggers(i) <= 83 && triggers(i)>= 44
+                if (triggers(i) == 55 && triggers(i-1) == 300) || triggers(i) ~= 55  
+                    if (triggers(i) == 60 && triggers(i-1) == 300) || triggers(i) ~= 60  
+                        triggers(i) = triggers(i) + 256;
+                        EEG.event(i).type = triggers(i);
+                    end
+                end
+
+            end
+        end
+
         %% Realign target events to audio  
-        [EEG, trial_delays] = alignTriggersToAudio(EEG, event_chan);
-        EEG.comments = pop_comments(EEG.comments,'','imported,loaded chan locations, realigned triggers',1);
+%         [EEG, trial_delays] = alignTriggersToAudio(EEG, event_chan);
+        EEG.comments = pop_comments(EEG.comments,'','imported,loaded chan locations, NOT realigned triggers',1);
         [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG);   % save as a new dataset in ALLEEG
 
        
        %% SPLIT RESTING STATE  =========================================================
         splits = struct('segment_name', {'task-rest-pre','task-rest-post'},...
-            'segment_duration', {240,240},...% duration in seconds
+            'segment_duration', {300,300},...% duration in seconds
             'onset_trigger',{8, 9},...
             'head', {1 ,1},...% seconds before onset trigger
             'tail',{1, 1}); % seconds after offset trigger
 
             % Loop thru desired output files
-           for i = 1:length(splits)
+           for i = 1:1
 
                 % Find unique onset trigger
                 triggerIdx = find(cell2mat({EEG.event(:).type})== splits(i).onset_trigger);
@@ -158,7 +184,7 @@ for s = 1:length(subjectlist)
         copyfile(fullfile(expfile.folder,expfile.name), newdiroutput_beh)
 
         %% Gather accuracy
-        gather_accuracies_events(EEG,expfile, newdiroutput)
+%         gather_accuracies_events(EEG,expfile, newdiroutput)
 
         %% Save BIDS metadata 
         saveBidsMetadata(EEG,newdiroutput,chanLocsFile)

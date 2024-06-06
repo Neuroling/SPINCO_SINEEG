@@ -18,6 +18,31 @@ function [EEG_mod, trial_delays_sec] = alignTriggersToAudio(EEG, event_chan)
     
     EEG_mod = EEG; 
 
+%% Recoding triggers to correct bit-overflow
+% Because event triggers are for some reason stored as a single byte,
+% numbers above 256 overflow back to 1. So triggers 300-339 (which we use
+% for clear trials) are now coded as 44-83. This means that triggers
+% 55 (end of instruction screen) and 60 (end of block) are now the same as
+% the codes that originally were 311 and 316
+%
+% This loop recodes triggers that should be 300-339 by adding +256 to 
+% the triggers between 44 and 83. For codes 55 and 60, it will only recode
+% them to 311 and 316 if they were immediately preceded by code 300.
+% Since 311 and 316 refer to onset of callSign (token_1_tmin), they always 
+% have to follow 300, which refers to audio onset (firstSound_tmin)
+
+    triggers = (cell2mat({EEG_mod.event.type}));
+    for i = 1:length(triggers)
+        if triggers(i) <= 83 && triggers(i)>= 44
+            if (triggers(i) == 55 && triggers(i-1) == 300) || triggers(i) ~= 55  
+                if (triggers(i) == 60 && triggers(i-1) == 300) || triggers(i) ~= 60  
+                    triggers(i) = triggers(i) + 256;
+                    EEG_mod.event(i).type = triggers(i);
+                end
+            end
+
+        end
+    end
 
 %     %%
 %     for i = 1:length(triggers)
