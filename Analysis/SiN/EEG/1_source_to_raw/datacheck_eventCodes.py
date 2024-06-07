@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+CHECKING FOR MISSING TRIGGER 1, CHECKING TIME BETWEEN TRIGGERS
+==============================================================
 Created on Tue Jun  4 11:39:09 2024
+@author: samuemu
 
-@author: testuser
+- first loads the raw data
+- extracts events from last channel
+- corrects event codes above 256
+- checks and reports in which trials trigger code 1 is missing
+- summarises how many samples are between trigger code 1 and the following audio onset trigger
+- reports the difference in samples between two audio trigger codes and the standardised time taken from the excel
 """
 import mne
 from glob import glob
@@ -22,6 +30,9 @@ thisDir = os.getcwd()
 # subIDs= [item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','sourcedata')) if item[-3] == '2']
 
 eeg_fp = glob(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','sourcedata', subjID, '*.bdf'))[0]
+
+print('Reading subject', subjID)
+print('eeg_fp')
 
 EEG = mne.io.read_raw_bdf(eeg_fp, eog = ['EXG3', 'EXG4', 'EXG5', 'EXG6'], misc = ['EXG1', 'EXG2'])
 events = mne.find_events(EEG, 'Status')
@@ -44,42 +55,72 @@ for i in range(len(events)):
             if (events[i,2] == 60 and events[i-1,2] == 300) or events[i,2] != 60  :
                 events[i,2] = events[i,2] + 256
                 
-
+idx_firstSound_tmin = [i for i in range(len(events)) if events[i,2] == 100 or events[i,2] == 200 or events[i,2] == 300]
 
 #%% Check in which trials the trigger code 1 is missing.
-for i in range(len(events)):
-    if events[i,2] == 100 or events[i,2] == 200 or events[i,2] == 300:
-        if events[i-1,2] != 1:
-            print('idx',i, ': preceding event', events[i-1,2])
+print(' ')
+print('=========================================================================')
+print("--> Checking for missing trigger 1")
+for i, idx in enumerate(idx_firstSound_tmin):
+    if events[idx-1,2] != 1:
+        print('missing in trial',i,'index',idx, '- preceding event', events[idx-1,2])
+        
 
 #%% check how much difference (in samples) there is between the audio onset triggers and trigger code 1
-diff_1_onset = [events[i,0] - events[i-1,0] for i in range(len(events)) if (events[i,2] == 100 or events[i,2] == 200 or events[i,2] == 300) and events[i-1,2] == 1]
-print(np.std(diff_1_onset))
-print(np.mean(diff_1_onset))
-print(np.min(diff_1_onset))
-print(np.max(diff_1_onset))
+print(' ')
+print('=========================================================================')
+print("--> Summary of samples between trigger code 1 and audio onset trigger")
+diff_1_onset = [events[i,0] - events[i-1,0] for i in idx_firstSound_tmin if events[i-1,2] == 1]
+print('mean:', np.mean(diff_1_onset))
+print('std :', np.std(diff_1_onset))
+print('min :', np.min(diff_1_onset))
+print('max :', np.max(diff_1_onset))
 sns.violinplot(diff_1_onset, orient = 'h')
 
 #%% Check how large the difference between two triggers are compared to what they should be (excel file)
+print(' ')
+print('=========================================================================')
+print("--> Checking how many samples are between two triggers, compared to the times in the excel sheet")
 
-times = [0.163854167,0.702291667,1.256333333,2.368270833,2.7699375,3.9993125,4.470875]
-times = [int(i *2048) for i in times]
-# This is the onset and offset times of the audio triggers from the excel in samples
+# This is the onset and offset times of the audio triggers from the excel in seconds
+times = [0.1638541, # idx 0 : firstSound_tmin
+         0.7022916, # idx 1 : token_1_tmin
+         1.2563333, # idx 2 : token_1_tmax 
+         2.3682708, # idx 3 : token_2_tmin
+         2.7699375, # idx 4 : token_2_tmax
+         3.9993125, # idx 5 : token_3_tmin
+         4.470875   # idx 6 : lastSound_tmax (is equal to token_3_tmax)
+         ]
+
+times = [int(i *2048) for i in times] # transform to samples
+
 # firstSound_tmin, token_1_tmin, token_1_tmax, token_2_tmin, token_2_tmax, token_3_tmin, lastSound_tmax
-X = 0 # Compare difference of X and Y. These are the indexes of the list commented one line above.
-Y = 1
-        
-for i in range(len(events)):
-    if events[i,2] == 100 or events[i,2] == 200 or events[i,2] == 300:
-        origin_diff = times[Y] - times[X]
-        diff = events[i+Y,0] - events[i+X,0]
-        diff2origin = origin_diff - diff
-        print('idx',i, ": events", events[i+X,2], '&', events[i+Y,2], 'difference to standard:', diff2origin, 'difference', diff)
-        
-"""
-Those trials where the 1 is missing is where the differnce between audio onset and callSign onset is larger than +/- 30 samples (14ms) compared to what it should be (origin_diff)
-"""
+# Compare difference of firstEvent and secondEvent. These are the indexes of the list commented one line above.
+firstEvent = 0 
+secondEvent = 1
+
+excel_diff = times[secondEvent] - times[firstEvent]
+
+# print only if the difference between the excel and the triggers is outside of +/- `print_if_diff_larger_than`
+print_if_diff_larger_than = 30
+print('--> Only reporting if the difference between the excel times and the events is outside +/-', print_if_diff_larger_than)
+
+
+diff = [events[i+secondEvent,0] - events[i+firstEvent,0] for i in idx_firstSound_tmin ]
+diff2excel = [excel_diff - i for i in diff]
+   
+for i, idx in enumerate(idx_firstSound_tmin):
+        if max([diff2excel[i], -diff2excel[i]]) >= print_if_diff_larger_than:
+            # max([num, -num]) will always return a positive number
             
+            print('trial',i,'idx',idx, "; events", events[idx+firstEvent,2], '&', events[idx+secondEvent,2], '; difference between events', diff[i], '; difference to excel:', diff2excel[i])
+        
+"""
+Those trials where the 1 is missing is where the differnce between audio onset and callSign onset is larger than +/- 30 samples (14ms) compared to what it should be (excel_diff)
+"""
+
+sns.violinplot(diff, orient = 'h')         
+sns.stripplot(diff2excel, orient = 'h')    
 #%%    
 # # EEG.plot(events=events)              
 # # EEG.load_data()

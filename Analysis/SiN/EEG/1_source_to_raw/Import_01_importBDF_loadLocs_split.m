@@ -113,7 +113,7 @@ for s = 1:length(subjectlist)
             'tail',{1, 1}); % seconds after offset trigger
 
             % Loop thru desired output files
-           for i = 1:1
+           for i = 1:length(splits)
 
                 % Find unique onset trigger
                 triggerIdx = find(cell2mat({EEG.event(:).type})== splits(i).onset_trigger);
