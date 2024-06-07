@@ -172,7 +172,8 @@ n_appearcancesPerBlock = n_trialsPerBlock // n_targets # how many times each ite
 
 #%% create some variables
 allocation_list = np.arange(n_allocations//2)
-# random.shuffle(allocation_list) # shuffle so they are randomly assigned to block
+random.shuffle(allocation_list) # shuffle so they are randomly assigned to block
+allocation_list = list(allocation_list)
 # designation_lists = {key: [] for key in range(n_allocations//1)}
 designation_lists = {key: [] for key in range(n_allocations)}
 
@@ -200,16 +201,16 @@ for y in allocation_list: # for every list we want...
             tmp_list.append(ls1ls2ls3)   
         ls2ls3 = np.roll(ls2ls3, -n_targets)
         
-    designation_lists[y] = [tmp_list[idx] for idx in indexes]
+    designation_lists[y*2] = [tmp_list[idx] for idx in indexes]
         
     # designation_lists[y] = tmp_list[::2]
-    designation_lists[y+8] = [item for item in tmp_list if item not in designation_lists[y]]
+    designation_lists[y*2+1] = [item for item in tmp_list if item not in designation_lists[y*2]]
     
     ls1 = np.roll(ls1, -1)
 
 
      
-#%% check_unique if the lists are actually unique. Also check if they contain duplicates
+#%% check if the lists are actually unique, check if they contain duplicates
 check_unique = []
 check_duplicates = []
 check_n_appearances = []

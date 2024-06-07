@@ -4,8 +4,7 @@ clear all ;
 % ========================================================================
 % Author: G.FragaGonzalez 2022(based on snippets from T.Houweling)
 % Description
-%   - Reads list of .wav
-files 
+%   - Reads list of .wav files 
 %   - Filters signal (butterworth), 
 %   - Normalize 
 %   - Concatenate 
@@ -53,8 +52,8 @@ nfft =          1000;
 noctaves =      6;   % 1/6 octave band smoothing (spectral smoothing in which the bandwidth of the smoothing window is a constant percentage of the center frequency).
 
 % SNR levels
- target_dB_snr = [-11] %,-9,-7,];%15db used for 'clean condition catch trials
-%  target_dB_snr = [-12,-13];
+%  target_dB_snr = [-11] %,-9,-7,];%15db used for 'clean condition catch trials
+target_dB_snr = [-9];
 
 %% Generate noise from concatenated data
 % read signals
