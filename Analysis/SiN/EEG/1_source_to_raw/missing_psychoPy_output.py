@@ -41,11 +41,12 @@ subjID = 's203'
 _thisDir = os.getcwd()
 dirinput = os.path.join(_thisDir[:_thisDir.find('Scripts')] + 'Data','SiN','sourcedata', subjID)
 beh_fp = glob(os.path.join(dirinput, '*.xlsx'))[0]
+output_fp = beh_fp[:beh_fp.find('SentenceInNoise')] + 'ADJUSTED_' + beh_fp[beh_fp.find('SentenceInNoise'):beh_fp.rfind('.xlsx')] + '.csv'
 
 print('Reading subject', subjID)
 
 df_dict = pd.read_excel(beh_fp, sheet_name=None)
-
+df_list = []
 #%%
 for key in df_dict.keys():
     df = df_dict[key]
@@ -53,35 +54,77 @@ for key in df_dict.keys():
     # get the index of the NaN-row (after the trial data, before the additional info)
     idx = df.index[df['audiofile'].isnull()][0]
     
+    # save the additional info
+    extraInfo = df.copy()
+    toDrop = list(range(0,idx+2, 1))
+    extraInfo = extraInfo.drop(index = toDrop)
+    extraInfo = pd.Series(extraInfo['duration'].tolist(), index= extraInfo['audiofile'])
+    
     # drop additional information
     toDrop = list(range(idx,len(df), 1))
     df = df.drop(index = toDrop)
     
-    #%% delete additional mouse clicks
-    col_idx = df.columns.get_loc('mouseClickOnColour.clicked_name_raw')
+    #%% delete additional mouse clicks. Iterate over call, colour and number
+    stim_word = ['Call', 'Colour', 'Number']
+    # col_names = ['mouseClickOnCall.clicked_name_raw','mouseClickOnColour.clicked_name_raw','mouseClickOnNumber.clicked_name_raw']
     
-    # iterate over rows
-    for index, row in df.iterrows():
-        # check if the row is recorded accurately (i.e. if the cell contains a string)
-        if not isinstance(row.iloc[col_idx], str):
+    for stimName in stim_word:
+        clicked_name = 'mouseClickOn' + stimName +'.clicked_name_raw'
+        clicked_name_idx = df.columns.get_loc(clicked_name)
+        
+        # iterate over rows (trials)
+        for index, row in df.iterrows():
             
-            # Get the values of the row as a list
-            row_values = row.tolist()
-            
-            # get the index of where 'mouseClickOnColour.clicked_name_raw' actually is
-            actualStr = [row_values.index(i) for i in row_values[col_idx:] if(type(i) is str)][0]
-            shiftedBy = actualStr - col_idx
-            
-            idxToDelete
-            
-            # # # Delete the contents of the cells we don't need
-            # del row_values[col_idx -3 : col_idx]
-            # del row_values[col_idx : col_idx +3]
-           
-            # # Append None values to the end of the row to maintain the length
-            # row_values.extend([None] * 6)
-           
-            # # Update the row in the DataFrame
-            # df.loc[index] = row_values
-            break
-    break
+            mouse_clicks = row.iloc[clicked_name_idx +4 : clicked_name_idx +7]
+            if all(cell in [0, 1] for cell in mouse_clicks):
+                
+                # Get the values of the row as a list
+                row_values = row.tolist()
+                
+                # get idx of first non 0 or 1
+                nextIdx = [row_values.index(i) for i in row_values[clicked_name_idx+1:] if (i not in [0,1, '0', '1'])][0]
+                
+                # So now we know that the rows are shifted by TWICE this amount (once for mouse clicks, once for their timings)
+                shiftedBy = (nextIdx - clicked_name_idx -1)-3
+                if shiftedBy % 3 != 0:
+                    raise ValueError
+                
+                # Delete the contents of the cells we don't need
+                del row_values[clicked_name_idx +4 : clicked_name_idx +4 + shiftedBy]
+                del row_values[clicked_name_idx +7 : clicked_name_idx +7 + shiftedBy]
+                
+                # Append None values to the end of the row to maintain the length
+                row_values.extend([None] * (shiftedBy * 2))
+               
+                # Update the row in the DataFrame
+                df.loc[index] = row_values
+                
+    df['trials.thisIndex'] = df.index
+    
+    # sort by order of presentation
+    df = df.sort_values(by='order')
+    df = df.reset_index(drop=True)
+    df.rename(columns = {'order' : 'trials.thisN', 'callSignCorrect_raw': 'callSignCorrect',
+                         'colourCorrect_raw': 'colourCorrect', 'numberCorrect_raw' : 'numberCorrect',
+                         'mouseClickOnCall.clicked_name_raw':'mouseClickOnCall.clicked_name',
+                         'mouseClickOnColour.clicked_name_raw':'mouseClickOnColour.clicked_name',
+                         'mouseClickOnNumber.clicked_name_raw' : 'mouseClickOnNumber.clicked_name' }, inplace = True)
+
+    # drop empty columns
+    toDrop = [colName for colName in df.columns if ('Unnamed' in colName) ]
+    df = df.drop(columns = toDrop)
+    
+    # append to list of dfs
+    df_list.append(df)
+
+df = pd.concat(df_list)
+df = df.reset_index(drop=True)
+
+
+
+# add extra info as column
+for i, variable in enumerate(extraInfo):
+    idx = extraInfo.index[i]
+    df[idx] = variable
+
+df.to_csv(output_fp,index=False)

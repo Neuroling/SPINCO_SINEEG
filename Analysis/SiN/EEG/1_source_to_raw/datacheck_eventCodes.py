@@ -23,7 +23,7 @@ import numpy as np
 
 # User inputs
 taskID = 'task-sin'
-subjID = 's202'
+subjID = 's204'
 
 # PATHS
 thisDir = os.getcwd()

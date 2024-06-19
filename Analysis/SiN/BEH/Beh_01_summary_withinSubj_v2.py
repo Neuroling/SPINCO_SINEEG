@@ -51,7 +51,7 @@ for subjID in subjIDs:
                 df.replace('True', eval('True'), inplace=True)
                 
                 # % drop the example trials
-                df = df.dropna(subset=['condsFile'])
+                # df = df.dropna(subset=['condsFile'])
                 
                 # % Add sentence information 
                 df['sentence'] = (df.groupby('block').cumcount() + 1).astype('category')

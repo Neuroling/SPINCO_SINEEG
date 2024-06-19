@@ -8,12 +8,13 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-pipeID = 'pipeline-automagic-02';
+pipeID = 'pipeline-automagic-01-unalignedTriggers';
+derivativesFolder = 'derivatives_exp2';
 run = 1;
 
 %% find data 
-dataFolder = fullfile(baseDir, 'Data','SiN','derivatives',pipeID,taskID) ;
-resultsFolder = fullfile(baseDir, 'Data','SiN','derivatives',pipeID,[taskID,'_preproc']);
+dataFolder = fullfile(baseDir, 'Data','SiN',derivativesFolder,pipeID,taskID) ;
+resultsFolder = fullfile(baseDir, 'Data','SiN',derivativesFolder,pipeID,[taskID,'_preproc']);
 template_project = fullfile(fileparts(thisDir),'project_state.mat');
 mkdir(resultsFolder)
 

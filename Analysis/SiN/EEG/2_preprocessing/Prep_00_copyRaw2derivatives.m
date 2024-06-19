@@ -7,9 +7,9 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-pipeID = 'pipeline-automagic-02';
+pipeID = 'pipeline-automagic-01-unalignedTriggers';
 derivativesFolder = 'derivatives_exp2';
-subjects = {'s204'};
+subjects = {'s201','s202','s203','s204'};
 
 %% 
 for i = 1:length(subjects)
