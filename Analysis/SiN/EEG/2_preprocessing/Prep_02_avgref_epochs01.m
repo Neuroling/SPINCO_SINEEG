@@ -7,8 +7,8 @@
 %% ---------------------------------------------------------------------------
 clear all; close all; 
 % Use subject list if you want to epoch several subjects at once 
-subjectList = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013','s015'};
-
+% subjectList = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013','s015'};
+subjectList = {'s201','s202'}
 
 %%
 for s = 1:length(subjectList)
@@ -56,7 +56,8 @@ for s = 1:length(subjectList)
 
     % list triggers : 1st digit = type , 2nd digit = target position , 3rd digit = word 
     % REF: https://github.com/Neuroling/SPINCO_SINEEG/tree/main/Experiments/SiN/SiN_task#readme
-    target_codes = {'111','112','113','114','211','212','213','214','121','122','123','124','221','222','223','224','131','132','133','134','231','232','233','234'};
+    target_codes = {'111', '112', '113', '114','115', '116', '117', '118', '211', '212', '213', '214','215', '216', '217', '218','311', '312', '313', '314', '315', '316', '317', '318', '121', '122', '123', '124', '125', '126', '127', '128', '221', '222', '223', '224', '225', '226', '227', '228', '321', '322', '323', '324', '325', '326', '327', '328', '131', '132', '133', '134', '135', '136', '137', '138', '231', '232', '233', '234', '235', '236', '237', '238', '331', '332', '333', '334', '335', '336', '337', '338'};
+%     target_codes = {'111','112','113','114','211','212','213','214','121','122','123','124','221','222','223','224','131','132','133','134','231','232','233','234'};
 
     % find event index for target events in both EEG.event and tsv file 
     idx_targets_in_tsv = find(ismember(cellstr(num2str(tabEvent.VALUE)),target_codes));
@@ -68,7 +69,7 @@ for s = 1:length(subjectList)
     accu_str(idx_targets_in_tsv) = strcat(accu_str(idx_targets_in_tsv),'/',string(tabEvent.VALUE(idx_targets_in_tsv)));
     
     % Replaced separator '_' by '/' for being able to filter in MNE
-    accu_str = replace(accu_str,{'/11','/12','/13','/21','/22','/23'},{'/NV/CallSign/','/NV/Colour/','/NV/Number/','/SSN/CallSign/','/SSN/Colour/','/SSN/Number/'});
+    accu_str = replace(accu_str,{'/11','/12','/13','/21','/22','/23','/31','/32','/33'},{'/NV/CallSign/','/NV/Colour/','/NV/Number/','/SSN/CallSign/','/SSN/Colour/','/SSN/Number/', '/clear/CallSign/', '/clear/Colour/', '/clear/Number/'});
 
     % Add it to the EEG events, add 'miss' if response was missing 
     for i = 1:length(idx_targets_in_tsv)

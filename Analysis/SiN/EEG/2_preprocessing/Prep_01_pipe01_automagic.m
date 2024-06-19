@@ -8,7 +8,7 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-pipeID = 'pipeline-01';
+pipeID = 'pipeline-automagic-02';
 run = 1;
 
 %% find data 

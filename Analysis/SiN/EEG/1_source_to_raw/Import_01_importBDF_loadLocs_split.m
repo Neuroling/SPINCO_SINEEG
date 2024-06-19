@@ -15,7 +15,7 @@ thisDir = mfilename('fullpath');
 addpath([fileparts(thisDir),filesep,'functions'])
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 % user inputs
-subjectlist = {'s201'};
+subjectlist = {'s204'};
 
 %%
 for s = 1:length(subjectlist)
@@ -184,7 +184,7 @@ for s = 1:length(subjectlist)
         copyfile(fullfile(expfile.folder,expfile.name), newdiroutput_beh)
 
         %% Gather accuracy
-%         gather_accuracies_events(EEG,expfile, newdiroutput)
+        gather_accuracies_events(EEG,expfile, newdiroutput)
 
         %% Save BIDS metadata 
         saveBidsMetadata(EEG,newdiroutput,chanLocsFile)
@@ -196,7 +196,3 @@ for s = 1:length(subjectlist)
      close all
      disp('0000000000000000000000000000===== next ')
  end
-
-
-
-

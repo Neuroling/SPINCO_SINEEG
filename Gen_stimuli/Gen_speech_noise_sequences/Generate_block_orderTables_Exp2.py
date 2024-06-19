@@ -39,11 +39,9 @@ all_orders = []
 
 # create lists of block orders
 # range(N) will create N*2 block orders. 
-# The biggest value for N before the orders start repeating is N=len(files)/2
-for i in range(8): 
-    order1_tmp = blocks[0:6]
+for i in range(5): 
+    order1_tmp = blocks[i*6:(i+1)*6]
     order2_tmp = swap_pairs(order1_tmp)
-    blocks = np.roll(blocks,-9)
     all_orders.append(order1_tmp)
     all_orders.append(order2_tmp)
     

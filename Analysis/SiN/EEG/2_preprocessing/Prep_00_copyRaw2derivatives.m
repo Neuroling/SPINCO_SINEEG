@@ -7,8 +7,9 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-pipeID = 'trimbreaks_pipeline-01';
-subjects = {'s001'};
+pipeID = 'pipeline-automagic-02';
+derivativesFolder = 'derivatives_exp2';
+subjects = {'s204'};
 
 %% 
 for i = 1:length(subjects)
@@ -16,7 +17,7 @@ for i = 1:length(subjects)
     subjID = subjects{i};
     % find data 
     rawdataFolder = fullfile(baseDir, 'Data','SiN','rawdata',subjID,taskID,'eeg') ;
-    resultsFolder = fullfile(baseDir, 'Data','SiN','derivatives',pipeID,taskID,subjID);
+    resultsFolder = fullfile(baseDir, 'Data','SiN',derivativesFolder,pipeID,taskID,subjID);
     mkdir(resultsFolder)
   
     %% Copy raw to derivatives folder 

@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['Gen_stimuli/Gen_speech_noise_sequences/Generate_spreadsheet_Exp2.py', 'utils/list_allocation.py']
+recent_files = ['Analysis/SiN/EEG/1_source_to_raw/datacheck_eventCodes.py', 'Analysis/SiN/EEG/1_source_to_raw/missing_psychoPy_output.py']
 
 [main]
 version = 0.2.0

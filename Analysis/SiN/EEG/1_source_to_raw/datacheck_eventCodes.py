@@ -32,7 +32,6 @@ thisDir = os.getcwd()
 eeg_fp = glob(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','sourcedata', subjID, '*.bdf'))[0]
 
 print('Reading subject', subjID)
-print('eeg_fp')
 
 EEG = mne.io.read_raw_bdf(eeg_fp, eog = ['EXG3', 'EXG4', 'EXG5', 'EXG6'], misc = ['EXG1', 'EXG2'])
 events = mne.find_events(EEG, 'Status')
@@ -119,8 +118,8 @@ for i, idx in enumerate(idx_firstSound_tmin):
 Those trials where the 1 is missing is where the differnce between audio onset and callSign onset is larger than +/- 30 samples (14ms) compared to what it should be (excel_diff)
 """
 
-sns.violinplot(diff, orient = 'h')         
-sns.stripplot(diff2excel, orient = 'h')    
+# sns.violinplot(diff, orient = 'h')         
+# sns.stripplot(diff2excel, orient = 'h')    
 #%%    
 # # EEG.plot(events=events)              
 # # EEG.load_data()

@@ -212,7 +212,7 @@
         <Param val="EIO" valType="str" updates="None" name="register"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="1" valType="code" updates="None" name="startData"/>
-        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="0.08" valType="code" updates="None" name="startEstim"/>
         <Param val="condition" valType="str" updates="None" name="startType"/>
         <Param val="$pp_start_time + 0.08" valType="code" updates="None" name="startVal"/>
         <Param val="0" valType="code" updates="None" name="stopData"/>
