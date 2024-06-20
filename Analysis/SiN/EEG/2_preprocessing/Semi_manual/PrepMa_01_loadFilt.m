@@ -10,14 +10,18 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-dirinput = fullfile(baseDir, 'Data','SiN','derivatives_SM',taskID) ;
+pipeID = 'pipeline-semiManual';
+derivativesFolder = 'derivatives_exp2-unalignedTriggers';
+dirinput = fullfile(baseDir, 'Data','SiN',derivativesFolder,pipeID,taskID) ;
 diroutput = dirinput;
+
+% subjects = {'s201','s202','s203','s204'};
 
 %% find data 
 files = dir([dirinput,filesep,'**',filesep,'*',taskID,'.set']); 
 
 %% loop thru files 
-for f = length(files):length(files)
+for f = 1:length(files)
 
     % input file 
     fileinput = fullfile(files(f).folder, files(f).name); 
@@ -27,8 +31,9 @@ for f = length(files):length(files)
     [ALLEEG EEG CURRENTSET ALLCOM] = eeglab;
     EEG = pop_loadset('filename',fileinput);
     ursetname = EEG.setname;
-    %Exclude mastoids and audiochannel 
-    EEG = pop_select( EEG, 'rmchannel',{'EXT5','EXT6','erg1'});
+    
+    %Exclude mastoids
+    EEG = pop_select( EEG, 'rmchannel',{'EXT5','EXT6'});
 
     % Filter 
     % highpass (aggressive for ICA) 
@@ -38,7 +43,7 @@ for f = length(files):length(files)
     EEG = pop_cleanline(EEG, 'bandwidth',2,'chanlist',[],'computepower',1,'linefreqs',50,'newversion',0,'normSpectrum',0,'p',0.01,'pad',2,'plotfigures',0,'scanforlines',0,'sigtype','Channels','taperbandwidth',2,'tau',100,'verb',1,'winsize',4,'winstep',1);
 
     %re reference to average 
-    EEG = pop_reref( EEG, [],'exclude',[65:71] );
+    EEG = pop_reref( EEG, [],'exclude',[65:70] );
 
     %% save before downsampling
     newsetname = [ursetname, '_filt_avgRef'];

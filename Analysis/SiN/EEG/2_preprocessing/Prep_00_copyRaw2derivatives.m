@@ -7,14 +7,14 @@ clear all; close all;
 thisDir = mfilename('fullpath');
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 taskID = 'task-sin';
-pipeID = 'pipeline-automagic-01-unalignedTriggers';
-derivativesFolder = 'derivatives_exp2';
+pipeID = 'pipeline-automagic-01';
+derivativesFolder = 'derivatives_exp2-unalignedTriggers';
 subjects = {'s201','s202','s203','s204'};
 
 %% 
 for i = 1:length(subjects)
   
-    subjID = subjects{i};
+    subjID = subjects{i}
     % find data 
     rawdataFolder = fullfile(baseDir, 'Data','SiN','rawdata',subjID,taskID,'eeg') ;
     resultsFolder = fullfile(baseDir, 'Data','SiN',derivativesFolder,pipeID,taskID,subjID);

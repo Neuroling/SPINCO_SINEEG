@@ -8,26 +8,28 @@
 clear all; close all; 
 % Use subject list if you want to epoch several subjects at once 
 % subjectList = {'s001','s002','s003','s004','s005','s006','s007','s008','s009','s010','s011','s012','s013','s015'};
-subjectList = {'s201','s202'}
+subjectList = {'s201','s202', 's203', 's204'};
+
+taskID = 'task-sin';
+pipelineID = 'pipeline-automagic-01-unalignedTriggers';
+derivativesFolder = 'derivatives_exp2';
+epoch_t0 = -0.5; % start time in seconds  
+epoch_t1 = 0.5;  % end time in seconds  
 
 %%
 for s = 1:length(subjectList)
     % % user input
      subjID = subjectList{s}
 
-    pipelineID = 'pipeline-01';
-    taskID = 'task-sin';
-    epoch_t0 = -0.5; % start time in seconds  
-    epoch_t1 = 0.5;  % end time in seconds  
 
     % Paths 
     folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
     baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
     addpath(fullfile(baseDir,'Tools','eeglab_current','eeglab2023.0'))
 
-    dirinput_raw = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, taskID,subjID) ;
-    dirinput_deriv = fullfile(baseDir,'Data','SiN','derivatives', pipelineID, [taskID,'_preproc'],subjID) ;
-    diroutput = fullfile(baseDir,'Data','SiN','derivatives',  pipelineID, [taskID,'_preproc_epoched'],subjID);
+    dirinput_raw = fullfile(baseDir,'Data','SiN',derivativesFolder, pipelineID, taskID,subjID) ;
+    dirinput_deriv = fullfile(baseDir,'Data','SiN',derivativesFolder, pipelineID, [taskID,'_preproc'],subjID) ;
+    diroutput = fullfile(baseDir,'Data','SiN',derivativesFolder,  pipelineID, [taskID,'_preproc_epoched'],subjID);
 
     %  find files - won't work if "current folder" is anything but the root
     fileinput = dir([dirinput_deriv,filesep,'*p_',subjID,'_',taskID,'*.mat']); % find preproc file

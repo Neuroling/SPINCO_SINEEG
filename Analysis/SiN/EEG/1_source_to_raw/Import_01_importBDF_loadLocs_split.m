@@ -16,7 +16,7 @@ addpath([fileparts(thisDir),filesep,'functions'])
 baseDir = char(thisDir(1:regexp(thisDir,'Scripts')-1));
 % user inputs
 subjectlist = {'s204'};
-subjectlist = {'s201','s202','s203','s204'};
+% subjectlist = {'s201','s202','s203','s204'};
 
 %%
 for s = 1:length(subjectlist)
@@ -53,7 +53,7 @@ for s = 1:length(subjectlist)
 
         %% Remove external channels 71 & 72  (were not recorded)
         
-        EEG = pop_select (EEG, 'channel', [1:70]); 
+        EEG = pop_select (EEG, 'channel', [1:70,73]); 
 
         % load channel locations
         EEG = pop_chanedit(EEG,'load',chanLocsFile);  
@@ -99,7 +99,7 @@ for s = 1:length(subjectlist)
         end
 
         %% Realign target events to audio  
-%         [EEG, trial_delays] = alignTriggersToAudio(EEG);
+        [EEG, trial_delays] = alignTriggersToAudio(EEG);
         EEG.comments = pop_comments(EEG.comments,'','imported,loaded chan locations, NOT realigned triggers',1);
         [ALLEEG EEG CURRENTSET] = eeg_store(ALLEEG, EEG);   % save as a new dataset in ALLEEG
 

@@ -120,10 +120,30 @@ beh_stat_wide = beh_stat_long.groupby(['subjID', 'noise', 'block','variable'])['
 beh_stat_wide = pd.DataFrame(beh_stat_wide)
 beh_stat_wide.columns = ['Accuracy']
 
+pal2 = ('#648fff','#ffb000')
+pal3 = ('#648fff', '#dc267f', '#ffb000')
+pal4 = ('#648fff', '#8068f1','#fe6100', '#ffb000')
 # %% Performance plot
 
 plt.figure()
-fig = sns.violinplot(beh_stat_wide, x= 'Accuracy', y = 'noise',hue = 'subjID', linewidth=(0.5), orient=('h'))
+fig = sns.violinplot(beh_stat_wide, x= 'Accuracy', y = 'noise',hue = 'subjID', linewidth=(0.5), orient=('h'),palette=pal4)
+fig.set_xlim(0,100)
+plt.show()
+plt.xlabel('percent correct')
+# plt.savefig((diroutput+ '\\'+subjID+'_'+taskID+ '_stim_plot.png'),bbox_inches = "tight")
+plt.close()
+
+
+plt.figure()
+fig = sns.boxplot(beh_stat_wide, x= 'Accuracy', y = 'noise',hue = 'subjID', linewidth=(0.5), orient=('h'),palette=pal4)
+fig.set_xlim(0,100)
+plt.show()
+plt.xlabel('percent correct')
+# plt.savefig((diroutput+ '\\'+subjID+'_'+taskID+ '_stim_plot.png'),bbox_inches = "tight")
+plt.close()
+
+plt.figure()
+fig = sns.swarmplot(beh_stat_wide, x= 'Accuracy', y = 'noise',hue = 'subjID', linewidth=(0.5), orient=('h'),palette=pal4)
 fig.set_xlim(0,100)
 plt.show()
 plt.xlabel('percent correct')
@@ -132,7 +152,7 @@ plt.close()
 
 #%%
 plt.figure()
-fig = sns.violinplot(beh_stat_wide, x= 'Accuracy', y = 'subjID', hue = 'noise', linewidth=(0.5), orient=('h'))
+fig = sns.violinplot(beh_stat_wide, x= 'Accuracy', y = 'subjID', hue = 'noise', linewidth=(0.5), orient=('h'), palette=pal3)
 fig.set_xlim(0,100)
 plt.show()
 plt.xlabel('percent correct')
@@ -141,7 +161,7 @@ plt.close()
 
 #%%
 plt.figure()
-fig = sns.swarmplot(data=beh_stat_wide, x='Accuracy', y='noise', hue='block', linewidth=(0.5), palette=sns.color_palette("husl", 6))
+fig = sns.swarmplot(data=beh_stat_wide, x='Accuracy', y='noise', hue='block', linewidth=(0.5), palette=pal3)
 fig.set_xlim(0,100)
 plt.xlabel('percent correct')
 # plt.savefig((diroutput+ '\\'+subjID+'_'+taskID+ '_block_plot.png'),bbox_inches = "tight")
@@ -150,7 +170,7 @@ plt.close()
 
 #%%
 plt.figure()
-fig = sns.boxplot(data=beh_stat_wide, x='Accuracy',y='noise', hue='variable', linewidth=(0.5), palette=sns.color_palette("husl", 3))
+fig = sns.boxplot(data=beh_stat_wide, x='Accuracy',y='noise', hue='variable', linewidth=(0.5), palette=pal3)
 fig.set_xlim(0,100)
 plt.xlabel('percent correct')
 # plt.savefig((diroutput+ '\\'+subjID+'_'+taskID+ '_levels_plot.png'),bbox_inches = "tight")
@@ -159,7 +179,7 @@ plt.close()
 
 #%%
 plt.figure()
-fig = sns.swarmplot(data=beh_stat_wide, x='Accuracy',y='noise', linewidth=(0.5), palette=sns.color_palette("husl", 3))
+fig = sns.swarmplot(data=beh_stat_wide, x='Accuracy',y='noise', linewidth=(0.5), palette=pal3)
 fig.set_xlim(0,100)
 plt.xlabel('percent correct')
 # plt.savefig((diroutput+ '\\'+subjID+'_'+taskID+ '_noise_plot.png'),bbox_inches = "tight")
