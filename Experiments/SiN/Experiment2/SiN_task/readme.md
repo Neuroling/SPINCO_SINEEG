@@ -1,21 +1,23 @@
 # Sentence-in-noise 
 ## Audio levels
-the audio mixer snapshot is in the file:  _SIN_AUDIOMIX_snapshot.tmss
-See the SOP of this project for more details
+The audio mixer snapshot is in the file:  _SIN_AUDIOMIX_snapshot.tmss
+See the SOP of this project for more details - You can find it in `SINEEG/Docs/Procedures/SINEEG_lab_SOP_v01.docx`
 
 ## Flow 
-The 'flow' folder contains the files for each block of trials (2 NV and 2 SiSSN) the block presentation order is defined by the files order1.csv, order2.csv....order8.csv. 
-The blocks always alternate types of noise (NV or SISSN). The 'order' files with odd number suffix specify sequences starting with NV blocks, 'order' files with even number specify sequence starting with SiSSN blocks. 
+The 'flow' folder contains the files for each block of trials (2 NV and 2 SiSSN) the block presentation order is defined by the files order1.csv, order2.csv....order10.csv  
+The blocks always alternate types of noise (NV or SISSN). The 'order' files with odd number suffix specify sequences starting with SiSSN blocks, 'order' files with even number specify sequence starting with NV blocks (*Note: it is the other way around for experiment1*)
 
 Check 'docs' folders for papers in which this task is based on
 
 ## Triggers codes
 
-Triggers mark onset/offset of audio file and onset/offset of target items (3 targets per sentence). The triggers (possible values 1 to 256) codes the type of noise item position in the sentence and word 
+Triggers mark onset/offset of audio file and onset/offset of target items (3 targets per sentence). The triggers codes the type of noise and item position in the sentence and word [^1]
 
-- 1st digit indicates type: 1(NV), 2(SiSSN) 
-- 2nd digit indicates position: 0 (entire file), 1(1st target) 2 (2nd target), 3(3rd target) 
-- 3rd digit indicates word in sorted alphabetically or ordinally when numbers: 1 (adler | gelb | eins) , 2 (drossel | gruen | zwei) , 3 (kroete | rot | drei), 4 (tiger | weiss | vier) 
+[^1]: Triggers are only allowed to be between 1 and 255. Triggers 256 and over will overflow back to 1. Unfortunately, I haven't realised that until after I coded the clear trials with 300-339. This means that triggers 55 (end of instruction screen) and 60 (end of block) are now the same as the codes that originally were 311 and 316. The preprocessing scripts for experiment2 therefore recodes triggers that should be 300-339 by adding +256 to the triggers between 44 and 83. For codes 55 and 60, it will only recode them to 311 and 316 if they were immediately preceded by code 300. Since 311 and 316 refer to onset of callSign (`token_1_tmin`), they always have to follow 300, which refers to audio onset (`firstSound_tmin`)
+
+- 1st digit indicates type: 1 (NV), 2 (SiSSN), 3 (clear/non-degraded)
+- 2nd digit indicates position: 0 (first word: `firstSound_tmin`), 1 (CallSign: `token_1_tmin`), 2 (colour: `token_2_tmin`), 3 (number: `token_3_tmin`) 
+- 3rd digit indicates word in sorted alphabetically or ordinally when numbers: 1 (adler | gelb | eins) , 2 (drossel | gruen | zwei) , 3 (kroete | rot | drei), 4 (tiger | weiss | vier) # TODO
 - 3rd digit = 0 indicates the offset of the target
 - Clicks and block intial screens are also coded. See table below
  
@@ -76,4 +78,3 @@ Triggers mark onset/offset of audio file and onset/offset of target items (3 tar
 | 210 	| SiSSN offset 1		| 
 | 220 	| SiSSN offset 2		| 
 | 230 	| SiSSN offset 3		|
-

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on June 18, 2024, at 15:50
+    on May 31, 2024, at 08:23
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -114,7 +114,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='Z:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\Experiment2\\SiN_task\\SIN_lab_21-05-24_lastrun.py',
+        originPath='Z:\\Projects\\Spinco\\SINEEG\\Scripts\\Experiments\\SiN\\Experiment2\\SiN_task\\SIN_lab_21-05-24.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -1086,7 +1086,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # if fixation_1 is stopping this frame...
         if fixation_1.status == STARTED:
             # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > fixation_1.tStartRefresh + 300-frameTolerance:
+            if tThisFlipGlobal > fixation_1.tStartRefresh + 2-frameTolerance:
                 # keep track of stop time/frame for later
                 fixation_1.tStop = t  # not accounting for scr refresh
                 fixation_1.frameNStop = frameN  # exact frame index
