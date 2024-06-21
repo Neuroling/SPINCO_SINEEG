@@ -7,10 +7,10 @@ The Biosemi EEG data is recorded in a single **.bdf** file (24-bit) for the enti
 The file has an `Erg1` channel with the audio output signal to help correcting for audio delay. Unfortunately, this channel is missing in subjects s201 and s202, and it is wrong in s203.
 
 ### Import_01_Exp1_importBDF_loadLocs_split.m
-[most recent commit](https://github.com/Neuroling/SPINCO_SINEEG/blob/main/Analysis/SiN/EEG/1_source_to_raw/Import_01_importBDF_loadLocs_split.m)
-[permalink to the code used for Exp1](https://github.com/Neuroling/SPINCO_SINEEG/blob/034cc5a5a0da078511fc800ce60e6743f164bd9d/Analysis/SiN/EEG/1_source_to_raw/Import_01_importBDF_loadLocs_split.m)
+[most recent commit](https://github.com/Neuroling/SPINCO_SINEEG/blob/main/Analysis/SiN/EEG/1_source_to_raw/Import_01_importBDF_loadLocs_split.m)  
+[permalink to the code used for Exp1](https://github.com/Neuroling/SPINCO_SINEEG/blob/034cc5a5a0da078511fc800ce60e6743f164bd9d/Analysis/SiN/EEG/1_source_to_raw/Import_01_importBDF_loadLocs_split.m)  
 Import raw data from Source with minimal preprocessing in EEGlab: 
-- Adjust triggers. Clicks in the *audio signal* (`Erg1`) are detected for each trial in the task. This is used to adjust the event triggers (target word onsets and start/end of the sentence) accounting for any audio output delay. **NOTE** 
+- Adjust triggers. Clicks in the *audio signal* (`Erg1`) are detected for each trial in the task. This is used to adjust the event triggers (target word onsets and start/end of the sentence) accounting for any audio output delay. **NOTE** This is probably wrong, see issue #8 on github
 - The file is split[^1] in three datasets: `s001_task-rest-pre.set`, `s001_task-rest-post.set`,  `s001_task-sin.set` (event triggers used to determine the splits)
 - Channel locations are loaded 
 - Create `.json` metadata files and `.tsv` channel location and event files. **NOTE** the event file contains also the accuracy value , this is read from the experimental file (in behavioral folder 'beh')
