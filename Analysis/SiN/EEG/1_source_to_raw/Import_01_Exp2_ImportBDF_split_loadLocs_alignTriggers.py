@@ -131,7 +131,7 @@ for subjID in subjIDs:
     the range of +/- 30 samples (14ms) of what it should be - and that seems to 
     be the best we can do in terms of temporal accuracy. 
     
-    Therefore, I will adjust the audio onset triggers 
+    Therefore, I will adjust the audio onset triggers to 
     """
     
     #%% save events as tsv file (for later import into mne)

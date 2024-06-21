@@ -383,7 +383,7 @@ class EpochManager:
         """
         Creates a table listing all event_id codes, labels and their frequency of occurrence.
 
-        If the events are not first relabelled (using relabelEvents), it give an error
+        Events must first be relabelled (using relabelEvents)
 
         This function only returns the frequency table but does not save it.
         
