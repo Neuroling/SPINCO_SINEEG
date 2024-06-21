@@ -41,6 +41,8 @@ _baseDir = os.path.join(_thisDir[:_thisDir.find('Scripts')] + 'Data','SiN')
 
 subjIDs= [item for item in os.listdir(os.path.join(_thisDir[:_thisDir.find('Scripts')] + 'Data','SiN','sourcedata')) if item[-3] == '2']
 
+subjIDs = ['s204']
+
 #%% Get channel locations from file, import as MNE montage object, remove spaces from channel names
 chanLocsFile = glob(os.path.join(_baseDir,'_acquisition','_electrodes','Biosemi_71ch_EEGlab_xyz.tsv'))[0]
 chanLocs = mne.channels.read_custom_montage(chanLocsFile, head_size = None)
@@ -62,7 +64,7 @@ for subjID in subjIDs:
     #%% Opening the EEG
     rawEEG = mne.io.read_raw_bdf(eeg_fp, 
                                  eog = ['EXG3', 'EXG4', 'EXG5', 'EXG6'], 
-                                 misc = ['EXG1', 'EXG2', 'erg1'], 
+                                 misc = ['EXG1', 'EXG2', 'Erg1'], 
                                  exclude = ['EXG7', 'EXG8'])
     
     ## Get channel montage, save as tsv file
@@ -95,28 +97,66 @@ for subjID in subjIDs:
     
     idx_firstSound_tmin = [i for i in range(len(events)) if events[i,2] == 100 or events[i,2] == 200 or events[i,2] == 300]
     
+    #%%
+    
+    """
+    I found out that the trigger codes 1 are sometimes missing (see github issue #6).
+    This happens if the trigger codes for the first word (100, 200, 300) are sent
+    at exactly the same time as trigger 1 - which should not happen in the first place.
+    
+    In the past, we used trigger code 1 as the audio onset trigger, to which we 
+    aligned the clicks. However, if you look at the datacheck_eventCodes.py script, 
+    you can see that, even if trigger code 1 is present, the time between it and 
+    the trigger codes for the first word (100, 200, 300) is *highly* variable. 
+    If trigger code 1 were indeed the audio onset, it should always be exactly
+    0.16s before the first word trigger.
+    
+    Trigger code 1 is sent by the psychopy component pp_start, which is set to 
+    be sent 0.08s after the audio-presentation routine starts. It is therefore
+    tied not to the audio onset but to the psychopy routine (see github issue #8),
+    and the audio onset is subject to variable lag from the start of the routine.
+    There is no trigger sent to the EEG when the audio first starts, but that timing
+    is logged in the .csv output under column "sound_1.started".
+    
+    Therefore: trigger code 1 is not related to the audio, and it is also shifted
+    from the true audio onset by a variable delay.
+    
+    Furthermore, with the datachecks_eventcodes.py script you can see that
+    the trigger codes for the first word (100, 200, 300) are not reliable when
+    trigger code 1 is missing. The time between them and the onset of the first 
+    stimulus word (callSign, named token_1_tmin in the csv file, codes 11*, 21*, 31*)
+    is shifted only in trials where trigger 1 is missing.
+    However: The time between the start of the callSign trigger and the other triggers
+    (i.e. end of callSign, start of Colour, end of colour, etc.) remains within
+    the range of +/- 30 samples (14ms) of what it should be - and that seems to 
+    be the best we can do in terms of temporal accuracy. 
+    
+    Therefore, I will adjust the audio onset triggers 
+    """
+    
     #%% save events as tsv file (for later import into mne)
-    events_df = pd.DataFrame(events)
-    events_df.to_csv(events_fp, sep='\t', index=False)
+    # events_df = pd.DataFrame(events)
+    # events_df.to_csv(events_fp, sep='\t', index=False)
+    
     
     #%% save events with accuracy
-    events_df.columns = pd.Index(['SAMPLES', 'DURATION', 'VALUE'])
+    # events_df.columns = pd.Index(['SAMPLES', 'DURATION', 'VALUE'])
     
-    beh_df = pd.read_csv(beh_csv_fp)
+    # beh_df = pd.read_csv(beh_csv_fp)
     
     #%%
-    beh_df = beh_df[['callSign', 'colour', 'number', 'trigger_start','trigger_end',
-                    'trigger_call','trigger_col','trigger_num','trigger_call_end','trigger_col_end','trigger_num_end',
-                    'mouseClickOnCall.clicked_name', 'mouseClickOnColour.clicked_name', 'mouseClickOnNumber.clicked_name',
-                    'callSignCorrect','colourCorrect','numberCorrect']]
+    # beh_df = beh_df[['callSign', 'colour', 'number', 'trigger_start','trigger_end',
+    #                 'trigger_call','trigger_col','trigger_num','trigger_call_end','trigger_col_end','trigger_num_end',
+    #                 'mouseClickOnCall.clicked_name', 'mouseClickOnColour.clicked_name', 'mouseClickOnNumber.clicked_name',
+    #                 'callSignCorrect','colourCorrect','numberCorrect']]
     
-    #% ensure 'correct' columns are read as text (it will read boolean if they are only True or False and have no NO_ANSW)
-    beh_df[['callSignCorrect','colourCorrect','numberCorrect']] = beh_df[['callSignCorrect','colourCorrect','numberCorrect']].astype(str)
+    # #% ensure 'correct' columns are read as text (it will read boolean if they are only True or False and have no NO_ANSW)
+    # beh_df[['callSignCorrect','colourCorrect','numberCorrect']] = beh_df[['callSignCorrect','colourCorrect','numberCorrect']].astype(str)
             
     # %% Recode to numerico to compute summary descriptives 
-    beh_df['callSignCorrect'] = pd.to_numeric(beh_df['callSignCorrect'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW":''}))
-    beh_df['colourCorrect'] =  pd.to_numeric(beh_df['colourCorrect'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW": ''}))
-    beh_df['numberCorrect'] =  pd.to_numeric(beh_df['numberCorrect'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW": ''}))
+    # beh_df['callSignCorrect'] = pd.to_numeric(beh_df['callSignCorrect'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW":''}))
+    # beh_df['colourCorrect'] =  pd.to_numeric(beh_df['colourCorrect'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW": ''}))
+    # beh_df['numberCorrect'] =  pd.to_numeric(beh_df['numberCorrect'].map({'TRUE': 1, 'FALSE': 0, "NO_ANSW": ''}))
     
     #%%
     # for trial in list(events_df['VALUE'])

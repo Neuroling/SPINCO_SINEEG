@@ -23,7 +23,7 @@ import numpy as np
 
 # User inputs
 taskID = 'task-sin'
-subjID = 's004'
+subjID = 's006'
 
 # PATHS
 thisDir = os.getcwd()
@@ -90,6 +90,24 @@ plt.figure()
 sns.violinplot(diff_1_onset, orient = 'h')
 plt.show()
 plt.close()
+
+
+#%%
+firstSound_tmin = df['firstSound_tmin'][4:-1]
+diff_1_onset_csv = pd.Series([i/2048 for i in diff_1_onset])
+diff_1_onset_csv = firstSound_tmin - diff_1_onset_csv
+
+
+plt.figure()
+sns.violinplot(diff_1_onset_csv, orient = 'h', color = '#C5CAE9', linewidth= 0)         
+sns.stripplot(diff_1_onset_csv, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F', jitter = 0.2)
+plt.title(('deviation of time between trigger 1 and audio onset in seconds, '+subjID))    
+plt.show()
+plt.close()
+
+"""
+Using the code from [datachecks_eventcodes.py](url), I looked at the time between trigger code 1 and the first word onset trigger (100, 200) in the first experiment. If trigger code 1 were reliable as a trigger for the audio onset (and therefore the click), then it should always be exactly 0.1571, 0.1671 or 0.1771 seconds before trigger 100 or 200. 
+"""
 
 #%% Check how large the difference between two triggers are compared to what they should be (excel file)
 print(' ')
