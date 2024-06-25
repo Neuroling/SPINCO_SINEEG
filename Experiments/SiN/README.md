@@ -1,5 +1,6 @@
 # SiN Experiment Scripts
-Sentence-in-noise EEG experiment 
+
+## Sentence-in-noise EEG experiment 
 
 Folders: 
 - **Experiment1** is the experiment set up by G. Fraga and run in July 2023 - September 2023 (subjects s001 - s015)
@@ -34,7 +35,7 @@ Analysis aims
     - It includes generation of stimuli, manipulation of the audio files (incl. degradation), generation of the spreadsheets in PsychoPy, as well as the creation of *SiN_practice* and *SiN_alphaVersion*
     
 [^1]: Since I (samuelmull) joined this project after stimulus generation for experiment1, the `Flowchart_stimuliGeneration_Experiment1.png` I created might not be entirely accurate or complete. I re-created it from gfraga's amazing `SINEEG_report.html` and his documentation of the scripts. This is also what I then used as baseline to generate Stimuli for experiment2 - the pipeline of which I thoroughly documented in `Flowchart_stimuliGeneration_Experiment2.pdf` .  
-You can find all of these files in `SINEEG/Docs/Procedures/` or `SINEEG/Docs/Reports/`. The stimuli generation flowcharts are, for the sake of convenience, redundantly saved in the respective `ExperimentN/SiN_task/docs` folder of the psychoPy experiment.    
+    You can find all of these files in `SINEEG/Docs/Procedures/` or `SINEEG/Docs/Reports/`. The stimuli generation flowcharts are, for the sake of convenience, redundantly saved in the respective `ExperimentN/SiN_task/docs` folder of the psychoPy experiment.    
     
 ### Stimulus degradation
 
