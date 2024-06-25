@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-EQUALISE TARGET WORD DURIATION
+EQUALISE WORD DURIATION
 ===============================================================================
 Created on Fri May  3 07:59:15 2024
-@author: samuemu
+@author: samuelmull
+
+This script will use the .csv file of gathered webmaus word times of each stimuli
+and calculate the mean and std of the duration of each identified segment.
+
+It will then loop over audiofiles, and over each segment within each audiofile.
+Each segment is stretched/squeezed to have a duration equal to the mean duration
+of that segment. This is done without changing the pitch. To remove impulse bursts,
+each segment is fading in and out by `crossfade_duration` seconds (adjust below).
+Then, the segments are joined back together and saved as .wav file with the prefix
+'equalised_'
+
+After all audiofiles are processed, the new word onset times are saved as .csv file.
+This .csv file is needed to generate the flow spreadsheets.
 
 """
 crossfade_duration = 0.01 # in seconds
@@ -58,6 +71,7 @@ df_summary.to_csv(os.path.join(baseDir, 'word-times', 'summary_equalised_tts-gol
   
 #%% standardise duration - loop to process each audio file
 df_segment_tmax = [] # collect tmax of every segment for every audiofile
+
 for filename in df['file']:
     
     # get actual filepath (without file extension)
@@ -102,7 +116,7 @@ for filename in df['file']:
             raise ValueError('WARNING! Segment length could not be equalised. May be due to changes in how librosa uses `rate` to calculate new segment length.') 
             # e.g. previous versions of the package seemed to have calculated the new length by multiplying with `rate`, 
             # whereas the version I'm using (v0.10.2) divides by `rate`. 
-            # Look at the source code of the function to make sure: `./site-packages/librosa/effects.py in time_stretch`. 
+            # Look at the source code of the function to make sure: `./site-packages/librosa/effects.py in time_stretch` 
             # It should be something like `len_stretch = int(round(y.shape[-1] / rate))`
       
 

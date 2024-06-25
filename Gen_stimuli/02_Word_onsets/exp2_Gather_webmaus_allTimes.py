@@ -3,7 +3,7 @@
 GATHER ALL TIMES FROM TEXTGRIDS INTO A CSV FILE
 ===============================================================================
 Created on Fri 03.05.2024
-@author: samuemu, adapted from gfraga
+@author: samuelmull, adapted from gfraga
 
 This script will use the textgrid files downloaded from webmaus to create a 
 dataframe that contains the onset and offset times for each segment identified 

@@ -3,7 +3,7 @@
 IMPORT EPOCHS INTO MNE, RELABEL EVENTS, GROUP-SUMMARY OF EVENT FREQUENCIES
 ===============================================================================
 Created on Fri Nov 10 14:59:24 2023
-@author: samuemu
+@author: samuelmull
 
 This script reads eeglab epochs and handles them with MNE
 

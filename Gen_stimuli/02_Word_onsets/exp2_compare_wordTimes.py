@@ -3,7 +3,7 @@
 """
 Created on Tue May  7 12:10:47 2024
 
-@author: samuemu
+@author: samuelmull
 
 This will give you various tables of mean durations of segments (segmented by webmaus)
 as well as plots of the durations of the target words (callSign, colour, number)

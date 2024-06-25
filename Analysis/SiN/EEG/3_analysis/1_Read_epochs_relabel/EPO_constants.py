@@ -3,7 +3,7 @@
 """
 Constants script for EPO_runner
 ===============================================================================
-author: samuemu
+author: samuelmull
 Created on Fri Nov  3 11:47:21 2023
 
 This script contains variables that do not change across scripts, such as 

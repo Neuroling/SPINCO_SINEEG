@@ -1,4 +1,5 @@
 # Sentence-in-noise 
+author: samuelmull
 ## Audio levels
 The audio mixer snapshot is in the file:  _SIN_AUDIOMIX_snapshot.tmss
 See the SOP of this project for more details - You can find it in `SINEEG/Docs/Procedures/SINEEG_lab_SOP_v01.docx`

@@ -3,7 +3,7 @@
 """ 
 Function script for EPO_runner
 ===============================================================================
-@author: samuemu
+@author: samuelmull
 Created November 2023
 
 This script contains all the functions needed to deal with MNE epoching, such as 

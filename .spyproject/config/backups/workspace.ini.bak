@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['Analysis/SiN/EEG/README.md', 'Analysis/SiN/EEG/1_source_to_raw/README.md', 'Experiments/SiN/Experiment2/README.md']
+recent_files = ['Gen_stimuli/README.md']
 
 [main]
 version = 0.2.0

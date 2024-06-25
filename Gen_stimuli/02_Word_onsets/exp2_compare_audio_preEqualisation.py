@@ -4,7 +4,7 @@
 PLOT AUDIO COMPARISON AND WEBMAUS SEGMENTATION
 ===============================================================================
 Created on 30.04.2024
-@author: samuemu
+@author: samuelmull
 
 This script will plot the amplitudes of all audiofiles over each other with very low opacity.
 The plot will look blurrier the more the files diverge.

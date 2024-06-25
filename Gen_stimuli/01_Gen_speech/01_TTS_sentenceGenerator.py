@@ -1,7 +1,7 @@
 """
 create stimuli using google's text to speech API
 ===============================================================================
-@author: gfraga & samuemu
+@author: gfraga & samuelmull
 
 This script uses the google cloud text-to-speech API to generate stimuli. 
 

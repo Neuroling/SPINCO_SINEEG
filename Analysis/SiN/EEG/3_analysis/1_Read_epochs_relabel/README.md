@@ -1,14 +1,20 @@
-1_Read_epochs_relabel folder is for all scripts and files handling epoching data
+# Manupulation of epoched data
+author: samuelmull
 
-EPO_runner.py is the main script for finished code
-EPO_functions.py is a collection of functions for handling epoching
-EPO_constants.py contains variables that do not change across files, such as subject IDs
-sketch_EPO_writing.py is for trying out and debugging code before putting it in EPO_helper.py
+## Folder organisation
+
+**1_Read_epochs_relabel** folder is for all scripts and files handling epoched data
+
+**EPO_runner.py** is the main script for finished code
+**EPO_functions.py** is a collection of functions for handling epoching
+**EPO_constants.py** contains variables that do not change across files, such as subject IDs
+**sketch_EPO_writing.py** is for trying out and debugging code before putting it in EPO_helper.py
 
 
------ Package Requirements -----
-Some plotting functions of mne are bugged in matplotlib version 3.7.2 and earlier. 
-Need to update matplotlib to at least 3.7.3 to ensure smooth operation.
+## Package Requirements
+
+[mne](https://mne.tools/stable/install/index.html)
+Some plotting functions of mne are bugged in matplotlib version 3.7.2 and earlier. Update matplotlib to at least 3.7.3 to ensure smooth operation.
 
 
 ----- Event Labels -----

@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu May 23 11:06:39 2024
+@author: samuemull
 
-@author: samuemu
-
-This is the script where I try to create 16 unique blocks for experiment 2
+This is the script where I try to find a way to create 16 unique blocks for experiment 2
 
 I have three lists (callSign, colour and number) and each has 8 items.
 There are 512 possible combinations of these items (8*8*8)
@@ -18,14 +17,13 @@ and then copying the code into Scripts/Gen_stimuli/Gen_speech_noise_sequences/Ge
 
                                                                                                                                         
 """
-import os
-from glob import glob
+
 import pandas as pd
 import numpy as np
-import wave
+
 import random
 import itertools
-import math
+
 #%%
 # ls1 = ['A','B','C','D','E','F','G','H']
 # ls2 = [str(i) for i in range(1,9)]
