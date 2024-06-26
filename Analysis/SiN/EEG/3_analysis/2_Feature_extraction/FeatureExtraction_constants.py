@@ -6,7 +6,10 @@ CONSTANTS FOR FEATURE EXTRACTION SCRIPTS
 @author: samuelmull
 Created on Fri Dec  8 12:23:55 2023
 
-This script contains constants that are used across functions and scripts
+This script contains constants: variables that are used across functions and scripts, 
+such as filepath-chunks, subject_IDs, and variables determining frequency bands and 
+TFR and COI, as well as a codebook that is saved along with the output of FeatureExtraction_runner
+
 It is called by the FeatureExtraction_functions.py and the FeatureExtraction_runner.py scripts
 
 """
@@ -58,6 +61,7 @@ hwhm_const = 5 - np.sqrt(2 * np.log(2))
 
 comment_COI_extraction = ["Half width at half maximum - time window of size << (n_cycles/(2 * np.pi * freqs[i])) * 5 - np.sqrt(2 * np.log(2)) >> at beginnng and end of epoch"]
 
+# TODO find a better way to do this - what if I change a variable name in the script but forget to change it here?
 codebook={'*_COI_times':'timepoints inside the COI in frequency band *',
           '*_data': 'the data of all electrodes for every epoch in the frequency band *. Should be of size n_epochs x n_electrodes x n_COI_times',
           'epoch_conditions':'the conditions of each epoch in str, taken from the epoched .fif file',

@@ -3,10 +3,11 @@
 """
 CONSTANTS FOR MVPA SCRIPTS
 ===============================================================================
-@author: samuemu
+@author: samuelmull
 Created on Fri Dec  8 12:23:55 2023
 
 This script contains constants that are used across functions and scripts.
+
 It is called by MVPA_functions and MVPA_runner
 
 """

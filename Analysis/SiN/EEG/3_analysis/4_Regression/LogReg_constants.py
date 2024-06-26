@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
+CONSTANTS FOR LOGREG SCRIPTS
+===============================================================================
+@author: samuelmull
 Created on Tue Apr  9 08:09:32 2024
 
-@author: testuser
+This script contains constants that are used across functions and scripts, such as 
+filepath-chunks, subject_IDs, and event_ids
+
+It is called by LogReg_functions and LogReg_runner
 """
 
 import os

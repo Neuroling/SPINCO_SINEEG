@@ -7,7 +7,7 @@ author: samuelmull
 **2_Feature_extraction** folder is for all scripts that deal with the extraction of frequency features from the epoched data, using time frequency representations (TFR)
 
 - **FeatureExtraction_runner.py** is the main script for finished code   
-- **FeatureExtraction_functions.py** is a collection of functions for handling epoching   
+- **FeatureExtraction_functions.py** is a collection of functions called by the FeatureExtraction_runner.py script
 - **FeatureExtraction_constants.py** contains variables that do not change across files, such as subject IDs   
 - **sketch_FeatureExtraction_writing.py** is for trying out and debugging code before putting it in FeatureExtraction_functions.py   
 
