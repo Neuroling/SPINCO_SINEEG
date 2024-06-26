@@ -1,4 +1,4 @@
-# Manupulation of epoched data
+# Manipulation of epoched data
 author: samuelmull
 
 ## Folder organisation
@@ -8,7 +8,7 @@ author: samuelmull
 - **EPO_runner.py** is the main script for finished code   
 - **EPO_functions.py** is a collection of functions for handling epoching   
 - **EPO_constants.py** contains variables that do not change across files, such as subject IDs   
-- **sketch_EPO_writing.py** is for trying out and debugging code before putting it in EPO_helper.py   
+- **sketch_EPO_writing.py** is for trying out and debugging code before putting it in EPO_functions.py   
 
 
 ## Package Requirements

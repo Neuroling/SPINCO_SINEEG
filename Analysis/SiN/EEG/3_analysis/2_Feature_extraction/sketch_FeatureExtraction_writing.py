@@ -116,7 +116,7 @@ tfr, itc = tfr_morlet(
 #%% power plots ###########################################################################################################
 
 """
-[abcde]
+
 https://mne.tools/stable/generated/mne.time_frequency.AverageTFR.html#mne.time_frequency.AverageTFR.plot
 to read so I understand the parameters "baseline" and "mode" and know which are appropriate
 

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Helper script for FeatureExtraction_runner
+functions for FeatureExtraction_runner
 ===============================================================================
-@author: gfraga & samuemu
+@author: gfraga & samuelmull
 Created on Wed Dec 13 07:57:06 2023
 
 This script contains all the functions needed to deal with Feature Extraction.
@@ -40,6 +40,7 @@ class FeatureExtractionManager:
     on its own and does not require SubjIDs as parameters. Therefore, filepaths 
     will have to be handled outside of FeatureExtractionManager
     """
+    
     def __init__(self):
         self.metadata={'codebook':const.codebook}
 
@@ -55,7 +56,7 @@ class FeatureExtractionManager:
         """Extract features from EEG epochs
         =================================================================
         Created on Tue Dec 13 16:39:45 2022
-        @author: gfraga & samuemu
+        @author: gfraga & samuelmull
         Refs:  
         https://mne.tools/stable/index.html ;  
         https://mne.tools/mne-connectivity/
@@ -178,7 +179,7 @@ class FeatureExtractionManager:
         """Extract Cone of Influence (COI) from TFR
         =================================================================
         Created on Tue Jan 10 11:43:56 2023
-        @author: gfraga & samuemu
+        @author: gfraga & samuelmull
         
         Calculates the cone of influence (COI) and drops values outside of it
         
@@ -187,7 +188,7 @@ class FeatureExtractionManager:
         So the edge of the COI is the point of 50% gain before/after peak (=fwhm/2)
         see Cohen (2019) https://doi.org/10.1016/j.neuroimage.2019.05.048
         
-        See also: Notes in the constants file
+        See also: Notes in the README.md file
      
         Parameters
         ----------
@@ -262,7 +263,7 @@ class FeatureExtractionManager:
         """TFR power mean per frequency band 
         =================================================================
         Created on Tue Jan 10 14:42:36 2023
-        @author: gfraga & samuemu
+        @author: gfraga & samuelmull
         
         Function to split the TFR into frequency bands
         
@@ -360,58 +361,3 @@ class FeatureExtractionManager:
         return tfr_bands
    
         
-    #%% Amplitude extraction
-    def extractFreqbandAmplitude(self, epo, diroutput, subjID):
-        """
-        D E P R E C A T E D
-        
-        EXTRACTING AMPLITUDE PER FREQUENCY BAND
-        =======================================================================
-        author: samuemu
-        
-        This function extracts the amplitude of a frequency band of a given epoched dataset.
-        
-        To do this,it will perform a bandpass filter on the data for every frequency band
-        set in the constants (const.freqbands). The resulting epoched datasets will be saved
-        as MNE -epo.fif files.
-        
-        CAUTION!!!! DEPRECATED!!!!
-        Due to issues with performing a bandpass filter on epoched data, the amplitude extraction
-        per frequency band will have to be done differently. This function is still here for
-        documentation and later recycling purposes but it is not called by the runner-script.
-        
-        More detail on the issue:
-            Got the following warning:
-                "Runtime Warning: filter_length (423) is longer than the signal (256), 
-                distortion is likely. Reduce filter length or filter a longer signal."
-            Explanation: 
-                The lower the frequency, the higher the filter_length (in samples).
-                If you want to filter a signal into a low frequency band, you need 
-                a longer signal in order to avoid aliasing/distorting the signal.
-
-        Parameters
-        ----------
-        epo : MNE Epochs instance
-            The epoched dataset
-            
-        diroutput : str
-            directory where the new -epo.fif should be saved. Will be appended with
-            subjID + const.taskID + [freqBand]+ const.AmplitudeExtractionFileEnd
-            
-        subjID : str
-            the subject ID. Will only be used to construct the filename of the output
-
-        Returns
-        -------
-        None.
-        To view the new files, use mne.read_epochs()
-
-        """
-        
-        for thisband in const.freqbands.keys():
-            freq_epo = epo.filter(const.freqbands[thisband][0],const.freqbands[thisband][1],n_jobs=const.n_jobs)
-           
-            fname = os.path.join(diroutput, subjID +'_'+  const.taskID +'_'+ thisband + const.AmplitudeExtractionFileEnd)
-            freq_epo.save(fname, overwrite = True)
-            
-   

@@ -3,7 +3,7 @@
 """
 Runner-script for the Feature extraction
 ===============================================================================
-@author: samuemu
+@author: samuelmull
 Created on Wed Dec 13 07:57:50 2023
 
 This is the runner-script for the Feature extraction. 
@@ -11,7 +11,7 @@ All Functions are in the FeatureExtraction_functions.py script, and
 all constants are in the FeatureExtraction_constants.py script.
 
 First, TFR is extracted
-Then, values outside the COI are excluded
+Then, values outside the COI are excluded (separately for pre- and post-stimulus time windows)
 Then, TFR means for every frequency band are computed.
 Then, the TFR dict is saved using the pickle-module
 
@@ -21,17 +21,15 @@ try one or more of these solutions
     - In the constants, set n_jobs = None
     - In the constants, set decim = 2 (or higher if necessary. This will decimate the sampling rate.)
     - Instead of looping over subjects, manually run the code for each subject. Open a new console for every subject.
+    
 """
 SibMei = False # If we want to use the data for Sibylle's MSc
 if SibMei: print('NOTICE: processing data for the MSc of Sib. M.')
 
 #%% Set working directory #####################################################################################################
-#% This requires working with the spyder project on this directory: Y:\Projects\Spinco\SINEEG\Scripts\Analysis\SiN\EEG  # TODO
 import os
 from glob import glob
 
-# thisDir = os.path.join(os.getcwd(),'3_analysis','2_Feature_extraction')
-# os.chdir(thisDir)
 
 thisDir = os.getcwd()
 
@@ -129,7 +127,7 @@ for subjID in const.subjIDs:
         
         del tfr_bands
         
-    # to make sure there is no spill-over between subjects, we delete & initialise the manager in each loop    
+    # to make sure there is no spill-over between subjects, we delete & re-initialise the manager in each loop    
     del FeatureExtractionManager 
         
     
