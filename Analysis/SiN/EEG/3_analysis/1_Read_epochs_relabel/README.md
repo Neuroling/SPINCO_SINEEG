@@ -17,7 +17,7 @@ author: samuelmull
 Some plotting functions of mne are bugged in matplotlib version 3.7.2 and earlier. Update matplotlib to at least 3.7.3 to ensure smooth operation.
 
 
------ Event Labels -----
+## Event Labels
 
 NoiseType / StimulusType / DegradationLevel / Accuracy / Voice
     
@@ -35,12 +35,12 @@ This allows you to filter the epochs using the event labels, i.e. by:
     epochs.__getitem__('Lv1/call') --> will return all epochs with Lv1 degradation and CallSign
 
 
------ List of event codes -----
+## List of event codes
 
 ---- Noise Vocoded ----
-    	      			| -------- Incorrect --------  |  -------- Correct  --------  |
-    	       			| Female Voice | Male Voice    | Female Voice  | Male Voice   |
-CallSign	Adler	Lv1	  111101	    111102  		 111111	      	 111112	 	
+|           |       |      | -------- Incorrect --------  |  -------- Correct  --------  |
+|    	    |   	|	   | Female Voice | Male Voice    | Female Voice  | Male Voice   |
+|CallSign	| Adler	| Lv1  | 111101	| 111102 | 111111 | 111112 |	
         	  		Lv2	  111201        111202	    	 111211		     111212
         	 		Lv3   111301        111302           111311          111312
             Drossel	Lv1	  112101	    112102  		 112112	      	 112112	 	

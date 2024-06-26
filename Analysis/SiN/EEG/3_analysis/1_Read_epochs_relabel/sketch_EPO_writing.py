@@ -2,7 +2,7 @@
 """ 
 READ EEGLAB EPOCHS IN MNE - WRITING AND TRIAL SCRIPT
 ===============================================================================
-@author: samuemu & gfraga
+@author: samuelmull & gfraga
 Created November 2023
 
 This script is an undocumented mess, because it is for trying out code and 

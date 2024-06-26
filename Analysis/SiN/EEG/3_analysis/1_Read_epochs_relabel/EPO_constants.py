@@ -26,12 +26,14 @@ fifFileEnd = '_avgRef_epo.fif'
 fifFileEnd_SM = '_ICA_rej_epo.fif'
 freqTableEnd = 'event_group_frequencies.csv'
 
-
+# get list of subjectIDs
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 
 """
+CREATE EVENT IDs AND EVENT LABELS
+
 These are the event labels:
     NoiseType / StimulusType / DegradationLevel / Accuracy / Voice
     
@@ -44,7 +46,11 @@ These are the event labels:
     
 This allows you to filter the epochs using the event labels, i.e. by:
     epochs.__getitem__('NV') --------> will return all epochs with NV
+    epochs['NV'] --------------------> will return all epochs with NV
     epochs.__getitem__('Lv1/call') --> will return all epochs with Lv1 degradation and CallSign
+    epochs['Lv1/call'] --------------> will return all epochs with Lv1 degradation and CallSign
+    
+    
 """
 NoiseType = {'NV':1, 'SSN':2}
 StimulusType = {'Call':1, 'Col':2,'Num':3}

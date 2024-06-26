@@ -6,7 +6,7 @@ Function script for EPO_runner
 @author: samuelmull
 Created November 2023
 
-This script contains all the functions needed to deal with MNE epoching, such as 
+This script contains all the functions needed to deal with MNE epochs, such as 
 importing from EEGLAB .set files, relabelling events, adding metadata, and creating
 a frequency of occurrence table for the events.
 
@@ -215,8 +215,8 @@ class EpochManager:
         Filepaths are handled by EpochManager.__init__
 
         This function is called by:
-            addMetadata
-            relabelEvents (optional)
+           - addMetadata
+           - relabelEvents (optional)
 
         Returns:
             metadata
@@ -241,7 +241,9 @@ class EpochManager:
                                 (events_tsv['VALUE'][i]), (events_tsv['ACCURACY'][i])]
                 idx = idx+1
 
-        # adding columns for block, stimulus type and accuracy and renaming everything to be more leigble
+        # adding columns for block, stimulus type and accuracy and renaming everything to be more legible
+        # TODO There's gotta be a way to do this that makes it less prone to human error.
+        # For explanations on the codes, see ./Scripts/Experiments/SiN/Experiment2/SiN_task/readme.md
         metadat = pd.DataFrame(
             metadat, columns=['tf', 'stim_code', 'accuracy'])
         metadat['accuracy'].replace(0, 'inc', inplace=True)
@@ -317,8 +319,8 @@ class EpochManager:
             _____X Voice: Feminine (Neural2-F) = 1, Masculine (Neural2-D) = 2
             
         This allows you to filter the epochs using the event labels, i.e. by:
-            epochs.__getitem__('NV') --------> will return all epochs with NV
-            epochs.__getitem__('Lv1/call') --> will return all epochs with Lv1 degradation and CallSign
+            epochs['NV'] --------> will return all epochs with NV
+            epochs['Lv1/call'] --> will return all epochs with Lv1 degradation and CallSign
 
 
         Parameters
@@ -365,6 +367,8 @@ class EpochManager:
     def averageReference(self, epochs):
         """
         Apply average reference to the epochs
+        
+        This should actually already be done by Prep_02_avgref_epochs01.m
 
         Parameters
         ----------
