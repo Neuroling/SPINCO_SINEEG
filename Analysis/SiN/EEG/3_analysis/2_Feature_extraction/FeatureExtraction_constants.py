@@ -16,23 +16,59 @@ It is called by the FeatureExtraction_functions.py and the FeatureExtraction_run
 
 import os
 import numpy as np
+thisDir = os.getcwd()
 
 #%% Building blocks for paths
 taskID = 'task-sin'
-pipeID = 'pipeline-01'
-fifFileEnd = '_avgRef_epo.fif'
-pickleFileEnd = '_tfr_freqbands.pkl'
-AmplitudeExtractionFileEnd = '_amplitude-epo.fif'
 
-SM_fifFileEnd = 'resampled_ICA_rej_epo.fif'
+pipeID = {
+    'exp1':'pipeline-01', 
+    'SM':'pipeline-01', 
+    'exp2':'pipeline-automagic-01-unalignedTriggers'
+    }
+
+
+
+fifFileEnd = {
+    'exp1':'_avgRef_epo.fif', 
+    'SM':'resampled_ICA_rej_epo.fif', 
+    'exp2':'_avgRef_epo.fif'
+    }
+
+pickleFileEnd = '_tfr_freqbands.pkl'
+
+derivativesFolder = {
+    'exp1':'derivatives', 
+    'SM':'derivatives_SM', 
+    'exp2':'derivatives_exp2-unalignedTriggers'
+    }
+
+analysisFolder = {
+    'exp1':'analysis', 
+    'SM':'', 
+    'exp2':'analysis_exp2-unalignedTriggers'
+    }
+
+
+baseDir = {
+    'exp1':os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN', derivativesFolder['exp1'], pipeID['exp1'], taskID + '_preproc_epoched'), 
+    'SM':os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN', derivativesFolder['SM'], taskID), 
+    'exp2':os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN', derivativesFolder['exp2'], pipeID['exp2'], taskID + '_preproc_epoched')
+    }
 
 
 #%% Getting a list of subject IDs
-thisDir = os.getcwd()
-subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
+
+subjIDs = {
+    'exp1':[item for item in os.listdir(baseDir['exp1']) if item[-1].isdigit()], 
+    'SM':[item for item in os.listdir(baseDir['SM']) if item[-1].isdigit()], 
+    'exp2':[item for item in os.listdir(baseDir['exp2']) if item[-1].isdigit()]
+    }
 
 
-n_jobs = None
+
+
+n_jobs = -1
 #% Number of jobs to run in parallel. 
 #% n_jobs = None means sequential processing (takes longer, but requires less RAM)
 #% n_jobs = -1 means using all processors (so n_jobs is = number of processors)

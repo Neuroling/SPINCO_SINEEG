@@ -23,7 +23,7 @@ import pandas as pd
 #%% filepath chunks
 taskID = 'task-sin'
 
-pipeID = 'pipeline-automagic-01-unalignedTriggers';
+pipeID = 'pipeline-automagic-01-unalignedTriggers'
 
 derivativesFolder = 'derivatives_exp2-unalignedTriggers'
 

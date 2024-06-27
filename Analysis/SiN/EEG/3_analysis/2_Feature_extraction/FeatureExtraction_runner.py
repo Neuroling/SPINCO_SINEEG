@@ -22,15 +22,22 @@ try one or more of these solutions
     - In the constants, set decim = 2 (or higher if necessary. This will decimate the sampling rate.)
     - Instead of looping over subjects, manually run the code for each subject. Open a new console for every subject.
     
+USER INPUTS:
+
+expID : str
+    Determines which data is processed and which constants are used
+    Options:
+        'exp1': data from ./derivatives/pipeline-01/
+        'SM'  : data from ./derivatives_SM/
+        'exp2': data from ./derivatives_exp2-unalignedTriggers/pipeline-automagic-01-unalignedTriggers/
+    
 """
-SibMei = False # If we want to use the data for Sibylle's MSc
-if SibMei: print('NOTICE: processing data for the MSc of Sib. M.')
+
+expID = 'exp2' 
 
 #%% Set working directory #####################################################################################################
 import os
 from glob import glob
-
-
 thisDir = os.getcwd()
 
 #%% Imports ###################################################################################################################
@@ -42,25 +49,22 @@ from datetime import datetime
 import FeatureExtraction_constants as const
 import FeatureExtraction_functions as functions
 
+#%% Import correct variables from constants
 
 #%% Looping over subjects #####################################################################################################
-for subjID in const.subjIDs:
-# for subjID in ['s001']: # for debugging, only one subj
+for subjID in const.subjIDs[expID]:
     
     print('_.~"(_.~"(_.~"(_.~"(_.~"(  now processing',subjID,'   _.~"(_.~"(_.~"(_.~"(_.~"(')
+    
     #%% File paths ############################################################################################################
-
-    if SibMei:
-        dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives_SM', 
-                                const.taskID, subjID)
-        epo_path = glob(os.path.join(dirinput, str("*"+ const.SM_fifFileEnd)), recursive=True)[0]
-        diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives_SM',const.taskID,subjID)
+    dirinput = os.path.join(const.baseDir[expID], subjID)
+    epo_path = glob(os.path.join(dirinput, str("*"+ const.fifFileEnd[expID])), recursive=True)[0]
+    
+    if expID == 'SM':
+        diroutput = os.path.join(const.baseDir[expID], subjID)
         
     else:   
-        dirinput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','derivatives', 
-                                const.pipeID, const.taskID + '_preproc_epoched',subjID)
-        epo_path = glob(os.path.join(dirinput, str("*"+ const.taskID + const.fifFileEnd)), recursive=True)[0]
-        diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','analysis', 'eeg',
+        diroutput = os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN',const.analysisFolder[expID], 'eeg',
                                 const.taskID,'features',subjID)
         
         if not os.path.exists(diroutput): # If the output directory doesn't exist, create it
@@ -82,7 +86,7 @@ for subjID in const.subjIDs:
     #%% Get Cone of Influence #################################################################################################   
     #% we want to run the COI separately for pre- and post-stimulus   
     #% First: for SibMei, we only need prestim
-    if SibMei:
+    if expID == 'SM':
         intervals = ['prestim']
     else:
         intervals = ['prestim','poststim']

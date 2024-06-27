@@ -22,9 +22,9 @@ Some plotting functions of mne are bugged in matplotlib version 3.7.2 and earlie
 
 If `n_jobs = -1` (in the constants), there's a risk of the kernel getting killed mid-execution of the runner-script due to running out of RAM.  
 Try one or more of the following:  
-    - In the constants, set `n_jobs = None` (sequential processing. Will take longer)
-    - In the constants, set `decim = 2` (or higher if necessary. This will decimate the sampling rate.)
-    - Instead of looping over subjects, manually run the code for each subject. Open a new console for every subject.
+- In the constants, set `n_jobs = None` (sequential processing. Will take longer)
+- In the constants, set `decim = 2` (or higher if necessary. This will decimate the sampling rate by that factor.)
+- Instead of looping over subjects, manually run the code for each subject. Open a new console for every subject.
   
 ## Background Information
 ### Wavelet Width, Cycles and Frequencies
