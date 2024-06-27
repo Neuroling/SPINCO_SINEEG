@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['Gen_stimuli/README.md']
+recent_files = ['Analysis/SiN/EEG/3_analysis/1_Read_epochs_relabel/EPO_runner.py', 'Analysis/SiN/EEG/3_analysis/1_Read_epochs_relabel/EPO_functions.py', 'Analysis/SiN/EEG/3_analysis/1_Read_epochs_relabel/EPO_constants_exp2.py', 'Analysis/SiN/EEG/3_analysis/1_Read_epochs_relabel/README.md', 'Analysis/SiN/EEG/3_analysis/2_Feature_extraction/FeatureExtraction_constants.py', 'Analysis/SiN/EEG/3_analysis/1_Read_epochs_relabel/EPO_constants_exp1.py']
 
 [main]
 version = 0.2.0

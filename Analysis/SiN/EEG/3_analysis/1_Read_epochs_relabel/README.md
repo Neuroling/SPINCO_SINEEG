@@ -7,7 +7,7 @@ author: samuelmull
 
 - **EPO_runner.py** is the main script for finished code   
 - **EPO_functions.py** is a collection of functions for handling epoching   
-- **EPO_constants.py** contains variables that do not change across files, such as subject IDs   
+- **EPO_constants_\*.py** contains variables that do not change across files, such as subject IDs. Different for experiment1 and experiment2  
 - **sketch_EPO_writing.py** is for trying out and debugging code before putting it in EPO_functions.py   
 
 
@@ -19,6 +19,16 @@ Some plotting functions of mne are bugged in matplotlib version 3.7.2 and earlie
 
 ## Event Labels
 
+Events are relabelled and recorded. The event labels are separated by /, i.e. `NV/Call/Stim1/Cor`  
+Each unique event label has a numeric code, the event_id, with which mne labels the epoch.    
+This allows you to filter the epochs using the event labels, i.e. by:   
+```
+epochs['NV'] --------> will return all epochs with NV   
+epochs['Stim1/call'] --> will return all epochs with Stim1 and CallSign (so only "adler")
+```
+
+### Experiment 1
+
 NoiseType / StimulusType / DegradationLevel / Accuracy / Voice
 ```
 X_____ NoiseType: NV = 1, SSN = 2
@@ -28,15 +38,33 @@ ___X__ Degradation Level: Lv1 = 1, Lv2 = 2, Lv3 = 3
 ____X_ Accuracy: Incorrect = 0, Correct = 1
 _____X Voice: Feminine (Neural2-F) = 1, Masculine (Neural2-D) = 2
 ```  
+
+### Experiment 2
+NoiseType / StimulusType /  Accuracy 
+```   
+X___ NoiseType: NV = 1, SSN = 2, clear = 3
+_X__ Stimulus Type: Call = 1, Colour = 2, Number = 3
+__X_ Stimulus: 'Stim1', 'Stim2', 'Stim3', 'Stim4', 'Stim5', 'Stim6', 'Stim7', 'Stim8'
+___X Accuracy: Incorrect = 0, Correct = 1
+``` 
+
+Where the Stim* stands for the following:
+| | CallSign | Colour | Number |
+| Stim1 | Adler | gelb | eins |
+| Stim2 | Eule | gruen | zwei |
+| Stim3 | Ratte | rot | drei|
+| Stim4 | Tiger | weiss | vier|
+| Stim5 | Velo | blau | fuenf|
+| Stim6 | Auto | braun | sechs|
+| Stim7 | Messer | pink | neun|
+| Stim8 | Gabel | schwarz | null|
+
   
-This allows you to filter the epochs using the event labels, i.e. by:   
-```
-epochs['NV'] --------> will return all epochs with NV   
-epochs['Lv1/call'] --> will return all epochs with Lv1 degradation and CallSign
-```
 
 
 ## List of event codes
+
+### Experiment 1
 
 #### ---- Noise Vocoded ----   
 

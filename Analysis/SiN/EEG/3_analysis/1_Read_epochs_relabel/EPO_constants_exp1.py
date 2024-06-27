@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Constants script for EPO_runner
+CONSTANTS FOR EPO SCRIPTS (Experiment1)
 ===============================================================================
-author: samuelmull
+@author: samuelmull
 Created on Fri Nov  3 11:47:21 2023
 
-This script contains variables that do not change across scripts, such as 
-filepath-chunks, subject_IDs, and event_ids
+This script contains constants: variables that are used across functions and scripts, 
+such as filepath-chunks, subject_IDs, and event_ids
 
 These variables are called by EPO_functions and EPO_runner
+
+since experiment 1 and experiment 2 have slightly different constants, there is 
+a constants-script for each. This is the script for experiment 1
 
 """
 
@@ -17,20 +20,29 @@ import os
 
 import pandas as pd
 
-# filepath chunks
+#%% filepath chunks
 taskID = 'task-sin'
+
 pipeID = 'pipeline-01'
+
+derivativesFolder = 'derivatives'
+derivativesFolder_SM = 'derivatives_SM'
+
 setFileEnd = '_avgRef_epo.set'
 setFileEnd_SM = '_ICA_rej_ep.set'
+
 fifFileEnd = '_avgRef_epo.fif'
 fifFileEnd_SM = '_ICA_rej_epo.fif'
+
 freqTableEnd = 'event_group_frequencies.csv'
 
-# get list of subjectIDs
+#%% get list of subjectIDs
+
 thisDir = os.getcwd()
 subjIDs=[item for item in os.listdir(os.path.join(thisDir[:thisDir.find('Scripts')] + 'Data','SiN','rawdata')) if item[-1].isdigit()]
 
 
+#%%
 """
 CREATE EVENT IDs AND EVENT LABELS
 
@@ -75,7 +87,7 @@ for noise_key, noise_value in NoiseType.items():
                         # Add the key-value pair to the combined dictionary
                         event_id[combined_key] = combined_value
 
-# Creating an empty frequency of occurrence table
+#%% Creating an empty frequency of occurrence table
 all_event_ids = list(event_id.values())
 all_event_labels = list(event_id.keys())
 freqTableEmpty = pd.DataFrame([all_event_labels,all_event_ids],index=['events','event_codes']).T

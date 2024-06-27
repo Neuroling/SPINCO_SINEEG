@@ -1,6 +1,7 @@
 
 %% EPOCH Data
 % ======================================================================
+% gfraga & samuelmull
 % - Load preprocessed datasets
 % - Epoch around onset of the target words 
 
@@ -12,7 +13,7 @@ subjectList = {'s201','s202', 's203', 's204'};
 
 taskID = 'task-sin';
 pipelineID = 'pipeline-automagic-01-unalignedTriggers';
-derivativesFolder = 'derivatives_exp2';
+derivativesFolder = 'derivatives_exp2-unalignedTriggers';
 epoch_t0 = -0.5; % start time in seconds  
 epoch_t1 = 0.5;  % end time in seconds  
 
@@ -25,11 +26,17 @@ for s = 1:length(subjectList)
     % Paths 
     folders = strsplit(matlab.desktop.editor.getActiveFilename, filesep);
     baseDir = fullfile(folders{1:(find(strcmp(folders, 'Scripts'), 1)-1)});
-    addpath(fullfile(baseDir,'Tools','eeglab_current','eeglab2023.0'))
+    
+%     addpath(fullfile(baseDir,'Tools','eeglab_current','eeglab2023.0')) %
+% %     Because this adds the folder AND subfolders to the path, and EEGlab
+% %     keeps giving a warning that you shouldn't do that, it is better to
+% %     instead manually add it to the path (Only selected Folder, not
+% %     selected folder and subfolders)
 
     dirinput_raw = fullfile(baseDir,'Data','SiN',derivativesFolder, pipelineID, taskID,subjID) ;
     dirinput_deriv = fullfile(baseDir,'Data','SiN',derivativesFolder, pipelineID, [taskID,'_preproc'],subjID) ;
     diroutput = fullfile(baseDir,'Data','SiN',derivativesFolder,  pipelineID, [taskID,'_preproc_epoched'],subjID);
+    chanLocsFile = fullfile(baseDir,'Data','SiN','_acquisition','_electrodes','Biosemi_64ch_EEGlab_xyz.tsv');
 
     %  find files - won't work if "current folder" is anything but the root
     fileinput = dir([dirinput_deriv,filesep,'*p_',subjID,'_',taskID,'*.mat']); % find preproc file
@@ -39,8 +46,22 @@ for s = 1:length(subjectList)
     preproc_data = load(fullfile(fileinput.folder,fileinput.name));
     EEG = preproc_data.EEG;
     
+
+    %% load channel locations
+    % Note: This shouldn't be necessary. It wasn't in Exp1, but it is in Exp2. 
+    % Otherwise, the interpolation won't work because of missing channel
+    % locations. (Maybe I did something wrong in the settings for automagic
+    % and they were removed? Is that all that happened or did that also
+    % cause some other issues? I mean, if I add the locations now, will it
+    % be okay, or did I already screw up?)
+    % Also, because the External channels have already been removed, you cannot 
+    % load the locations from the file 'Biosemi_71ch_EEGlab_xyz.tsv'. So I created 
+    % the file 'Biosemi_64ch_EEGlab_xyz.tsv' which is the exact same but the
+    % additional channels not included.
+    EEG = pop_chanedit(EEG,'load',chanLocsFile);
+    
     %% Interpolate electrodes marked for interp in Automagic
-    % ---------------------------------------------------------------------    
+    % ---------------------------------------------------------------------  
     EEG = pop_interp(EEG, preproc_data.automagic.tobeInterpolated,'spherical');
     pop_comments(EEG.comments,'','chans interpolated after automagic',1);
         

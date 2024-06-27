@@ -14,9 +14,9 @@ These functions are called by EPO_runner, and require EPO_constants for variable
 that do not change across files.
 
 """
-import EPO_constants as const
-import mne
 
+import mne
+import sys
 import os
 from glob import glob
 import pandas as pd
@@ -26,17 +26,22 @@ thisDir = os.getcwd()
 
 class EpochManager:
     """
-    EpochManager is an object to handle reading & saving epochs and related things like metadata and event_ids.
-    Initialising this object requires a SubjID as an input, which will be used to determine file paths.
+    EpochManager is a class to handle reading & saving epochs and related things like metadata and event_ids.
+    Initialising this class requires a SubjID as an input, which will be used to determine file paths.
     It must therefore be called seperately for each subject.
     
-    Additionally, when initialising EpochManager, you can specify if the .set files from the pipeline used in
-    S. Meier's MSc thesis shall be used (SM = True) or not. This is optional. Default is False. 
+    # TODO
+    Additionally, when initialising EpochManager, you need to specify the experiment ID to determine what data
+    is used (i.e. from what ./derivatives/ folder). Options are:
+        'exp1': data from ./derivatives/pipeline-01/
+        'SM'  : data from ./derivatives_SM/
+        'exp2': data from ./derivatives_exp2-unalignedTriggers/pipeline-automagic-01-unalignedTriggers/
+        
     See help(EpochManager.__init__) for more information
 
     """
 
-    def __init__(self, subjID, SM=False):
+    def __init__(self, subjID, ExpID):
         """
         initialising function for EpochManager, used to determine file paths
         
@@ -46,16 +51,26 @@ class EpochManager:
         subjID : str
             subject ID
         
-        SM : bool
-            If true, will use the derivatives_SM data. Default is False.
+        ExpID : str
+            Determines which data is processed.
+            Options:
+                'exp1': data from ./derivatives/pipeline-01/
+                'SM'  : data from ./derivatives_SM/
+                'exp2': data from ./derivatives_exp2-unalignedTriggers/pipeline-automagic-01-unalignedTriggers/
 
         """
         self.subjID = subjID
-        self.thisDir = const.thisDir
+        self.ExpID = ExpID
         
-        if SM == False:
+        
+        
+        if ExpID == 'exp1': # for first experiment, use data of subjects s001 - s015
+            import EPO_constants_exp1 as const
+            
+            self.thisDir = const.thisDir
+        
             self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
-                'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID + '_preproc_epoched', subjID)
+                'Scripts')] + 'Data', 'SiN', const.derivativesFolder, const.pipeID, const.taskID + '_preproc_epoched', subjID)
             
             self.set_path = glob(os.path.join(self.dirinput, str(
                 "*" + const.setFileEnd)), recursive=True)[0]
@@ -63,25 +78,54 @@ class EpochManager:
             self.epo_path = self.set_path[:self.set_path.find(
                 const.setFileEnd)]+const.fifFileEnd
             
-        else:
+            self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
+                'Scripts')] + 'Data', 'SiN', const.derivativesFolder, const.pipeID, const.taskID, subjID, "*accu.tsv"), recursive=True)[0]
+            
+        elif ExpID == 'SM': # For the master thesis of S. Meier, use the data with her preprocessing pipeline
+            import EPO_constants_exp1 as const
+            self.thisDir = const.thisDir
+            
             self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
-                'Scripts')] + 'Data', 'SiN', 'derivatives_SM', const.taskID, subjID)
+                'Scripts')] + 'Data', 'SiN', const.derivativesFolder_SM , const.taskID, subjID)
             
             self.set_path = glob(os.path.join(self.dirinput, str(
                 "*" + const.setFileEnd_SM)), recursive=True)[0]
             
             self.epo_path = self.set_path[:self.set_path.find(
                 const.setFileEnd_SM)]+const.fifFileEnd_SM
-                
+            
+            self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
+                'Scripts')] + 'Data', 'SiN', const.derivativesFolder_SM, const.pipeID, const.taskID, subjID, "*accu.tsv"), recursive=True)[0]
+            
+        elif ExpID == 'exp2' :
+            import EPO_constants_exp2 as const
+            self.thisDir = const.thisDir
+            
+            self.dirinput = os.path.join(self.thisDir[:self.thisDir.find(
+                'Scripts')] + 'Data', 'SiN', const.derivativesFolder, const.pipeID, const.taskID + '_preproc_epoched', subjID)
+            
+            self.set_path = glob(os.path.join(self.dirinput, str(
+                "*" + const.setFileEnd)), recursive=True)[0]
+            
+            self.epo_path = self.set_path[:self.set_path.find(
+                const.setFileEnd)]+const.fifFileEnd
+            
+            self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
+                'Scripts')] + 'Data', 'SiN', const.derivativesFolder, const.pipeID, const.taskID, subjID, "*accu.tsv"), recursive=True)[0]
+            
+        else:
+            self.ExpIDnotRecognised()
         
-        self.events_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
-            'Scripts')] + 'Data', 'SiN', 'derivatives', const.pipeID, const.taskID, subjID, "*accu.tsv"), recursive=True)[0]
+        self.const = const
         
         self.beh_path = glob(os.path.join(self.thisDir[:self.thisDir.find(
             'Scripts')] + 'Data', 'SiN', 'rawdata', subjID, const.taskID, 'beh', "*.csv"), recursive=True)[0]
         
         self.freqTable_path = os.path.join(
             self.dirinput[:self.dirinput.find(subjID)], const.freqTableEnd)
+        
+    def ExpIDnotRecognised(self):
+        raise ValueError('Experiment ID not recognised. It must bei either `exp1` , `SM` or `exp2` ')
 
     def readEpo(self, fileinput=None):
         """
@@ -243,58 +287,87 @@ class EpochManager:
 
         # adding columns for block, stimulus type and accuracy and renaming everything to be more legible
         # TODO There's gotta be a way to do this that makes it less prone to human error.
+        # UPDATE: there is a (slightly) better way, but I don't have the time to do it again here. see below, the elif-loop for exp2
         # For explanations on the codes, see ./Scripts/Experiments/SiN/Experiment2/SiN_task/readme.md
         metadat = pd.DataFrame(
             metadat, columns=['tf', 'stim_code', 'accuracy'])
         metadat['accuracy'].replace(0, 'inc', inplace=True)
         metadat['accuracy'].replace(1, 'cor', inplace=True)
-        metadat['block'] = metadat['stim_code']
-        metadat['block'].replace(
-            [111, 112, 113, 114, 121, 122, 123, 124, 131, 132, 133, 134], 'NV', inplace=True)
-        metadat['block'].replace(
-            [211, 212, 213, 214, 221, 222, 223, 224, 231, 232, 233, 234], 'SSN', inplace=True)
-        metadat['stimtype'] = metadat['stim_code']
-        metadat['stimtype'].replace(
-            [111, 112, 113, 114, 211, 212, 213, 214], 'CallSign', inplace=True)
-        metadat['stimtype'].replace(
-            [121, 122, 123, 124, 221, 222, 223, 224], 'Colour', inplace=True)
-        metadat['stimtype'].replace(
-            [131, 132, 133, 134, 231, 232, 233, 234], 'Number', inplace=True)
-        metadat['stimulus'] = metadat['stim_code']
-        metadat['stimulus'].replace(
-            [111, 121, 131, 211, 221, 231], 'Stim1', inplace=True)
-        metadat['stimulus'].replace(
-            [112, 122, 132, 212, 222, 232], 'Stim2', inplace=True)
-        metadat['stimulus'].replace(
-            [113, 123, 133, 213, 223, 233], 'Stim3', inplace=True)
-        metadat['stimulus'].replace(
-            [114, 124, 134, 214, 224, 234], 'Stim4', inplace=True)
+        
+        if self.ExpID == 'exp1' or self.ExpID == 'SM':
+            metadat['block'] = metadat['stim_code']
+            metadat['block'].replace(
+                [111, 112, 113, 114, 121, 122, 123, 124, 131, 132, 133, 134], 'NV', inplace=True)
+            metadat['block'].replace(
+                [211, 212, 213, 214, 221, 222, 223, 224, 231, 232, 233, 234], 'SSN', inplace=True)
+            metadat['stimtype'] = metadat['stim_code']
+            metadat['stimtype'].replace(
+                [111, 112, 113, 114, 211, 212, 213, 214], 'CallSign', inplace=True)
+            metadat['stimtype'].replace(
+                [121, 122, 123, 124, 221, 222, 223, 224], 'Colour', inplace=True)
+            metadat['stimtype'].replace(
+                [131, 132, 133, 134, 231, 232, 233, 234], 'Number', inplace=True)
+            metadat['stimulus'] = metadat['stim_code']
+            metadat['stimulus'].replace(
+                [111, 121, 131, 211, 221, 231], 'Stim1', inplace=True)
+            metadat['stimulus'].replace(
+                [112, 122, 132, 212, 222, 232], 'Stim2', inplace=True)
+            metadat['stimulus'].replace(
+                [113, 123, 133, 213, 223, 233], 'Stim3', inplace=True)
+            metadat['stimulus'].replace(
+                [114, 124, 134, 214, 224, 234], 'Stim4', inplace=True)
+    
+            # reading the info from the csv to the metadat array
+            beh_csv = beh_csv[['voice', 'levels',
+                               'callSignCorrect', 'colourCorrect', 'numberCorrect']]
+            beh_csv = beh_csv.replace(['-11db', '0.2p'], 'Lv3')
+            beh_csv = beh_csv.replace(['-9db', '0.4p'], 'Lv2')
+            beh_csv = beh_csv.replace(['-7db', '0.6p'], 'Lv1')
+            levels_metadat = list()
+            voice_metadat = list()
+                        
+            # exclude trials with no response
+            for i in range(1, len(beh_csv)):
+                if str(beh_csv['levels'][i]).startswith('L'):
+                    if beh_csv['callSignCorrect'][i] != "NO_ANSW":
+                        levels_metadat.append(beh_csv['levels'][i])
+                        voice_metadat.append(beh_csv['voice'][i])
+                    if beh_csv['colourCorrect'][i] != "NO_ANSW":
+                        levels_metadat.append(beh_csv['levels'][i])
+                        voice_metadat.append(beh_csv['voice'][i])
+                    if beh_csv['numberCorrect'][i] != "NO_ANSW":
+                        levels_metadat.append(beh_csv['levels'][i])
+                        voice_metadat.append(beh_csv['voice'][i])
 
-        # reading the info from the csv to the metadat array
-        beh_csv = beh_csv[['voice', 'levels',
-                           'callSignCorrect', 'colourCorrect', 'numberCorrect']]
-        beh_csv = beh_csv.replace(['-11db', '0.2p'], 'Lv3')
-        beh_csv = beh_csv.replace(['-9db', '0.4p'], 'Lv2')
-        beh_csv = beh_csv.replace(['-7db', '0.6p'], 'Lv1')
-        levels_metadat = list()
-        voice_metadat = list()
+            # adding it to the metadat array
+            metadat['levels'] = levels_metadat
+            metadat['voice'] = voice_metadat
+        
+        elif self.ExpID == 'exp2':
+            metadat['block'] = metadat['stim_code']
+            tmpList = ['NV', 'SSN', 'clear']
+            for i in tmpList:
+                metadat['block'].replace([ val for key, val in self.const.event_id.items() if i in key], i, inplace=True)
 
-        # exclude trials with no response
-        for i in range(1, len(beh_csv)):
-            if str(beh_csv['levels'][i]).startswith('L'):
-                if beh_csv['callSignCorrect'][i] != "NO_ANSW":
-                    levels_metadat.append(beh_csv['levels'][i])
-                    voice_metadat.append(beh_csv['voice'][i])
-                if beh_csv['colourCorrect'][i] != "NO_ANSW":
-                    levels_metadat.append(beh_csv['levels'][i])
-                    voice_metadat.append(beh_csv['voice'][i])
-                if beh_csv['numberCorrect'][i] != "NO_ANSW":
-                    levels_metadat.append(beh_csv['levels'][i])
-                    voice_metadat.append(beh_csv['voice'][i])
+            
+            metadat['stimtype'] = metadat['stim_code']
+            metadat['stimtype'].replace(
+                [ val for key, val in self.const.event_id.items() if 'Call' in key], 'CallSign', inplace=True)
+            metadat['stimtype'].replace(
+                [ val for key, val in self.const.event_id.items() if 'Col' in key], 'Colour', inplace=True)
+            metadat['stimtype'].replace(
+                [ val for key, val in self.const.event_id.items() if 'Num' in key], 'Number', inplace=True)
+            
+            metadat['stimulus'] = metadat['stim_code']
+            
+            tmpList = ['Stim1', 'Stim2', 'Stim3', 'Stim4', 'Stim5', 'Stim6', 'Stim7', 'Stim8']
+            for i in tmpList:
+                metadat['stimulus'].replace([ val for key, val in self.const.event_id.items() if i in key], i, inplace=True)
+            
+        else:
+            self.ExpIDnotRecognised()
 
-        # adding it to the metadat array
-        metadat['levels'] = levels_metadat
-        metadat['voice'] = voice_metadat
+
         self.metadata = metadat
         return metadat
 
@@ -308,19 +381,7 @@ class EpochManager:
         
         -----------------------------------------------------------------------
         
-        These are the event labels:
-            NoiseType / StimulusType / DegradationLevel / Accuracy / Voice
-            
-            X_____ NoiseType: NV = 1, SSN = 2
-            _X____ Stimulus Type: Call = 1, Colour = 2, Number = 3
-            __X___ Stimulus: Adler/Gelb/Eins = 1, Drossel/Grün/Zwei = 2, Kröte/Rot/Drei = 3, Tiger/Weiss/Vier = 4
-            ___X__ Degradation Level: Lv1 = 1, Lv2 = 2, Lv3 = 3
-            ____X_ Accuracy: Incorrect = 0, Correct = 1
-            _____X Voice: Feminine (Neural2-F) = 1, Masculine (Neural2-D) = 2
-            
-        This allows you to filter the epochs using the event labels, i.e. by:
-            epochs['NV'] --------> will return all epochs with NV
-            epochs['Lv1/call'] --> will return all epochs with Lv1 degradation and CallSign
+        See README file for explanation on event labels and event_ids
 
 
         Parameters
@@ -347,21 +408,32 @@ class EpochManager:
         
         print('¸.·´¯`·.¸><(((º>   relabelling events')
 
-        # recoding the metadata because epochs.events need to be numeric
-        mtdat['levels'].replace('Lv1', 1, inplace=True)
-        mtdat['levels'].replace('Lv2', 2, inplace=True)
-        mtdat['levels'].replace('Lv3', 3, inplace=True)
-        mtdat['accuracy'].replace('inc', 0, inplace=True)
-        mtdat['accuracy'].replace('cor', 1, inplace=True)
-        mtdat['voice'].replace('Neural2-F', 1, inplace=True)
-        mtdat['voice'].replace('Neural2-D', 2, inplace=True)
-
-        # put the recoded metadata together to create numeric codes
-        for epIdx in range(len(epochs.events)):
-            epochs.events[epIdx][2] = mtdat['stim_code'][epIdx]*1000 + \
-                mtdat['levels'][epIdx]*100 + \
-                mtdat['accuracy'][epIdx]*10 + mtdat['voice'][epIdx]
-        epochs.event_id = const.event_id  # using the event_id dict from the constants
+        if self.ExpID == 'exp1' or self.ExpID == 'SM':
+            # recoding the metadata because epochs.events need to be numeric
+            mtdat['levels'].replace('Lv1', 1, inplace=True)
+            mtdat['levels'].replace('Lv2', 2, inplace=True)
+            mtdat['levels'].replace('Lv3', 3, inplace=True)
+            mtdat['accuracy'].replace('inc', 0, inplace=True)
+            mtdat['accuracy'].replace('cor', 1, inplace=True)
+            mtdat['voice'].replace('Neural2-F', 1, inplace=True)
+            mtdat['voice'].replace('Neural2-D', 2, inplace=True)
+    
+            # put the recoded metadata together to create numeric codes
+            for epIdx in range(len(epochs.events)):
+                epochs.events[epIdx][2] = mtdat['stim_code'][epIdx]*1000 + \
+                    mtdat['levels'][epIdx]*100 + \
+                    mtdat['accuracy'][epIdx]*10 + mtdat['voice'][epIdx]
+                
+        elif self.ExpID == 'exp2':
+            # recoding the metadata because epochs.events need to be numeric
+            mtdat['accuracy'].replace('inc', 0, inplace=True)
+            mtdat['accuracy'].replace('cor', 1, inplace=True)
+    
+            # put the recoded metadata together to create numeric codes
+            for epIdx in range(len(epochs.events)):
+                epochs.events[epIdx][2] = mtdat['stim_code'][epIdx]*10 + mtdat['accuracy'][epIdx]
+            
+        epochs.event_id = self.const.event_id  # using the event_id dict from the constants
         return epochs
 
     def averageReference(self, epochs):
@@ -419,7 +491,7 @@ class EpochManager:
             freqCount[events[i]] += 1
 
         df = pd.DataFrame(freqCount.items(), columns=["event_id", "frequency"])
-        df.insert(1, "events", const.all_event_labels)
+        df.insert(1, "events", self.const.all_event_labels)
 
         return df
 
@@ -442,5 +514,5 @@ class EpochManager:
 
         """
         self.freqCountEmpty = dict()
-        for i in range(len(const.all_event_ids)):
-            self.freqCountEmpty[const.all_event_ids[i]] = 0
+        for i in range(len(self.const.all_event_ids)):
+            self.freqCountEmpty[self.const.all_event_ids[i]] = 0
