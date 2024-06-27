@@ -12,7 +12,7 @@ Within these folders you will find:
 - **SiN_practice**: has some practice trials to show to the participants offline (e.g., before electrode placement). No output logs.
 - **PsychoPy_LevelTests**: some test run outside the eeg lab to test different noise manipulations (only for experiment1)
 - **SiN_alphaVersion**: Minimal example of SiN_task, with shorter blocks and only one block order, resulting in less stimuli (which can therefore be pushed to github and shared that way) (only for experiment2)
-    - If you update anything in SiN_task, make sure to run the script located at `Scripts/Gen_stimuli/Gen_speech_noise_sequences/Create_AlphaVersion.py` [link](../Gen_stimuli/Gen_speech_noise_sequences/Create_AlphaVersion.py) to create a new alpha version from SiN_task.
+    - If you update anything in SiN_task, make sure to run the script located at `Scripts/Gen_stimuli/Gen_speech_noise_sequences/Create_AlphaVersion.py` ([link])(../Gen_stimuli/Gen_speech_noise_sequences/Create_AlphaVersion.py) to create a new alpha version from SiN_task.
 
 ## Overal Goal
 
