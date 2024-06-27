@@ -31,11 +31,11 @@ Analysis aims
     - The callSign, Colour and Number change in each sentence. In experiment1, there are 4 options for each, in experiment2, there are 8 options for each.
     - The subject then needs to click the corresponding images on a 4x3 or 8x3 response grid
 - Stimuli are presented as audio in different stages of degradation (see next section)
-- The stimuli are generated using the pipeline described in `Flowchart_stimuliGeneration_Experiment1.png` and `Flowchart_stimuliGeneration_Experiment2.pdf` [^1]
+- The stimuli are generated using the pipeline described in `Flowchart_stimuliGeneration_Experiment1.png` and `Flowchart_stimuliGeneration_setUp_Experiment2.pdf` [^1]
     - The flowchart for experiment2 thoroughly documents which scripts are used in what order
     - It includes generation of stimuli, manipulation of the audio files (incl. degradation), generation of the spreadsheets in PsychoPy, as well as the creation of *SiN_practice* and *SiN_alphaVersion*
     
-[^1]: Since I (samuelmull) joined this project after stimulus generation for experiment1, the `Flowchart_stimuliGeneration_Experiment1.png` I created might not be entirely accurate or complete. I re-created it from gfraga's amazing `SINEEG_report.html` and his documentation of the scripts. This is also what I then used as baseline to generate Stimuli for experiment2 - the pipeline of which I thoroughly documented in `Flowchart_stimuliGeneration_Experiment2.pdf` .  
+[^1]: Since I (samuelmull) joined this project after stimulus generation for experiment1, the `Flowchart_stimuliGeneration_Experiment1.png` I created might not be entirely accurate or complete. I re-created it from gfraga's amazing `SINEEG_report.html` and his documentation of the scripts. This is also what I then used as baseline to generate Stimuli for experiment2 - the pipeline of which I thoroughly documented in `Flowchart_stimuliGeneration_setUp_Experiment2.pdf` .  
     You can find all of these files in `SINEEG/Docs/Procedures/` or `SINEEG/Docs/Reports/`. The stimuli generation flowcharts are, for the sake of convenience, redundantly saved in the respective `ExperimentN/SiN_task/docs` folder of the psychoPy experiment.    
     
 ### Stimulus degradation
