@@ -7,7 +7,7 @@ Created on Tue Apr 25 10:56:48 2023
 - Read trial info with performance 
 - Summarize 
 
-@author: gfraga & samuemu
+@author: gfraga & samuelmull
 """
 
 import os 

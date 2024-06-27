@@ -61,4 +61,4 @@ After all this is done, while still in the console and with the environment acti
 
 Unfortunately, it will save all outputs in the same folder as the script is saved. The **.gitignore** file in the folder of the script will ensure that no files ending in **.wav** will be pushed to github.
 
-Move the generated audio- and textfiles over into the folder you want them in afterwards. The easiest way to do this is with the script located at `./Scripts/utils/files_move.py`  
+Move the generated audio- and textfiles over into the folder you want them in afterwards. The easiest way to do this is with the script [**files_move.py**](../utils/files_move.py)

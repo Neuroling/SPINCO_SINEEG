@@ -3,7 +3,7 @@
 """
 Created on Wed May 22 06:47:27 2024
 
-@author: samuemu
+@author: samuelmull
 
 This script will update files in SiN_practise to reflect changes in the SiN_task.
 The practise has the same response selection screen as the task, but only 8 stimuli,

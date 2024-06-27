@@ -3,7 +3,7 @@
 """
 Created on Fri May 17 08:44:00 2024
 
-@author: samuemu
+@author: samuelmull
 
 Package: [Pillow](https://pypi.org/project/pillow/) - `python3 -m pip install --upgrade Pillow`
 """

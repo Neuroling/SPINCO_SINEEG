@@ -3,7 +3,7 @@
 """
 Created on Tue Apr 30 11:29:26 2024
 
-@author: samuemu
+@author: samuelmull
 """
 #%% User inputs
 

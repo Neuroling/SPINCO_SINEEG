@@ -3,10 +3,22 @@
 """
 Created on Wed May 22 06:47:27 2024
 
-@author: samuemu
+@author: samuelmull
 
+Creates a minimal example of SiN_task, with shorter blocks and only one 
+block order, resulting in less stimuli (which can therefore be pushed to github 
+and shared that way)
 
+If you update anything in SiN_task, make sure to run this script to create a 
+new alpha version from SiN_task. It will copy all relevant files from SiN_task
+and create a new flow spreadsheet with less trials per block. Then it will 
+copy all audiofiles that are in this spreadsheet.
 
+Everytime this script is run, any existing SiN_alphaVersion is renamed to 
+SiN_alphaVersion_old. Existing SiN_alphaVersion_old is overwritten.
+
+The alpha version created this way is exactly the same as the actual SiN_task,
+but with shorter blocks and less stimuli.
 """
 import os
 from glob import glob

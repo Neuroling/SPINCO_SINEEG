@@ -2,11 +2,11 @@
 """ 
 Generate tables defining block order 
 ----------------------------------------------
-- Tables for PsychoPy block organization 
+- Tables for PsychoPy block organization (in what order the blocks should be presented)
 
 Created on Tue Mar 21 08:32:28 2023
 
-@author: gfraga & samuemu
+@author: gfraga & samuelmull
 """
 
 import pandas as pd

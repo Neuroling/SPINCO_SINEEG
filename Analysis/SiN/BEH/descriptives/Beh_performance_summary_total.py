@@ -12,7 +12,7 @@ Created on Tue Apr 25 10:56:48 2023
 Package ptitprince (which is used to create the raincloud plots) requires seaborn v0.11.0
 
 
-@author: gfraga & samuemu
+@author: gfraga & samuelmull
 """
 import os 
 #import shutil

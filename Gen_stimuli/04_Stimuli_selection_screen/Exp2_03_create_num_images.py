@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri May 17 08:44:00 2024
-@author: samuemu
+@author: samuelmull
 
 Note: "Nul.png" is a bad filename and will lead to problems. Therefore, the image
 of the number Zero ("Null" in german) is called "Zer.png"

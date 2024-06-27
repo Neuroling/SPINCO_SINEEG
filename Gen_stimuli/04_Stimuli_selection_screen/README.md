@@ -1,9 +1,17 @@
-## Response images
+# Response selection screen creation
+
+The scripts in this folder are for creating the response selection images. They are directly saved into the `/images/` folder of the [experiment](../../Experiments/SiN/Experiment2/SiN_task/images).
+
+Despite being numbered, the order of execution of the scripts does not matter.
+
+## Package requirements
 
 The .png files are created with the package [Pillow](https://pypi.org/project/pillow/) . Install it with `python3 -m pip install --upgrade Pillow`
 
+## Response images
+
 Original *CallSign* images from [MultiPic](https://doi.org/10.1080/17470218.2017.1310261)  
-All non-modified callSign images must be copied into the directory of the script `create_call_images.py`. The script will create a square black frame around the image and save them in the relevant folder of the experiment.
+All non-modified callSign images must be copied into the directory of the script `Exp2_01_create_call_images.py`. The script will create a square black frame around the image and save them in the relevant folder of the experiment.
 
 ### CallSign and MultiPic Number:
 Experiment 1:

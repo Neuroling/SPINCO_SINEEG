@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """ GENERATE SPREADSHEETS FOR PSYCHOPY WITH LISTS OF TRIALS
 ---------------------------------------------------------------------
+@author: samuelmull, adapted from gfraga
 
 - Extract info from wav filename (tokens in sentence, voice, type of noise)
 - Read wav durations
@@ -13,8 +14,6 @@
     
 - Save the full table and a table per block   
 
-Created on Thu Feb  9 10:37:20 2023
-@author: gfraga & samuemu
 """
 import os
 from glob import glob
