@@ -6,7 +6,7 @@ The scripts in these folders contain everything needed to generate the stimuli f
 
 For a thorough pipeline, including what scripts need to be executed at what point, see `SINEEG/Docs/Procedures/Flowchart_stimuliGeneration_Experiment2.pdf`. Refer to that flowchart if possible. [^1]
 
-For a description of the experiment(s), read the [README](../Experiment/SiN/README.md) file found at `SINEEG/Scripts/Experiment/SiN/README.md`
+For a description of the experiment(s), read the [README](../Experiments/SiN/README.md) file found at `SINEEG/Scripts/Experiments/SiN/README.md`
 
 ### Folder organisation
 - The folders are numbered in order of execution.  
