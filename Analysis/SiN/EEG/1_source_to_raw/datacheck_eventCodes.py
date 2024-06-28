@@ -4,15 +4,25 @@
 CHECKING FOR MISSING TRIGGER 1, CHECKING TIME BETWEEN TRIGGERS
 ==============================================================
 Created on Tue Jun  4 11:39:09 2024
-@author: samuemu
+@author: samuelmull
 
 - first loads the raw data
 - extracts events from last channel
 - corrects event codes above 256
 - checks and reports in which trials trigger code 1 is missing
-- summarises how many samples are between trigger code 1 and the following audio onset trigger
-- reports the difference in samples between two audio trigger codes and the standardised time taken from the excel
+- summarises how many samples are between trigger code 1 and the following 
+  audio onset trigger
+- reports the difference in samples between two audio trigger codes and the 
+  standardised time taken from the csv file
+- does a whole bunch of plots
+    - blue plots are with only the timestamps taken from the csv file (psychopy Output)
+    - orange plots contrast actually recorded timestamps to the standardised time 
+      taken from the csv file
+    - It appears the timestamps recorded by psychopy are (nearly) identical to 
+      the timestamps recorded in the EEG data (compare the final two orange 
+      plots with the preceding blue plots)
 """
+
 import mne
 from glob import glob
 import os 
@@ -71,10 +81,12 @@ idx_firstSound_tmin = [i for i in range(len(events)) if events[i,2] == 100 or ev
 print(' ')
 print('=========================================================================')
 print("--> Checking for missing trigger 1")
+count = 0
 for i, idx in enumerate(idx_firstSound_tmin):
     if events[idx-1,2] != 1:
         print('missing in trial',i,'index',idx, '- preceding event', events[idx-1,2])
-        
+        count += 1
+print('----> trigger code 1 is missing in', count, 'trials')        
 
 #%% check how much difference (in samples) there is between the audio onset triggers and trigger code 1
 print(' ')
@@ -87,23 +99,26 @@ print('min :', np.min(diff_1_onset))
 print('max :', np.max(diff_1_onset))
 
 plt.figure()
-sns.violinplot(diff_1_onset, orient = 'h')
+sns.violinplot(diff_1_onset, orient = 'h', color = '#F9A825')
+plt.title(subjID + " - Samples between trigger code 1 and audio onset")
+plt.xlabel('samples (2048Hz)')
 plt.show()
 plt.close()
 
 
 #%%
-# firstSound_tmin = df['firstSound_tmin'][4:-1]
-# diff_1_onset_csv = pd.Series([i/2048 for i in diff_1_onset])
-# diff_1_onset_csv = firstSound_tmin - diff_1_onset_csv
+firstSound_tmin = df['firstSound_tmin'][4:-1]
+diff_1_onset_csv = pd.Series([i/2048 for i in diff_1_onset])
+diff_1_onset_csv = firstSound_tmin - diff_1_onset_csv
 
 
-# plt.figure()
-# sns.violinplot(diff_1_onset_csv, orient = 'h', color = '#C5CAE9', linewidth= 0)         
-# sns.stripplot(diff_1_onset_csv, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F', jitter = 0.2)
-# plt.title(('deviation of time between trigger 1 and audio onset in seconds, '+subjID))    
-# plt.show()
-# plt.close()
+plt.figure()
+sns.violinplot(diff_1_onset_csv, orient = 'h', color = '#C5CAE9', linewidth= 0)         
+sns.stripplot(diff_1_onset_csv, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F', jitter = 0.2)
+plt.title((subjID + ' - deviation of [time between trigger 1 and audio onset trigger] to excel'))    
+plt.xlabel('seconds')
+plt.show()
+plt.close()
 
 
 
@@ -124,16 +139,26 @@ times = [0.1638541, # idx 0 : firstSound_tmin
 
 times = [int(i *2048) for i in times] # transform to samples
 
+labels = ['firstSound_tmin',
+          'token_1_tmin',
+          'token_1_tmax',
+          'token_2_tmin',
+          'token_2_tmax',
+          'token_3_tmin',
+          'lastSound_tmax'     
+          ]
+
 # firstSound_tmin, token_1_tmin, token_1_tmax, token_2_tmin, token_2_tmax, token_3_tmin, lastSound_tmax
 # Compare difference of firstEvent and secondEvent. These are the indexes of the list commented one line above.
 firstEvent = 0
 secondEvent = 1
+print('----> comparing',labels[secondEvent], 'to', labels[firstEvent])
 
 excel_diff = times[secondEvent] - times[firstEvent]
 
 # print only if the difference between the excel and the triggers is outside of +/- `print_if_diff_larger_than`
 print_if_diff_larger_than = 20
-print('--> Only reporting if the difference between the excel times and the events is outside +/-', print_if_diff_larger_than, 'samples')
+print('----> Only reporting if the difference between the excel times and the events is outside +/-', print_if_diff_larger_than, 'samples')
 
 
 diff = [events[i+secondEvent,0] - events[i+firstEvent,0] for i in idx_firstSound_tmin ]
@@ -150,8 +175,11 @@ Those trials where the 1 is missing is where the difference between audio onset 
 """
 
 plt.figure()
-sns.violinplot(diff2excel, orient = 'h', color = '#C5CAE9', linewidth= 0)         
-sns.stripplot(diff2excel, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F', jitter = 0.2)    
+sns.violinplot(diff2excel, orient = 'h',  color = '#F9A825', linewidth= 0)         
+sns.stripplot(diff2excel, orient = 'h',linewidth=0.5, size = 3, color = '#E65100', jitter = 0.2) 
+title = ' '.join([subjID, '- deviation of', labels[secondEvent], 'to', labels[firstEvent],' to excel'])
+plt.title(title)   
+plt.xlabel('samples (2048Hz)')
 plt.show()
 plt.close()
 
@@ -162,6 +190,10 @@ check = (df['firstSound_tmin']) -  (df['pp_t0_start.started'] - df['pp_start.sta
 plt.figure()
 sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F')
 sns.violinplot(check, orient = 'h', color = '#C5CAE9', linewidth= 0)
+
+title = ' '.join([subjID, ': (real first word onset in audiofile) - (sent first word onset trigger - sent trigger 1)'])
+plt.title(title) 
+plt.xlabel('seconds')  
 plt.show()
 plt.close()
 
@@ -175,7 +207,7 @@ The trials where trigger 1 is missing in the EEG are the ones that differ exactl
 # # EEG.load_data()
 # # EEG.add_events(events, 'Status')
 
-# #%%
+#%%
 # # picks = mne.pick_types(EEG.info, meg=False, eeg=True, stim=False, eog=True)
 # # tmin, tmax = -0.5, 0.5
 # event_ids = {str(i) : i for i in set(events[:,2])}
@@ -186,37 +218,70 @@ check = df['pp_start.started']- df['sound_1.started']
 plt.figure()
 sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F')
 sns.violinplot(check, orient = 'h', color = '#C5CAE9', linewidth= 0)
+title = ' '.join([subjID, ': (sent trigger 1 - when Psychopy says the audiofile starts)'])
+plt.title(title) 
+plt.xlabel('seconds') 
 plt.show()
 plt.close()
 
-#%%
-check = df['pp_t0_start.started'] - df['sound_1.started']
-plt.figure()
-sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F')
-sns.violinplot(check, orient = 'h', color = '#C5CAE9', linewidth= 0)
-plt.show()
-plt.close()
-
-#%%
-check = (df['firstSound_tmin']) -  (df['pp_t0_start.started'] - df['pp_start.started'])
-plt.figure()
-sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F')
-sns.violinplot(check, orient = 'h', color = '#C5CAE9', linewidth= 0)
-plt.show()
-plt.close()
 
 #%%
 check = (df['token_1_tmin'] - df['firstSound_tmin']) - (df['pp_t1_start.started'] - df['pp_t0_start.started'])
 plt.figure()
 sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F')
 sns.violinplot(check, orient = 'h', color = '#C5CAE9', linewidth= 0)
+title = ' '.join([subjID, ': (time between onsets callSign and first word) - (time between sent callSign and first word onset triggers)'])
+plt.title(title) 
+plt.xlabel('seconds')  
 plt.show()
 plt.close()
+
+#%% above but recorded triggers
+firstEvent = 0 # firstSound_tmin
+secondEvent = 1 # token_1_tmin
+diff = [events[i+secondEvent,0] - events[i+firstEvent,0] for i in idx_firstSound_tmin ]
+diff = [i/2048 for i in diff]
+
+check = [x for x in list(df['token_1_tmin'] - df['firstSound_tmin']) if str(x) != 'nan']
+check = [ x - diff[i] for i, x  in enumerate(check)]
+
+plt.figure()
+sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#E65100')
+sns.violinplot(check, orient = 'h', color = '#F9A825', linewidth= 0)
+title = ' '.join([subjID, ': (time between onsets callSign and first word) - (time between recorded callSign and first word onset triggers)'])
+plt.title(title) 
+plt.xlabel('seconds')  
+plt.show()
+plt.close()
+
 
 #%%
 check = (df['token_1_tmax'] - df['token_1_tmin']) - (df['pp_t1_end.started'] - df['pp_t1_start.started'])
 plt.figure()
 sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#303F9F')
 sns.violinplot(check, orient = 'h', color = '#C5CAE9', linewidth= 0)
+
+title = ' '.join([subjID, ': (time between callSign on- & offset) - (time between sent callSign on- & offset triggers)'])
+plt.title(title) 
+plt.xlabel('seconds')  
+plt.show()
+plt.close()
+
+#%% above but recorded triggers
+firstEvent = 1 # token_1_tmin
+secondEvent = 2 # token_1_tmax
+diff = [events[i+secondEvent,0] - events[i+firstEvent,0] for i in idx_firstSound_tmin ]
+diff = [i/2048 for i in diff]
+
+check = [x for x in list(df['token_1_tmax'] - df['token_1_tmin']) if str(x) != 'nan']
+check = [ x- diff[i]  for i, x  in enumerate(check)]
+
+plt.figure()
+sns.stripplot(check, orient = 'h',linewidth=0.5, size = 3, color = '#E65100')
+sns.violinplot(check, orient = 'h', color = '#F9A825', linewidth= 0)
+
+title = ' '.join([subjID, ': (time between callSign on- & offset) - (time between recorded callSign on- & offset triggers)'])
+plt.title(title) 
+plt.xlabel('seconds')  
 plt.show()
 plt.close()
