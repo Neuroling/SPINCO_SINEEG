@@ -11,7 +11,7 @@ The file has an `Erg1` channel with the audio output signal to help correcting f
 
 Import raw data from Source with minimal preprocessing in EEGlab: 
 - Adjust triggers. Clicks in the *audio signal* (`Erg1`) are detected for each trial in the task. This is used to adjust the event triggers (target word onsets and start/end of the sentence) accounting for any audio output delay. 
-    - **NOTE: This is probably wrong, see issue [#8](https://github.com/Neuroling/SPINCO_SINEEG/issues/8) on github**
+    - **NOTE: This is probably wrong, see issue [#8](https://github.com/Neuroling/SPINCO_SINEEG/issues/8) on github and section [Trigger Alignment](#trigger-alignment-experiment-1-and-experiment-2)**
 - The file is split[^1] into three datasets: `s001_task-rest-pre.set`, `s001_task-rest-post.set`,  `s001_task-sin.set` (event triggers are used to determine the splits)
 - Channel locations are loaded 
 - Create `.json` metadata files and `.tsv` channel location and event files. 
@@ -23,7 +23,9 @@ Additionally, here is a [permalink](https://github.com/Neuroling/SPINCO_SINEEG/b
 
 ### datacheck_eventCodes.py
 
-This script was written for experiment 2 [^2] to do some checks on the event codes
+This script was written for experiment 2 [^2] to do some checks on the event codes - see [sections on triggers](#trigger-alignment-experiment-1-and-experiment-2) below.  
+
+Let that script run to create some plots on the temporal accuracy of the triggers. 
 
 [^2]: For a run down on what 'experiment1' and 'experiment2' means, check the [project report](https://github.com/Neuroling/SPINCO_SINEEG/wiki/Project-Report-June-2024) or this [README](https://github.com/Neuroling/SPINCO_SINEEG/tree/main/Experiments/SiN) file
 
@@ -46,18 +48,17 @@ for i in range(len(events)):
 ### missing trigger 1 (experiment 2)
 See issue [#6](https://github.com/Neuroling/SPINCO_SINEEG/issues/6)
 
-I found out that the trigger codes 1 are sometimes missing in experiment2[^2]. This happens if the trigger codes for the first word (100, 200, 300) are sent at exactly the same time as trigger 1 - which should not happen in the first place.  
+I found out that the trigger codes 1 are sometimes missing in experiment2[^2]. This happens if the trigger codes for the first word (100, 200, 300) are sent at exactly the same time as trigger 1 - which should not happen in the first place. This leads me to the next issue:
 
-In the past, we used trigger code 1 as the audio onset trigger, to which we aligned the clicks. However, if you look at the datacheck_eventCodes.py script, you can see that, even if trigger code 1 is present, the time between it and the trigger codes for the first word (100, 200, 300) is *highly* variable. If trigger code 1 were indeed the audio onset, it should always be exactly 0.16s before the first word trigger.
+### Trigger alignment (experiment 1 and experiment 2)
+See issue [#8](https://github.com/Neuroling/SPINCO_SINEEG/issues/8) and also [project report](https://github.com/Neuroling/SPINCO_SINEEG/wiki/Project-Report-June-2024#trigger-alignment)
 
-Trigger code 1 is sent by the psychopy component pp_start, which is set to be sent 0.08s after the audio-presentation routine starts. It is therefore tied not to the audio onset but to the psychopy routine (see github issue [#8](https://github.com/Neuroling/SPINCO_SINEEG/issues/8) ), and the audio onset is subject to variable lag from the start of the routine. There is no trigger sent to the EEG when the audio first starts, but that timing is logged in the .csv output under column "sound_1.started".
+In the past, we used trigger code 1 as the audio onset trigger, to which we aligned the clicks. However, if you look at the [datacheck_eventCodes.py](#datacheck_eventcodespy) script, you can see that in experiment 2, even if trigger code 1 is present, the time between it and the trigger codes for the first word (100, 200, 300) is *highly* variable. If trigger code 1 were indeed the audio onset, it should always be exactly 0.16s before the first word trigger.
+
+Trigger code 1 is sent by the psychopy component pp_start, which is set to be sent 0.08s after the audio-presentation routine starts. It is therefore tied not to the audio onset but to the psychopy routine, and the audio onset is subject to variable lag from the start of the routine. There is no trigger sent to the EEG when the audio first starts, but that timing is logged in the .csv output under column "sound_1.started".
 
 ***Therefore: trigger code 1 is not related to the audio, and it is also shifted from the true audio onset by a variable delay.***
 
-Furthermore, with the `datachecks_eventCodes.py` script [[link]](/datacheck_eventCodes.py) you can see that the trigger codes for the first word (100, 200, 300) are not reliable when trigger code 1 is missing. The time between them and the onset of the first stimulus word (callSign, named token_1_tmin in the csv file, codes 11*, 21*, 31*) is shifted only in trials where trigger 1 is missing. However: The time between the start of the callSign trigger and the other triggers (i.e. end of callSign, start of Colour, end of colour, etc.) remains within the range of +/- 30 samples (14ms) of what it should be - and that seems to  be the best we can do in terms of temporal accuracy. 
+Furthermore, with the `datachecks_eventCodes.py` script [[link]](/datacheck_eventCodes.py) you can see that the trigger codes for the first word (100, 200, 300) are not reliable when trigger code 1 is missing. The time between them and the onset of the first stimulus word (callSign, named token_1_tmin in the csv file, codes 11*, 21*, 31*) is shifted *only* in trials where trigger 1 is missing. However: The time between the start of the callSign trigger and the other triggers (i.e. end of callSign, start of Colour, end of colour, etc.) remains within the range of +/- 30 samples (14ms) of what it should be - and that seems to be the best we can do in terms of temporal accuracy. 
 
-- For the second experiment, some of the triggers for the event of code 1 are missing. 
-- Event 1 codes the start of the audio presentation screen in psychoPy (+0.08s). It is therefore always followed by the event codes for audio onset (100, 200 or 300)
-- Event code 1 is missing in 8 trials in subj s201 and in 12 trials in subj s202. 
-- In trials where event code 1 is missing, the event codes for audio onset (100, 200, 300) seem to be shifted backwards in time: When looking at the number of samples between the events coding audio onset (100, 200, 300) and the subsequent event (callSign onset), the difference is much smaller in those trials where event code 1 is missing.
-- For some plots and datachecks surrounding this issue, see the script `datachecks_eventCodes.py`
+For some plots and datachecks surrounding this issue, see the script `datachecks_eventCodes.py` [[link]](/datacheck_eventCodes.py)
